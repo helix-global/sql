@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/bin
+/src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/obj
+/src/dotnet/tests/dacpac/bin
+/src/dotnet/tests/dacpac/obj
