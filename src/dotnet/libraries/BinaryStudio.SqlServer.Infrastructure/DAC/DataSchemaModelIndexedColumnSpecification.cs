@@ -4,7 +4,28 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    internal class DataSchemaModelIndexedColumnSpecification
+    [DataSchemaModelMapping("SqlIndexedColumnSpecification")]
+    internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
+        public SqlObjectReference Column { get;private set; }
+
+        #region ctor{DataSchemaModel}
+        public DataSchemaModelIndexedColumnSpecification(DataSchemaModel Scope)
+            : base(Scope)
+            {
+            }
+        #endregion
+        #region M:UpdateRelationships
+        protected override void UpdateRelationships() {
+            base.UpdateRelationships();
+            Column = Relationships[nameof(Column)].References[0];
+            }
+        #endregion
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return Column?.Reference?.ToString()??base.ToString();
+            }
+        #endregion
         }
     }

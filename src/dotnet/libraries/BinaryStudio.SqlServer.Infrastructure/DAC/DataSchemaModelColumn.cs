@@ -4,7 +4,18 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    internal class DataSchemaModelColumn
+    internal class DataSchemaModelColumn : DataSchemaModelElement
         {
+        #region ctor{DataSchemaModel}
+        public DataSchemaModelColumn(DataSchemaModel Scope)
+            : base(Scope)
+            {
+            }
+        #endregion
+        #region M:UpdateRelationships
+        protected override void UpdateRelationships() {
+            base.UpdateRelationships();
+            }
+        #endregion
         }
     }

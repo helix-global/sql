@@ -75,7 +75,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                         {
                                         var Type = reader.GetAttribute("Type");
                                         using (var r = reader.ReadSubtree()) {
-                                            var o = Ignore;
+                                            //var o = Ignore;
+                                            DataSchemaModelElement o = null;
                                             if (RegisteredTypes.TryGetValue(Type, out var type)) {
                                                 var ctor = type.GetConstructor(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,CallingConventions.Any,new []{typeof(DataSchemaModel) },null);
                                                 o = (DataSchemaModelElement)ctor.Invoke(new Object[]{this });

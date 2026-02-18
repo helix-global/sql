@@ -16,8 +16,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             {
             }
         #endregion
-        #region M:ProcessE(XmlReader,String):Boolean
-        protected override Boolean ProcessE(XmlReader reader,String localname) {
+        #region M:ReadXmlE(XmlReader,String)
+        protected override void ReadXmlE(XmlReader reader,String localname) {
             switch (localname) {
                 case "References":
                     {
@@ -25,7 +25,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     if (String.IsNullOrWhiteSpace(r)) { throw new InvalidDataException(@"""Name"" attribute not specified."); }
                     var ExternalSource = reader.GetAttribute("ExternalSource");
                     Reference = new SqlObjectReference(SqlObjectIdentifier.Parse(r),String.Equals(ExternalSource,"BuiltIns"));
-                    return true;
+                    return;
                     }
                 //case "Element":
                 //    {
@@ -35,7 +35,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 //    return true;
                 //    }
                 }
-            return false;
+            base.ReadXmlE(reader,localname);
             }
         #endregion
         }

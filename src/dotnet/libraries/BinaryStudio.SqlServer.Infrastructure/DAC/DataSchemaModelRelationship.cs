@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
@@ -17,8 +15,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             }
         #endregion
 
-        #region M:ProcessE(XmlReader,String):Boolean
-        protected override Boolean ProcessE(XmlReader reader,String localname) {
+        #region M:ReadXmlE(XmlReader,String)
+        protected override void ReadXmlE(XmlReader reader,String localname) {
             switch (localname) {
                 case "Entry":
                     {
@@ -30,10 +28,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                             Elements.Add(e);
                             }
                         }
-                    return true;
+                    return;
                     }
                 }
-            return false;
+            base.ReadXmlE(reader,localname);
             }
         #endregion
         }

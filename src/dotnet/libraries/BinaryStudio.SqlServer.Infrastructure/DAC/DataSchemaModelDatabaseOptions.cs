@@ -35,7 +35,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            DefaultFilegroup = Relationships.FirstOrDefault(i=>i.Name == "DefaultFilegroup")?.References.FirstOrDefault();
+            DefaultFilegroup = Relationships.FirstOrDefault(i=>i.Value.Name == nameof(DefaultFilegroup)).Value?.References.FirstOrDefault();
             }
         #endregion
         #region M:ToString:String

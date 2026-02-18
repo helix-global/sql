@@ -29,7 +29,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         public virtual String Name { get;protected set; }
         protected internal virtual IList<DataSchemaModelAnnotation> Annotations { get; } = new List<DataSchemaModelAnnotation>();
         protected internal virtual IList<DataSchemaModelElement> Elements { get; } = new List<DataSchemaModelElement>();
-        protected internal virtual IList<DataSchemaModelRelationship> Relationships { get; } = new List<DataSchemaModelRelationship>();
+        protected internal virtual IDictionary<String,DataSchemaModelRelationship> Relationships { get; } = new SortedDictionary<String,DataSchemaModelRelationship>();
         protected virtual DataSchemaModel Scope { get; }
         protected IList<String> MappedElementType { get; }
 
@@ -136,9 +136,16 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 ReadP(reader,out var o);
                                 ResolvePropertyMappings(GetType(),out var mapping);
                                 if (!mapping.TryGetValue(o.Name, out var mi)) {
-                                    throw new NotSupportedException($@"Property ""{o.Name}"" is not supported for ""{GetType().FullName}"".");
+                                    throw new NotSupportedException($@"Property ""{o.Name}"" is not supported for ""{GetType().Name}"".");
                                     }
-                                mi.SetValue(this,o.Value);
+                                try
+                                    {
+                                    mi.SetValue(this,o.Value);
+                                    }
+                                catch(Exception e)
+                                    {
+                                    throw new Exception(e.Message,e);
+                                    }
                                 break;
                                 }
                             #endregion
@@ -146,7 +153,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                             case "Relationship":
                                 {
                                 ReadR(reader, out var o);
-                                Relationships.Add(o);
+                                Relationships.Add(o.Name,o);
                                 break;
                                 }
                             #endregion
@@ -178,10 +185,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 break;
                             #endregion
                             default:
-                                if (!ProcessE(reader,reader.LocalName))
-                                    {
-                                    throw new NotSupportedException($@"Element[""{reader.Name}""] not supported.");
-                                    }
+                                ReadXmlE(reader,reader.LocalName);
                                 reader.Skip();
                                 break;
                             }
@@ -203,8 +207,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:ProcessP(DataSchemaModelProperty):Boolean
         protected virtual Boolean ProcessP(DataSchemaModelProperty o) { return false; }
         #endregion
-        #region M:ProcessE(XmlReader,String):Boolean
-        protected virtual Boolean ProcessE(XmlReader reader,String localname) { return false; }
+        #region M:ReadXmlE(XmlReader,String)
+        protected virtual void ReadXmlE(XmlReader reader,String localname) {
+            throw new NotSupportedException($@"Element[""{reader.Name}""] not supported for ""{GetType().Name}"".");
+            }
         #endregion
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
@@ -216,7 +222,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #endregion
         #region M:ReadA(XmlReader,{out}DataSchemaModelAnnotation)
         internal void ReadA(XmlReader reader,out DataSchemaModelAnnotation o) {
-            o = new DataSchemaModelAnnotation(Scope);
+            o = (DataSchemaModelAnnotation)CreateElement(Scope,reader.GetAttribute("Type"));
             using (var r = reader.ReadSubtree()) {
                 o.ReadXml(r);
                 }
@@ -295,6 +301,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected virtual void UpdateRelationships() {
             foreach (var e in Elements) {
                 e.UpdateRelationships();
+                }
+            foreach (var e in Relationships) {
+                e.Value.UpdateRelationships();
                 }
             }
         #endregion

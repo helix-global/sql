@@ -4,10 +4,11 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    public class DataSchemaModelAnnotation : DataSchemaModelElement
+    [DataSchemaModelMapping("SqlInlineConstraintAnnotation")]
+    internal class DataSchemaModelInlineConstraintAnnotation : DataSchemaModelAnnotation
         {
         #region ctor{DataSchemaModel}
-        public DataSchemaModelAnnotation(DataSchemaModel Scope)
+        public DataSchemaModelInlineConstraintAnnotation(DataSchemaModel Scope)
             : base(Scope)
             {
             }
