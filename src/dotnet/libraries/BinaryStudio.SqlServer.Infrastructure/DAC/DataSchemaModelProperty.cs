@@ -9,6 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     public class DataSchemaModelProperty : DataSchemaModelElement
         {
         [DataSchemaModelAttributeMapping] public String Value { get;private set; }
+        public Boolean? QuotedIdentifiers { get;private set; }
+        public Boolean? AnsiNulls { get;private set; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelProperty(DataSchemaModel Scope)
@@ -22,6 +24,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 case "Value":
                     {
                     if (Value != null) { throw new InvalidDataException($@"""Value"" attribute already specified for ""{GetType().Name}""."); }
+                    QuotedIdentifiers = PropB(reader.GetAttribute(nameof(QuotedIdentifiers)));
+                    AnsiNulls = PropB(reader.GetAttribute(nameof(AnsiNulls)));
                     Value = reader.ReadElementContentAsString();
                     return;
                     }

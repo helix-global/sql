@@ -4,8 +4,12 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
+    [DataSchemaModelMapping("SqlForeignKeyConstraint")]
     internal class DataSchemaModelForeignKeyConstraint : DataSchemaModelElement
         {
+        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnDeleteAction { get;set; }
+        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnUpdateAction { get;set; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelForeignKeyConstraint(DataSchemaModel Scope)
             : base(Scope)

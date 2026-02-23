@@ -9,6 +9,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         {
         public SqlObjectReference Type { get;private set; }
         [DataSchemaModelPropertyMapping] public Int32? Length { get;private set; }
+        [DataSchemaModelPropertyMapping] public Int32? Scale { get;private set; }
+        [DataSchemaModelPropertyMapping] public Int32? Precision { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean? IsMax { get;private set; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTypeSpecifier(DataSchemaModel Scope)

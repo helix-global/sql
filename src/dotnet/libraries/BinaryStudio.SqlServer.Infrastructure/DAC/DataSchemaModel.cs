@@ -81,6 +81,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                                 var ctor = type.GetConstructor(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,CallingConventions.Any,new []{typeof(DataSchemaModel) },null);
                                                 o = (DataSchemaModelElement)ctor.Invoke(new Object[]{this });
                                                 }
+                                            if (o == null) {
+                                                throw new NotSupportedException($@"Element ""{Type}"" not supported.");
+                                                }
                                             if (!o.IsIgnore)
                                                 {
                                                 o.ReadXml(r);

@@ -4,8 +4,11 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
+    [DataSchemaModelMapping("SqlSubroutineParameter")]
     internal class DataSchemaModelSubroutineParameter : DataSchemaModelElement
         {
+        [DataSchemaModelPropertyMapping] public String IsReadOnly { get;private set; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelSubroutineParameter(DataSchemaModel Scope)
             : base(Scope)

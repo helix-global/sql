@@ -4,6 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
+    [DataSchemaModelMapping("SqlDynamicColumnSource")]
     internal class DataSchemaModelDynamicColumnSource : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

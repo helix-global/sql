@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
@@ -8,6 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get;private set; }
+        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get;private set; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)
@@ -18,6 +21,21 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            }
+        #endregion
+        #region M:ApplyProperty(MemberInfo,Object)
+        protected override void ApplyProperty(MemberInfo target,Object value) {
+            switch (target.Name) {
+                case nameof(IsAnsiNullsOn):
+                    base.ApplyProperty(target,PropB(value,true));
+                    break;
+                case nameof(IsQuotedIdentifierOn):
+                    base.ApplyProperty(target,PropB(value,true));
+                    break;
+                default:
+                    base.ApplyProperty(target, value);
+                    break;
+                }
             }
         #endregion
         }

@@ -4,8 +4,11 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
+    [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelElement
         {
+        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get;private set; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelInlineTableValuedFunction(DataSchemaModel Scope)
             : base(Scope)

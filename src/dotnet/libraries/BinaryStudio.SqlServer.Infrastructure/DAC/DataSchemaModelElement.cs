@@ -31,6 +31,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected internal virtual IList<DataSchemaModelElement> Elements { get; } = new List<DataSchemaModelElement>();
         protected internal virtual IDictionary<String,DataSchemaModelRelationship> Relationships { get; } = new SortedDictionary<String,DataSchemaModelRelationship>();
         protected virtual DataSchemaModel Scope { get; }
+        public Int32? Disambiguator { get;private set; }
         protected IList<String> MappedElementType { get; }
 
         protected DataSchemaModelElement(DataSchemaModel Scope) {
@@ -108,13 +109,20 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     case "Name":
                         Name = reader.Value;
                         break;
+                    case "Disambiguator":
+                        Disambiguator = PropSI4(reader.Value);
+                        break;
                     case "xmlns" when reader.NamespaceURI == URI_XMLNS:
                         if (reader.Value != URI_DAC) { throw new InvalidDataException($@"Invalid xmlns=""{reader.Value}""."); }
                         break;
                     default:
                         ResolveAttributeMappings(GetType(),out var mapping);
                         if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
-                            throw new NotSupportedException($@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}"".");
+                            throw new NotSupportedException(
+                                (reader is IXmlLineInfo LineInfo)
+                                ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                );
                             }
                         mi.SetValue(this,reader.Value);
                         break;
@@ -136,11 +144,19 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 ReadP(reader,out var o);
                                 ResolvePropertyMappings(GetType(),out var mapping);
                                 if (!mapping.TryGetValue(o.Name, out var mi)) {
-                                    throw new NotSupportedException($@"Property ""{o.Name}"" is not supported for ""{GetType().Name}"".");
+                                    throw new NotSupportedException(
+                                        (reader is IXmlLineInfo LineInfo)
+                                        ? $@"[Line={LineInfo.LineNumber}] Property ""{o.Name}"" is not supported for ""{GetType().Name}""."
+                                        : $@"Property ""{o.Name}"" is not supported for ""{GetType().Name}""."
+                                        );
                                     }
                                 try
                                     {
-                                    mi.SetValue(this,o.Value);
+                                    if (mi.MemberType == typeof(SqlScript)) {
+                                        mi.SetValue(this, new SqlScript(o.Value,o.QuotedIdentifiers,o.AnsiNulls));
+                                        break;
+                                        }
+                                    ApplyProperty(mi,o.Value);
                                     }
                                 catch(Exception e)
                                     {
@@ -307,6 +323,34 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
         #endregion
+        #region M:ApplyProperty(MemberInfo,Object)
+        protected virtual void ApplyProperty(MemberInfo target,Object value)
+            {
+            target.SetValue(this,value);
+            }
+        #endregion
+
+        #region M:PropB(Object):Boolean?
+        protected static Boolean? PropB(Object value) {
+            return SqlBooleanConverter.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:PropB(Object,Boolean):Boolean
+        protected static Boolean PropB(Object value, Boolean defaultValue)
+            {
+            return SqlBooleanConverter.ConvertFromObject(value,defaultValue);
+            }
+        #endregion
+        #region M:PropSI8(Object):Int64?
+        protected static Int64? PropSI8(Object value) {
+            return SqlInt64Converter.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:PropSI4(Object):Int32?
+        protected static Int32? PropSI4(Object value) {
+            return SqlInt32Converter.ConvertFromObject(value);
+            }
+        #endregion
 
         public static DataSchemaModelElement CreateElement(DataSchemaModel Scope,String Type) {
             if (RegisteredTypes.TryGetValue(Type,out var type)) {
@@ -372,29 +416,30 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
 
-        private abstract class MemberInfo
+        protected abstract class MemberInfo
             {
             public abstract Boolean CanWrite { get; }
             public abstract Boolean CanRead { get; }
             public abstract TypeConverter Converter { get; }
             public abstract Type MemberType { get; }
+            public String Name { get { return Source.Name; }}
             protected UMemberInfo Source { get;set; }
             protected String InfoType { get;set; }
 
             #region M:Create(PropertyInfo,IDataSchemaModelMappingAttribute):MemberInfo
-            public static MemberInfo Create(UPropertyInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
+            internal static MemberInfo Create(UPropertyInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
                 {
                 return new PropertyInfo(source,mappingAttribute);
                 }
             #endregion
             #region M:Create(FieldInfo,IDataSchemaModelMappingAttribute):MInfo
-            public static MemberInfo Create(UFieldInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
+            internal static MemberInfo Create(UFieldInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
                 {
                 return new FieldInfo(source,mappingAttribute);
                 }
             #endregion
 
-            protected MemberInfo(UMemberInfo source,IDataSchemaModelMappingAttribute mappingAttribute) {
+            internal MemberInfo(UMemberInfo source,IDataSchemaModelMappingAttribute mappingAttribute) {
                 if (source == null) { throw new ArgumentNullException(nameof(source)); }
                 if (mappingAttribute == null) { throw new ArgumentNullException(nameof(mappingAttribute)); }
                 Source = source;
@@ -409,6 +454,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 try
                     {
                     if (MemberType == typeof(Object)) { r = value; }
+                    else if ((value != null) && (MemberType.IsAssignableFrom(value.GetType()))) { r = value; }
                     else 
                         {
                         r = (converter != null)
@@ -451,11 +497,19 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             #region M:GetConverter(Type):TypeConverter
             protected static TypeConverter GetConverter(Type source) {
                 var o = TypeDescriptor.GetConverter(source);
-                     if (source == typeof(Boolean )) { o = new BooleanConverter(); }
-                else if (source == typeof(Boolean?)) { o = new BooleanConverter(); }
-                else if (source == typeof(Int32))    { o = new Int32Converter(); }
-                else if (source == typeof(Int32?))   { o = new Int32Converter(); }
+                     if (source == typeof(Boolean )) { o = SqlBooleanConverter.DoesNotAllowNull; }
+                else if (source == typeof(Boolean?)) { o = SqlBooleanConverter.Default;          }
+                else if (source == typeof(Int32))    { o = SqlInt32Converter.DoesNotAllowNull;   }
+                else if (source == typeof(Int32?))   { o = SqlInt32Converter.Default;            }
+                else if (source == typeof(Int64))    { o = SqlInt64Converter.DoesNotAllowNull;   }
+                else if (source == typeof(Int64?))   { o = SqlInt64Converter.Default;            }
                 return o;
+                }
+            #endregion
+            #region M:ToString:String
+            public override String ToString()
+                {
+                return Name;
                 }
             #endregion
             }
