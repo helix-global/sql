@@ -56,7 +56,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelMapping("SqlFullTextIndex")]
         [DataSchemaModelMapping("SqlStatistic")]
         [DataSchemaModelMapping("SqlDmlTrigger")]
-        [DataSchemaModelMapping("SqlLogin")]
         [DataSchemaModelMapping("SqlUser")]
         [DataSchemaModelMapping("SqlFullTextCatalog")]
         [DataSchemaModelMapping("SqlPermissionStatement")]
