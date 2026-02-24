@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlSubroutineParameter")]
     internal class DataSchemaModelSubroutineParameter : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String IsReadOnly { get;private set; }
+        [DataSchemaModelPropertyMapping] public String IsReadOnly { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSubroutineParameter(DataSchemaModel Scope)

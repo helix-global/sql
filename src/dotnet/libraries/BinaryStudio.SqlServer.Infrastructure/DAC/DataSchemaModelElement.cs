@@ -31,7 +31,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected internal virtual IList<DataSchemaModelElement> Elements { get; } = new List<DataSchemaModelElement>();
         protected internal virtual IDictionary<String,DataSchemaModelRelationship> Relationships { get; } = new SortedDictionary<String,DataSchemaModelRelationship>();
         protected virtual DataSchemaModel Scope { get; }
-        public Int32? Disambiguator { get;private set; }
+        [SqlModelFieldMapping] public Int32? Disambiguator { get; }
         protected IList<String> MappedElementType { get; }
 
         protected DataSchemaModelElement(DataSchemaModel Scope)
@@ -87,9 +87,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     case "Name":
                         Name = reader.Value;
                         break;
-                    case "Disambiguator":
-                        Disambiguator = PropSI4(reader.Value);
-                        break;
+                    //case "Disambiguator":
+                    //    Disambiguator = PropSI4(reader.Value);
+                    //    break;
                     case "xmlns" when reader.NamespaceURI == URI_XMLNS:
                         if (reader.Value != URI_DAC) { throw new InvalidDataException($@"Invalid xmlns=""{reader.Value}""."); }
                         break;

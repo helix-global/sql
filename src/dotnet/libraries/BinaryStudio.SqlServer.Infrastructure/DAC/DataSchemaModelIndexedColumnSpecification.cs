@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
         public SqlObjectReference Column { get;private set; }
-        [DataSchemaModelPropertyMapping] public Boolean IsAscending { get;private set; } = true;
+        [DataSchemaModelPropertyMapping] public Boolean IsAscending { get; } = true;
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelIndexedColumnSpecification(DataSchemaModel Scope)

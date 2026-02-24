@@ -8,8 +8,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlPrimaryKeyConstraint")]
     internal class DataSchemaModelPrimaryKeyConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32? FillFactor { get;private set; }
-        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get;private set; } = true;
+        [DataSchemaModelPropertyMapping] public Int32? FillFactor { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get; } = true;
         public IList<SqlIndexedColumnSpecification> ColumnSpecifications { get; } = new List<SqlIndexedColumnSpecification>();
         public SqlObjectReference DefiningTable { get;private set; }
 

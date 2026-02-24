@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlCheckConstraint")]
     internal class DataSchemaModelCheckConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String CheckExpressionScript { get;private set; }
+        [DataSchemaModelPropertyMapping] public String CheckExpressionScript { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelCheckConstraint(DataSchemaModel Scope)

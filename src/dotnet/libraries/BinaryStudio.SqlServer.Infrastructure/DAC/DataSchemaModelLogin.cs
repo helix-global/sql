@@ -7,10 +7,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlLogin")]
     internal class DataSchemaModelLogin : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsMappedToWindowsLogin { get;private set; }
-        [DataSchemaModelPropertyMapping] public Boolean IsCheckPolicyOn { get;private set; } = true;
-        [DataSchemaModelPropertyMapping] public String DefaultLanguage { get;private set; }
-        [DataSchemaModelPropertyMapping] public String DefaultDatabase { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsMappedToWindowsLogin { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsCheckPolicyOn { get; } = true;
+        [DataSchemaModelPropertyMapping] public String DefaultLanguage { get; }
+        [DataSchemaModelPropertyMapping] public String DefaultDatabase { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelLogin(DataSchemaModel Scope)

@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlTableTypePrimaryKeyConstraint")]
     internal class DataSchemaModelTableTypePrimaryKeyConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableTypePrimaryKeyConstraint(DataSchemaModel Scope)

@@ -7,8 +7,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlForeignKeyConstraint")]
     internal class DataSchemaModelForeignKeyConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnDeleteAction { get;set; }
-        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnUpdateAction { get;set; }
+        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnDeleteAction { get; }
+        [DataSchemaModelPropertyMapping] public SqlForeignKeyAction OnUpdateAction { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelForeignKeyConstraint(DataSchemaModel Scope)

@@ -6,9 +6,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get;private set; }
-        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get;private set; }
-        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
+        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)
@@ -25,8 +25,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected override void ApplyProperty(MemberInfo target,Object value) {
             switch (target.Name) {
                 case nameof(IsAnsiNullsOn):
+                case "<IsAnsiNullsOn>k__BackingField":
                     base.ApplyProperty(target,PropB(value,true));
                     break;
+                case "<IsQuotedIdentifierOn>k__BackingField":
                 case nameof(IsQuotedIdentifierOn):
                     base.ApplyProperty(target,PropB(value,true));
                     break;

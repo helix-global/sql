@@ -7,9 +7,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlSimpleColumn")]
     internal class DataSchemaModelSimpleColumn : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsNullable { get;private set; } = true;
-        [DataSchemaModelPropertyMapping] public Boolean IsIdentity { get;private set; }
-        [DataSchemaModelPropertyMapping] public String Collation { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsNullable { get; } = true;
+        [DataSchemaModelPropertyMapping] public Boolean IsIdentity { get; } = false;
+        [DataSchemaModelPropertyMapping] public String Collation { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSimpleColumn(DataSchemaModel Scope)

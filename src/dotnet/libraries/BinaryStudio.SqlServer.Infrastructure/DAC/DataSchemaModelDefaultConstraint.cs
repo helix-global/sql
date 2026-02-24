@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlDefaultConstraint")]
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String DefaultExpressionScript { get;private set; }
+        [DataSchemaModelPropertyMapping] public String DefaultExpressionScript { get; }
         public SqlObjectReference DefiningTable { get;private set; }
         public SqlObjectReference ForColumn     { get;private set; }
 

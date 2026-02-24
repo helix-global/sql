@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get;private set; }
+        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelInlineTableValuedFunction(DataSchemaModel Scope)

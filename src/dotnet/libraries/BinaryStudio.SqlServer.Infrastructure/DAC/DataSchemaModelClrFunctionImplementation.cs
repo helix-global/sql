@@ -7,9 +7,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         {
         [DataSchemaModelPropertyMapping] public Int32 DataAccess { get;private set; } //TODO:: Should be enum!
         [DataSchemaModelPropertyMapping] public Int32 SystemDataAccess { get;private set; } //TODO:: Should be enum!
-        [DataSchemaModelPropertyMapping] public String FillRowMethodName { get;private set; }
-        [DataSchemaModelPropertyMapping] public String MethodName { get;private set; }
-        [DataSchemaModelPropertyMapping] public String ClassName { get;private set; }
+        [DataSchemaModelPropertyMapping] public String FillRowMethodName { get; }
+        [DataSchemaModelPropertyMapping] public String MethodName { get; }
+        [DataSchemaModelPropertyMapping] public String ClassName { get; }
         public SqlObjectReference Assembly { get;private set; }
 
         #region ctor{DataSchemaModel}

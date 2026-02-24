@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlComputedColumn")]
     internal class DataSchemaModelComputedColumn : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlScript ExpressionScript { get;private set; }
+        [DataSchemaModelPropertyMapping] public SqlScript ExpressionScript { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelComputedColumn(DataSchemaModel Scope)

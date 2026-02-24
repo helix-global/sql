@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlScriptFunctionImplementation")]
     internal class DataSchemaModelScriptFunctionImplementation : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get;private set; }
+        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelScriptFunctionImplementation(DataSchemaModel Scope)
