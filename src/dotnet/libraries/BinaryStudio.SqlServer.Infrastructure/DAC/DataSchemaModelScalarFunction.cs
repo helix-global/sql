@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
+using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
-    internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
+    [DataSchemaModelMapping("SqlScalarFunction")]
+    internal class DataSchemaModelScalarFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsSchemaBound { get; }
         [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get; }
 
         #region ctor{DataSchemaModel}
-        public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)
+        public DataSchemaModelScalarFunction(DataSchemaModel Scope)
             : base(Scope)
             {
             }

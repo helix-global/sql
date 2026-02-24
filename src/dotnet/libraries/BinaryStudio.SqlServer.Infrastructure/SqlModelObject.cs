@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -43,15 +44,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        #region M:ResolveAttributeMappings<T>(Type):IEnumerable<KeyValuePair<String,MemberInfo>>
-        protected static IEnumerable<KeyValuePair<String,MemberInfo>> ResolveAttributeMappings<T>(Type Type)
+        #region M:ResolveAttributeMappings<T>(Type):IEnumerable<KeyValuePair<String,PropertyDescriptor>>
+        protected static IEnumerable<KeyValuePair<String,PropertyDescriptor>> ResolveAttributeMappings<T>(Type Type)
             where T: Attribute,ISqlModelMappingAttribute
             {
             if (Type == null) { throw new ArgumentNullException(nameof(Type)); }
             foreach (var o in Type.GetFields(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
                 var attribute = o.GetCustomAttribute<T>();
                 if (attribute != null) {
-                    yield return new KeyValuePair<String,MemberInfo>(attribute.SourceName??o.Name,o);
+                    yield return new KeyValuePair<String,PropertyDescriptor>(attribute.SourceName??o.Name,new PropertyDescriptorF(o));
                     }
                 }
             foreach (var o in Type.GetProperties(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
@@ -72,24 +73,26 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             while (type != null);
                             if (fi != null)
                                 {
-                                yield return new KeyValuePair<String,MemberInfo>(attribute.SourceName??o.Name,fi);
+                                yield return new KeyValuePair<String,PropertyDescriptor>(
+                                    attribute.SourceName??o.Name,
+                                    new PropertyDescriptorF(fi,o.Name,o.GetCustomAttributes()));
                                 continue;
                                 }
                             }
                         }
-                    yield return new KeyValuePair<String,MemberInfo>(attribute.SourceName??o.Name,o);
+                    yield return new KeyValuePair<String,PropertyDescriptor>(attribute.SourceName??o.Name,new PropertyDescriptorP(o));
                     }
                 }
             }
         #endregion
-        #region M:ResolveFieldMappings(Type,{out}IDictionary<String,MInfo>)
-        protected static void ResolveFieldMappings(Type Type,out IDictionary<String,MemberInfo> mapping) {
+        #region M:ResolveFieldMappings(Type,{out}IDictionary<String,PropertyDescriptor>)
+        protected static void ResolveFieldMappings(Type Type,out IDictionary<String,PropertyDescriptor> mapping) {
             if (Type == null) { throw new ArgumentNullException(nameof(Type)); }
             mapping = default;
             using (UpgradeableReadLock(rwl)) {
                 if (!PropertyMapping.TryGetValue(Type, out mapping)) {
                     using (WriteLock(rwl)) {
-                        PropertyMapping.Add(Type,mapping = new Dictionary<String,MemberInfo>());
+                        PropertyMapping.Add(Type,mapping = new Dictionary<String,PropertyDescriptor>());
                         foreach (var i in ResolveAttributeMappings<SqlModelFieldMappingAttribute>(Type)) {
                             mapping[i.Key] = i.Value;
                             }
@@ -98,8 +101,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
-        #region M:ApplyProperties(IDictionary<String,MemberInfo>,IDictionary<String,Object>)
-        private void ApplyProperties(IDictionary<String,MemberInfo> mapping,IDictionary<String,Object> source) {
+        #region M:ApplyProperties(IDictionary<String,PropertyDescriptor>,IDictionary<String,Object>)
+        private void ApplyProperties(IDictionary<String,PropertyDescriptor> mapping,IDictionary<String,Object> source) {
             if (mapping == null) { throw new ArgumentNullException(nameof(mapping)); }
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             foreach (var i in mapping) {
@@ -109,8 +112,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
-        #region M:ApplyProperties(IDictionary<String,MemberInfo>,IDataRecord)
-        private void ApplyProperties(IDictionary<String,MemberInfo> mapping,IDataRecord source) {
+        #region M:ApplyProperties(IDictionary<String,PropertyDescriptor>,IDataRecord)
+        private void ApplyProperties(IDictionary<String,PropertyDescriptor> mapping,IDataRecord source) {
             if (mapping == null) { throw new ArgumentNullException(nameof(mapping)); }
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             var c = source.FieldCount;
@@ -123,8 +126,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
-        #region M:ApplyProperties(IDictionary<String,MemberInfo>,DataRow)
-        private void ApplyProperties(IDictionary<String,MemberInfo> mapping,DataRow source) {
+        #region M:ApplyProperties(IDictionary<String,PropertyDescriptor>,DataRow)
+        private void ApplyProperties(IDictionary<String,PropertyDescriptor> mapping,DataRow source) {
             if (mapping == null) { throw new ArgumentNullException(nameof(mapping)); }
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             var type = GetType();
@@ -135,61 +138,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
-        #region M:SetValue(MemberInfo,Object)
-        protected virtual void SetValue(MemberInfo member,Object value) {
-            if (member == null) { throw new ArgumentNullException(nameof(member)); }
+        #region M:SetValue(PropertyDescriptor,Object)
+        protected virtual void SetValue(PropertyDescriptor descriptor,Object value) {
+            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
             if (value is DBNull) { value = null; }
-            if (member is FieldInfo fi)
-                {
-                SetValue(fi,value,GetConverter(fi));
-                }
-            else if (member is PropertyInfo pi)
-                {
-                SetValue(pi,value,GetConverter(pi));
-                }
-            else
-                {
-                throw new InvalidOperationException($"Unsupported member type: {member.GetType().FullName}");
-                }
-            }
-        #endregion
-        #region M:GetConverter(MemberInfo):TypeConverter
-        private static TypeConverter GetConverter(MemberInfo mi) {
-            if (mi != null) {
-                var attribute = mi.GetCustomAttribute<TypeConverterAttribute>();
-                if (attribute != null) {
-                    var converterType = Type.GetType(attribute.ConverterTypeName);
-                    if (converterType != null) {
-                        return (TypeConverter)Activator.CreateInstance(converterType);
-                        }
-                    }
-                }
-            return null;
-            }
-        #endregion
-        #region M:GetConverter(Type):TypeConverter
-        private static TypeConverter GetConverter(Type type) {
-                 if (type == typeof(Boolean )) { return SqlBooleanConverter.DoesNotAllowNull; }
-            else if (type == typeof(Boolean?)) { return SqlBooleanConverter.Default;          }
-            else if (type == typeof(Int32))    { return SqlInt32Converter.DoesNotAllowNull;   }
-            else if (type == typeof(Int32?))   { return SqlInt32Converter.Default;            }
-            else if (type == typeof(Int64))    { return SqlInt64Converter.DoesNotAllowNull;   }
-            else if (type == typeof(Int64?))   { return SqlInt64Converter.Default;            }
-            return GetConverter((MemberInfo)type) ?? TypeDescriptor.GetConverter(type);
-            }
-        #endregion
-        #region M:GetConverter(FieldInfo):TypeConverter
-        private static TypeConverter GetConverter(FieldInfo fi) {
-            return (fi != null)
-                ? GetConverter((MemberInfo)fi) ?? GetConverter(fi.FieldType)
-                : null;
-            }
-        #endregion
-        #region M:GetConverter(PropertyInfo):TypeConverter
-        private static TypeConverter GetConverter(PropertyInfo fi) {
-            return (fi != null)
-                ? GetConverter((MemberInfo)fi) ?? GetConverter(fi.PropertyType)
-                : null;
+            descriptor.SetValue(this,value);
             }
         #endregion
         #region M:IXmlSerializable.GetSchema:XmlSchema
@@ -264,62 +217,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
             throw new InvalidOperationException($"Unsupported member type: {member.GetType().FullName}");
             }
         #endregion
-        #region M:SetValue(PropertyInfo,Object,TypeConverter)
-        private void SetValue(PropertyInfo pi,Object value,TypeConverter converter) {
-            if (converter != null) {
-                var type = value?.GetType();
-                if ((type == null) || (!pi.PropertyType.IsAssignableFrom(type))) {
-                    try
-                        {
-                        var o = converter.ConvertFrom(value) ?? value;
-                        SetValue(pi,o,null);
-                        return;
-                        }
-                    catch (Exception e)
-                        {
-                        e.Data["Converter"] = converter.GetType().FullName;
-                        throw;
-                        }
-                    }
-                }
-            try
-                {
-                pi.SetValue(this,value);
-                }
-            catch(Exception e)
-                {
-                throw;
-                }
-            }
-        #endregion
-        #region M:SetValue(FieldInfo,Object,TypeConverter)
-        private void SetValue(FieldInfo fi,Object value,TypeConverter converter) {
-            if (converter != null) {
-                var type = value?.GetType();
-                if ((type == null) || (!fi.FieldType.IsAssignableFrom(type))) {
-                    try
-                        {
-                        var o = converter.ConvertFrom(value) ?? value;
-                        SetValue(fi,o,null);
-                        return;
-                        }
-                    catch (Exception e)
-                        {
-                        e.Data["Converter"] = converter.GetType().FullName;
-                        throw;
-                        }
-                    }
-                }
-            try
-                {
-                fi.SetValue(this,value);
-                }
-            catch(Exception e)
-                {
-                throw;
-                }
-            }
-        #endregion
 
         protected internal static IDisposable ReadLock(ReaderWriterLockSlim o)            { return new ReadLockScope(o);            }
         protected internal static IDisposable WriteLock(ReaderWriterLockSlim o)           { return new WriteLockScope(o);           }
@@ -373,7 +270,157 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
 
-        private static readonly IDictionary<Type,IDictionary<String,MemberInfo>> PropertyMapping = new Dictionary<Type,IDictionary<String,MemberInfo>>();
+        private abstract class  PropertyDescriptor<T>: PropertyDescriptor
+            where T: MemberInfo
+            {
+            protected T Source { get; }
+            public override Type ComponentType { get{ return Source.DeclaringType; }}
+            public override TypeConverter Converter { get {
+                var type = PropertyType;
+                     if (type == typeof(Boolean )) { return SqlBooleanConverter.DoesNotAllowNull; }
+                else if (type == typeof(Boolean?)) { return SqlBooleanConverter.Default;          }
+                else if (type == typeof(Int32))    { return SqlInt32Converter.DoesNotAllowNull;   }
+                else if (type == typeof(Int32?))   { return SqlInt32Converter.Default;            }
+                else if (type == typeof(Int64))    { return SqlInt64Converter.DoesNotAllowNull;   }
+                else if (type == typeof(Int64?))   { return SqlInt64Converter.Default;            }
+                return base.Converter;
+                }}
+
+            #region ctor{T,String}
+            protected PropertyDescriptor(T member,String name)
+                : this(member,name,member.GetCustomAttributes())
+                {
+                }
+            #endregion
+            #region ctor{T,String,IEnumerable<Attribute>}
+            protected PropertyDescriptor(T member,String name,IEnumerable<Attribute> attributes)
+                : base(name,(attributes?.ToArray())??Array.Empty<Attribute>())
+                {
+                if (member == null) { throw new ArgumentNullException(nameof(member)); }
+                if (name == null)   { throw new ArgumentNullException(nameof(name));   }
+                Source = member;
+                }
+            #endregion
+
+            #region M:CanResetValue(Object):Boolean
+            /// <summary>When overridden in a derived class, returns whether resetting an object changes its value.</summary>
+            /// <returns>true if resetting the component changes its value; otherwise, false.</returns>
+            /// <param name="component">The component to test for reset capability.</param>
+            public override Boolean CanResetValue(Object component)
+                {
+                return false;
+                }
+            #endregion
+            #region M:ResetValue(Object)
+            /// <summary>When overridden in a derived class, resets the value for this property of the component to the default value.</summary>
+            /// <param name="component">The component with the property value that is to be reset to the default value.</param>
+            public override void ResetValue(Object component)
+                {
+                throw new NotSupportedException();
+                }
+            #endregion
+            #region M:ShouldSerializeValue(Object):Boolean
+            /// <summary>When overridden in a derived class, determines a value indicating whether the value of this property needs to be persisted.</summary>
+            /// <returns>true if the property should be persisted; otherwise, false.</returns>
+            /// <param name="component">The component with the property to be examined for persistence.</param>
+            public override Boolean ShouldSerializeValue(Object component)
+                {
+                return false;
+                }
+            #endregion
+            #region M:ConvertValue(Object):Object
+            protected Object ConvertValue(Object value) {
+                var converter = Converter;
+                if (converter != null) {
+                    var type = value?.GetType();
+                    if ((type == null) || (!PropertyType.IsAssignableFrom(type))) {
+                        try
+                            {
+                            return converter.ConvertFrom(value) ?? value;
+                            }
+                        catch (Exception e)
+                            {
+                            e.Data["Converter"] = converter.GetType().FullName;
+                            throw;
+                            }
+                        }
+                    }
+                return value;
+                }
+            #endregion
+            #region M:ToString:String
+            public override String ToString()
+                {
+                return Name;
+                }
+            #endregion
+            }
+
+        private class PropertyDescriptorP : PropertyDescriptor<PropertyInfo>
+            {
+            public override Type PropertyType { get { return Source.PropertyType; }}
+            public override Boolean IsReadOnly { get { return false; }}
+
+            #region ctor{PropertyInfo,String}
+            public PropertyDescriptorP(PropertyInfo member,String name)
+                : base(member,name)
+                {
+                }
+            #endregion
+            #region ctor{PropertyInfo}
+            public PropertyDescriptorP(PropertyInfo member)
+                : this(member,member.Name)
+                {
+                }
+            #endregion
+
+            #region M:GetValue(Object):Object
+            public override Object GetValue(Object component)
+                {
+                throw new NotImplementedException();
+                }
+            #endregion
+            #region M:SetValue(Object,Object)
+            public override void SetValue(Object component,Object value) {
+                if (component == null) { throw new ArgumentNullException(nameof(component)); }
+                Source.SetValue(component,ConvertValue(value));
+                }
+            #endregion
+            }
+
+        private class PropertyDescriptorF : PropertyDescriptor<FieldInfo>
+            {
+            public override Type PropertyType { get { return Source.FieldType; }}
+            public override Boolean IsReadOnly { get { return false; }}
+
+            #region ctor{FieldInfo,String}
+            public PropertyDescriptorF(FieldInfo member,String name,IEnumerable<Attribute> attributes)
+                : base(member,name,attributes)
+                {
+                }
+            #endregion
+            #region ctor{FieldInfo}
+            public PropertyDescriptorF(FieldInfo member)
+                : base(member,member.Name)
+                {
+                }
+            #endregion
+
+            #region M:GetValue(Object):Object
+            public override Object GetValue(Object component)
+                {
+                throw new NotImplementedException();
+                }
+            #endregion
+            #region M:SetValue(Object,Object)
+            public override void SetValue(Object component,Object value) {
+                if (component == null) { throw new ArgumentNullException(nameof(component)); }
+                Source.SetValue(component,ConvertValue(value));
+                }
+            #endregion
+            }
+
+        private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();
         private static readonly ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
         }
     }

@@ -7,19 +7,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    using UFieldInfo=FieldInfo;
-    using UPropertyInfo=PropertyInfo;
-    using UMemberInfo=MemberInfo;
-
     public class DataSchemaModelElement : SqlModelObject
         {
         public const String URI_DAC   = "http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02";
@@ -48,20 +40,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             //MappedElementType = MappedElementType.AsReadOnly();
             }
 
-        [DataSchemaModelMapping("SqlRoleMembership")]
-        [DataSchemaModelMapping("SqlApplicationRole")]
-        [DataSchemaModelMapping("SqlRole")]
-        [DataSchemaModelMapping("SqlAssembly")]
-        [DataSchemaModelMapping("SqlProcedure")]
-        [DataSchemaModelMapping("SqlScalarFunction")]
-        [DataSchemaModelMapping("SqlAggregate")]
-        [DataSchemaModelMapping("SqlFullTextIndex")]
-        [DataSchemaModelMapping("SqlStatistic")]
-        [DataSchemaModelMapping("SqlDmlTrigger")]
-        [DataSchemaModelMapping("SqlUser")]
-        [DataSchemaModelMapping("SqlFullTextCatalog")]
-        [DataSchemaModelMapping("SqlPermissionStatement")]
-        [DataSchemaModelMapping("SqlExtendedProperty")]
         private class DataSchemaModelIgnoreElement : DataSchemaModelElement
             {
             public override Boolean IsIgnore { get { return true; }}
@@ -121,7 +99,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 {
                                 ReadP(reader,out var o);
                                 ResolvePropertyMappings(GetType(),out var mapping);
-                                if (!mapping.TryGetValue(o.Name, out var mi)) {
+                                if (!mapping.TryGetValue(o.Name, out var descriptor)) {
                                     throw new NotSupportedException(
                                         (reader is IXmlLineInfo LineInfo)
                                         ? $@"[Line={LineInfo.LineNumber}] Property ""{o.Name}"" is not supported for ""{GetType().Name}""."
@@ -130,11 +108,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                     }
                                 try
                                     {
-                                    if (MemberType(mi) == typeof(SqlScript)) {
-                                        ApplyProperty(mi,new SqlScript(o.Value,o.QuotedIdentifiers,o.AnsiNulls));
+                                    if (descriptor.PropertyType == typeof(SqlScript)) {
+                                        ApplyProperty(descriptor,new SqlScript(o.Value,o.QuotedIdentifiers,o.AnsiNulls));
                                         break;
                                         }
-                                    ApplyProperty(mi,o.Value);
+                                    ApplyProperty(descriptor,o.Value);
                                     }
                                 catch(Exception e)
                                     {
@@ -232,14 +210,14 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             reader.Skip();
             }
         #endregion
-        #region M:ResolvePropertyMappings(Type,{out}IDictionary<String,MInfo>)
-        private static void ResolvePropertyMappings(Type type, out IDictionary<String,MemberInfo> mapping) {
+        #region M:ResolvePropertyMappings(Type,{out}IDictionary<String,PropertyDescriptor>)
+        private static void ResolvePropertyMappings(Type type, out IDictionary<String,PropertyDescriptor> mapping) {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
             mapping = default;
             using (UpgradeableReadLock(rwl)) {
                 if (!PropertyMapping.TryGetValue(type, out mapping)) {
                     using (WriteLock(rwl)) {
-                        PropertyMapping.Add(type,mapping = new Dictionary<String,MemberInfo>());
+                        PropertyMapping.Add(type,mapping = new Dictionary<String,PropertyDescriptor>());
                         foreach (var i in ResolveAttributeMappings<DataSchemaModelPropertyMappingAttribute>(type)) {
                             mapping[i.Key] = i.Value;
                             }
@@ -258,10 +236,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
         #endregion
-        #region M:ApplyProperty(MemberInfo,Object)
-        protected virtual void ApplyProperty(MemberInfo target,Object value)
+        #region M:ApplyProperty(PropertyDescriptor,Object)
+        protected virtual void ApplyProperty(PropertyDescriptor descriptor,Object value)
             {
-            SetValue(target,value);
+            SetValue(descriptor,value);
             }
         #endregion
 
@@ -273,7 +251,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             throw new NotSupportedException($@"Type ""{Type}"" mapping not found.");
             }
 
-        private static readonly IDictionary<Type,IDictionary<String,MemberInfo>> PropertyMapping = new Dictionary<Type,IDictionary<String,MemberInfo>>();
+        private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();
         private static readonly ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
 
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();

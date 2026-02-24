@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
+using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
-    internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
+    [DataSchemaModelMapping("SqlProcedure")]
+    internal class DataSchemaModelProcedure : DataSchemaModelElement
         {
+        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get; }
         [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
         [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsRecompiled { get; }
+        [DataSchemaModelPropertyMapping] public Boolean IsCaller { get; }=true;
+        [DataSchemaModelPropertyMapping] public Boolean IsOwner { get; }
+        [DataSchemaModelPropertyMapping] public String MethodName { get; }
+        [DataSchemaModelPropertyMapping] public String ClassName { get; }
 
         #region ctor{DataSchemaModel}
-        public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)
+        public DataSchemaModelProcedure(DataSchemaModel Scope)
             : base(Scope)
             {
             }

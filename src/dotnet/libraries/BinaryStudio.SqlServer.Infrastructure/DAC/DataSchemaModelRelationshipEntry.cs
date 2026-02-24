@@ -22,7 +22,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 case "References":
                     {
                     var r = reader.GetAttribute("Name");
-                    if (String.IsNullOrWhiteSpace(r)) { throw new InvalidDataException(@"""Name"" attribute not specified."); }
+                    if (String.IsNullOrWhiteSpace(r)) {
+                        //throw new InvalidDataException(@"""Name"" attribute not specified.");
+                        Reference = SqlObjectReference.Missing;
+                        return;
+                        }
                     var ExternalSource = reader.GetAttribute("ExternalSource");
                     Reference = new SqlObjectReference(SqlObjectIdentifier.Parse(r),String.Equals(ExternalSource,"BuiltIns"));
                     return;
