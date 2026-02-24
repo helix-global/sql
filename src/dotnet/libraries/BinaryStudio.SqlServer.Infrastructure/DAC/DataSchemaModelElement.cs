@@ -20,7 +20,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     using UPropertyInfo=PropertyInfo;
     using UMemberInfo=MemberInfo;
 
-    public class DataSchemaModelElement : IXmlSerializable
+    public class DataSchemaModelElement : SqlModelObject
         {
         public const String URI_DAC   = "http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02";
         public const String URI_XMLNS = "http://www.w3.org/2000/xmlns/";
@@ -34,7 +34,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         public Int32? Disambiguator { get;private set; }
         protected IList<String> MappedElementType { get; }
 
-        protected DataSchemaModelElement(DataSchemaModel Scope) {
+        protected DataSchemaModelElement(DataSchemaModel Scope)
+            :base()
+            {
             this.Scope = Scope;
             MappedElementType = new List<String>();
             var attributes = GetType().GetCustomAttributes<DataSchemaModelMappingAttribute>().ToArray();
@@ -74,31 +76,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
 
-        #region M:IXmlSerializable.GetSchema:XmlSchema
-        /// <summary>This method is reserved and should not be used. When implementing the <see langword="IXmlSerializable"/> interface, you should return <see langword="null"/> (<see langword="Nothing"/> in Visual Basic) from this method, and instead, if specifying a custom schema is required, apply the <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute"/> to the class.</summary>
-        /// <returns>An <see cref="T:System.Xml.Schema.XmlSchema"/> that describes the XML representation of the object that is produced by the <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)"/> method and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)"/> method.</returns>
-        XmlSchema IXmlSerializable.GetSchema()
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
-        #region M:IXmlSerializable.ReadXml(XmlReader)
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
-        void IXmlSerializable.ReadXml(XmlReader reader) {
-            ReadXml(reader);
-            }
-
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
-        protected internal virtual void ReadXml(XmlReader reader) {
-            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            reader.MoveToContent(); ReadXmlA(reader);
-            reader.MoveToElement(); ReadXmlE(reader);
-            }
-
         #region M:ReadXmlA(XmlReader)
-        private void ReadXmlA(XmlReader reader) {
+        protected override void ReadXmlA(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             while (reader.MoveToNextAttribute()) {
                 switch (reader.LocalName) {
@@ -115,7 +94,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                         if (reader.Value != URI_DAC) { throw new InvalidDataException($@"Invalid xmlns=""{reader.Value}""."); }
                         break;
                     default:
-                        ResolveAttributeMappings(GetType(),out var mapping);
+                        ResolveFieldMappings(GetType(),out var mapping);
                         if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
                             throw new NotSupportedException(
                                 (reader is IXmlLineInfo LineInfo)
@@ -123,14 +102,14 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
                                 );
                             }
-                        mi.SetValue(this,reader.Value);
+                        SetValue(mi,reader.Value);
                         break;
                     }
                 }
             }
         #endregion
         #region M:ReadXmlE(XmlReader)
-        protected internal virtual void ReadXmlE(XmlReader reader) {
+        protected override void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             while (reader.Read()) {
                 switch (reader.NodeType) {
@@ -151,8 +130,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                     }
                                 try
                                     {
-                                    if (mi.MemberType == typeof(SqlScript)) {
-                                        mi.SetValue(this, new SqlScript(o.Value,o.QuotedIdentifiers,o.AnsiNulls));
+                                    if (MemberType(mi) == typeof(SqlScript)) {
+                                        ApplyProperty(mi,new SqlScript(o.Value,o.QuotedIdentifiers,o.AnsiNulls));
                                         break;
                                         }
                                     ApplyProperty(mi,o.Value);
@@ -210,15 +189,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
         #endregion
-        #endregion
-        #region M:IXmlSerializable.WriteXml(XmlWriter)
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
-        void IXmlSerializable.WriteXml(XmlWriter writer)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         #region M:ProcessP(DataSchemaModelProperty):Boolean
         protected virtual Boolean ProcessP(DataSchemaModelProperty o) { return false; }
         #endregion
@@ -262,31 +232,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             reader.Skip();
             }
         #endregion
-        #region M:ResolveAttributeMappings(Type,{out}IDictionary<String,MInfo>)
-        private static void ResolveAttributeMappings(Type type, out IDictionary<String,MemberInfo> mapping) {
-            if (type == null) { throw new ArgumentNullException(nameof(type)); }
-            mapping = default;
-            using (UpgradeableReadLock(rwl)) {
-                if (!AttributeMapping.TryGetValue(type, out mapping)) {
-                    using (WriteLock(rwl)) {
-                        AttributeMapping.Add(type,mapping = new Dictionary<String,MemberInfo>());
-                        foreach (var o in type.GetFields(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
-                            var fi = o.GetCustomAttribute<DataSchemaModelAttributeMappingAttribute>();
-                            if (fi != null) {
-                                mapping.Add(fi.SourceName??o.Name,MemberInfo.Create(o,fi));
-                                }
-                            }
-                        foreach (var o in type.GetProperties(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
-                            var fi = o.GetCustomAttribute<DataSchemaModelAttributeMappingAttribute>();
-                            if (fi != null) {
-                                mapping[fi.SourceName??o.Name] = MemberInfo.Create(o,fi);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        #endregion
         #region M:ResolvePropertyMappings(Type,{out}IDictionary<String,MInfo>)
         private static void ResolvePropertyMappings(Type type, out IDictionary<String,MemberInfo> mapping) {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
@@ -295,17 +240,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 if (!PropertyMapping.TryGetValue(type, out mapping)) {
                     using (WriteLock(rwl)) {
                         PropertyMapping.Add(type,mapping = new Dictionary<String,MemberInfo>());
-                        foreach (var o in type.GetFields(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
-                            var fi = o.GetCustomAttribute<DataSchemaModelPropertyMappingAttribute>();
-                            if (fi != null) {
-                                mapping.Add(fi.SourceName??o.Name,MemberInfo.Create(o,fi));
-                                }
-                            }
-                        foreach (var o in type.GetProperties(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
-                            var fi = o.GetCustomAttribute<DataSchemaModelPropertyMappingAttribute>();
-                            if (fi != null) {
-                                mapping[fi.SourceName??o.Name] = MemberInfo.Create(o,fi);
-                                }
+                        foreach (var i in ResolveAttributeMappings<DataSchemaModelPropertyMappingAttribute>(type)) {
+                            mapping[i.Key] = i.Value;
                             }
                         }
                     }
@@ -325,29 +261,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:ApplyProperty(MemberInfo,Object)
         protected virtual void ApplyProperty(MemberInfo target,Object value)
             {
-            target.SetValue(this,value);
-            }
-        #endregion
-
-        #region M:PropB(Object):Boolean?
-        protected static Boolean? PropB(Object value) {
-            return SqlBooleanConverter.ConvertFromObject(value);
-            }
-        #endregion
-        #region M:PropB(Object,Boolean):Boolean
-        protected static Boolean PropB(Object value, Boolean defaultValue)
-            {
-            return SqlBooleanConverter.ConvertFromObject(value,defaultValue);
-            }
-        #endregion
-        #region M:PropSI8(Object):Int64?
-        protected static Int64? PropSI8(Object value) {
-            return SqlInt64Converter.ConvertFromObject(value);
-            }
-        #endregion
-        #region M:PropSI4(Object):Int32?
-        protected static Int32? PropSI4(Object value) {
-            return SqlInt32Converter.ConvertFromObject(value);
+            SetValue(target,value);
             }
         #endregion
 
@@ -359,222 +273,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             throw new NotSupportedException($@"Type ""{Type}"" mapping not found.");
             }
 
-        private static readonly ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
         private static readonly IDictionary<Type,IDictionary<String,MemberInfo>> PropertyMapping = new Dictionary<Type,IDictionary<String,MemberInfo>>();
-        private static readonly IDictionary<Type,IDictionary<String,MemberInfo>> AttributeMapping = new Dictionary<Type,IDictionary<String,MemberInfo>>();
-
-        protected internal static IDisposable ReadLock(ReaderWriterLockSlim o)            { return new ReadLockScope(o);            }
-        protected internal static IDisposable WriteLock(ReaderWriterLockSlim o)           { return new WriteLockScope(o);           }
-        protected internal static IDisposable UpgradeableReadLock(ReaderWriterLockSlim o) { return new UpgradeableReadLockScope(o); }
-
-        private class ReadLockScope : IDisposable
-            {
-            private ReaderWriterLockSlim o;
-            public ReadLockScope(ReaderWriterLockSlim o)
-                {
-                this.o = o;
-                o.EnterReadLock();
-                }
-
-            public void Dispose()
-                {
-                o.ExitReadLock();
-                o = null;
-                }
-            }
-
-        private class UpgradeableReadLockScope : IDisposable
-            {
-            private ReaderWriterLockSlim o;
-            public UpgradeableReadLockScope(ReaderWriterLockSlim o)
-                {
-                this.o = o;
-                o.EnterUpgradeableReadLock();
-                }
-
-            public void Dispose()
-                {
-                o.ExitUpgradeableReadLock();
-                o = null;
-                }
-            }
-
-        private class WriteLockScope : IDisposable
-            {
-            private ReaderWriterLockSlim o;
-            public WriteLockScope(ReaderWriterLockSlim o)
-                {
-                this.o = o;
-                o.EnterWriteLock();
-                }
-
-            public void Dispose()
-                {
-                o.ExitWriteLock();
-                o = null;
-                }
-            }
-
-        protected abstract class MemberInfo
-            {
-            public abstract Boolean CanWrite { get; }
-            public abstract Boolean CanRead { get; }
-            public abstract TypeConverter Converter { get; }
-            public abstract Type MemberType { get; }
-            public String Name { get { return Source.Name; }}
-            protected UMemberInfo Source { get;set; }
-            protected String InfoType { get;set; }
-
-            #region M:Create(PropertyInfo,IDataSchemaModelMappingAttribute):MemberInfo
-            internal static MemberInfo Create(UPropertyInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
-                {
-                return new PropertyInfo(source,mappingAttribute);
-                }
-            #endregion
-            #region M:Create(FieldInfo,IDataSchemaModelMappingAttribute):MInfo
-            internal static MemberInfo Create(UFieldInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
-                {
-                return new FieldInfo(source,mappingAttribute);
-                }
-            #endregion
-
-            internal MemberInfo(UMemberInfo source,IDataSchemaModelMappingAttribute mappingAttribute) {
-                if (source == null) { throw new ArgumentNullException(nameof(source)); }
-                if (mappingAttribute == null) { throw new ArgumentNullException(nameof(mappingAttribute)); }
-                Source = source;
-                }
-
-            #region M:SetValue(Object,Object)
-            public void SetValue(Object o, Object value) {
-                if (value is DBNull) { value = null; }
-
-                Object r;
-                var converter = Converter;
-                try
-                    {
-                    if (MemberType == typeof(Object)) { r = value; }
-                    else if ((value != null) && (MemberType.IsAssignableFrom(value.GetType()))) { r = value; }
-                    else 
-                        {
-                        r = (converter != null)
-                            ? converter.ConvertFrom(value)
-                            : value;
-                        }
-                    }
-                catch (Exception e)
-                    {
-                    //e.Add("SourceValue",value);
-                    //if (value != null)
-                    //    {
-                    //    e.Add("SourceValueType",value.GetType().Name);
-                    //    }
-                    //e.Add("TargetType",MemberType.FullName);
-                    //e.Add("Converter",converter?.GetType()?.FullName);
-                    throw;
-                    }
-
-                try
-                    {
-                         if (Source is UPropertyInfo pi) { pi.SetValue(o,r,null); }
-                    else if (Source is UFieldInfo    fi) { fi.SetValue(o,r);      }
-                    }
-                catch (Exception e)
-                    {
-                    //e.Add($"{InfoType}Name",Source.Name);
-                    //e.Add($"{InfoType}Type",MemberType.Name);
-                    //e.Add("SourceValue",r);
-                    //if (r != null)
-                    //    {
-                    //    e.Add("SourceValueType",r.GetType().Name);
-                    //    }
-                    //e.Add("TargetType",MemberType.FullName);
-                    //e.Add("Converter",converter?.GetType()?.FullName);
-                    throw;
-                    }
-                }
-            #endregion
-            #region M:GetConverter(Type):TypeConverter
-            protected static TypeConverter GetConverter(Type source) {
-                var o = TypeDescriptor.GetConverter(source);
-                     if (source == typeof(Boolean )) { o = SqlBooleanConverter.DoesNotAllowNull; }
-                else if (source == typeof(Boolean?)) { o = SqlBooleanConverter.Default;          }
-                else if (source == typeof(Int32))    { o = SqlInt32Converter.DoesNotAllowNull;   }
-                else if (source == typeof(Int32?))   { o = SqlInt32Converter.Default;            }
-                else if (source == typeof(Int64))    { o = SqlInt64Converter.DoesNotAllowNull;   }
-                else if (source == typeof(Int64?))   { o = SqlInt64Converter.Default;            }
-                return o;
-                }
-            #endregion
-            #region M:ToString:String
-            public override String ToString()
-                {
-                return Name;
-                }
-            #endregion
-            }
-
-        private sealed class PropertyInfo : MemberInfo
-            {
-            public override Boolean CanWrite { get; }
-            public override Boolean CanRead  { get; }
-            public override Type MemberType  { get; }
-            public override TypeConverter Converter { get; }
-
-            #region ctor{PropertyInfo,IDataSchemaModelMappingAttribute}
-            public PropertyInfo(UPropertyInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
-                :base(source,mappingAttribute)
-                {
-                CanWrite = source.CanWrite;
-                CanRead  = source.CanRead;
-                MemberType = source.PropertyType;
-                Converter = GetConverter(MemberType);
-                InfoType = "Property";
-
-                if (!CanWrite) {
-                    #if NET40
-                    var mi = source.GetGetMethod();
-                    #else
-                    var mi = source.GetMethod;
-                    #endif
-                    if (mi.GetCustomAttribute<CompilerGeneratedAttribute>() != null) {
-                        UFieldInfo fi = null;
-                        var type = source.DeclaringType;
-                        do
-                            {
-                            fi = type.GetField($"<{source.Name}>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic);
-                            if (fi != null) { break; }
-                            type = type.BaseType;
-                            } while (type != null);
-                        if (fi != null)
-                            {
-                            Source = fi;
-                            CanWrite = true;
-                            CanRead  = true;
-                            InfoType = "Field";
-                            }
-                        }
-                    }
-                }
-            #endregion
-            }
-
-        private sealed class FieldInfo : MemberInfo
-            {
-            public override Boolean CanWrite { get; }
-            public override Boolean CanRead  { get; }
-            public override Type MemberType  { get; }
-            public override TypeConverter Converter { get; }
-
-            public FieldInfo(UFieldInfo source,IDataSchemaModelMappingAttribute mappingAttribute)
-                :base(source,mappingAttribute)
-                {
-                CanWrite = true;
-                CanRead  = true;
-                MemberType = source.FieldType;
-                Converter = GetConverter(MemberType);
-                InfoType = "Field";
-                }
-            }
+        private static readonly ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
 
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();
         static DataSchemaModelElement() {

@@ -9,7 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlDatabaseOptions")]
     public class DataSchemaModelDatabaseOptions : DataSchemaModelElement
         {
-        [DataSchemaModelAttributeMapping] public Int32? Disambiguator { get;private set; }
+        [SqlModelFieldMapping] public Int32? Disambiguator { get;private set; }
         [DataSchemaModelPropertyMapping] public String Collation { get;private set; }
         [DataSchemaModelPropertyMapping] public Boolean IsAnsiPaddingOn { get;private set; }
         [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get;private set; }

@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     public class DataSchemaModelProperty : DataSchemaModelElement
         {
-        [DataSchemaModelAttributeMapping] public String Value { get;private set; }
+        [SqlModelFieldMapping] public String Value { get;private set; }
         public Boolean? QuotedIdentifiers { get;private set; }
         public Boolean? AnsiNulls { get;private set; }
 

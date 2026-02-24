@@ -126,6 +126,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return ConvertFromObject(value,defaultValue);
             }
         #endregion
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return $"BooleanConverter{{AllowNull={AllowNull}}}";
+            }
+        #endregion
 
         private static volatile StandardValuesCollection values;
         }

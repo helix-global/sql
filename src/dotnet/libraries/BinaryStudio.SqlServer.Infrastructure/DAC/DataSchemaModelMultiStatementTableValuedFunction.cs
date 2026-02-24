@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using System.Reflection;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {

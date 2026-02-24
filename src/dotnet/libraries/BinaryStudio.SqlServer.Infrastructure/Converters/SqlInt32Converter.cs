@@ -99,5 +99,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return ConvertFromObject(value,defaultValue);
             }
         #endregion
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return $"Int32Converter{{AllowNull={AllowNull}}}";
+            }
+        #endregion
         }
     }
