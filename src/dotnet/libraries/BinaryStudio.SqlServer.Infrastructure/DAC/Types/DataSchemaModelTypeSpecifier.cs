@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Text;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTypeSpecifier")]
-    internal class DataSchemaModelTypeSpecifier : DataSchemaModelElement
+    [DataSchemaModelSupportedRelationship(nameof(Type))]
+    internal class DataSchemaModelTypeSpecifier : DataSchemaModelElement,IDataSchemaModelTypeSpecifier
         {
         public SqlObjectReference Type { get;private set; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Length { get; }
@@ -22,6 +24,21 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
             Type = Relationships[nameof(Type)].References[0];
+            }
+        #endregion
+        #region M:ToString:String
+        public override String ToString() {
+            var r = new StringBuilder();
+            if (Type.IsBultIn) {
+                var TypeName = Type.Reference.ObjectName;
+                r.Append(TypeName);
+                if ((Precision != null) && (Scale != null)) { r.Append($"({Precision},{Scale})"); }
+                else if (Precision != null) { r.Append($"({Precision})"); }
+                else if (Scale != null)     { r.Append($"({Scale})");     }
+                else if (Length != null)    { r.Append($"({Length})");    }
+                else if (IsMax == true)     { r.Append($"(max)");         }
+                }
+            return r.ToString();
             }
         #endregion
         }

@@ -5,6 +5,12 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlScalarFunction")]
+    [DataSchemaModelSupportedRelationship("BodyDependencies")]
+    [DataSchemaModelSupportedRelationship("FunctionBody")]
+    [DataSchemaModelSupportedRelationship("Parameters")]
+    [DataSchemaModelSupportedRelationship("Schema")]
+    [DataSchemaModelSupportedRelationship("Type")]
+    [DataSchemaModelSupportedRelationship("DynamicObjects")]
     internal class DataSchemaModelScalarFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }

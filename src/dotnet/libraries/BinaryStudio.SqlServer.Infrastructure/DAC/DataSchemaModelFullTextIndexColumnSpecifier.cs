@@ -4,6 +4,8 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextIndexColumnSpecifier")]
+    [DataSchemaModelSupportedRelationship("Column")]
+    [DataSchemaModelSupportedRelationship("TypeColumn")]
     internal class DataSchemaModelFullTextIndexColumnSpecifier : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 LanguageId { get; }

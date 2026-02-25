@@ -5,6 +5,8 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlRoleMembership")]
+    [DataSchemaModelSupportedRelationship("Member")]
+    [DataSchemaModelSupportedRelationship("Role")]
     internal class DataSchemaModelRoleMembership : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

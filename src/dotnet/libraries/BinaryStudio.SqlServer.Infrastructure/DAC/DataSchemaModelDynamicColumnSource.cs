@@ -5,6 +5,7 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDynamicColumnSource")]
+    [DataSchemaModelSupportedRelationship("Columns")]
     internal class DataSchemaModelDynamicColumnSource : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

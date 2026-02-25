@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlExtendedProperty")]
+    [DataSchemaModelSupportedRelationship("Host")]
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }

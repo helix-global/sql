@@ -25,6 +25,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected virtual DataSchemaModel Scope { get; }
         [SqlModelFieldMapping] public Int32? Disambiguator { get; }
         protected IList<String> MappedElementType { get; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected ISet<String> SupportedRelationships { get; } = new HashSet<String>();
 
         protected DataSchemaModelElement(DataSchemaModel Scope)
             :base()
@@ -38,6 +39,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     }
                 }
             //MappedElementType = MappedElementType.AsReadOnly();
+            SupportedRelationships.UnionWith(GetType().GetCustomAttributes<DataSchemaModelSupportedRelationshipAttribute>().Select(i=>i.Relationship));
             }
 
         private class DataSchemaModelIgnoreElement : DataSchemaModelElement
@@ -65,9 +67,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     case "Name":
                         Name = reader.Value;
                         break;
-                    //case "Disambiguator":
-                    //    Disambiguator = PropSI4(reader.Value);
-                    //    break;
                     case "xmlns" when reader.NamespaceURI == URI_XMLNS:
                         if (reader.Value != URI_DAC) { throw new InvalidDataException($@"Invalid xmlns=""{reader.Value}""."); }
                         break;
@@ -125,6 +124,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                             case "Relationship":
                                 {
                                 ReadR(reader, out var o);
+                                if (!SupportedRelationships.Contains(o.Name)) {
+                                    throw new NotSupportedException(
+                                        (reader is IXmlLineInfo LineInfo)
+                                        ? $@"[Line={LineInfo.LineNumber}] Relationship ""{o.Name}"" is not supported for ""{GetType().Name}""."
+                                        : $@"Relationship ""{o.Name}"" is not supported for ""{GetType().Name}""."
+                                        );
+                                    }
                                 Relationships.Add(o.Name,o);
                                 break;
                                 }

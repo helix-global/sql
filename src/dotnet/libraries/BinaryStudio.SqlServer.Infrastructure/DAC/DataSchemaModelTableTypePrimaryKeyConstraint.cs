@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypePrimaryKeyConstraint")]
+    [DataSchemaModelSupportedRelationship("ColumnSpecifications")]
     internal class DataSchemaModelTableTypePrimaryKeyConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }

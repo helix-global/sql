@@ -5,6 +5,11 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlProcedure")]
+    [DataSchemaModelSupportedRelationship("BodyDependencies")]
+    [DataSchemaModelSupportedRelationship("DynamicObjects")]
+    [DataSchemaModelSupportedRelationship("Parameters")]
+    [DataSchemaModelSupportedRelationship("Schema")]
+    [DataSchemaModelSupportedRelationship("Assembly")]
     internal class DataSchemaModelProcedure : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }

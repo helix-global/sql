@@ -5,6 +5,10 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextIndex")]
+    [DataSchemaModelSupportedRelationship("Catalog")]
+    [DataSchemaModelSupportedRelationship("Columns")]
+    [DataSchemaModelSupportedRelationship("IndexedObject")]
+    [DataSchemaModelSupportedRelationship("KeyName")]
     internal class DataSchemaModelFullTextIndex : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

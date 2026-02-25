@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlIndexedColumnSpecification")]
+    [DataSchemaModelSupportedRelationship("Column")]
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
         public SqlObjectReference Column { get;private set; }

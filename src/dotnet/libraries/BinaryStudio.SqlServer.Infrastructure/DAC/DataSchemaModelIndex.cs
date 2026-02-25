@@ -4,6 +4,10 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlIndex")]
+    [DataSchemaModelSupportedRelationship("ColumnSpecifications")]
+    [DataSchemaModelSupportedRelationship("IndexedObject")]
+    [DataSchemaModelSupportedRelationship("IncludedColumns")]
+    [DataSchemaModelSupportedRelationship("BodyDependencies")]
     internal class DataSchemaModelIndex : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }

@@ -5,6 +5,8 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlStatistic")]
+    [DataSchemaModelSupportedRelationship("Columns")]
+    [DataSchemaModelSupportedRelationship("Subject")]
     internal class DataSchemaModelStatistic : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

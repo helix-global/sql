@@ -6,6 +6,8 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlUser")]
+    [DataSchemaModelSupportedRelationship("DefaultSchema")]
+    [DataSchemaModelSupportedRelationship("Login")]
     internal class DataSchemaModelUser : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlUserAuthenticationType AuthenticationType { get; }

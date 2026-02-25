@@ -7,6 +7,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     using SqlIndexedColumnSpecification=DataSchemaModelIndexedColumnSpecification;
     [DataSchemaModelMapping("SqlPrimaryKeyConstraint")]
+    [DataSchemaModelSupportedRelationship("ColumnSpecifications")]
+    [DataSchemaModelSupportedRelationship("DefiningTable")]
     internal class DataSchemaModelPrimaryKeyConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }

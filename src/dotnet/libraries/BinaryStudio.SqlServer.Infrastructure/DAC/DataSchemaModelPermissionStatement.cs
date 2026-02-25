@@ -6,6 +6,9 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlPermissionStatement")]
+    [DataSchemaModelSupportedRelationship("Grantee")]
+    [DataSchemaModelSupportedRelationship("SecuredObject")]
+    [DataSchemaModelSupportedRelationship("Grantor")]
     internal class DataSchemaModelPermissionStatement : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlPermission Permission { get; }

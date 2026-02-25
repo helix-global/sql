@@ -7,8 +7,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("PersistedResolvableAnnotation")]
     internal class DataSchemaModelPersistedResolvableAnnotation : DataSchemaModelAnnotation
         {
-        [DataSchemaModelPropertyMapping] public Int32? Affinity { get;private set; }
-        [DataSchemaModelPropertyMapping] public String TargetTypeStorage { get;private set; }
+        [DataSchemaModelPropertyMapping] public Int32? Affinity { get; }
+        [DataSchemaModelPropertyMapping] public String TargetTypeStorage { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelPersistedResolvableAnnotation(DataSchemaModel Scope)

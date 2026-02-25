@@ -5,6 +5,7 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSchema")]
+    [DataSchemaModelSupportedRelationship("Authorizer")]
     internal class DataSchemaModelSchema : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

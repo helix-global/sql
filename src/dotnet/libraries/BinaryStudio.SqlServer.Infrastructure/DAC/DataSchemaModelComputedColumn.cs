@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlComputedColumn")]
+    [DataSchemaModelSupportedRelationship("ExpressionDependencies")]
     internal class DataSchemaModelComputedColumn : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript ExpressionScript { get; }

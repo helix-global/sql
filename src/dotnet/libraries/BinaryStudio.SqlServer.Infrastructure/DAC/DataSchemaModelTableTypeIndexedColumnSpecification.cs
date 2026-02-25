@@ -5,6 +5,7 @@ using System.Text;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypeIndexedColumnSpecification")]
+    [DataSchemaModelSupportedRelationship("Column")]
     internal class DataSchemaModelTableTypeIndexedColumnSpecification : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}
