@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlLogin")]
     internal class DataSchemaModelLogin : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsMappedToWindowsLogin { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsCheckPolicyOn { get; } = true;
-        [DataSchemaModelPropertyMapping] public String DefaultLanguage { get; }
-        [DataSchemaModelPropertyMapping] public String DefaultDatabase { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsMappedToWindowsLogin { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsCheckPolicyOn { get; } = true;
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultLanguage { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultDatabase { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelLogin(DataSchemaModel Scope)

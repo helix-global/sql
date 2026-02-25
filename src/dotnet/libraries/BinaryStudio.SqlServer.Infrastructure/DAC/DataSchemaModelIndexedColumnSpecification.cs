@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -8,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
         public SqlObjectReference Column { get;private set; }
-        [DataSchemaModelPropertyMapping] public Boolean IsAscending { get; } = true;
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAscending { get; } = true;
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelIndexedColumnSpecification(DataSchemaModel Scope)

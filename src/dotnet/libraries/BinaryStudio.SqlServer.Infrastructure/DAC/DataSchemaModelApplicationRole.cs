@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlApplicationRole")]
     internal class DataSchemaModelApplicationRole : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String Password { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String Password { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelApplicationRole(DataSchemaModel Scope)

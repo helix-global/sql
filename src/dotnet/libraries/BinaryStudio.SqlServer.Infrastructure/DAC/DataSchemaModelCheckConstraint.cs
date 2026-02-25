@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlCheckConstraint")]
     internal class DataSchemaModelCheckConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String CheckExpressionScript { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String CheckExpressionScript { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelCheckConstraint(DataSchemaModel Scope)

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDefaultConstraint")]
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String DefaultExpressionScript { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }
         public SqlObjectReference DefiningTable { get;private set; }
         public SqlObjectReference ForColumn     { get;private set; }
 

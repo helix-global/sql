@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypeSimpleColumn")]
     internal class DataSchemaModelTableTypeSimpleColumn : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsNullable { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableTypeSimpleColumn(DataSchemaModel Scope)

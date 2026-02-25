@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -8,10 +7,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelTypeSpecifier : DataSchemaModelElement
         {
         public SqlObjectReference Type { get;private set; }
-        [DataSchemaModelPropertyMapping] public Int32? Length { get; }
-        [DataSchemaModelPropertyMapping] public Int32? Scale { get; }
-        [DataSchemaModelPropertyMapping] public Int32? Precision { get; }
-        [DataSchemaModelPropertyMapping] public Boolean? IsMax { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Length { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Scale { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Precision { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean? IsMax { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTypeSpecifier(DataSchemaModel Scope)

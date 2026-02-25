@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextCatalog")]
     internal class DataSchemaModelFullTextCatalog : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAccentSensitive { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAccentSensitive { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelFullTextCatalog(DataSchemaModel Scope)

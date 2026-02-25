@@ -4,13 +4,15 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlLockEscalationMethodConverter : TypeConverter
+    internal class SqlEnumConverter<E> : TypeConverter
+        where E : struct,Enum
         {
+        #region M:CanConvertFrom(ITypeDescriptorContext,Type):Boolean
         /// <summary>Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
         /// <param name="sourceType">A <see cref="T:System.Type" /> that represents the type you want to convert from.</param>
         /// <returns><see langword="true" />if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
-        public override Boolean CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
+        public override Boolean CanConvertFrom(ITypeDescriptorContext context,Type sourceType) {
             if ((sourceType == typeof(String)) ||
                 (sourceType == typeof(Int32))  ||
                 (sourceType == typeof(Int16))  ||
@@ -20,38 +22,40 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 (sourceType == typeof(UInt64)) ||
                 (sourceType == typeof(SByte))  ||
                 (sourceType == typeof(Byte))   ||
-                (sourceType == typeof(SqlLockEscalationMethod)))
+                (sourceType == typeof(E)))
                 {
                 return true;
                 }
             return base.CanConvertFrom(context, sourceType);
             }
-
+        #endregion
+        #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
         /// <summary>Converts the given object to the type of this converter, using the specified context and culture information.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo"/> to use as the current culture.</param>
-        /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
-        /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
-        /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
-        public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
+        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo"/> to use as thercurrent culture.</ram>
+        /// <param name="value">The <see cref="T:System.Object"/>rto convert.</ram>
+        /// <returns>An <see cref="T:System.Object"/> that represents therconverted value.</rns>
+        /// <exception cref="T:System.NotSupportedException">The conversion cannotrbe performed.</ron>
+        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture, Object value)
             {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is SqlLockEscalationMethod E) { return E; }
-            if (value is Int32  SI4) { return (SqlLockEscalationMethod)SI4; }
-            if (value is Int64  SI8) { return (SqlLockEscalationMethod)(Int32)SI8; }
-            if (value is SByte  SI1) { return (SqlLockEscalationMethod)(Int32)SI1; }
-            if (value is Int16  SI2) { return (SqlLockEscalationMethod)(Int32)SI2; }
-            if (value is Byte   UI1) { return (SqlLockEscalationMethod)(Int32)UI1; }
-            if (value is UInt16 UI2) { return (SqlLockEscalationMethod)(Int32)UI2; }
-            if (value is UInt32 UI4) { return (SqlLockEscalationMethod)(Int32)UI4; }
-            if (value is UInt64 UI8) { return (SqlLockEscalationMethod)(Int32)UI8; }
+            if (value is E r) { return r; }
+            if (value is Int32  SI4) { return (E)(Object)SI4; }
+            if (value is Int64  SI8) { return (E)(Object)(Int32)SI8; }
+            if (value is SByte  SI1) { return (E)(Object)(Int32)SI1; }
+            if (value is Int16  SI2) { return (E)(Object)(Int32)SI2; }
+            if (value is Byte   UI1) { return (E)(Object)(Int32)UI1; }
+            if (value is UInt16 UI2) { return (E)(Object)(Int32)UI2; }
+            if (value is UInt32 UI4) { return (E)(Object)(Int32)UI4; }
+            if (value is UInt64 UI8) { return (E)(Object)(Int32)UI8; }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
-            if (!Enum.TryParse<SqlLockEscalationMethod>(S, out E))
+            if (!Enum.TryParse<E>(S, out r))
                 {
                 return null;
                 }
-            return E;
+            return r;
             }
+        #endregion
         }
     }

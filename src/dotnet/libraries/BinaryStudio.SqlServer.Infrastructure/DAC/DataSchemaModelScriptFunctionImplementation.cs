@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlScriptFunctionImplementation")]
     internal class DataSchemaModelScriptFunctionImplementation : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelScriptFunctionImplementation(DataSchemaModel Scope)

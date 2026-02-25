@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -8,8 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelMapping("SqlUniqueConstraint")]
     internal class DataSchemaModelUniqueConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32? FillFactor { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
         public IList<SqlIndexedColumnSpecification> ColumnSpecifications { get; } = new List<SqlIndexedColumnSpecification>();
         public SqlObjectReference DefiningTable { get;private set; }
 

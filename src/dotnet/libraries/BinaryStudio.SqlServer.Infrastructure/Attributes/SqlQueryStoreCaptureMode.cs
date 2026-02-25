@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [TypeConverter(typeof(SqlQueryStoreCaptureModeConverter))]
+    [TypeConverter(typeof(SqlEnumConverter<SqlQueryStoreCaptureMode>))]
     public enum SqlQueryStoreCaptureMode
         {
         All = 1,

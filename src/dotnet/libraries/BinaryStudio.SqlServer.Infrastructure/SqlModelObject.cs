@@ -63,7 +63,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         if (mi.GetCustomAttribute<CompilerGeneratedAttribute>() != null) {
                             // Auto-property with init-only setter, treat it as writable
                             var type = Type;
-                            FieldInfo fi = null;
+                            FieldInfo fi;
                             do
                                 {
                                 fi = type.GetField($"<{o.Name}>k__BackingField",BindingFlags.Instance|BindingFlags.NonPublic);
@@ -130,7 +130,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private void ApplyProperties(IDictionary<String,PropertyDescriptor> mapping,DataRow source) {
             if (mapping == null) { throw new ArgumentNullException(nameof(mapping)); }
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
-            var type = GetType();
             foreach (var i in mapping) {
                 if (source.Table.Columns.Contains(i.Key)) {
                     SetValue(i.Value,source[i.Key]);
@@ -362,7 +361,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public override Boolean IsReadOnly { get { return false; }}
 
             #region ctor{PropertyInfo,String}
-            public PropertyDescriptorP(PropertyInfo member,String name)
+            private PropertyDescriptorP(PropertyInfo member,String name)
                 : base(member,name)
                 {
                 }

@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlScalarFunction")]
     internal class DataSchemaModelScalarFunction : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsSchemaBound { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelScalarFunction(DataSchemaModel Scope)

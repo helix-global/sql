@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlAssembly")]
     internal class DataSchemaModelAssembly : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32 PermissionSet { get; } //TODO:: Should be enum!
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlAssemblyPermissionSet PermissionSet { get; } = SqlAssemblyPermissionSet.Safe;
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelAssembly(DataSchemaModel Scope)
             : base(Scope)

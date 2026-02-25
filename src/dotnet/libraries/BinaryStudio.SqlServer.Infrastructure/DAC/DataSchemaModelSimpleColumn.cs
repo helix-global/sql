@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSimpleColumn")]
     internal class DataSchemaModelSimpleColumn : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsNullable { get; } = true;
-        [DataSchemaModelPropertyMapping] public Boolean IsIdentity { get; } = false;
-        [DataSchemaModelPropertyMapping] public String Collation { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsIdentity { get; } = false;
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSimpleColumn(DataSchemaModel Scope)

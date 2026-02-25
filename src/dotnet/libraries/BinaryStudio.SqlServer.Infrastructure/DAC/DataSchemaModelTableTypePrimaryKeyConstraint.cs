@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypePrimaryKeyConstraint")]
     internal class DataSchemaModelTableTypePrimaryKeyConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsClustered { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableTypePrimaryKeyConstraint(DataSchemaModel Scope)

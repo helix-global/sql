@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextIndexColumnSpecifier")]
     internal class DataSchemaModelFullTextIndexColumnSpecifier : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32 LanguageId { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 LanguageId { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelFullTextIndexColumnSpecifier(DataSchemaModel Scope)

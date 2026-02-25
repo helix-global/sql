@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlProcedure")]
     internal class DataSchemaModelProcedure : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsRecompiled { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsCaller { get; }=true;
-        [DataSchemaModelPropertyMapping] public Boolean IsOwner { get; }
-        [DataSchemaModelPropertyMapping] public String MethodName { get; }
-        [DataSchemaModelPropertyMapping] public String ClassName { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsRecompiled { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsCaller { get; }=true;
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsOwner { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelProcedure(DataSchemaModel Scope)

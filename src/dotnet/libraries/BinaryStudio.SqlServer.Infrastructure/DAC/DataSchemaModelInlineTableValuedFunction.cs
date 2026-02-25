@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelInlineTableValuedFunction(DataSchemaModel Scope)

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlAssemblySource")]
     internal class DataSchemaModelAssemblySource : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][TypeConverter(typeof(SqlBase32ArrayConverter))] public Byte[] Source { get; }
+        [DataSchemaModelPropertyMapping][TypeConverter(typeof(SqlBase32ArrayConverter))][UsedImplicitly] public Byte[] Source { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelAssemblySource(DataSchemaModel Scope)

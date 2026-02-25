@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dacpac", "src\dotnet\tests\dacpac\dacpac.csproj", "{F2B4D569-6591-4AF1-9766-519E65AFC9A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryStudio.SqlServer.Infrastructure", "src\dotnet\libraries\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj", "{0B9A0668-D356-4E0D-9B26-8F79874ADB38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2B4D569-6591-4AF1-9766-519E65AFC9A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2B4D569-6591-4AF1-9766-519E65AFC9A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2B4D569-6591-4AF1-9766-519E65AFC9A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2B4D569-6591-4AF1-9766-519E65AFC9A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B9A0668-D356-4E0D-9B26-8F79874ADB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B9A0668-D356-4E0D-9B26-8F79874ADB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B9A0668-D356-4E0D-9B26-8F79874ADB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B9A0668-D356-4E0D-9B26-8F79874ADB38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {89C9F2E7-F505-4C3D-A9C0-272B5C6797B0}
+	EndGlobalSection
+EndGlobal

@@ -1,15 +1,16 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlClrFunctionImplementation")]
     internal class DataSchemaModelClrFunctionImplementation : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32 DataAccess { get;private set; } //TODO:: Should be enum!
-        [DataSchemaModelPropertyMapping] public Int32 SystemDataAccess { get;private set; } //TODO:: Should be enum!
-        [DataSchemaModelPropertyMapping] public String FillRowMethodName { get; }
-        [DataSchemaModelPropertyMapping] public String MethodName { get; }
-        [DataSchemaModelPropertyMapping] public String ClassName { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlDataAccess DataAccess { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlSystemDataAccess SystemDataAccess { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String FillRowMethodName { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
         public SqlObjectReference Assembly { get;private set; }
 
         #region ctor{DataSchemaModel}

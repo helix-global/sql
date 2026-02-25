@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [TypeConverter(typeof(SqlDatabaseRecoveryModeConverter))]
+    [TypeConverter(typeof(SqlEnumConverter<SqlDatabaseRecoveryMode>))]
     public enum SqlDatabaseRecoveryMode
         {
         Unknown,

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Reflection;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping] public String ReturnTableVariable { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String ReturnTableVariable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)

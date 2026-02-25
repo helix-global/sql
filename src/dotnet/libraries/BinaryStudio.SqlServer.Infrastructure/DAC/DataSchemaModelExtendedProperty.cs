@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlExtendedProperty")]
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public SqlScript Value { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelExtendedProperty(DataSchemaModel Scope)

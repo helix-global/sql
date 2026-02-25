@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDatabaseOptions")]
     public class DataSchemaModelDatabaseOptions : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public String Collation { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiPaddingOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsCursorDefaultScopeGlobal { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsTornPageProtectionOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsFullTextEnabled { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsTrustworthyOn { get; }
-        [DataSchemaModelPropertyMapping] public SqlDatabaseRecoveryMode RecoveryMode { get; }
-        [DataSchemaModelPropertyMapping] public SqlQueryStoreOperationState QueryStoreDesiredState { get; }
-        [DataSchemaModelPropertyMapping] public SqlQueryStoreCaptureMode QueryStoreCaptureMode { get; }
-        [DataSchemaModelPropertyMapping] public Int32 QueryStoreMaxStorageSize { get; }
-        [DataSchemaModelPropertyMapping] public Int32 QueryStoreStaleQueryThreshold { get; }
-        [DataSchemaModelPropertyMapping] public Boolean LegacyCardinalityEstimation { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiPaddingOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsCursorDefaultScopeGlobal { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsTornPageProtectionOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsFullTextEnabled { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsTrustworthyOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlDatabaseRecoveryMode RecoveryMode { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlQueryStoreOperationState QueryStoreDesiredState { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlQueryStoreCaptureMode QueryStoreCaptureMode { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 QueryStoreMaxStorageSize { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 QueryStoreStaleQueryThreshold { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean LegacyCardinalityEstimation { get; }
         public SqlObjectReference DefaultFilegroup { get;private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelAnnotation> Annotations { get{ return base.Annotations; }}
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelElement> Elements { get{ return base.Elements; }}

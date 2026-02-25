@@ -59,10 +59,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ConvertFrom<T>(T):Byte[]
-        private unsafe Byte[] ConvertFrom<T>(T value)
+        private static Byte[] ConvertFrom<T>(T value)
             where T:struct
             {
-            var r = new Byte[sizeof(T)];
+            var r = new Byte[Marshal.SizeOf<T>()];
             var o = GCHandle.Alloc(r,GCHandleType.Pinned);
             try
                 {

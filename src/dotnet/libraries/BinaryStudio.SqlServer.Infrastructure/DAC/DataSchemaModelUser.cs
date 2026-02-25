@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlUser")]
     internal class DataSchemaModelUser : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Int32 AuthenticationType { get; } //TODO:: Should be enum!
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlUserAuthenticationType AuthenticationType { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelUser(DataSchemaModel Scope)

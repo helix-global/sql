@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDmlTrigger")]
     internal class DataSchemaModelDmlTrigger : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsUpdateTrigger { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsDeleteTrigger { get; }
-        [DataSchemaModelPropertyMapping] public Boolean IsInsertTrigger { get; }
-        [DataSchemaModelPropertyMapping] public SqlScript BodyScript { get; }
-        [DataSchemaModelPropertyMapping] public Int32 SqlTriggerType { get; } //TODO:: Should be enum!
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsUpdateTrigger { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsDeleteTrigger { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsInsertTrigger { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlTriggerType SqlTriggerType { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDmlTrigger(DataSchemaModel Scope)

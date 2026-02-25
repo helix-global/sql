@@ -7,3 +7,4 @@
 /src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/obj
 /src/dotnet/tests/dacpac/bin
 /src/dotnet/tests/dacpac/obj
+/src/dotnet/tests/dacpac/.vs/dacpac/v16
