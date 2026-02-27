@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    using SqlIndexedColumnSpecification=DataSchemaModelIndexedColumnSpecification;
     [DataSchemaModelMapping("SqlUniqueConstraint")]
-    [DataSchemaModelSupportedRelationship("ColumnSpecifications")]
-    [DataSchemaModelSupportedRelationship("DefiningTable")]
+    [DataSchemaModelSupportedRelationship(nameof(ColumnSpecifications))]
+    [DataSchemaModelSupportedRelationship(nameof(DefiningTable))]
     internal class DataSchemaModelUniqueConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
-        public IList<SqlIndexedColumnSpecification> ColumnSpecifications { get; } = new List<SqlIndexedColumnSpecification>();
-        public SqlObjectReference DefiningTable { get;private set; }
+        [Relationship("1..*")][UsedImplicitly] public IList<DataSchemaModelIndexedColumnSpecification> ColumnSpecifications { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelUniqueConstraint(DataSchemaModel Scope)
@@ -25,8 +23,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            ColumnSpecifications.AddRange(Relationships[nameof(ColumnSpecifications)].Elements.OfType<SqlIndexedColumnSpecification>());
-            DefiningTable = Relationships[nameof(DefiningTable)].References[0];
             }
         #endregion
         #region M:ToString:String

@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
-    [DataSchemaModelSupportedRelationship("BodyDependencies")]
-    [DataSchemaModelSupportedRelationship("Columns")]
-    [DataSchemaModelSupportedRelationship("FunctionBody")]
-    [DataSchemaModelSupportedRelationship("Schema")]
-    [DataSchemaModelSupportedRelationship("DynamicObjects")]
-    [DataSchemaModelSupportedRelationship("Parameters")]
+    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
+    [DataSchemaModelSupportedRelationship(nameof(Columns))]
+    [DataSchemaModelSupportedRelationship(nameof(FunctionBody))]
+    [DataSchemaModelSupportedRelationship(nameof(Schema))]
+    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
+    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelFunctionImplementation FunctionBody { get;}
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelInlineTableValuedFunction(DataSchemaModel Scope)
@@ -23,6 +30,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

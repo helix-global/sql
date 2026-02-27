@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypePrimaryKeyConstraint")]
-    [DataSchemaModelSupportedRelationship("ColumnSpecifications")]
+    [DataSchemaModelSupportedRelationship(nameof(ColumnSpecifications))]
     internal class DataSchemaModelTableTypePrimaryKeyConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<DataSchemaModelTableTypeIndexedColumnSpecification> ColumnSpecifications { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableTypePrimaryKeyConstraint(DataSchemaModel Scope)

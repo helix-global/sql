@@ -326,15 +326,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 var r = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(descriptor.RelationshipType));
                 if (Relationships.TryGetValue(descriptor.Name,out var relationship)) {
                     if (descriptor.IsReference) {
-                        r = AsReadOnly(descriptor.RelationshipType,AddRange(r,
-                                OfType(descriptor.RelationshipType,
-                                relationship.References)));
+                        r = AsReadOnly(descriptor.RelationshipType,
+                            AddRange(r,relationship.References));
                         }
                     else
                         {
-                        r = AsReadOnly(descriptor.RelationshipType,AddRange(r,
-                                OfType(descriptor.RelationshipType,
-                                relationship.Elements)));
+                        r = AsReadOnly(descriptor.RelationshipType,
+                            AddRange(r,relationship.Elements));
                         }
                     }
                 ValidateMultiplicity(descriptor,r);
@@ -372,17 +370,17 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 : null;
             }
         #endregion
-        #region M:OfType(Type,IEnumerable):IEnumerable
-        private static IEnumerable OfType(Type type,IEnumerable elements) {
-            foreach (var e in elements) {
-                if (e != null) {
-                    if (type.IsAssignableFrom(e.GetType())) {
-                        yield return e;
-                        }
-                    }
-                }
-            }
-        #endregion
+        //#region M:OfType(Type,IEnumerable):IEnumerable
+        //private static IEnumerable OfType(Type type,IEnumerable elements) {
+        //    foreach (var e in elements) {
+        //        if (e != null) {
+        //            if (type.IsAssignableFrom(e.GetType())) {
+        //                yield return e;
+        //                }
+        //            }
+        //        }
+        //    }
+        //#endregion
         #region M:ValidateMultiplicity(Relationship,IList)
         private void ValidateMultiplicity(Relationship relationship,IList items) {
             var count = (UInt64)items.Count;

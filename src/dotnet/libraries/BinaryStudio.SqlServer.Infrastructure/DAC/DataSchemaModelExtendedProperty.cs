@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }
-        [Relationship("1..1")] public SqlObjectReference Host { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Host { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelExtendedProperty(DataSchemaModel Scope)

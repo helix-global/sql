@@ -4,11 +4,13 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextIndexColumnSpecifier")]
-    [DataSchemaModelSupportedRelationship("Column")]
-    [DataSchemaModelSupportedRelationship("TypeColumn")]
+    [DataSchemaModelSupportedRelationship(nameof(Column))]
+    [DataSchemaModelSupportedRelationship(nameof(TypeColumn))]
     internal class DataSchemaModelFullTextIndexColumnSpecifier : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 LanguageId { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference TypeColumn { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelFullTextIndexColumnSpecifier(DataSchemaModel Scope)
@@ -19,6 +21,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         #region M:ToString:String

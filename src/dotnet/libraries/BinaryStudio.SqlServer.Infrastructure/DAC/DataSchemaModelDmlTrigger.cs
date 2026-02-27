@@ -15,8 +15,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsInsertTrigger { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlTriggerType SqlTriggerType { get; }
-        [Relationship("0..*")] public IList<SqlObjectReference> BodyDependencies { get; }
-        [Relationship("1..1")] public SqlObjectReference Parent { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Parent { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDmlTrigger(DataSchemaModel Scope)

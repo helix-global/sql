@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlPermissionStatement")]
-    [DataSchemaModelSupportedRelationship("Grantee")]
-    [DataSchemaModelSupportedRelationship("SecuredObject")]
-    [DataSchemaModelSupportedRelationship("Grantor")]
+    [DataSchemaModelSupportedRelationship(nameof(Grantee))]
+    [DataSchemaModelSupportedRelationship(nameof(SecuredObject))]
+    [DataSchemaModelSupportedRelationship(nameof(Grantor))]
     internal class DataSchemaModelPermissionStatement : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlPermission Permission { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Grantee { get; }
+        [Relationship("0..1")][UsedImplicitly] public SqlObjectReference Grantor { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference SecuredObject { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelPermissionStatement(DataSchemaModel Scope)
@@ -22,6 +22,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

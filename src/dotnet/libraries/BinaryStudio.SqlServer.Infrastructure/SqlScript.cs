@@ -16,5 +16,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             this.AnsiNulls = AnsiNulls;
             }
         #endregion
+        #region M:ToString:String
+        override public String ToString()
+            {
+            return Script;
+            }
+        #endregion
         }
     }

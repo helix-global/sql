@@ -12,7 +12,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String FillRowMethodName { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
-        [Relationship("1..1")] public SqlObjectReference Assembly { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Assembly { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelClrFunctionImplementation(DataSchemaModel Scope)

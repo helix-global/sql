@@ -1,21 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
-    [DataSchemaModelSupportedRelationship("Columns")]
-    [DataSchemaModelSupportedRelationship("FunctionBody")]
-    [DataSchemaModelSupportedRelationship("Parameters")]
-    [DataSchemaModelSupportedRelationship("Schema")]
-    [DataSchemaModelSupportedRelationship("BodyDependencies")]
-    [DataSchemaModelSupportedRelationship("DynamicObjects")]
+    [DataSchemaModelSupportedRelationship(nameof(Columns))]
+    [DataSchemaModelSupportedRelationship(nameof(FunctionBody))]
+    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
+    [DataSchemaModelSupportedRelationship(nameof(Schema))]
+    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
+    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String ReturnTableVariable { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelFunctionImplementation FunctionBody { get;}
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)
@@ -26,6 +33,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         #region M:ApplyProperty(PropertyDescriptor,Object)

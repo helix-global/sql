@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -6,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelSupportedRelationship(nameof(Columns))]
     internal class DataSchemaModelDynamicColumnSource : DataSchemaModelElement
         {
-        [Relationship("1..*")] public IList<IDataSchemaModelColumn> Columns { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDynamicColumnSource(DataSchemaModel Scope)

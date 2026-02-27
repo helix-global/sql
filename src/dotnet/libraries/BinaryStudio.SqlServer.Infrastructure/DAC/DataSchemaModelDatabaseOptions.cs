@@ -25,7 +25,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean LegacyCardinalityEstimation { get; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelAnnotation> Annotations { get{ return base.Annotations; }}
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelElement> Elements { get{ return base.Elements; }}
-        [Relationship("0..1")] public SqlObjectReference DefaultFilegroup { get; }
+        [Relationship("0..1")][UsedImplicitly] public SqlObjectReference DefaultFilegroup { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDatabaseOptions(DataSchemaModel Scope)

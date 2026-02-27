@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsIdentity { get; } = false;
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
-        [Relationship("1..1")] public IDataSchemaModelTypeSpecifier TypeSpecifier { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier TypeSpecifier { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSimpleColumn(DataSchemaModel Scope)

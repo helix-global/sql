@@ -17,10 +17,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsInvariantToDuplicates { get; }=true;
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsInvariantToNulls { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullIfEmpty { get; }
-        [Relationship("0..1")] public SqlObjectReference Assembly { get; }
-        [Relationship("1..1")] public SqlObjectReference Schema   { get; }
-        [Relationship("1..1")] public IDataSchemaModelTypeSpecifier ReturnType { get; }
-        [Relationship("0..*")] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+        [Relationship("0..1")][UsedImplicitly] public SqlObjectReference Assembly { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema   { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier ReturnType { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelAggregate(DataSchemaModel Scope)

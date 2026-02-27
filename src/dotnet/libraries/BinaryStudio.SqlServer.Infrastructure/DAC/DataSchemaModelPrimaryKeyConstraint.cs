@@ -11,8 +11,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; } = true;
-        [Relationship("1..*")] public IList<DataSchemaModelIndexedColumnSpecification> ColumnSpecifications { get; }
-        [Relationship("1..1")] public SqlObjectReference DefiningTable { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<DataSchemaModelIndexedColumnSpecification> ColumnSpecifications { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelPrimaryKeyConstraint(DataSchemaModel Scope)

@@ -11,17 +11,18 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelSupportedRelationship(nameof(Schema))]
     [DataSchemaModelSupportedRelationship(nameof(Type))]
     [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
-    [DataSchemaModelSupportedRelationship("DynamicObjects")]
+    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
     internal class DataSchemaModelScalarFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
-        [Relationship("1..1")] public IDataSchemaModelTypeSpecifier Type { get; }
-        [Relationship("1..1")] public IDataSchemaModelFunctionImplementation FunctionBody { get; }
-        [Relationship("1..1")] public SqlObjectReference Schema { get; }
-        [Relationship("0..*")] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
-        [Relationship("0..*")] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier Type { get; }
+        [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelFunctionImplementation FunctionBody { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelScalarFunction(DataSchemaModel Scope)

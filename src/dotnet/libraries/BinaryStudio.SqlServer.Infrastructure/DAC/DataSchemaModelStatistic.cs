@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlStatistic")]
-    [DataSchemaModelSupportedRelationship("Columns")]
-    [DataSchemaModelSupportedRelationship("Subject")]
+    [DataSchemaModelSupportedRelationship(nameof(Columns))]
+    [DataSchemaModelSupportedRelationship(nameof(Subject))]
     internal class DataSchemaModelStatistic : DataSchemaModelElement
         {
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Subject { get; }
+        [Relationship("1..*")][UsedImplicitly] public IList<SqlObjectReference> Columns { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelStatistic(DataSchemaModel Scope)
             : base(Scope)

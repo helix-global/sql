@@ -10,8 +10,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelCheckConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String CheckExpressionScript { get; }
-        [Relationship("1..1")] public SqlObjectReference DefiningTable { get; }
-        [Relationship("0..*")] public IList<SqlObjectReference> CheckExpressionDependencies { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> CheckExpressionDependencies { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelCheckConstraint(DataSchemaModel Scope)

@@ -4,11 +4,11 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlIndexedColumnSpecification")]
-    [DataSchemaModelSupportedRelationship("Column")]
+    [DataSchemaModelSupportedRelationship(nameof(Column))]
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
-        public SqlObjectReference Column { get;private set; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAscending { get; } = true;
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelIndexedColumnSpecification(DataSchemaModel Scope)
@@ -19,7 +19,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            Column = Relationships[nameof(Column)].References[0];
+            return;
             }
         #endregion
         #region M:ToString:String

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlRoleMembership")]
-    [DataSchemaModelSupportedRelationship("Member")]
-    [DataSchemaModelSupportedRelationship("Role")]
+    [DataSchemaModelSupportedRelationship(nameof(Member))]
+    [DataSchemaModelSupportedRelationship(nameof(Role))]
     internal class DataSchemaModelRoleMembership : DataSchemaModelElement
         {
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Member { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Role { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelRoleMembership(DataSchemaModel Scope)
             : base(Scope)
@@ -18,6 +19,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [TypeConverter(typeof(SqlObjectIdentifierConverter))]
     public class SqlObjectReference
         {
         public static readonly SqlObjectReference Missing = new SqlObjectReference();

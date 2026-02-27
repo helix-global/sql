@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlProcedure")]
-    [DataSchemaModelSupportedRelationship("BodyDependencies")]
-    [DataSchemaModelSupportedRelationship("DynamicObjects")]
-    [DataSchemaModelSupportedRelationship("Parameters")]
-    [DataSchemaModelSupportedRelationship("Schema")]
-    [DataSchemaModelSupportedRelationship("Assembly")]
+    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
+    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
+    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
+    [DataSchemaModelSupportedRelationship(nameof(Schema))]
+    [DataSchemaModelSupportedRelationship(nameof(Assembly))]
     internal class DataSchemaModelProcedure : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
@@ -20,6 +21,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsOwner { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}
+        [Relationship("0..1")][UsedImplicitly] public SqlObjectReference Assembly { get;}
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelProcedure(DataSchemaModel Scope)
@@ -30,6 +36,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         #region M:ApplyProperty(PropertyDescriptor,Object)

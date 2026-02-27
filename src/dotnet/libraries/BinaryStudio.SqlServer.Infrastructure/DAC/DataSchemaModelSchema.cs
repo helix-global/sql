@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSchema")]
-    [DataSchemaModelSupportedRelationship("Authorizer")]
+    [DataSchemaModelSupportedRelationship(nameof(Authorizer))]
     internal class DataSchemaModelSchema : DataSchemaModelElement
         {
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Authorizer { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelSchema(DataSchemaModel Scope)
             : base(Scope)

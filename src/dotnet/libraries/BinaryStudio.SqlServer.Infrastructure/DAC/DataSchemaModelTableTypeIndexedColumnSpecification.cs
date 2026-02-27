@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypeIndexedColumnSpecification")]
-    [DataSchemaModelSupportedRelationship("Column")]
+    [DataSchemaModelSupportedRelationship(nameof(Column))]
     internal class DataSchemaModelTableTypeIndexedColumnSpecification : DataSchemaModelElement
         {
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableTypeIndexedColumnSpecification(DataSchemaModel Scope)
             : base(Scope)

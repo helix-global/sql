@@ -10,8 +10,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }
-        [Relationship("1..1")] public SqlObjectReference DefiningTable { get;private set; }
-        [Relationship("1..1")] public SqlObjectReference ForColumn     { get;private set; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference ForColumn     { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDefaultConstraint(DataSchemaModel Scope)
