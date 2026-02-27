@@ -5,13 +5,13 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDefaultConstraint")]
-    [DataSchemaModelSupportedRelationship("DefiningTable")]
-    [DataSchemaModelSupportedRelationship("ForColumn")]
+    [DataSchemaModelSupportedRelationship(nameof(DefiningTable))]
+    [DataSchemaModelSupportedRelationship(nameof(ForColumn))]
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }
-        public SqlObjectReference DefiningTable { get;private set; }
-        public SqlObjectReference ForColumn     { get;private set; }
+        [Relationship("1..1")] public SqlObjectReference DefiningTable { get;private set; }
+        [Relationship("1..1")] public SqlObjectReference ForColumn     { get;private set; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDefaultConstraint(DataSchemaModel Scope)
@@ -22,8 +22,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            DefiningTable = Relationships.FirstOrDefault(i=>i.Value.Name == nameof(DefiningTable)).Value?.References.FirstOrDefault();
-            ForColumn     = Relationships.FirstOrDefault(i=>i.Value.Name == nameof(ForColumn)).Value?.References.FirstOrDefault();
+            return;
             }
         #endregion
         #region M:ToString:String

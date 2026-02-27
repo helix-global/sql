@@ -42,7 +42,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:Create(IList<SqlIdentifier>):SqlObjectIdentifier
-        private static SqlObjectIdentifier Create(IList<SqlIdentifier> identifiers) {
+        public static SqlObjectIdentifier Create(IList<SqlIdentifier> identifiers) {
             switch (identifiers.Count) {
                 case 1: return Create(identifiers[0]);
                 case 2: return Create(identifiers[0],identifiers[1]);

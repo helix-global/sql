@@ -86,6 +86,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                                 }
                                             if (!o.IsIgnore)
                                                 {
+                                                o.LineNumber = (reader as IXmlLineInfo)?.LineNumber;
                                                 o.ReadXml(r);
                                                 Elements.Add(o);
                                                 }

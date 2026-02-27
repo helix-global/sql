@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDynamicColumnSource")]
-    [DataSchemaModelSupportedRelationship("Columns")]
+    [DataSchemaModelSupportedRelationship(nameof(Columns))]
     internal class DataSchemaModelDynamicColumnSource : DataSchemaModelElement
         {
+        [Relationship("1..*")] public IList<IDataSchemaModelColumn> Columns { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelDynamicColumnSource(DataSchemaModel Scope)
             : base(Scope)
@@ -17,6 +17,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

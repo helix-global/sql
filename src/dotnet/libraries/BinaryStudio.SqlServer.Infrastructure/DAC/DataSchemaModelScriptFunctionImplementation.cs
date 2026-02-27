@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlScriptFunctionImplementation")]
-    internal class DataSchemaModelScriptFunctionImplementation : DataSchemaModelElement
+    internal class DataSchemaModelScriptFunctionImplementation : DataSchemaModelElement,IDataSchemaModelFunctionImplementation
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
 

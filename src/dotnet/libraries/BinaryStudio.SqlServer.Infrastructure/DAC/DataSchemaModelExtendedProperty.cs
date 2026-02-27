@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlExtendedProperty")]
-    [DataSchemaModelSupportedRelationship("Host")]
+    [DataSchemaModelSupportedRelationship(nameof(Host))]
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }
+        [Relationship("1..1")] public SqlObjectReference Host { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelExtendedProperty(DataSchemaModel Scope)
@@ -20,6 +18,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDatabaseOptions")]
-    [DataSchemaModelSupportedRelationship("DefaultFilegroup")]
+    [DataSchemaModelSupportedRelationship(nameof(DefaultFilegroup))]
     public class DataSchemaModelDatabaseOptions : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
@@ -22,10 +21,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlQueryStoreCaptureMode QueryStoreCaptureMode { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 QueryStoreMaxStorageSize { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 QueryStoreStaleQueryThreshold { get; }
+        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 TargetRecoveryTimePeriod { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean LegacyCardinalityEstimation { get; }
-        public SqlObjectReference DefaultFilegroup { get;private set; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelAnnotation> Annotations { get{ return base.Annotations; }}
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected internal override IList<DataSchemaModelElement> Elements { get{ return base.Elements; }}
+        [Relationship("0..1")] public SqlObjectReference DefaultFilegroup { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelDatabaseOptions(DataSchemaModel Scope)
@@ -36,7 +36,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            DefaultFilegroup = Relationships.FirstOrDefault(i=>i.Value.Name == nameof(DefaultFilegroup)).Value?.References.FirstOrDefault();
             }
         #endregion
         #region M:ToString:String

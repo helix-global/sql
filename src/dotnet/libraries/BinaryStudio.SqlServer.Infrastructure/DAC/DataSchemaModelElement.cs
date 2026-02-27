@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -16,7 +18,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         {
         public const String URI_DAC   = "http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02";
         public const String URI_XMLNS = "http://www.w3.org/2000/xmlns/";
-        public static DataSchemaModelElement Ignore = new DataSchemaModelIgnoreElement();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] public virtual Boolean IsIgnore { get { return false; }}
         public virtual String Name { get;protected set; }
         protected internal virtual IList<DataSchemaModelAnnotation> Annotations { get; } = new List<DataSchemaModelAnnotation>();
@@ -26,6 +27,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         [SqlModelFieldMapping] public Int32? Disambiguator { get; }
         protected IList<String> MappedElementType { get; }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected ISet<String> SupportedRelationships { get; } = new HashSet<String>();
+        protected internal Int32? LineNumber { get;internal set; }
 
         protected DataSchemaModelElement(DataSchemaModel Scope)
             :base()
@@ -40,6 +42,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             //MappedElementType = MappedElementType.AsReadOnly();
             SupportedRelationships.UnionWith(GetType().GetCustomAttributes<DataSchemaModelSupportedRelationshipAttribute>().Select(i=>i.Relationship));
+            InitializeRelationships();
             }
 
         private class DataSchemaModelIgnoreElement : DataSchemaModelElement
@@ -141,6 +144,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 var Type = reader.GetAttribute("Type");
                                 var o = CreateElement(Scope,Type);
                                 if (!o.IsIgnore) {
+                                    o.LineNumber = (reader as IXmlLineInfo)?.LineNumber;
                                     using (var r = reader.ReadSubtree()) {
                                         o.ReadXml(r);
                                         }
@@ -220,9 +224,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         private static void ResolvePropertyMappings(Type type, out IDictionary<String,PropertyDescriptor> mapping) {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
             mapping = default;
-            using (UpgradeableReadLock(rwl)) {
+            using (UpgradeableReadLock(prwl)) {
                 if (!PropertyMapping.TryGetValue(type, out mapping)) {
-                    using (WriteLock(rwl)) {
+                    using (WriteLock(prwl)) {
                         PropertyMapping.Add(type,mapping = new Dictionary<String,PropertyDescriptor>());
                         foreach (var i in ResolveAttributeMappings<DataSchemaModelPropertyMappingAttribute>(type)) {
                             mapping[i.Key] = i.Value;
@@ -232,13 +236,182 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 }
             }
         #endregion
+        #region M:ResolveRelationshipMappings(Type,{out}IDictionary<String,Relationship>)
+        private static void ResolveRelationshipMappings(Type type, out IDictionary<String,Relationship> mapping) {
+            if (type == null) { throw new ArgumentNullException(nameof(type)); }
+            mapping = default;
+            using (UpgradeableReadLock(rrwl)) {
+                if (!RelationshipMapping.TryGetValue(type, out mapping)) {
+                    using (WriteLock(rrwl)) {
+                        RelationshipMapping.Add(type,mapping = new Dictionary<String,Relationship>());
+                        foreach (var pair in ResolveAttributeMappings<RelationshipAttribute>(type)) {
+                            var attribute = (RelationshipAttribute)pair.Value.Attributes[typeof(RelationshipAttribute)];
+                            var multiplicity = attribute.Multiplicity;
+                            if (multiplicity.IsMultiple) {
+                                var typeP = pair.Value.PropertyType;
+                                if (!typeP.IsConstructedGenericType) { throw new InvalidOperationException($@"Relationship ""{pair.Key}"" property ""{pair.Value.Name}"" should be declared as ""IList<T>"" type."); }
+                                var typeG = typeP.GetGenericTypeDefinition();
+                                if (typeG != typeof(IList<>)) { throw new InvalidOperationException($@"Relationship ""{pair.Key}"" property ""{pair.Value.Name}"" should be declared as ""IList<T>"" type."); }
+                                var typeE = typeP.GenericTypeArguments[0];
+                                #region references
+                                if (typeE == typeof(SqlObjectReference))
+                                    {
+                                    mapping[pair.Key] = new Relationship{
+                                        IsReference = true,
+                                        RelationshipType = typeE,
+                                        PropertyDescriptor = pair.Value,
+                                        Multiplicity = multiplicity,
+                                        Name = pair.Key
+                                        };
+                                    continue;
+                                    }
+                                #endregion
+                                #region elements
+                                else
+                                    {
+                                    mapping[pair.Key] = new Relationship{
+                                        IsReference = false,
+                                        RelationshipType = typeE,
+                                        PropertyDescriptor = pair.Value,
+                                        Multiplicity = multiplicity,
+                                        Name = pair.Key
+                                        };
+                                    continue;
+                                    }
+                                #endregion
+                                }
+                            else
+                                {
+                                var typeE = pair.Value.PropertyType;
+                                #region references
+                                if (typeE == typeof(SqlObjectReference))
+                                    {
+                                    mapping[pair.Key] = new Relationship{
+                                        IsReference = true,
+                                        RelationshipType = typeE,
+                                        PropertyDescriptor = pair.Value,
+                                        Multiplicity = multiplicity,
+                                        Name = pair.Key
+                                        };
+                                    continue;
+                                    }
+                                #endregion
+                                #region elements
+                                mapping[pair.Key] = new Relationship{
+                                    IsReference = false,
+                                    RelationshipType = typeE,
+                                    PropertyDescriptor = pair.Value,
+                                    Multiplicity = multiplicity,
+                                    Name = pair.Key
+                                    };
+                                #endregion
+                                //else
+                                //    {
+
+                                //    }
+                                //throw new InvalidOperationException($@"The ""{pair.Value.Name}"" property of the ""{pair.Key}"" relationship must be declared as type ""SqlObjectReference"" or a type derived from ""DataSchemaModelElement"" or a type marked as [Relationship].");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        #endregion
         #region M:UpdateRelationships
         protected virtual void UpdateRelationships() {
-            foreach (var e in Elements) {
-                e.UpdateRelationships();
+            foreach (var e in Elements)      { e.UpdateRelationships();       }
+            foreach (var e in Relationships) { e.Value.UpdateRelationships(); }
+            ResolveRelationshipMappings(GetType(),out var mapping);
+            foreach (var descriptor in mapping.Values) {
+                var r = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(descriptor.RelationshipType));
+                if (Relationships.TryGetValue(descriptor.Name,out var relationship)) {
+                    if (descriptor.IsReference) {
+                        r = AsReadOnly(descriptor.RelationshipType,AddRange(r,
+                                OfType(descriptor.RelationshipType,
+                                relationship.References)));
+                        }
+                    else
+                        {
+                        r = AsReadOnly(descriptor.RelationshipType,AddRange(r,
+                                OfType(descriptor.RelationshipType,
+                                relationship.Elements)));
+                        }
+                    }
+                ValidateMultiplicity(descriptor,r);
+                #region multiple
+                if (descriptor.Multiplicity.IsMultiple) {
+                    descriptor.PropertyDescriptor.SetValue(this,r);
+                    }
+                #endregion
+                #region single
+                else
+                    {
+                    descriptor.PropertyDescriptor.SetValue(this,FirstOrDefault(r));
+                    }
+                #endregion
                 }
-            foreach (var e in Relationships) {
-                e.Value.UpdateRelationships();
+            }
+
+        #region M:AddRange(IList,IEnumerable):IList
+        private static IList AddRange(IList target,IEnumerable source) {
+            foreach (var e in source) {
+                target.Add(e);
+                }
+            return target;
+            }
+        #endregion
+        #region M:AsReadOnly(Type,IList):IList
+        private IList AsReadOnly(Type type,IList source) {
+            return (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(type),source);
+            }
+        #endregion
+        #region M:FirstOrDefault(IList):Object
+        private static Object FirstOrDefault(IList elements) {
+            return (elements.Count > 0)
+                ? elements[0]
+                : null;
+            }
+        #endregion
+        #region M:OfType(Type,IEnumerable):IEnumerable
+        private static IEnumerable OfType(Type type,IEnumerable elements) {
+            foreach (var e in elements) {
+                if (e != null) {
+                    if (type.IsAssignableFrom(e.GetType())) {
+                        yield return e;
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:ValidateMultiplicity(Relationship,IList)
+        private void ValidateMultiplicity(Relationship relationship,IList items) {
+            var count = (UInt64)items.Count;
+            var multiplicity = relationship.Multiplicity;
+            var lineinfo = (LineNumber != null) ? $@" [Line={LineNumber}]." : String.Empty;
+            if (multiplicity.Lower > count) {
+                throw new InvalidOperationException(
+                    String.Equals(relationship.Name,relationship.PropertyDescriptor.Name)
+                        ? $@"The ""{relationship.Name}"" relationship requires a minimum {multiplicity.Lower} values.{lineinfo}"
+                        : $@"The ""{relationship.Name}""{{{relationship.PropertyDescriptor.Name}}} relationship requires a minimum {multiplicity.Lower} values.{lineinfo}");
+                }
+            if (!multiplicity.Upper.IsUnlimited) {
+                if (count > (UInt64)multiplicity.Upper) {
+                    throw new InvalidOperationException(
+                        $@"The {relationship} relationship requires a maximum {multiplicity.Upper} values.{lineinfo}");
+                    }
+                }
+            }
+        #endregion
+        #endregion
+        #region M:InitializeRelationships
+        private void InitializeRelationships() {
+            ResolveRelationshipMappings(GetType(),out var mapping);
+            foreach (var descriptors in mapping.Values) {
+                if (descriptors.Multiplicity.IsMultiple) {
+                    descriptors.PropertyDescriptor.
+                        SetValue(this,AsReadOnly(descriptors.RelationshipType,
+                        Array.CreateInstance(descriptors.RelationshipType,0)));
+                    }
                 }
             }
         #endregion
@@ -257,8 +430,25 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             throw new NotSupportedException($@"Type ""{Type}"" mapping not found.");
             }
 
-        private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();
-        private static readonly ReaderWriterLockSlim rwl = new ReaderWriterLockSlim();
+        private class Relationship
+            {
+            public String Name { get;set; }
+            public Type RelationshipType { get;set; }
+            public Boolean IsReference { get;set; }
+            public PropertyDescriptor PropertyDescriptor { get;set; }
+            public Multiplicity Multiplicity { get;set; }
+
+            public override String ToString() {
+                return String.Equals(Name,PropertyDescriptor.Name)
+                    ? $@"""{Name}"""
+                    : $@"""{Name}""{{{PropertyDescriptor.Name}}}";
+                }
+            }
+
+        private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping     = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();
+        private static readonly IDictionary<Type,IDictionary<String,Relationship>> RelationshipMapping = new Dictionary<Type,IDictionary<String,Relationship>>();
+        private static readonly ReaderWriterLockSlim prwl  = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim rrwl = new ReaderWriterLockSlim();
 
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();
         static DataSchemaModelElement() {
@@ -272,5 +462,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     }
                 }
             }
+        public static DataSchemaModelElement Ignore = new DataSchemaModelIgnoreElement();
+        private static readonly MethodInfo ListAddRange = typeof(List<>).GetMethod("AddRange");
         }
     }

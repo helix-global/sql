@@ -4,15 +4,15 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlClrFunctionImplementation")]
-    [DataSchemaModelSupportedRelationship("Assembly")]
-    internal class DataSchemaModelClrFunctionImplementation : DataSchemaModelElement
+    [DataSchemaModelSupportedRelationship(nameof(Assembly))]
+    internal class DataSchemaModelClrFunctionImplementation : DataSchemaModelElement,IDataSchemaModelFunctionImplementation
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlDataAccess DataAccess { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlSystemDataAccess SystemDataAccess { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String FillRowMethodName { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
-        public SqlObjectReference Assembly { get;private set; }
+        [Relationship("1..1")] public SqlObjectReference Assembly { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelClrFunctionImplementation(DataSchemaModel Scope)
@@ -23,7 +23,14 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            Assembly = Relationships["Assembly"].References[0];
+            }
+        #endregion
+        #region M:ToString:String
+        public override String ToString() {
+            return (SqlObjectIdentifier.Create(
+                Assembly.Reference.ObjectName.Value,
+                ClassName,
+                MethodName)).ToString();
             }
         #endregion
         }

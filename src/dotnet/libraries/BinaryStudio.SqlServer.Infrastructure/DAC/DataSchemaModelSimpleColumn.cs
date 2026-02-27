@@ -5,12 +5,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSimpleColumn")]
     [DataSchemaModelSupportedRelationship(nameof(TypeSpecifier))]
-    internal class DataSchemaModelSimpleColumn : DataSchemaModelElement
+    internal class DataSchemaModelSimpleColumn : DataSchemaModelElement,IDataSchemaModelColumn
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsIdentity { get; } = false;
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
-        public IDataSchemaModelTypeSpecifier TypeSpecifier { get;private set; }
+        [Relationship("1..1")] public IDataSchemaModelTypeSpecifier TypeSpecifier { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSimpleColumn(DataSchemaModel Scope)
@@ -21,7 +21,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            TypeSpecifier = (IDataSchemaModelTypeSpecifier)Relationships[nameof(TypeSpecifier)].Elements[0];
             return;
             }
         #endregion
