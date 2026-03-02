@@ -1,14 +1,17 @@
 ﻿
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    internal class DataSchemaModelSubroutine : DataSchemaModelElement
+    internal abstract class DataSchemaModelSubroutine : DataSchemaModelElement
         {
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get; }
+        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
+
         #region ctor{DataSchemaModel}
-        public DataSchemaModelSubroutine(DataSchemaModel Scope)
+        protected DataSchemaModelSubroutine(DataSchemaModel Scope)
             : base(Scope)
             {
             }

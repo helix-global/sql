@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    internal class DataSchemaModelTableValuedFunction : DataSchemaModelElement
+    internal abstract class DataSchemaModelTableValuedFunction : DataSchemaModelFunction
         {
+        [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }
+
         #region ctor{DataSchemaModel}
         public DataSchemaModelTableValuedFunction(DataSchemaModel Scope)
             : base(Scope)
