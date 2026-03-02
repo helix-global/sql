@@ -3,11 +3,11 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlForeignKeyConstraint")]
+    [ModelMapping("SqlForeignKeyConstraint")]
     internal class DataSchemaModelForeignKeyConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlForeignKeyAction OnDeleteAction { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlForeignKeyAction OnUpdateAction { get; }
+        [PropertyMapping][UsedImplicitly] public SqlForeignKeyAction OnDeleteAction { get; }
+        [PropertyMapping][UsedImplicitly] public SqlForeignKeyAction OnUpdateAction { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference ForeignTable { get; }
         [Relationship("1..*")][UsedImplicitly] public IList<SqlObjectReference> Columns { get; }

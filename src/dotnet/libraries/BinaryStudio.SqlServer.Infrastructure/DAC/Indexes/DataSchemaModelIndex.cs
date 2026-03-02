@@ -4,13 +4,13 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlIndex")]
+    [ModelMapping("SqlIndex")]
     internal class DataSchemaModelIndex : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsUnique { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript FilterPredicate { get; }
+        [PropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsUnique { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript FilterPredicate { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference IndexedObject { get; }
         [Relationship("1..*")][UsedImplicitly] public IList<DataSchemaModelIndexedColumnSpecification> ColumnSpecifications { get;}
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> IncludedColumns { get; }

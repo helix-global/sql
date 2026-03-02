@@ -3,12 +3,12 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlSubroutineParameter")]
+    [ModelMapping("SqlSubroutineParameter")]
     internal class DataSchemaModelSubroutineParameter : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String IsReadOnly { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String IsOutput { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript DefaultExpressionScript { get; }
+        [PropertyMapping][UsedImplicitly] public String IsReadOnly { get; }
+        [PropertyMapping][UsedImplicitly] public String IsOutput { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript DefaultExpressionScript { get; }
         [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier Type { get; }
 
         #region ctor{DataSchemaModel}

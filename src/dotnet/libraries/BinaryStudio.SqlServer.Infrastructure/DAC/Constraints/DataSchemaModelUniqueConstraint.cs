@@ -4,11 +4,11 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlUniqueConstraint")]
+    [ModelMapping("SqlUniqueConstraint")]
     internal class DataSchemaModelUniqueConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
+        [PropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsClustered { get; }
         [Relationship("1..*")][UsedImplicitly] public IList<DataSchemaModelIndexedColumnSpecification> ColumnSpecifications { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
 

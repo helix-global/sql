@@ -4,12 +4,12 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlView")]
+    [ModelMapping("SqlView")]
     internal class DataSchemaModelView : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript QueryScript { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript QueryScript { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> QueryDependencies { get; }
         [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }

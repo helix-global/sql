@@ -4,15 +4,15 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlDmlTrigger")]
+    [ModelMapping("SqlDmlTrigger")]
     internal class DataSchemaModelDmlTrigger : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsUpdateTrigger { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsDeleteTrigger { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsInsertTrigger { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlTriggerType SqlTriggerType { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsUpdateTrigger { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsDeleteTrigger { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsInsertTrigger { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
+        [PropertyMapping][UsedImplicitly] public SqlTriggerType SqlTriggerType { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Parent { get; }
 

@@ -1,11 +1,15 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlPermissionStatement")]
+    [ModelMapping("SqlPermissionStatement")]
     internal class DataSchemaModelPermissionStatement : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlPermission Permission { get; }
+        [PropertyMapping][UsedImplicitly] public SqlPermission Permission { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAllPrivileges { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsWithGrantOption { get; }
+        [PropertyMapping][UsedImplicitly] public SqlPermissionAction PermissionAction { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Grantee { get; }
         [Relationship("0..1")][UsedImplicitly] public SqlObjectReference Grantor { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference SecuredObject { get; }

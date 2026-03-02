@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTable")]
+    [ModelMapping("SqlTable")]
     internal class DataSchemaModelTable : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}
         [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }
 

@@ -2,15 +2,15 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SysCommentsObjectAnnotation")]
+    [ModelMapping("SysCommentsObjectAnnotation")]
     internal class DataSchemaModelSysCommentsObjectAnnotation : DataSchemaModelAnnotation
         {
-        [DataSchemaModelPropertyMapping] public Int32? CreateOffset { get; }
-        [DataSchemaModelPropertyMapping] public Int32? Length { get; }
-        [DataSchemaModelPropertyMapping] public Int32? StartLine { get; }
-        [DataSchemaModelPropertyMapping] public Int32? StartColumn { get; }
-        [DataSchemaModelPropertyMapping] public String HeaderContents { get; }
-        [DataSchemaModelPropertyMapping] public String FooterContents { get; }
+        [PropertyMapping] public Int32? CreateOffset { get; }
+        [PropertyMapping] public Int32? Length { get; }
+        [PropertyMapping] public Int32? StartLine { get; }
+        [PropertyMapping] public Int32? StartColumn { get; }
+        [PropertyMapping] public String HeaderContents { get; }
+        [PropertyMapping] public String FooterContents { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelSysCommentsObjectAnnotation(DataSchemaModel Scope)

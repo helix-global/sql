@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
+    [ModelMapping("SqlInlineTableValuedFunction")]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelTableValuedFunction
         {
         #region ctor{DataSchemaModel}

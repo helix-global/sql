@@ -1,15 +1,18 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     internal abstract class DataSchemaModelFunction : DataSchemaModelSubroutine
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsSchemaBound { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean DoReturnNullForNullInput { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsCalledForNullInput { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsReplicated { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
         [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelFunctionImplementation FunctionBody { get; }

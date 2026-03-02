@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlCheckConstraint")]
+    [ModelMapping("SqlCheckConstraint")]
     internal class DataSchemaModelCheckConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String CheckExpressionScript { get; }
+        [PropertyMapping][UsedImplicitly] public String CheckExpressionScript { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> CheckExpressionDependencies { get; }
 

@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlXmlTypeSpecifier")]
+    [ModelMapping("SqlXmlTypeSpecifier")]
     internal class DataSchemaModelXmlTypeSpecifier : DataSchemaModelElement,IDataSchemaModelTypeSpecifier
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Type { get; }

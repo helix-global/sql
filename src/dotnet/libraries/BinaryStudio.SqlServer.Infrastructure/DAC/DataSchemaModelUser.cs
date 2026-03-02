@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlUser")]
+    [ModelMapping("SqlUser")]
     internal class DataSchemaModelUser : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlUserAuthenticationType AuthenticationType { get; }
+        [PropertyMapping][UsedImplicitly] public SqlUserAuthenticationType AuthenticationType { get; }
         [Relationship("0..1",RelationshipKind.Reference|RelationshipKind.Annotation)][UsedImplicitly][TypeConverter(typeof(RelationshipConverter))] public ISqlObjectReference DefaultSchema { get; }
         [Relationship("0..1",RelationshipKind.Reference|RelationshipKind.Annotation)][UsedImplicitly][TypeConverter(typeof(RelationshipConverter))] public ISqlObjectReference Login { get; }
 

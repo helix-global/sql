@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlIndexedColumnSpecification")]
+    [ModelMapping("SqlIndexedColumnSpecification")]
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAscending { get; } = true;
+        [PropertyMapping][UsedImplicitly] public Boolean IsAscending { get; } = true;
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }
 
         #region ctor{DataSchemaModel}

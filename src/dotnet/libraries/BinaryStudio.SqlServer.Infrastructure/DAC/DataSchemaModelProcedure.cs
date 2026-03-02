@@ -5,21 +5,18 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlProcedure")]
-    internal class DataSchemaModelProcedure : DataSchemaModelElement
+    [ModelMapping("SqlProcedure")]
+    internal class DataSchemaModelProcedure : DataSchemaModelSubroutine
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsRecompiled { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsCaller { get; }=true;
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsOwner { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String MethodName { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String ClassName { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript BodyScript { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsQuotedIdentifierOn { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsRecompiled { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsCaller { get; }=true;
+        [PropertyMapping][UsedImplicitly] public String MethodName { get; }
+        [PropertyMapping][UsedImplicitly] public String ClassName { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> BodyDependencies { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelDynamicColumnSource> DynamicObjects { get; }
-        [Relationship("0..*")][UsedImplicitly] public IList<DataSchemaModelSubroutineParameter> Parameters { get; }
-        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}
         [Relationship("0..1")][UsedImplicitly] public SqlObjectReference Assembly { get;}
 
         #region ctor{DataSchemaModel}

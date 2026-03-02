@@ -3,10 +3,10 @@
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [AttributeUsage(AttributeTargets.Class,AllowMultiple = true)]
-    internal class DataSchemaModelMappingAttribute : Attribute
+    internal class ModelMappingAttribute : Attribute
         {
         public String Type { get; }
-        public DataSchemaModelMappingAttribute(String Type)
+        public ModelMappingAttribute(String Type)
             {
             this.Type = Type;
             }

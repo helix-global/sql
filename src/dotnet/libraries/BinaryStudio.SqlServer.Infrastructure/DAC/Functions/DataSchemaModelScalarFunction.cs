@@ -1,10 +1,13 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlScalarFunction")]
+    [ModelMapping("SqlScalarFunction")]
     internal class DataSchemaModelScalarFunction : DataSchemaModelFunction
         {
+        [PropertyMapping][UsedImplicitly] public Boolean IsInline { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsInlineable { get; }
         [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier Type { get; }
 
         #region ctor{DataSchemaModel}

@@ -2,10 +2,10 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("OnlinePropertyAnnotation")]
+    [ModelMapping("OnlinePropertyAnnotation")]
     internal class DataSchemaModelOnlinePropertyAnnotation : DataSchemaModelAnnotation
         {
-        [DataSchemaModelPropertyMapping] public Object Value { get; }
+        [PropertyMapping] public Object Value { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelOnlinePropertyAnnotation(DataSchemaModel Scope)

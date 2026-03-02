@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlFullTextCatalog")]
+    [ModelMapping("SqlFullTextCatalog")]
     internal class DataSchemaModelFullTextCatalog : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAccentSensitive { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsAccentSensitive { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Authorizer { get; }
 
         #region ctor{DataSchemaModel}

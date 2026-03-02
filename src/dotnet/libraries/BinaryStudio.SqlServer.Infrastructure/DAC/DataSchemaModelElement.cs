@@ -36,7 +36,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             {
             this.Scope = Scope;
             MappedElementType = new List<String>();
-            var attributes = GetType().GetCustomAttributes<DataSchemaModelMappingAttribute>().ToArray();
+            var attributes = GetType().GetCustomAttributes<ModelMappingAttribute>().ToArray();
             if (attributes.Length > 0) {
                 foreach (var attribute in attributes) {
                     MappedElementType.Add(attribute.Type);
@@ -242,7 +242,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                 if (!PropertyMapping.TryGetValue(type, out mapping)) {
                     using (WriteLock(prwl)) {
                         PropertyMapping.Add(type,mapping = new Dictionary<String,PropertyDescriptor>());
-                        foreach (var i in ResolveAttributeMappings<DataSchemaModelPropertyMappingAttribute>(type)) {
+                        foreach (var i in ResolveAttributeMappings<PropertyMappingAttribute>(type)) {
                             mapping[i.Key] = i.Value;
                             }
                         }
@@ -477,7 +477,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();
         static DataSchemaModelElement() {
             foreach (var type in typeof(DataSchemaModelElement).Assembly.GetTypes().Union(new []{typeof(DataSchemaModelIgnoreElement)})) {
-                var attributes = type.GetCustomAttributes<DataSchemaModelMappingAttribute>().ToArray();
+                var attributes = type.GetCustomAttributes<ModelMappingAttribute>().ToArray();
                 if (attributes.Length > 0) {
                     foreach (var attribute in attributes)
                         {

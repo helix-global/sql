@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("IsNotTrustedPropertyAnnotation")]
+    [ModelMapping("IsNotTrustedPropertyAnnotation")]
     internal class DataSchemaModelIsNotTrustedPropertyAnnotation : DataSchemaModelAnnotation
         {
         #region ctor{DataSchemaModel}

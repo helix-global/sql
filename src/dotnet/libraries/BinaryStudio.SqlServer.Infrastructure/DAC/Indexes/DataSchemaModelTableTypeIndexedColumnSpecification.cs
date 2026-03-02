@@ -2,7 +2,7 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTableTypeIndexedColumnSpecification")]
+    [ModelMapping("SqlTableTypeIndexedColumnSpecification")]
     internal class DataSchemaModelTableTypeIndexedColumnSpecification : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }

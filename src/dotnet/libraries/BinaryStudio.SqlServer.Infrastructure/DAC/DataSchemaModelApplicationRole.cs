@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlApplicationRole")]
+    [ModelMapping("SqlApplicationRole")]
     internal class DataSchemaModelApplicationRole : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String Password { get; }
+        [PropertyMapping][UsedImplicitly] public String Password { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelApplicationRole(DataSchemaModel Scope)

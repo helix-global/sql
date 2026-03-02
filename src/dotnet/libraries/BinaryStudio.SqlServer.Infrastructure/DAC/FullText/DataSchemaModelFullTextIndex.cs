@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlFullTextIndex")]
+    [ModelMapping("SqlFullTextIndex")]
     internal class DataSchemaModelFullTextIndex : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Catalog { get; }

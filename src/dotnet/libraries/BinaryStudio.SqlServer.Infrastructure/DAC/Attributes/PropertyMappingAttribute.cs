@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    internal class DataSchemaModelPropertyMappingAttribute : Attribute,ISqlModelMappingAttribute
+    internal class PropertyMappingAttribute : Attribute,ISqlModelMappingAttribute
         {
         public String SourceName { get; }
         }

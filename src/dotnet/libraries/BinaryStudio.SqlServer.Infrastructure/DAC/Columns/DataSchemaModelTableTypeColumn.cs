@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTableTypeColumn")]
+    [ModelMapping("SqlTableTypeColumn")]
     internal class DataSchemaModelTableTypeColumn : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}

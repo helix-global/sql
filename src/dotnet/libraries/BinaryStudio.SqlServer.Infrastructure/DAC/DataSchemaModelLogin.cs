@@ -3,13 +3,13 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlLogin")]
+    [ModelMapping("SqlLogin")]
     internal class DataSchemaModelLogin : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsMappedToWindowsLogin { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsCheckPolicyOn { get; } = true;
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultLanguage { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultDatabase { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsMappedToWindowsLogin { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsCheckPolicyOn { get; } = true;
+        [PropertyMapping][UsedImplicitly] public String DefaultLanguage { get; }
+        [PropertyMapping][UsedImplicitly] public String DefaultDatabase { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelLogin(DataSchemaModel Scope)

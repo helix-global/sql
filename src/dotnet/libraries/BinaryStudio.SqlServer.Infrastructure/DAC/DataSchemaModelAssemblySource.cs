@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlAssemblySource")]
+    [ModelMapping("SqlAssemblySource")]
     internal class DataSchemaModelAssemblySource : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][TypeConverter(typeof(SqlBase32ArrayConverter))][UsedImplicitly] public Byte[] Source { get; }
+        [PropertyMapping][TypeConverter(typeof(SqlBase32ArrayConverter))][UsedImplicitly] public Byte[] Source { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelAssemblySource(DataSchemaModel Scope)

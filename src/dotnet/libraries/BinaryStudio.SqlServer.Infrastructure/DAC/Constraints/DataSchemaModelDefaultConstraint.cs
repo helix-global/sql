@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlDefaultConstraint")]
+    [ModelMapping("SqlDefaultConstraint")]
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }
+        [PropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference DefiningTable { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference ForColumn     { get; }
 

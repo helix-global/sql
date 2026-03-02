@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTableTypeSimpleColumn")]
+    [ModelMapping("SqlTableTypeSimpleColumn")]
     internal class DataSchemaModelTableTypeSimpleColumn : DataSchemaModelElement,IDataSchemaModelColumn
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsNullable { get; }
         [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier TypeSpecifier { get; }
 
         #region ctor{DataSchemaModel}

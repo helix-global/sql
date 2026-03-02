@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlFullTextIndexColumnSpecifier")]
+    [ModelMapping("SqlFullTextIndexColumnSpecifier")]
     internal class DataSchemaModelFullTextIndexColumnSpecifier : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32 LanguageId { get; }
+        [PropertyMapping][UsedImplicitly] public Int32 LanguageId { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference TypeColumn { get; }
 

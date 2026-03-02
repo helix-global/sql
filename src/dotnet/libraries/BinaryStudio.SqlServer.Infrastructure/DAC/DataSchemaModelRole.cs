@@ -2,7 +2,7 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlRole")]
+    [ModelMapping("SqlRole")]
     internal class DataSchemaModelRole : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Authorizer { get; }

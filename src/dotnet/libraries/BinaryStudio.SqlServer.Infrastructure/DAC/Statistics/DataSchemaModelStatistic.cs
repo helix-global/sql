@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlStatistic")]
+    [ModelMapping("SqlStatistic")]
     internal class DataSchemaModelStatistic : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Subject { get; }

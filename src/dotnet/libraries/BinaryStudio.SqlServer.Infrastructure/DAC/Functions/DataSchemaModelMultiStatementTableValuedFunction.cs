@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
+    [ModelMapping("SqlMultiStatementTableValuedFunction")]
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelTableValuedFunction
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String ReturnTableVariable { get; }
+        [PropertyMapping][UsedImplicitly] public String ReturnTableVariable { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelMultiStatementTableValuedFunction(DataSchemaModel Scope)

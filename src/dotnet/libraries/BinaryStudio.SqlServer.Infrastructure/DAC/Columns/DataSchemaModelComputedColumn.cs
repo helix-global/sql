@@ -3,10 +3,10 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlComputedColumn")]
+    [ModelMapping("SqlComputedColumn")]
     internal class DataSchemaModelComputedColumn : DataSchemaModelElement,IDataSchemaModelColumn
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript ExpressionScript { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript ExpressionScript { get; }
         [Relationship("0..*")][UsedImplicitly] public IList<SqlObjectReference> ExpressionDependencies { get; }
 
         #region ctor{DataSchemaModel}

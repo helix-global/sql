@@ -2,10 +2,10 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlExtendedProperty")]
+    [ModelMapping("SqlExtendedProperty")]
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }
+        [PropertyMapping][UsedImplicitly] public SqlScript Value { get; }
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Host { get; }
 
         #region ctor{DataSchemaModel}

@@ -4,14 +4,14 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTypeSpecifier")]
+    [ModelMapping("SqlTypeSpecifier")]
     internal class DataSchemaModelTypeSpecifier : DataSchemaModelElement,IDataSchemaModelTypeSpecifier
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Type { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Length { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Scale { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Precision { get; }
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean? IsMax { get; }
+        [PropertyMapping][UsedImplicitly] public Int32? Length { get; }
+        [PropertyMapping][UsedImplicitly] public Int32? Scale { get; }
+        [PropertyMapping][UsedImplicitly] public Int32? Precision { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean? IsMax { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelTypeSpecifier(DataSchemaModel Scope)

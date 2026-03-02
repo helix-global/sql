@@ -3,12 +3,12 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlSimpleColumn")]
+    [ModelMapping("SqlSimpleColumn")]
     internal class DataSchemaModelSimpleColumn : DataSchemaModelElement,IDataSchemaModelColumn
         {
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsIdentity { get; } = false;
-        [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
+        [PropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;
+        [PropertyMapping][UsedImplicitly] public Boolean IsIdentity { get; } = false;
+        [PropertyMapping][UsedImplicitly] public String Collation { get; }
         [Relationship("1..1")][UsedImplicitly] public IDataSchemaModelTypeSpecifier TypeSpecifier { get; }
 
         #region ctor{DataSchemaModel}

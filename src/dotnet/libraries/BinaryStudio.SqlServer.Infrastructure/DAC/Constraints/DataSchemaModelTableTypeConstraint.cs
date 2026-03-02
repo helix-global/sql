@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
-    [DataSchemaModelMapping("SqlTableTypeConstraint")]
+    [ModelMapping("SqlTableTypeConstraint")]
     internal class DataSchemaModelTableTypeConstraint : DataSchemaModelElement
         {
         #region ctor{DataSchemaModel}
