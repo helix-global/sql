@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSimpleColumn")]
-    [DataSchemaModelSupportedRelationship(nameof(TypeSpecifier))]
     internal class DataSchemaModelSimpleColumn : DataSchemaModelElement,IDataSchemaModelColumn
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsNullable { get; } = true;

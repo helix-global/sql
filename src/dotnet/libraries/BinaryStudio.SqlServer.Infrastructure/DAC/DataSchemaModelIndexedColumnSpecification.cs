@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlIndexedColumnSpecification")]
-    [DataSchemaModelSupportedRelationship(nameof(Column))]
     internal class DataSchemaModelIndexedColumnSpecification : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAscending { get; } = true;

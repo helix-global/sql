@@ -6,12 +6,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlMultiStatementTableValuedFunction")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(FunctionBody))]
-    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
-    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
-    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
     internal class DataSchemaModelMultiStatementTableValuedFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }

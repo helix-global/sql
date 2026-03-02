@@ -3,7 +3,6 @@
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlExtendedProperty")]
-    [DataSchemaModelSupportedRelationship(nameof(Host))]
     internal class DataSchemaModelExtendedProperty : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript Value { get; }

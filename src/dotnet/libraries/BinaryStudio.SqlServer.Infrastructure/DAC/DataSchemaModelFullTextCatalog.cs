@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextCatalog")]
-    [DataSchemaModelSupportedRelationship(nameof(Authorizer))]
     internal class DataSchemaModelFullTextCatalog : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAccentSensitive { get; }

@@ -4,10 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlForeignKeyConstraint")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(DefiningTable))]
-    [DataSchemaModelSupportedRelationship(nameof(ForeignColumns))]
-    [DataSchemaModelSupportedRelationship(nameof(ForeignTable))]
     internal class DataSchemaModelForeignKeyConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlForeignKeyAction OnDeleteAction { get; }

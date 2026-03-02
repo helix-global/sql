@@ -3,9 +3,6 @@
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlPermissionStatement")]
-    [DataSchemaModelSupportedRelationship(nameof(Grantee))]
-    [DataSchemaModelSupportedRelationship(nameof(SecuredObject))]
-    [DataSchemaModelSupportedRelationship(nameof(Grantor))]
     internal class DataSchemaModelPermissionStatement : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlPermission Permission { get; }

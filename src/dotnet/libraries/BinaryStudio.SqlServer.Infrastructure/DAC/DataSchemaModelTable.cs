@@ -5,8 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTable")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
     internal class DataSchemaModelTable : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }

@@ -3,7 +3,6 @@
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableTypeIndexedColumnSpecification")]
-    [DataSchemaModelSupportedRelationship(nameof(Column))]
     internal class DataSchemaModelTableTypeIndexedColumnSpecification : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Column { get; }

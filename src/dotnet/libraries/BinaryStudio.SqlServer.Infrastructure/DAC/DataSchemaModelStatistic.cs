@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlStatistic")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(Subject))]
     internal class DataSchemaModelStatistic : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Subject { get; }

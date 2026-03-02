@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlClrFunctionImplementation")]
-    [DataSchemaModelSupportedRelationship(nameof(Assembly))]
     internal class DataSchemaModelClrFunctionImplementation : DataSchemaModelElement,IDataSchemaModelFunctionImplementation
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlDataAccess DataAccess { get; }

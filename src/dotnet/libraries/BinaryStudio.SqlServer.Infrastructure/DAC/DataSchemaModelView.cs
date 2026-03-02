@@ -5,10 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlView")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(QueryDependencies))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
-    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
     internal class DataSchemaModelView : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlScript QueryScript { get; }

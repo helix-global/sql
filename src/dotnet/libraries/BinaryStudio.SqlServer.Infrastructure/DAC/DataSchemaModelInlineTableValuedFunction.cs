@@ -5,12 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlInlineTableValuedFunction")]
-    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(FunctionBody))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
-    [DataSchemaModelSupportedRelationship(nameof(DynamicObjects))]
-    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
     internal class DataSchemaModelInlineTableValuedFunction : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }

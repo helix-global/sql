@@ -5,8 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDmlTrigger")]
-    [DataSchemaModelSupportedRelationship(nameof(BodyDependencies))]
-    [DataSchemaModelSupportedRelationship(nameof(Parent))]
     internal class DataSchemaModelDmlTrigger : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Boolean IsAnsiNullsOn { get; }

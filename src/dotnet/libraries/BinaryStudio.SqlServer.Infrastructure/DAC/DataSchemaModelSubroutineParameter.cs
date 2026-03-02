@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlSubroutineParameter")]
-    [DataSchemaModelSupportedRelationship(nameof(Type))]
     internal class DataSchemaModelSubroutineParameter : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String IsReadOnly { get; }

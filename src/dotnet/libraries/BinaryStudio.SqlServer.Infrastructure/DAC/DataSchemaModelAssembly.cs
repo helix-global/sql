@@ -4,9 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlAssembly")]
-    [DataSchemaModelSupportedRelationship(nameof(AssemblySources))]
-    [DataSchemaModelSupportedRelationship(nameof(Authorizer))]
-    [DataSchemaModelSupportedRelationship(nameof(ReferencedAssemblies))]
     internal class DataSchemaModelAssembly : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlAssemblyPermissionSet PermissionSet { get; } = SqlAssemblyPermissionSet.Safe;

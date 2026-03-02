@@ -5,8 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDefaultConstraint")]
-    [DataSchemaModelSupportedRelationship(nameof(DefiningTable))]
-    [DataSchemaModelSupportedRelationship(nameof(ForColumn))]
     internal class DataSchemaModelDefaultConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String DefaultExpressionScript { get; }

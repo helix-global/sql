@@ -4,9 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlTableType")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
-    [DataSchemaModelSupportedRelationship(nameof(Constraints))]
     internal class DataSchemaModelTableType : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Schema { get;}

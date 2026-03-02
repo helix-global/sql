@@ -4,10 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlFullTextIndex")]
-    [DataSchemaModelSupportedRelationship(nameof(Catalog))]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
-    [DataSchemaModelSupportedRelationship(nameof(IndexedObject))]
-    [DataSchemaModelSupportedRelationship(nameof(KeyName))]
     internal class DataSchemaModelFullTextIndex : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Catalog { get; }

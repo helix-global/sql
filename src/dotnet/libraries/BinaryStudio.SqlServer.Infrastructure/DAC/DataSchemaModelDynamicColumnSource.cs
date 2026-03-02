@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDynamicColumnSource")]
-    [DataSchemaModelSupportedRelationship(nameof(Columns))]
     internal class DataSchemaModelDynamicColumnSource : DataSchemaModelElement
         {
         [Relationship("1..*")][UsedImplicitly] public IList<IDataSchemaModelColumn> Columns { get; }

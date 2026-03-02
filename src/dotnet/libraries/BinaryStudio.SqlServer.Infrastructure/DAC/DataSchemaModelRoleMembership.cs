@@ -3,8 +3,6 @@
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlRoleMembership")]
-    [DataSchemaModelSupportedRelationship(nameof(Member))]
-    [DataSchemaModelSupportedRelationship(nameof(Role))]
     internal class DataSchemaModelRoleMembership : DataSchemaModelElement
         {
         [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Member { get; }

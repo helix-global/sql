@@ -5,8 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlPrimaryKeyConstraint")]
-    [DataSchemaModelSupportedRelationship(nameof(ColumnSpecifications))]
-    [DataSchemaModelSupportedRelationship(nameof(DefiningTable))]
     internal class DataSchemaModelPrimaryKeyConstraint : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? FillFactor { get; }

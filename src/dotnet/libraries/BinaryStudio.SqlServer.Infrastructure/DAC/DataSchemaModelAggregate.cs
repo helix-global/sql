@@ -5,10 +5,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlAggregate")]
-    [DataSchemaModelSupportedRelationship(nameof(Assembly))]
-    [DataSchemaModelSupportedRelationship(nameof(Schema))]
-    [DataSchemaModelSupportedRelationship(nameof(ReturnType))]
-    [DataSchemaModelSupportedRelationship(nameof(Parameters))]
     internal class DataSchemaModelAggregate : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlFormat Format { get; }

@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [DataSchemaModelMapping("SqlDatabaseOptions")]
-    [DataSchemaModelSupportedRelationship(nameof(DefaultFilegroup))]
     public class DataSchemaModelDatabaseOptions : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public String Collation { get; }
