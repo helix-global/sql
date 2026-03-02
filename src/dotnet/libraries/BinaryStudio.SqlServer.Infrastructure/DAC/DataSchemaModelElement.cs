@@ -14,6 +14,7 @@ using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
+    [TypeConverter(typeof(DataSchemaModelConverter))]
     public class DataSchemaModelElement : SqlModelObject
         {
         public const String URI_DAC   = "http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02";
@@ -22,11 +23,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         public virtual String Name { get;protected set; }
         protected internal virtual IList<DataSchemaModelAnnotation> Annotations { get; } = new List<DataSchemaModelAnnotation>();
         protected internal virtual IList<DataSchemaModelElement> Elements { get; } = new List<DataSchemaModelElement>();
+        protected internal virtual IList<SqlObjectReference> References { get; } = new List<SqlObjectReference>();
         protected internal virtual IDictionary<String,DataSchemaModelRelationship> Relationships { get; } = new SortedDictionary<String,DataSchemaModelRelationship>();
         protected virtual DataSchemaModel Scope { get; }
         [SqlModelFieldMapping] public Int32? Disambiguator { get; }
         protected IList<String> MappedElementType { get; }
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] protected ISet<String> SupportedRelationships { get; } = new HashSet<String>();
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)] protected ISet<String> SupportedRelationships { get; } = new HashSet<String>();
         protected internal Int32? LineNumber { get;internal set; }
 
         protected DataSchemaModelElement(DataSchemaModel Scope)
@@ -41,7 +43,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     }
                 }
             //MappedElementType = MappedElementType.AsReadOnly();
-            SupportedRelationships.UnionWith(GetType().GetCustomAttributes<DataSchemaModelSupportedRelationshipAttribute>().Select(i=>i.Relationship));
+            //SupportedRelationships.UnionWith(GetType().GetCustomAttributes<DataSchemaModelSupportedRelationshipAttribute>().Select(i=>i.Relationship));
             InitializeRelationships();
             }
 
@@ -127,7 +129,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                             case "Relationship":
                                 {
                                 ReadR(reader, out var o);
-                                if (!SupportedRelationships.Contains(o.Name)) {
+                                ResolveRelationshipMappings(GetType(),out var mapping);
+                                if (mapping.Values.FirstOrDefault(i=>String.Equals(i.Name,o.Name)) == null) {
                                     throw new NotSupportedException(
                                         (reader is IXmlLineInfo LineInfo)
                                         ? $@"[Line={LineInfo.LineNumber}] Relationship ""{o.Name}"" is not supported for ""{GetType().Name}""."
@@ -165,6 +168,17 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                             case "AttachedAnnotation":
                                 reader.Skip();
                                 break;
+                            #endregion
+                            #region References
+                            case "References":
+                                {
+                                var r = reader.GetAttribute("Name");
+                                var ExternalSource = reader.GetAttribute("ExternalSource");
+                                References.Add(new DataSchemaModelObjectReference(SqlObjectIdentifier.Parse(r),String.Equals(ExternalSource,"BuiltIns")){
+                                    Disambiguator = PropSI4(reader.GetAttribute("Disambiguator"))
+                                    });
+                                return;
+                                }
                             #endregion
                             default:
                                 ReadXmlE(reader,reader.LocalName);
@@ -237,13 +251,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             }
         #endregion
         #region M:ResolveRelationshipMappings(Type,{out}IDictionary<String,Relationship>)
-        private static void ResolveRelationshipMappings(Type type, out IDictionary<String,Relationship> mapping) {
+        private static void ResolveRelationshipMappings(Type type, out IDictionary<String,RelationshipDescriptor> mapping) {
             if (type == null) { throw new ArgumentNullException(nameof(type)); }
             mapping = default;
             using (UpgradeableReadLock(rrwl)) {
                 if (!RelationshipMapping.TryGetValue(type, out mapping)) {
                     using (WriteLock(rrwl)) {
-                        RelationshipMapping.Add(type,mapping = new Dictionary<String,Relationship>());
+                        RelationshipMapping.Add(type,mapping = new Dictionary<String,RelationshipDescriptor>());
                         foreach (var pair in ResolveAttributeMappings<RelationshipAttribute>(type)) {
                             var attribute = (RelationshipAttribute)pair.Value.Attributes[typeof(RelationshipAttribute)];
                             var multiplicity = attribute.Multiplicity;
@@ -256,8 +270,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 #region references
                                 if (typeE == typeof(SqlObjectReference))
                                     {
-                                    mapping[pair.Key] = new Relationship{
-                                        IsReference = true,
+                                    mapping[pair.Key] = new RelationshipDescriptor{
+                                        Kind = RelationshipKind.Reference,
                                         RelationshipType = typeE,
                                         PropertyDescriptor = pair.Value,
                                         Multiplicity = multiplicity,
@@ -269,8 +283,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 #region elements
                                 else
                                     {
-                                    mapping[pair.Key] = new Relationship{
-                                        IsReference = false,
+                                    mapping[pair.Key] = new RelationshipDescriptor{
+                                        Kind = (attribute.Kind == RelationshipKind.Auto)
+                                            ? RelationshipKind.Element
+                                            : attribute.Kind,
                                         RelationshipType = typeE,
                                         PropertyDescriptor = pair.Value,
                                         Multiplicity = multiplicity,
@@ -286,8 +302,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                 #region references
                                 if (typeE == typeof(SqlObjectReference))
                                     {
-                                    mapping[pair.Key] = new Relationship{
-                                        IsReference = true,
+                                    mapping[pair.Key] = new RelationshipDescriptor{
+                                        Kind = RelationshipKind.Reference,
                                         RelationshipType = typeE,
                                         PropertyDescriptor = pair.Value,
                                         Multiplicity = multiplicity,
@@ -297,8 +313,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                                     }
                                 #endregion
                                 #region elements
-                                mapping[pair.Key] = new Relationship{
-                                    IsReference = false,
+                                mapping[pair.Key] = new RelationshipDescriptor{
+                                    Kind = (attribute.Kind == RelationshipKind.Auto)
+                                        ? RelationshipKind.Element
+                                        : attribute.Kind,
                                     RelationshipType = typeE,
                                     PropertyDescriptor = pair.Value,
                                     Multiplicity = multiplicity,
@@ -325,14 +343,22 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             foreach (var descriptor in mapping.Values) {
                 var r = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(descriptor.RelationshipType));
                 if (Relationships.TryGetValue(descriptor.Name,out var relationship)) {
-                    if (descriptor.IsReference) {
-                        r = AsReadOnly(descriptor.RelationshipType,
-                            AddRange(r,relationship.References));
-                        }
-                    else
-                        {
-                        r = AsReadOnly(descriptor.RelationshipType,
-                            AddRange(r,relationship.Elements));
+                    switch (descriptor.Kind) {
+                        case RelationshipKind.Reference:
+                            r = AsReadOnly(descriptor.RelationshipType,
+                                AddRange(r,relationship.References));
+                            break;
+                        case RelationshipKind.Element:
+                            r = AsReadOnly(descriptor.RelationshipType,
+                                AddRange(r,relationship.Elements));
+                            break;
+                        case RelationshipKind.Reference|RelationshipKind.Annotation:
+                            AddRange(r,relationship.References);
+                            AddRange(r,relationship.Annotations);
+                            r = AsReadOnly(descriptor.RelationshipType,r);
+                            break;
+                        default:
+                            throw new NotSupportedException();
                         }
                     }
                 ValidateMultiplicity(descriptor,r);
@@ -382,7 +408,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         //    }
         //#endregion
         #region M:ValidateMultiplicity(Relationship,IList)
-        private void ValidateMultiplicity(Relationship relationship,IList items) {
+        private void ValidateMultiplicity(RelationshipDescriptor relationship,IList items) {
             var count = (UInt64)items.Count;
             var multiplicity = relationship.Multiplicity;
             var lineinfo = (LineNumber != null) ? $@" [Line={LineNumber}]." : String.Empty;
@@ -428,11 +454,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             throw new NotSupportedException($@"Type ""{Type}"" mapping not found.");
             }
 
-        private class Relationship
+        private class RelationshipDescriptor
             {
             public String Name { get;set; }
             public Type RelationshipType { get;set; }
-            public Boolean IsReference { get;set; }
+            public RelationshipKind Kind { get;set; }
             public PropertyDescriptor PropertyDescriptor { get;set; }
             public Multiplicity Multiplicity { get;set; }
 
@@ -444,7 +470,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
             }
 
         private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping     = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();
-        private static readonly IDictionary<Type,IDictionary<String,Relationship>> RelationshipMapping = new Dictionary<Type,IDictionary<String,Relationship>>();
+        private static readonly IDictionary<Type,IDictionary<String,RelationshipDescriptor>> RelationshipMapping = new Dictionary<Type,IDictionary<String,RelationshipDescriptor>>();
         private static readonly ReaderWriterLockSlim prwl  = new ReaderWriterLockSlim();
         private static readonly ReaderWriterLockSlim rrwl = new ReaderWriterLockSlim();
 

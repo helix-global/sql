@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [TypeConverter(typeof(SqlObjectIdentifierConverter))]
-    public class SqlObjectReference
+    public class SqlObjectReference : ISqlObjectReference
         {
         public static readonly SqlObjectReference Missing = new SqlObjectReference();
         public SqlObjectIdentifier Reference { get; }
@@ -23,8 +23,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        override public String ToString() {
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString() {
             return Reference.ToString();
             }
+        #endregion
         }
     }

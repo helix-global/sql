@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DataSchemaModel FileFormatVersion="1.2" SchemaVersion="2.9" DspName="Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider" CollationLcid="1033" CollationCaseSensitive="False" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+	<Model>
+    <Element Type="SqlPermissionStatement" Name="[Grant.Connect.Database].[EMEA\damaistrenko].[dbo]">
+      <Property Name="Permission" Value="1035" />
+      <Relationship Name="Grantee">
+        <Entry>
+          <References Name="[EMEA\damaistrenko]" />
+        </Entry>
+      </Relationship>
+      <Relationship Name="SecuredObject">
+        <Entry>
+          <References Disambiguator="1" />
+        </Entry>
+      </Relationship>
+    </Element>
+    <Element Type="SqlUser" Name="[EMEA\damaistrenko]">
+      <Property Name="AuthenticationType" Value="3" />
+      <Relationship Name="DefaultSchema">
+        <Entry>
+          <References Name="[EMEA\damaistrenko]" Disambiguator="9" />
+        </Entry>
+      </Relationship>
+      <Relationship Name="Login">
+        <Entry>
+          <References Name="[EMEA\damaistrenko]" Disambiguator="12" />
+        </Entry>
+      </Relationship>
+    </Element>
+    <Element Type="SqlUser" Name="[EMEA\DEDMS]">
+      <Property Name="AuthenticationType" Value="3" />
+      <Relationship Name="DefaultSchema">
+        <Entry>
+          <Annotation Type="PersistedResolvableAnnotation" Name="[EMEA\DEDMS]">
+            <Property Name="TargetTypeStorage" Value="SqlSchema" />
+          </Annotation>
+        </Entry>
+      </Relationship>
+      <Relationship Name="Login">
+        <Entry>
+          <Annotation Type="PersistedResolvableAnnotation" Name="[EMEA\DEDMS]">
+            <Property Name="TargetTypeStorage" Value="SqlLogin" />
+          </Annotation>
+        </Entry>
+      </Relationship>
+    </Element>
+  </Model>
+</DataSchemaModel>

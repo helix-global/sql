@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelSupportedRelationship(nameof(Type))]
     internal class DataSchemaModelXmlTypeSpecifier : DataSchemaModelElement,IDataSchemaModelTypeSpecifier
         {
-        public SqlObjectReference Type { get;private set; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Type { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelXmlTypeSpecifier(DataSchemaModel Scope)
@@ -19,7 +19,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            Type = Relationships[nameof(Type)].References[0];
             }
         #endregion
         #region M:ToString:String

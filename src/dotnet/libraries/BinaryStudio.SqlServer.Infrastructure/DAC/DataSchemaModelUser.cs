@@ -1,4 +1,7 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
@@ -8,8 +11,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     internal class DataSchemaModelUser : DataSchemaModelElement
         {
         [DataSchemaModelPropertyMapping][UsedImplicitly] public SqlUserAuthenticationType AuthenticationType { get; }
-        //[Relationship("0..1")] public SqlObjectReference DefaultSchema { get; }
-        //[Relationship("1..1")] public SqlObjectReference Login { get; }
+        [Relationship("0..1",RelationshipKind.Reference|RelationshipKind.Annotation)][UsedImplicitly][TypeConverter(typeof(RelationshipConverter))] public ISqlObjectReference DefaultSchema { get; }
+        [Relationship("0..1",RelationshipKind.Reference|RelationshipKind.Annotation)][UsedImplicitly][TypeConverter(typeof(RelationshipConverter))] public ISqlObjectReference Login { get; }
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelUser(DataSchemaModel Scope)
@@ -20,6 +23,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
+            return;
             }
         #endregion
         }

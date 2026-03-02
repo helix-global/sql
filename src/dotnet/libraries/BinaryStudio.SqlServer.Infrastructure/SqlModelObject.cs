@@ -80,7 +80,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 }
                             }
                         }
-                    yield return new KeyValuePair<String,PropertyDescriptor>(attribute.SourceName??o.Name,new PropertyDescriptorP(o));
+                    yield return new KeyValuePair<String,PropertyDescriptor>(
+                        attribute.SourceName??o.Name,new PropertyDescriptorP(o));
                     }
                 }
             }
@@ -276,13 +277,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public override Type ComponentType { get{ return Source.DeclaringType; }}
             public override TypeConverter Converter { get {
                 var type = PropertyType;
-                     if (type == typeof(Boolean )) { return SqlBooleanConverter.DoesNotAllowNull; }
-                else if (type == typeof(Boolean?)) { return SqlBooleanConverter.Default;          }
-                else if (type == typeof(Int32))    { return SqlInt32Converter.DoesNotAllowNull;   }
-                else if (type == typeof(Int32?))   { return SqlInt32Converter.Default;            }
-                else if (type == typeof(Int64))    { return SqlInt64Converter.DoesNotAllowNull;   }
-                else if (type == typeof(Int64?))   { return SqlInt64Converter.Default;            }
-                return base.Converter;
+                if (type == typeof(Boolean )) { return SqlBooleanConverter.DoesNotAllowNull; }
+                if (type == typeof(Boolean?)) { return SqlBooleanConverter.Default;          }
+                if (type == typeof(Int32))    { return SqlInt32Converter.DoesNotAllowNull;   }
+                if (type == typeof(Int32?))   { return SqlInt32Converter.Default;            }
+                if (type == typeof(Int64))    { return SqlInt64Converter.DoesNotAllowNull;   }
+                if (type == typeof(Int64?))   { return SqlInt64Converter.Default;            }
+                var r = base.Converter;
+                return r;
                 }}
 
             #region ctor{T,String}
@@ -340,7 +342,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         catch (Exception e)
                             {
                             e.Data["Converter"] = converter.GetType().FullName;
-                            throw;
+                            throw new Exception($@"Error converting value for property ""{ComponentType.Name}.{Name}"".");
                             }
                         }
                     }

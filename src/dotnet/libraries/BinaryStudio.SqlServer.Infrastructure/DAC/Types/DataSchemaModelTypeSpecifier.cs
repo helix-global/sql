@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [DataSchemaModelSupportedRelationship(nameof(Type))]
     internal class DataSchemaModelTypeSpecifier : DataSchemaModelElement,IDataSchemaModelTypeSpecifier
         {
-        public SqlObjectReference Type { get;private set; }
+        [Relationship("1..1")][UsedImplicitly] public SqlObjectReference Type { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Length { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Scale { get; }
         [DataSchemaModelPropertyMapping][UsedImplicitly] public Int32? Precision { get; }
@@ -23,7 +23,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         #region M:UpdateRelationships
         protected override void UpdateRelationships() {
             base.UpdateRelationships();
-            Type = Relationships[nameof(Type)].References[0];
             }
         #endregion
         #region M:ToString:String

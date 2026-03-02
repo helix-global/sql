@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     public class DataSchemaModelRelationship : DataSchemaModelElement
         {
-        public IList<SqlObjectReference> References { get; } = new List<SqlObjectReference>();
+        //public IList<SqlObjectReference> References { get; } = new List<SqlObjectReference>();
 
         #region ctor{DataSchemaModel}
         public DataSchemaModelRelationship(DataSchemaModel Scope)
@@ -23,10 +22,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
                     using (var r = reader.ReadSubtree()) {
                         var o = new DataSchemaModelRelationshipEntry(Scope);
                         o.ReadXml(r);
-                        if (o.Reference != null) { References.Add(o.Reference); }
-                        foreach (var e in o.Elements) {
-                            Elements.Add(e);
-                            }
+                        References.AddRange(o.References);
+                        Annotations.AddRange(o.Annotations);
+                        Elements.AddRange(o.Elements);
                         }
                     return;
                     }
