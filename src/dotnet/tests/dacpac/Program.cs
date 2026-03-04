@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using BinaryStudio.SqlServer.Infrastructure.A2C;
 
 namespace dacpac
     {
@@ -17,7 +18,9 @@ namespace dacpac
             //foreach (SqlPermission i in Enum.GetValues(typeof(SqlPermission))) {
             //    Debug.WriteLine(String.Format($"{{0,-{maxN}}} = 0x{{1:x4}},", i,(Int32)i));
             //    }
-            var r = DataSchemaModel.LoadFrom("dev.xml");
+            //var r = DataSchemaModel.LoadFrom("dev.xml");
+            var r = A2CPackage.LoadFrom("2022.07.05.0847.a2cx");
+            //var r = A2CPackage.LoadFrom("2026.03.02.1623.a2c");
             //try
             //    {
             //    F3();

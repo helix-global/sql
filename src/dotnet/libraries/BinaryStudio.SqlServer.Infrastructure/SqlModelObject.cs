@@ -19,6 +19,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             }
         #endregion
+        #region ctor{IServiceProvider}
+        protected SqlModelObject(IServiceProvider context)
+            {
+            }
+        #endregion
         #region ctor{IDictionary<String,Object>}
         protected SqlModelObject(IDictionary<String,Object> source) {
             if (source != null) {
@@ -208,6 +213,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:PropSI4(Object):Int32?
         protected static Int32? PropSI4(Object value) {
             return SqlInt32Converter.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:PropE<E>(Object):E?
+        protected static E? PropE<E>(Object value)
+            where E: struct,Enum
+            {
+            return SqlEnumConverter<E>.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:PropE<E>(Object,E):E
+        protected static E PropE<E>(Object value,E defaultvalue)
+            where E: struct,Enum
+            {
+            return SqlEnumConverter<E>.ConvertFromObject(value,defaultvalue);
             }
         #endregion
         #region M:MemberType(MemberInfo):Type

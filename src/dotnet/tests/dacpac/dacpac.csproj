@@ -7,6 +7,9 @@
     <ProjectReference Include="..\..\libraries\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="2022.07.05.0847.a2cx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="clr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

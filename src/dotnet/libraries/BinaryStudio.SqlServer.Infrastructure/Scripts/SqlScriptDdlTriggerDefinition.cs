@@ -1,0 +1,15 @@
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
+    {
+    internal sealed class SqlScriptDdlTriggerDefinition : SqlScriptTriggerDefinition<SqlDdlTriggerDefinition>
+        {
+        #region ctor{IServiceProvider,SqlDdlTriggerDefinition}
+        public SqlScriptDdlTriggerDefinition(IServiceProvider context,SqlDdlTriggerDefinition source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
+    }

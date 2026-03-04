@@ -4,9 +4,26 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlEnumConverter<E> : TypeConverter
+    internal class SqlEnumConverter<E> : TypeConverter,ISqlValueTypeConverter<E>
         where E : struct,Enum
         {
+        public static readonly SqlEnumConverter<E> Default          = new SqlEnumConverter<E>(true);
+        public static readonly SqlEnumConverter<E> DoesNotAllowNull = new SqlEnumConverter<E>(false);
+
+        public Boolean AllowNull { get; }
+
+        #region ctor{Boolean}
+        public SqlEnumConverter(Boolean AllowNull) {
+            this.AllowNull = AllowNull;
+            }
+        #endregion
+        #region ctor
+        public SqlEnumConverter()
+            :this(true)
+            {
+            }
+        #endregion
+
         #region M:CanConvertFrom(ITypeDescriptorContext,Type):Boolean
         /// <summary>Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -32,29 +49,54 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
         /// <summary>Converts the given object to the type of this converter, using the specified context and culture information.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
-        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo"/> to use as thercurrent culture.</ram>
-        /// <param name="value">The <see cref="T:System.Object"/>rto convert.</ram>
-        /// <returns>An <see cref="T:System.Object"/> that represents therconverted value.</rns>
-        /// <exception cref="T:System.NotSupportedException">The conversion cannotrbe performed.</ron>
-        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture, Object value)
-            {
-            if ((value == null) || (value is DBNull)) { return null; }
-            if (value is E r) { return r; }
-            if (value is Int32  SI4) { return (E)(Object)SI4; }
-            if (value is Int64  SI8) { return (E)(Object)(Int32)SI8; }
-            if (value is SByte  SI1) { return (E)(Object)(Int32)SI1; }
-            if (value is Int16  SI2) { return (E)(Object)(Int32)SI2; }
-            if (value is Byte   UI1) { return (E)(Object)(Int32)UI1; }
-            if (value is UInt16 UI2) { return (E)(Object)(Int32)UI2; }
-            if (value is UInt32 UI4) { return (E)(Object)(Int32)UI4; }
-            if (value is UInt64 UI8) { return (E)(Object)(Int32)UI8; }
-            var S = (value.ToString()).Trim();
-            if (String.IsNullOrEmpty(S)) { return null; }
-            if (!Enum.TryParse<E>(S, out r))
-                {
-                return null;
+        /// <param name="culture">The <see cref="T:System.Globalization.CultureInfo"/> to use as thercurrent culture.</param>
+        /// <param name="value">The <see cref="T:System.Object"/>rto convert.</param>
+        /// <returns>An <see cref="T:System.Object"/> that represents therconverted value.</returns>
+        /// <exception cref="T:System.NotSupportedException">The conversion cannotrbe performed.</exception>
+        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture, Object value) {
+            var r = ConvertFromObject(value);
+            if ((r == null) && (AllowNull == false)) {
+                throw new InvalidCastException();
                 }
             return r;
+            }
+        #endregion
+        #region M:ConvertFromObject(Object):E?
+        public static E? ConvertFromObject(Object value) {
+            if ((value == null) || (value is DBNull)) { return null; }
+            if (value is E r) { return r; }
+            var S = (value.ToString()).Trim();
+            if (String.IsNullOrEmpty(S)) { return null; }
+            if (Enum.TryParse<E>(S, out r))
+                {
+                return r;
+                }
+            return (E)(Object)SqlInt32Converter.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:ConvertFromObject(Object,E):E
+        public static E ConvertFromObject(Object value,E defaultValue)
+            {
+            return ConvertFromObject(value).GetValueOrDefault(defaultValue);
+            }
+        #endregion
+        #region M:ISqlValueTypeConverter<E>.ConvertFromObject(Object):E?
+        E? ISqlValueTypeConverter<E>.ConvertFromObject(Object value) {
+            return ConvertFromObject(value);
+            }
+        #endregion
+        #region M:ISqlValueTypeConverter<E>.ConvertFromObject(Object,E):E
+        E ISqlValueTypeConverter<E>.ConvertFromObject(Object value,E defaultValue)
+            {
+            return ConvertFromObject(value,defaultValue);
+            }
+        #endregion
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
+            {
+            return $"EnumConverter<{typeof(E).Name}>{{AllowNull={AllowNull}}}";
             }
         #endregion
         }

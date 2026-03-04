@@ -51,8 +51,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
         /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
-        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value)
-            {
+        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value) {
             var r = ConvertFromObject(value);
             if ((r == null) && (AllowNull == false)) {
                 throw new InvalidCastException();
@@ -100,6 +99,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
             return $"Int32Converter{{AllowNull={AllowNull}}}";
