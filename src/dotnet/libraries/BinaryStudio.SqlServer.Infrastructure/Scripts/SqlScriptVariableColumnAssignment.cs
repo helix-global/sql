@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptVariableColumnAssignment
+    internal sealed class SqlScriptVariableColumnAssignment : SqlScriptAssignment<SqlVariableColumnAssignment>
         {
+        #region ctor{IServiceProvider,SqlVariableColumnAssignment}
+        public SqlScriptVariableColumnAssignment(IServiceProvider context,SqlVariableColumnAssignment source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
