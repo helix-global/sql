@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -37,37 +38,54 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         #region ctor{IServiceProvider,SqlCodeObject}
         protected SqlScriptCodeObject(IServiceProvider context,SqlCodeObject source)
-            : base(context)
+            : base(context,source)
             {
             if (source != null) {
                 var children = new List<SqlScriptCodeObject>();
                 foreach (var o in source.Children) {
                     if (o != null) {
-                        var RequestedType = o.GetType();
-                        Type type;
-                        using (UpgradeableReadLock(g_rtlock)) {
-                            if (!RegisteredTypes.TryGetValue(RequestedType,out type)) {
-                                foreach (var pair in RegisteredTypes) {
-                                    if (pair.Key.IsAssignableFrom(RequestedType)) {
-                                        using (WriteLock(g_rtlock)) {
-                                            RegisteredTypes[RequestedType] = type = pair.Value;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        if (type != null) {
-                            var ctor = type.GetConstructor(new[] { typeof(IServiceProvider), o.GetType() });
-                            if (ctor != null) {
-                                children.Add((SqlScriptCodeObject)ctor.Invoke(new Object[] { context, o }));
-                                continue;
-                                }
-                            }
-                        throw new ArgumentOutOfRangeException(nameof(o), $"No registered type for {o.GetType()}");
+                        children.Add(CreateObject(context,o));
                         }
                     }
                 Children = children.AsReadOnly();
                 }
+            }
+        #endregion
+        #region M:CoerceValue(PropertyDescriptor,Object):Object
+        protected override Object CoerceValue(PropertyDescriptor descriptor,Object value) {
+            if (value is SqlCodeObject SqlCodeObject) {
+                if (typeof(SqlScriptCodeObject).IsAssignableFrom(descriptor.PropertyType)) {
+                    return CreateObject(Context,SqlCodeObject);
+                    }
+                }
+            return base.CoerceValue(descriptor, value);
+            }
+        #endregion
+        #region M:CreateObject(IServiceProvider,SqlCodeObject):SqlScriptCodeObject
+        private static SqlScriptCodeObject CreateObject(IServiceProvider context,SqlCodeObject source) {
+            if (source != null) {
+                var RequestedType = source.GetType();
+                Type type;
+                using (UpgradeableReadLock(g_rtlock)) {
+                    if (!RegisteredTypes.TryGetValue(RequestedType,out type)) {
+                        foreach (var pair in RegisteredTypes) {
+                            if (pair.Key.IsAssignableFrom(RequestedType)) {
+                                using (WriteLock(g_rtlock)) {
+                                    RegisteredTypes[RequestedType] = type = pair.Value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                if (type != null) {
+                    var ctor = type.GetConstructor(new[] { typeof(IServiceProvider), source.GetType() });
+                    if (ctor != null) {
+                        return (SqlScriptCodeObject)ctor.Invoke(new Object[] { context,source });
+                        }
+                    }
+                throw new ArgumentOutOfRangeException(nameof(source), $"No registered type for {source.GetType()}");
+                }
+            return null;
             }
         #endregion
 

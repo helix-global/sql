@@ -71,6 +71,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (value is UInt16 UI2) { return (Int32)UI2; }
             if (value is UInt32 UI4) { return (Int32)UI4; }
             if (value is UInt64 UI8) { return (Int32)UI8; }
+            if (value is Enum E) {
+                return Convert.ToInt32(E);
+                }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
             Int32 r;

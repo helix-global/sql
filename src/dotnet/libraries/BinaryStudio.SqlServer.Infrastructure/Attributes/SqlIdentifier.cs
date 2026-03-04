@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using SqlCodeDomIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlIdentifier;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [TypeConverter(typeof(SqlIdentifierConverter))]
     public class SqlIdentifier : IEquatable<SqlIdentifier>,IComparable<SqlIdentifier>
         {
         public static readonly SqlIdentifier Null = new NullSqlIdentifier();

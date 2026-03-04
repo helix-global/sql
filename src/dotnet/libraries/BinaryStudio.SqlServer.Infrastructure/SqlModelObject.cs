@@ -14,14 +14,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     public abstract class SqlModelObject : IXmlSerializable
         {
+        public IServiceProvider Context { get; }
+
         #region ctor
         protected SqlModelObject()
             {
             }
         #endregion
-        #region ctor{IServiceProvider}
-        protected SqlModelObject(IServiceProvider context)
-            {
+        #region ctor{IServiceProvider,Object}
+        protected SqlModelObject(IServiceProvider context,Object source) {
+            Context = context;
+            if (source != null) {
+                ResolveFieldMappings(GetType(),out var mapping);
+                ApplyProperties(mapping,source);
+                }
             }
         #endregion
         #region ctor{IDictionary<String,Object>}
@@ -143,6 +149,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:ApplyProperties(IDictionary<String,PropertyDescriptor>,Object)
+        private void ApplyProperties(IDictionary<String,PropertyDescriptor> mapping,Object source) {
+            if (mapping == null) { throw new ArgumentNullException(nameof(mapping)); }
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            var descriptors = TypeDescriptor.GetProperties(source).OfType<PropertyDescriptor>().ToDictionary(i=>i.Name,i=>i);
+            foreach (var descriptor in descriptors) {
+                if (mapping.TryGetValue(descriptor.Key,out var o)) {
+                    SetValue(o,descriptor.Value.GetValue(source));
+                    }
+                }
+            }
+        #endregion
         #region M:SetValue(PropertyDescriptor,Object)
         protected virtual void SetValue(PropertyDescriptor descriptor,Object value) {
             if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
@@ -234,6 +252,33 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (member is FieldInfo    fi) { return fi.FieldType;    }
             if (member is PropertyInfo pi) { return pi.PropertyType; }
             throw new InvalidOperationException($"Unsupported member type: {member.GetType().FullName}");
+            }
+        #endregion
+        #region M:CoerceValue(PropertyDescriptor,Object):Object
+        protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value)
+            {
+            var converter = descriptor.Converter;
+            var PropertyType = descriptor.PropertyType;
+            if (converter != null) {
+                var type = value?.GetType();
+                if ((type == null) || (!PropertyType.IsAssignableFrom(type))) {
+                    try
+                        {
+                        if (converter.GetType()==typeof(TypeConverter)) {
+                            if ((value == null) && (PropertyType.IsClass)) {
+                                return null;
+                                }
+                            }
+                        return converter.ConvertFrom(value) ?? value;
+                        }
+                    catch (Exception e)
+                        {
+                        e.Data["Converter"] = converter.GetType().FullName;
+                        throw new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".");
+                        }
+                    }
+                }
+            return value;
             }
         #endregion
 
@@ -348,26 +393,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return false;
                 }
             #endregion
-            #region M:ConvertValue(Object):Object
-            protected Object ConvertValue(Object value) {
-                var converter = Converter;
-                if (converter != null) {
-                    var type = value?.GetType();
-                    if ((type == null) || (!PropertyType.IsAssignableFrom(type))) {
-                        try
-                            {
-                            return converter.ConvertFrom(value) ?? value;
-                            }
-                        catch (Exception e)
-                            {
-                            e.Data["Converter"] = converter.GetType().FullName;
-                            throw new Exception($@"Error converting value for property ""{ComponentType.Name}.{Name}"".");
-                            }
-                        }
-                    }
-                return value;
-                }
-            #endregion
             #region M:ToString:String
             public override String ToString()
                 {
@@ -403,7 +428,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:SetValue(Object,Object)
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
-                Source.SetValue(component,ConvertValue(value));
+                Source.SetValue(component,(component is SqlModelObject target)
+                    ? target.CoerceValue(this,value)
+                    : value);
                 }
             #endregion
             }
@@ -435,7 +462,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:SetValue(Object,Object)
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
-                Source.SetValue(component,ConvertValue(value));
+                Source.SetValue(component,(component is SqlModelObject target)
+                    ? target.CoerceValue(this,value)
+                    : value);
                 }
             #endregion
             }

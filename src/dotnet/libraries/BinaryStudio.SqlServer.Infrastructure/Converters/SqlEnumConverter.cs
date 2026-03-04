@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -39,6 +40,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 (sourceType == typeof(UInt64)) ||
                 (sourceType == typeof(SByte))  ||
                 (sourceType == typeof(Byte))   ||
+                (sourceType == typeof(Enum))   ||
                 (sourceType == typeof(E)))
                 {
                 return true;
@@ -71,6 +73,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 {
                 return r;
                 }
+            if (value is Enum e) {
+                var sfi = e.GetType().GetField("value__");
+                var tfi = typeof(E).GetField("value__");
+                value = sfi.GetValue(e);
+                if (tfi.FieldType == sfi.FieldType) { return SetValue(tfi,value); }
+                if (tfi.FieldType == typeof(Int16)) { return SetValue(tfi,SqlInt16Converter.ConvertFromObject(value)); }
+                if (tfi.FieldType == typeof(Int32)) { return SetValue(tfi,SqlInt32Converter.ConvertFromObject(value)); }
+                if (tfi.FieldType == typeof(Int64)) { return SetValue(tfi,SqlInt64Converter.ConvertFromObject(value)); }
+                }
             return (E)(Object)SqlInt32Converter.ConvertFromObject(value);
             }
         #endregion
@@ -97,6 +108,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override String ToString()
             {
             return $"EnumConverter<{typeof(E).Name}>{{AllowNull={AllowNull}}}";
+            }
+        #endregion
+        #region M:SetValue(FieldInfo,Object):E
+        private static E SetValue(FieldInfo fi,Object source) {
+            E r = default;
+            fi.SetValue(r,source);
+            return r;
             }
         #endregion
         }

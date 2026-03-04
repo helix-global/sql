@@ -4,20 +4,20 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlInt64Converter : TypeConverter,ISqlValueTypeConverter<Int64>
+    internal class SqlInt16Converter : TypeConverter,ISqlValueTypeConverter<Int16>
         {
-        public static readonly SqlInt64Converter Default          = new SqlInt64Converter(true);
-        public static readonly SqlInt64Converter DoesNotAllowNull = new SqlInt64Converter(false);
+        public static readonly SqlInt16Converter Default          = new SqlInt16Converter(true);
+        public static readonly SqlInt16Converter DoesNotAllowNull = new SqlInt16Converter(false);
 
         public Boolean AllowNull { get; }
 
         #region ctor{Boolean}
-        public SqlInt64Converter(Boolean AllowNull) {
+        public SqlInt16Converter(Boolean AllowNull) {
             this.AllowNull = AllowNull;
             }
         #endregion
         #region ctor
-        public SqlInt64Converter()
+        public SqlInt16Converter()
             :this(true)
             {
             }
@@ -51,8 +51,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
         /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
-        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value)
-            {
+        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value) {
             var r = ConvertFromObject(value);
             if ((r == null) && (AllowNull == false)) {
                 throw new InvalidCastException();
@@ -60,44 +59,44 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return r;
             }
         #endregion
-        #region M:ConvertFromObject(Object):Int64?
-        public static Int64? ConvertFromObject(Object value) {
+        #region M:ConvertFromObject(Object):Int16?
+        public static Int16? ConvertFromObject(Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is Boolean B)  { return B ? 1L : 0L;  }
-            if (value is Int32  SI4) { return (Int64)SI4; }
-            if (value is Int64  SI8) { return (Int64)SI8; }
-            if (value is SByte  SI1) { return (Int64)SI1; }
-            if (value is Int16  SI2) { return (Int64)SI2; }
-            if (value is Byte   UI1) { return (Int64)UI1; }
-            if (value is UInt16 UI2) { return (Int64)UI2; }
-            if (value is UInt32 UI4) { return (Int64)UI4; }
-            if (value is UInt64 UI8) { return (Int64)UI8; }
+            if (value is Boolean B)  { return (Int16)(B ? 1 : 0); }
+            if (value is Int32  SI4) { return (Int16)SI4; }
+            if (value is Int64  SI8) { return (Int16)SI8; }
+            if (value is SByte  SI1) { return (Int16)SI1; }
+            if (value is Int16  SI2) { return (Int16)SI2; }
+            if (value is Byte   UI1) { return (Int16)UI1; }
+            if (value is UInt16 UI2) { return (Int16)UI2; }
+            if (value is UInt32 UI4) { return (Int16)UI4; }
+            if (value is UInt64 UI8) { return (Int16)UI8; }
             if (value is Enum E) {
-                return Convert.ToInt64(E);
+                return Convert.ToInt16(E);
                 }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
-            Int64 r;
-            if (!Int64.TryParse(S,out r))
+            Int16 r;
+            if (!Int16.TryParse(S,out r))
                 {
                 return null;
                 }
             return r;
             }
         #endregion
-        #region M:ConvertFromObject(Object,Int64):Int64
-        public static Int64 ConvertFromObject(Object value,Int64 defaultValue)
+        #region M:ConvertFromObject(Object,Int16):Int16
+        public static Int16 ConvertFromObject(Object value,Int16 defaultValue)
             {
             return ConvertFromObject(value).GetValueOrDefault(defaultValue);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int64>.ConvertFromObject(Object):Int64?
-        Int64? ISqlValueTypeConverter<Int64>.ConvertFromObject(Object value) {
+        #region M:ISqlValueTypeConverter<Int16>.ConvertFromObject(Object):Int16?
+        Int16? ISqlValueTypeConverter<Int16>.ConvertFromObject(Object value) {
             return ConvertFromObject(value);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int64>.ConvertFromObject(Object,Int64):Int64
-        Int64 ISqlValueTypeConverter<Int64>.ConvertFromObject(Object value,Int64 defaultValue)
+        #region M:ISqlValueTypeConverter<Int16>.ConvertFromObject(Object,Int16):Int16
+        Int16 ISqlValueTypeConverter<Int16>.ConvertFromObject(Object value,Int16 defaultValue)
             {
             return ConvertFromObject(value,defaultValue);
             }
@@ -107,7 +106,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return $"Int64Converter{{AllowNull={AllowNull}}}";
+            return $"Int16Converter{{AllowNull={AllowNull}}}";
             }
         #endregion
         }

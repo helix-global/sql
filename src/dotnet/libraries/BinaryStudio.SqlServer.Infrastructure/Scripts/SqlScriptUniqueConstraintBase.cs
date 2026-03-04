@@ -1,12 +1,13 @@
-﻿using System;
+﻿using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using System;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal abstract class SqlScriptUniqueConstraintBase<T> : SqlScriptConstraint<T>
         where T : SqlUniqueConstraintBase
         {
-        public SqlClusterOption ClusterOption {get{ return Source.ClusterOption; }}
+        [SqlModelFieldMapping][UsedImplicitly] public SqlClusterOption ClusterOption { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptUniqueConstraintBase(IServiceProvider context,T source)
