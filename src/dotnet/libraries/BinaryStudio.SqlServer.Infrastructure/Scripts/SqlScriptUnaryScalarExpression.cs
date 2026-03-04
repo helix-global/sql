@@ -1,6 +1,17 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptUnaryScalarExpression
+    internal sealed class SqlScriptUnaryScalarExpression : SqlScriptScalarExpression<SqlUnaryScalarExpression>
         {
+        public SqlUnaryScalarOperatorType Operator {get{return Source.Operator; }}
+
+        #region ctor{IServiceProvider,SqlUnaryScalarExpression}
+        public SqlScriptUnaryScalarExpression(IServiceProvider context,SqlUnaryScalarExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

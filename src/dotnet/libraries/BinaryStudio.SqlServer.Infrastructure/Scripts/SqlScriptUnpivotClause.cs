@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptUnpivotClause
+    internal sealed class SqlScriptUnpivotClause : SqlScriptCodeObject<SqlUnpivotClause>
         {
+        #region ctor{IServiceProvider,SqlUnpivotClause}
+        public SqlScriptUnpivotClause(IServiceProvider context,SqlUnpivotClause source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

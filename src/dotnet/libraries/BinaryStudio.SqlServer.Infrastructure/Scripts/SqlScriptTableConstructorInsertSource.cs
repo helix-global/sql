@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptTableConstructorInsertSource
+    internal sealed class SqlScriptTableConstructorInsertSource : SqlScriptInsertSource<SqlTableConstructorInsertSource>
         {
+        #region ctor{IServiceProvider,SqlTableConstructorInsertSource}
+        public SqlScriptTableConstructorInsertSource(IServiceProvider context,SqlTableConstructorInsertSource source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

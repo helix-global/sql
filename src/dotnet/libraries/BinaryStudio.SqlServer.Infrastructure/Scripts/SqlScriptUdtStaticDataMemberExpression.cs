@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptUdtStaticDataMemberExpression
+    internal sealed class SqlScriptUdtStaticDataMemberExpression : SqlScriptUdtStaticMemberExpression<SqlUdtStaticDataMemberExpression>
         {
+        #region ctor{IServiceProvider,SqlUdtStaticDataMemberExpression}
+        public SqlScriptUdtStaticDataMemberExpression(IServiceProvider context,SqlUdtStaticDataMemberExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

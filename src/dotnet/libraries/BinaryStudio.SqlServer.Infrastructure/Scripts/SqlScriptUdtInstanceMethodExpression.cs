@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptUdtInstanceMethodExpression
+    internal sealed class SqlScriptUdtInstanceMethodExpression : SqlScriptUdtInstanceMemberExpression<SqlUdtInstanceMethodExpression>
         {
+        #region ctor{IServiceProvider,SqlUdtInstanceMethodExpression}
+        public SqlScriptUdtInstanceMethodExpression(IServiceProvider context,SqlUdtInstanceMethodExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

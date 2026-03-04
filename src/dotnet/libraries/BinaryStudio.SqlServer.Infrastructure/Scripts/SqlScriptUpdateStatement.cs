@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptUpdateStatement
+    internal sealed class SqlScriptUpdateStatement : SqlScriptDmlStatement<SqlUpdateStatement>
         {
+        #region ctor{IServiceProvider,SqlUpdateStatement}
+        public SqlScriptUpdateStatement(IServiceProvider context,SqlUpdateStatement source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
