@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptScalarFunctionReturnType
+    internal sealed class SqlScriptScalarFunctionReturnType : SqlScriptFunctionReturnType<SqlScalarFunctionReturnType>
         {
+        #region ctor{IServiceProvider,SqlScalarFunctionReturnType}
+        public SqlScriptScalarFunctionReturnType(IServiceProvider context,SqlScalarFunctionReturnType source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

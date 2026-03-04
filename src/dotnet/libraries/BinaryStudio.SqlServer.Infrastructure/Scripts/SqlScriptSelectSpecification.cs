@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptSelectSpecification
+    internal sealed class SqlScriptSelectSpecification : SqlScriptCodeObject<SqlSelectSpecification>
         {
+        #region ctor{IServiceProvider,SqlSelectSpecification}
+        public SqlScriptSelectSpecification(IServiceProvider context,SqlSelectSpecification source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

@@ -1,6 +1,16 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptScalarRefExpression
+    internal abstract class SqlScriptScalarRefExpression<T> : SqlScriptScalarExpression<T>
+        where T : SqlScalarRefExpression
         {
+        #region ctor{IServiceProvider,T}
+        protected SqlScriptScalarRefExpression(IServiceProvider context,T source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

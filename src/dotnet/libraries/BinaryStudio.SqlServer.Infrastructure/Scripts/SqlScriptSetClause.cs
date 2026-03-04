@@ -1,6 +1,16 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptSetClause
+    internal abstract class SqlScriptSetClause<T> : SqlScriptCodeObject<T>
+        where T : SqlSetClause
         {
+        #region ctor{IServiceProvider,T}
+        protected SqlScriptSetClause(IServiceProvider context,T source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
