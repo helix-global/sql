@@ -1,4 +1,5 @@
 ﻿using System;
+using SqlCodeDomIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlIdentifier;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -117,5 +118,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 : -1;
             }
         #endregion
+
+        public static implicit operator SqlIdentifier(SqlCodeDomIdentifier source) {
+            return new SqlIdentifier(source.Value);
+            }
         }
     }

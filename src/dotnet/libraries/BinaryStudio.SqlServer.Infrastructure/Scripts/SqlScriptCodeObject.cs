@@ -1,9 +1,10 @@
-﻿using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -17,6 +18,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             :base(context,source)
             {
             Source = source;
+            }
+        #endregion
+
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
+            {
+            return $"{{{typeof(T).Name}}}";
             }
         #endregion
         }
@@ -33,7 +43,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 var children = new List<SqlScriptCodeObject>();
                 foreach (var o in source.Children) {
                     if (o != null) {
-                        if (RegisteredTypes.TryGetValue(o.GetType(),out var type)) {
+                        var RequestedType = o.GetType();
+                        Type type;
+                        using (UpgradeableReadLock(g_rtlock)) {
+                            if (!RegisteredTypes.TryGetValue(RequestedType,out type)) {
+                                foreach (var pair in RegisteredTypes) {
+                                    if (pair.Key.IsAssignableFrom(RequestedType)) {
+                                        using (WriteLock(g_rtlock)) {
+                                            RegisteredTypes[RequestedType] = type = pair.Value;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        if (type != null) {
                             var ctor = type.GetConstructor(new[] { typeof(IServiceProvider), o.GetType() });
                             if (ctor != null) {
                                 children.Add((SqlScriptCodeObject)ctor.Invoke(new Object[] { context, o }));
@@ -49,6 +72,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
 
         protected static readonly IDictionary<Type,Type> RegisteredTypes = new ConcurrentDictionary<Type,Type>();
+        private static readonly ReaderWriterLockSlim g_rtlock = new ReaderWriterLockSlim();
 
         static SqlScriptCodeObject() {
             foreach (var type in typeof(SqlScriptCodeObject).Assembly.GetTypes()) {
