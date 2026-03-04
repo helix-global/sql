@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDeleteStatement))]
     internal sealed class SqlScriptDeleteStatement : SqlScriptDmlStatement<SqlDeleteStatement>
         {
         #region ctor{IServiceProvider,SqlDeleteStatement}

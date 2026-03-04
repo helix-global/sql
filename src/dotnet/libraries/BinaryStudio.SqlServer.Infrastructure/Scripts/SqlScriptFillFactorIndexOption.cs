@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlFillFactorIndexOption))]
     internal sealed class SqlScriptFillFactorIndexOption : SqlScriptIndexOption<SqlFillFactorIndexOption>
         {
         public Int32 FillFactor {get{ return Source.FillFactor; }}

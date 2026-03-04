@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCollation))]
     internal sealed class SqlScriptCollation : SqlScriptCodeObject<SqlCollation>
         {
         #region ctor{IServiceProvider,SqlCollation}

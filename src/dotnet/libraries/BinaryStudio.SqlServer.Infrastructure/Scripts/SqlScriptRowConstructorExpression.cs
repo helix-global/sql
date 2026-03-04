@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlRowConstructorExpression))]
     internal sealed class SqlScriptRowConstructorExpression : SqlScriptCodeObject<SqlRowConstructorExpression>
         {
         #region ctor{IServiceProvider,SqlRowConstructorExpression}

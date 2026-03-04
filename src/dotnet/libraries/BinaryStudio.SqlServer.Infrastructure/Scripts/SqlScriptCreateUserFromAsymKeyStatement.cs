@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateUserFromAsymKeyStatement))]
     internal sealed class SqlScriptCreateUserFromAsymKeyStatement : SqlScriptCreateUserStatement<SqlCreateUserFromAsymKeyStatement>
         {
         #region ctor{IServiceProvider,SqlCreateUserFromAsymKeyStatement}

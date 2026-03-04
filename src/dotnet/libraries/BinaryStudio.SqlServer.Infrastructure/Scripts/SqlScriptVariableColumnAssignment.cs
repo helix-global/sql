@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlVariableColumnAssignment))]
     internal sealed class SqlScriptVariableColumnAssignment : SqlScriptAssignment<SqlVariableColumnAssignment>
         {
         #region ctor{IServiceProvider,SqlVariableColumnAssignment}

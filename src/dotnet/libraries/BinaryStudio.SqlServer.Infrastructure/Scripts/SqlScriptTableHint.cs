@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTableHint))]
     internal sealed class SqlScriptTableHint : SqlScriptHint<SqlTableHint>
         {
         public SqlTableHintType Type { get { return Source.Type; }}

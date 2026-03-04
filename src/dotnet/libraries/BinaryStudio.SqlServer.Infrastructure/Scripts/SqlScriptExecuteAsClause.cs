@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlExecuteAsClause))]
     internal abstract class SqlScriptExecuteAsClause : SqlScriptCodeObject<SqlExecuteAsClause>
         {
         #region ctor{IServiceProvider,SqlExecuteAsClause}

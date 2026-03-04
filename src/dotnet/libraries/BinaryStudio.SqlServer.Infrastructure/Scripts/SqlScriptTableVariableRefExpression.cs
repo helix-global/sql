@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTableVariableRefExpression))]
     internal sealed class SqlScriptTableVariableRefExpression : SqlScriptTableExpression<SqlTableVariableRefExpression>
         {
         #region ctor{IServiceProvider,SqlTableVariableRefExpression}

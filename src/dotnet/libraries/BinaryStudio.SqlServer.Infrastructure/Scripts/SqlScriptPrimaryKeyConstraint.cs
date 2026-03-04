@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlPrimaryKeyConstraint))]
     internal sealed class SqlScriptPrimaryKeyConstraint : SqlScriptUniqueConstraintBase<SqlPrimaryKeyConstraint>
         {
         #region ctor{IServiceProvider,SqlPrimaryKeyConstraint}

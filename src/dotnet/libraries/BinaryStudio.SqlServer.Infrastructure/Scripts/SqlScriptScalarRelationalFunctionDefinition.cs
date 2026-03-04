@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlScalarRelationalFunctionDefinition))]
     internal sealed class SqlScriptScalarRelationalFunctionDefinition : SqlScriptFunctionDefinition<SqlScalarRelationalFunctionDefinition>
         {
         #region ctor{IServiceProvider,SqlScalarRelationalFunctionDefinition}

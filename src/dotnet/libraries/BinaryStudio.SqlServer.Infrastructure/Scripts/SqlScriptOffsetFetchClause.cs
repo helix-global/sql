@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlOffsetFetchClause))]
     internal sealed class SqlScriptOffsetFetchClause : SqlScriptCodeObject<SqlOffsetFetchClause>
         {
         #region ctor{IServiceProvider,SqlOffsetFetchClause}

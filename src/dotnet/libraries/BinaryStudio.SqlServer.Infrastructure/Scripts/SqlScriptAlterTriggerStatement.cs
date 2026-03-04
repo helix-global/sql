@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlAlterTriggerStatement))]
     internal sealed class SqlScriptAlterTriggerStatement : SqlScriptCreateAlterTriggerStatementBase<SqlAlterTriggerStatement>
         {
         #region ctor{IServiceProvider,SqlAlterTriggerStatement}

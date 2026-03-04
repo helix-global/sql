@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCursorVariableRefExpressionError))]
     internal sealed class SqlScriptCursorVariableRefExpressionError : SqlScriptCursorVariableRefExpression<SqlCursorVariableRefExpressionError>
         {
         #region ctor{IServiceProvider,SqlCursorVariableRefExpressionError}

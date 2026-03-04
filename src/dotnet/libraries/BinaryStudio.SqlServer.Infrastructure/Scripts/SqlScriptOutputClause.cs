@@ -14,6 +14,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [SqlScriptObject(typeof(SqlOutputClause))]
     internal sealed class SqlScriptOutputClause : SqlScriptOutputClause<SqlOutputClause>
         {
         #region ctor{IServiceProvider,SqlOutputClause}

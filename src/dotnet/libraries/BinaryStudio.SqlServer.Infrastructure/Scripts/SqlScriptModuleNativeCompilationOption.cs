@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlModuleNativeCompilationOption))]
     internal sealed class SqlScriptModuleNativeCompilationOption : SqlScriptModuleOption<SqlModuleNativeCompilationOption>
         {
         #region ctor{IServiceProvider,SqlModuleNativeCompilationOption}

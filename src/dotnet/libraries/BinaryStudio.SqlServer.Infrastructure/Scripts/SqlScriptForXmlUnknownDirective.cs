@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlForXmlUnknownDirective))]
     internal sealed class SqlScriptForXmlUnknownDirective : SqlScriptForXmlDirective<SqlForXmlUnknownDirective>
         {
         public String Name {get{ return Source.Name; }}

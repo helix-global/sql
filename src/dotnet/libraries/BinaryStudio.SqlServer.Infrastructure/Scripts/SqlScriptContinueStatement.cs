@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlContinueStatement))]
     internal sealed class SqlScriptContinueStatement : SqlScriptStatement<SqlContinueStatement>
         {
         #region ctor{IServiceProvider,SqlContinueStatement}

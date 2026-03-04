@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlAggregateFunctionCallExpression))]
     internal sealed class SqlScriptAggregateFunctionCallExpression : SqlScriptBuiltinScalarFunctionCallExpression<SqlAggregateFunctionCallExpression>
         {
         #region ctor{IServiceProvider,SqlAggregateFunctionCallExpression}

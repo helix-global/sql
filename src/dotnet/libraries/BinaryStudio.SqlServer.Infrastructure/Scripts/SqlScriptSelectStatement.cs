@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlSelectStatement))]
     internal sealed class SqlScriptSelectStatement : SqlScriptStatement<SqlSelectStatement>
         {
         #region ctor{IServiceProvider,SqlSelectStatement}

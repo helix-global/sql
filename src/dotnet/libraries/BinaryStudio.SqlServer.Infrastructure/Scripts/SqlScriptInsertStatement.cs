@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlInsertStatement))]
     internal sealed class SqlScriptInsertStatement : SqlScriptDmlStatement<SqlInsertStatement>
         {
         #region ctor{IServiceProvider,SqlInsertStatement}

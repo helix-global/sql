@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlBucketCountIndexOption))]
     internal sealed class SqlScriptBucketCountIndexOption : SqlScriptIndexOption<SqlBucketCountIndexOption>
         {
         #region ctor{IServiceProvider,SqlBucketCountIndexOption}

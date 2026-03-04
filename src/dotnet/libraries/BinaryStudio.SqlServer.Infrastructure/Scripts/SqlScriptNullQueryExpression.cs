@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlNullQueryExpression))]
     internal sealed class SqlScriptNullQueryExpression : SqlScriptQueryExpression<SqlNullQueryExpression>
         {
         #region ctor{IServiceProvider,SqlNullQueryExpression}

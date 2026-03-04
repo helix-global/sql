@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIgnoreDupKeyIndexOption))]
     internal sealed class SqlScriptIgnoreDupKeyIndexOption : SqlScriptIndexOption<SqlIgnoreDupKeyIndexOption>
         {
         public SqlOnOffValue OnOffValue {get{ return Source.OnOffValue; }}

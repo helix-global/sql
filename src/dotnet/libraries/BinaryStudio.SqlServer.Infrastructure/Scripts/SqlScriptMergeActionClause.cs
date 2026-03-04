@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlMergeActionClause))]
     internal sealed class SqlScriptMergeActionClause : SqlScriptCodeObject<SqlMergeActionClause>
         {
         public SqlMergeConditionType MergeConditionType { get {  return Source.MergeConditionType; }}

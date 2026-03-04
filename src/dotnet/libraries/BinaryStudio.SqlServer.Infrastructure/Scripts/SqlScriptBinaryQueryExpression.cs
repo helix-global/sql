@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlBinaryQueryExpression))]
     internal sealed class SqlScriptBinaryQueryExpression : SqlScriptQueryExpression<SqlBinaryQueryExpression>
         {
         #region ctor{IServiceProvider,SqlBinaryQueryExpression}

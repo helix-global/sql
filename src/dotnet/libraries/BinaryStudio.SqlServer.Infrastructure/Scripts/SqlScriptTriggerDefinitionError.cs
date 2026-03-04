@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTriggerDefinitionError))]
     internal sealed class SqlScriptTriggerDefinitionError : SqlScriptTriggerDefinition<SqlTriggerDefinitionError>
         {
         public Boolean IsNotForReplication { get { return Source.IsNotForReplication; }}

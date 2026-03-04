@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIntoClause))]
     internal sealed class SqlScriptIntoClause : SqlScriptCodeObject<SqlIntoClause>
         {
         #region ctor{IServiceProvider,SqlIntoClause}

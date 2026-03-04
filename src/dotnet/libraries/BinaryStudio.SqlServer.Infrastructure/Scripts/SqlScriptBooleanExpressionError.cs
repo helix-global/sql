@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlBooleanExpressionError))]
     internal sealed class SqlScriptBooleanExpressionError : SqlScriptBooleanExpression<SqlBooleanExpressionError>
         {
         #region ctor{IServiceProvider,SqlBooleanExpressionError}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateUserDefinedTableTypeStatement))]
     internal sealed class SqlScriptCreateUserDefinedTableTypeStatement : SqlScriptCreateTypeStatement<SqlCreateUserDefinedTableTypeStatement>
         {
         #region ctor{IServiceProvider,SqlCreateUserDefinedTableTypeStatement}

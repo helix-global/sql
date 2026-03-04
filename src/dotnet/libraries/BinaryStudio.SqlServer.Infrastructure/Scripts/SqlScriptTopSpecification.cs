@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTopSpecification))]
     internal sealed class SqlScriptTopSpecification : SqlScriptCodeObject<SqlTopSpecification>
         {
         public Boolean IsPercent { get { return Source.IsPercent; }}

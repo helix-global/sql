@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTemporalPeriodDefinition))]
     internal sealed class SqlScriptTemporalPeriodDefinition : SqlScriptCodeObject<SqlTemporalPeriodDefinition>
         {
         public String Name { get { return Source.Name; }}

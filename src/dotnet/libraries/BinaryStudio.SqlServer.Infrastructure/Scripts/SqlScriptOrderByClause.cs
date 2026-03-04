@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlOrderByClause))]
     internal sealed class SqlScriptOrderByClause : SqlScriptCodeObject<SqlOrderByClause>
         {
         #region ctor{IServiceProvider,SqlOrderByClause}

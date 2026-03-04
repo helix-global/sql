@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDmlTriggerDefinition))]
     internal sealed class SqlScriptDmlTriggerDefinition : SqlScriptTriggerDefinition<SqlDmlTriggerDefinition>
         {
         #region ctor{IServiceProvider,SqlDmlTriggerDefinition}

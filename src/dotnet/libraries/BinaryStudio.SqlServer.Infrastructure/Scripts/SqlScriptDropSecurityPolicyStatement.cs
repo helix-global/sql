@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDropSecurityPolicyStatement))]
     internal sealed class SqlScriptDropSecurityPolicyStatement : SqlScriptDropStatement<SqlDropSecurityPolicyStatement>
         {
         #region ctor{IServiceProvider,SqlDropSecurityPolicyStatement}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlFullTextColumn))]
     internal sealed class SqlScriptFullTextColumn : SqlScriptCodeObject<SqlFullTextColumn>
         {
         #region ctor{IServiceProvider,SqlFullTextColumn}

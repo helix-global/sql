@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDeleteMergeAction))]
     internal sealed class SqlScriptDeleteMergeAction : SqlScriptMergeAction<SqlDeleteMergeAction>
         {
         #region ctor{IServiceProvider,SqlDeleteMergeAction}

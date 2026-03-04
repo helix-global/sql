@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlGroupingSetItemsCollection))]
     internal sealed class SqlScriptGroupingSetItemsCollection : SqlScriptGroupingSet<SqlGroupingSetItemsCollection>
         {
         #region ctor{IServiceProvider,SqlGroupingSetItemsCollection}

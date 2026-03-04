@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCubeGroupByItem))]
     internal sealed class SqlScriptCubeGroupByItem : SqlScriptGroupingSetItem<SqlCubeGroupByItem>
         {
         #region ctor{IServiceProvider,SqlCubeGroupByItem}

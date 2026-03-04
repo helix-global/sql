@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDropAggregateStatement))]
     internal sealed class SqlScriptDropAggregateStatement : SqlScriptDropStatement<SqlDropAggregateStatement>
         {
         #region ctor{IServiceProvider,SqlDropAggregateStatement}

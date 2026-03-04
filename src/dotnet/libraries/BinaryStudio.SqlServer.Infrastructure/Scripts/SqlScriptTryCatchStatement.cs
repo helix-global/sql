@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTryCatchStatement))]
     internal sealed class SqlScriptTryCatchStatement : SqlScriptStatement<SqlTryCatchStatement>
         {
         #region ctor{IServiceProvider,SqlTryCatchStatement}

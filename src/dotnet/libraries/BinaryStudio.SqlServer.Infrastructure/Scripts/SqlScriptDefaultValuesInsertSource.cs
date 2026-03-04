@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDefaultValuesInsertSource))]
     internal sealed class SqlScriptDefaultValuesInsertSource : SqlScriptInsertSource<SqlDefaultValuesInsertSource>
         {
         #region ctor{IServiceProvider,SqlDefaultValuesInsertSource}

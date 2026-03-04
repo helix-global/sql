@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlUdtStaticMethodExpression))]
     internal sealed class SqlScriptUdtStaticMethodExpression : SqlScriptUdtStaticMemberExpression<SqlUdtStaticMethodExpression>
         {
         #region ctor{IServiceProvider,SqlUdtStaticMethodExpression}

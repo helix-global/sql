@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlQualifiedJoinTableExpression))]
     internal sealed class SqlScriptQualifiedJoinTableExpression : SqlScriptJoinTableExpression<SqlQualifiedJoinTableExpression>
         {
         #region ctor{IServiceProvider,SqlQualifiedJoinTableExpression}

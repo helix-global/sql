@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlNullAssignment))]
     internal sealed class SqlScriptNullAssignment : SqlScriptAssignment<SqlNullAssignment>
         {
         #region ctor{IServiceProvider,SqlNullAssignment}

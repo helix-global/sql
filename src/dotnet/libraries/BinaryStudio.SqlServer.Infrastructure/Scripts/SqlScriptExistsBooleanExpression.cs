@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlExistsBooleanExpression))]
     internal sealed class SqlScriptExistsBooleanExpression : SqlScriptBooleanExpression<SqlExistsBooleanExpression>
         {
         #region ctor{IServiceProvider,SqlExistsBooleanExpression}

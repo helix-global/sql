@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlUnpivotClause))]
     internal sealed class SqlScriptUnpivotClause : SqlScriptCodeObject<SqlUnpivotClause>
         {
         #region ctor{IServiceProvider,SqlUnpivotClause}

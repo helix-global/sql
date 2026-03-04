@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlAlterLoginStatement))]
     internal sealed class SqlScriptAlterLoginStatement : SqlScriptDdlStatement<SqlAlterLoginStatement>
         {
         #region ctor{IServiceProvider,SqlAlterLoginStatement}

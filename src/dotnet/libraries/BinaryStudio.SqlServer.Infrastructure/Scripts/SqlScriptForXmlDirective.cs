@@ -14,6 +14,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [SqlScriptObject(typeof(SqlForXmlDirective))]
     internal sealed class SqlScriptForXmlDirective : SqlScriptForXmlDirective<SqlForXmlDirective>
         {
         #region ctor{IServiceProvider,SqlForXmlDirective}

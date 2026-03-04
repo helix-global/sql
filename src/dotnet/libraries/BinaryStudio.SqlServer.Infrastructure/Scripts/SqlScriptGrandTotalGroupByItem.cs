@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlGrandTotalGroupByItem))]
     internal sealed class SqlScriptGrandTotalGroupByItem : SqlScriptGroupByItem<SqlGrandTotalGroupByItem>
         {
         #region ctor{IServiceProvider,SqlGrandTotalGroupByItem}

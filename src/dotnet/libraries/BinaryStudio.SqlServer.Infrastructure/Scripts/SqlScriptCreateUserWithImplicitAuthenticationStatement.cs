@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateUserWithImplicitAuthenticationStatement))]
     internal sealed class SqlScriptCreateUserWithImplicitAuthenticationStatement : SqlScriptCreateUserStatement<SqlCreateUserWithImplicitAuthenticationStatement>
         {
         #region ctor{IServiceProvider,SqlCreateUserWithImplicitAuthenticationStatement}

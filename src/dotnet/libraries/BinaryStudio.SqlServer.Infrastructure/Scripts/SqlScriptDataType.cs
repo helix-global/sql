@@ -3,6 +3,7 @@
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     using DataType=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlDataType;
+    [SqlScriptObject(typeof(DataType))]
     internal sealed class SqlScriptDataType : SqlScriptCodeObject<DataType>
         {
         #region ctor{IServiceProvider,SqlDataType}

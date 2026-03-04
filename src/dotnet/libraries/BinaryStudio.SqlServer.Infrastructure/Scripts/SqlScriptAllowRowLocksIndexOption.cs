@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlAllowRowLocksIndexOption))]
     internal sealed class SqlScriptAllowRowLocksIndexOption : SqlScriptIndexOption<SqlAllowRowLocksIndexOption>
         {
         #region ctor{IServiceProvider,SqlAllowRowLocksIndexOption}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlScalarFunctionReturnType))]
     internal sealed class SqlScriptScalarFunctionReturnType : SqlScriptFunctionReturnType<SqlScalarFunctionReturnType>
         {
         #region ctor{IServiceProvider,SqlScalarFunctionReturnType}

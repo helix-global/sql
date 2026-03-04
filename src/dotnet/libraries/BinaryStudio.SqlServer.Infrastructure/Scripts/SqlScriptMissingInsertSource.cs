@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlMissingInsertSource))]
     internal sealed class SqlScriptMissingInsertSource : SqlScriptInsertSource<SqlMissingInsertSource>
         {
         #region ctor{IServiceProvider,SqlMissingInsertSource}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlUpdateSpecification))]
     internal sealed class SqlScriptUpdateSpecification : SqlScriptUpdateDeleteSpecificationBase<SqlUpdateSpecification>
         {
         #region ctor{IServiceProvider,SqlUpdateSpecification}

@@ -14,6 +14,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [SqlScriptObject(typeof(SqlStatementError))]
     internal sealed class SqlScriptStatementError : SqlScriptStatementError<SqlStatementError>
         {
         #region ctor{IServiceProvider,SqlStatementError}

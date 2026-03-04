@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDataTypeSpecification))]
     internal sealed class SqlScriptDataTypeSpecification : SqlScriptCodeObject<SqlDataTypeSpecification>
         {
         #region ctor{IServiceProvider,SqlDataTypeSpecification}

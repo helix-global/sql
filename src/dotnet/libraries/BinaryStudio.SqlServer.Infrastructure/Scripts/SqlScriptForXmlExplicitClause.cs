@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlForXmlExplicitClause))]
     internal sealed class SqlScriptForXmlExplicitClause : SqlScriptForXmlClause<SqlForXmlExplicitClause>
         {
         #region ctor{IServiceProvider,SqlForXmlExplicitClause}

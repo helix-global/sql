@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDBCCStatement))]
     internal sealed class SqlScriptDBCCStatement : SqlScriptStatement<SqlDBCCStatement>
         {
         public SqlDbccCommandType CommandType {get { return Source.CommandType; }}

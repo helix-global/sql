@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlInlineTableVariableDeclareStatement))]
     internal sealed class SqlScriptInlineTableVariableDeclareStatement : SqlScriptDeclareStatement<SqlInlineTableVariableDeclareStatement>
         {
         #region ctor{IServiceProvider,SqlInlineTableVariableDeclareStatement}

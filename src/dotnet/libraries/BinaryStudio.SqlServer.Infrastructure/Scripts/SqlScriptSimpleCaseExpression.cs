@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlSimpleCaseExpression))]
     internal sealed class SqlScriptSimpleCaseExpression : SqlScriptCaseExpression<SqlSimpleCaseExpression>
         {
         #region ctor{IServiceProvider,SqlSimpleCaseExpression}

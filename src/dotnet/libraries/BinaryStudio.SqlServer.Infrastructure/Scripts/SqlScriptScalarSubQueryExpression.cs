@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlScalarSubQueryExpression))]
     internal sealed class SqlScriptScalarSubQueryExpression : SqlScriptScalarExpression<SqlScalarSubQueryExpression>
         {
         #region ctor{IServiceProvider,SqlScalarSubQueryExpression}

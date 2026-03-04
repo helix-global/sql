@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlExecuteArgument))]
     internal sealed class SqlScriptExecuteArgument : SqlScriptCodeObject<SqlExecuteArgument>
         {
         #region ctor{IServiceProvider,SqlExecuteArgument}

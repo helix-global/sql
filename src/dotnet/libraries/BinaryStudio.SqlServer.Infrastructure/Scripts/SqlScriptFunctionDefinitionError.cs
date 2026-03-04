@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlFunctionDefinitionError))]
     internal sealed class SqlScriptFunctionDefinitionError : SqlScriptFunctionDefinition<SqlFunctionDefinitionError>
         {
         #region ctor{IServiceProvider,SqlFunctionDefinitionError}

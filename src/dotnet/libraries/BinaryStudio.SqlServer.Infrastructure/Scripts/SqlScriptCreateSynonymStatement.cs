@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateSynonymStatement))]
     internal sealed class SqlScriptCreateSynonymStatement : SqlScriptDdlStatement<SqlCreateSynonymStatement>
         {
         #region ctor{IServiceProvider,SqlCreateSynonymStatement}

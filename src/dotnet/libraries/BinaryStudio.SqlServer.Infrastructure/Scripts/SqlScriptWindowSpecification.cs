@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlWindowSpecification))]
     internal sealed class SqlScriptWindowSpecification : SqlScriptCodeObject<SqlWindowSpecification>
         {
         public SqlWindowFrame WindowFrame {get{return Source.WindowFrame; }}

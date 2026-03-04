@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlPadIndexOption))]
     internal sealed class SqlScriptPadIndexOption : SqlScriptIndexOption<SqlPadIndexOption>
         {
         public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}

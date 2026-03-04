@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlSelectStarExpression))]
     internal sealed class SqlScriptSelectStarExpression : SqlScriptSelectExpression<SqlSelectStarExpression>
         {
         #region ctor{IServiceProvider,SqlSelectStarExpression}

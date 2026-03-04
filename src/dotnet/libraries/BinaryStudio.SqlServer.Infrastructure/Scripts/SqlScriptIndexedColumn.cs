@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIndexedColumn))]
     internal sealed class SqlScriptIndexedColumn : SqlScriptCodeObject<SqlIndexedColumn>
         {
         public SqlSortOrder SortOrder {get{ return Source.SortOrder; }}

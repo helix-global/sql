@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlParameterOption))]
     internal sealed class SqlScriptParameterOption : SqlScriptCodeObject<SqlParameterOption>
         {
         public SqlParameterOptionType Type { get { return Source.Type; }}

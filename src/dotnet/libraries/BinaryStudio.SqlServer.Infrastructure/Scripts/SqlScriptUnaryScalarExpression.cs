@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlUnaryScalarExpression))]
     internal sealed class SqlScriptUnaryScalarExpression : SqlScriptScalarExpression<SqlUnaryScalarExpression>
         {
         public SqlUnaryScalarOperatorType Operator {get{return Source.Operator; }}

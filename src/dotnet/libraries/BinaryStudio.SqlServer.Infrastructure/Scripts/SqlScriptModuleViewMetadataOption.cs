@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlModuleViewMetadataOption))]
     internal sealed class SqlScriptModuleViewMetadataOption : SqlScriptModuleOption<SqlModuleViewMetadataOption>
         {
         #region ctor{IServiceProvider,SqlModuleViewMetadataOption}

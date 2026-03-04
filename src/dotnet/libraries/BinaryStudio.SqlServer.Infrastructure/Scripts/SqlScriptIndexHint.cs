@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIndexHint))]
     internal sealed class SqlScriptIndexHint : SqlScriptHint<SqlIndexHint>
         {
         #region ctor{IServiceProvider,SqlIndexHint}

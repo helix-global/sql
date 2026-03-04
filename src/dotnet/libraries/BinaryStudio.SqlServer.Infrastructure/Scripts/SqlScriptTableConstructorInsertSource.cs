@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTableConstructorInsertSource))]
     internal sealed class SqlScriptTableConstructorInsertSource : SqlScriptInsertSource<SqlTableConstructorInsertSource>
         {
         #region ctor{IServiceProvider,SqlTableConstructorInsertSource}

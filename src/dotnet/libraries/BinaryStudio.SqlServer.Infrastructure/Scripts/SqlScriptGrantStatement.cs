@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlGrantStatement))]
     internal sealed class SqlScriptGrantStatement : SqlScriptGdrStatement<SqlGrantStatement>
         {
         #region ctor{IServiceProvider,SqlGrantStatement}

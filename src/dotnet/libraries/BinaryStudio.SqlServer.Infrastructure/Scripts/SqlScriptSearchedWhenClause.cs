@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlSearchedWhenClause))]
     internal sealed class SqlScriptSearchedWhenClause : SqlScriptScalarExpression<SqlSearchedWhenClause>
         {
         #region ctor{IServiceProvider,SqlSearchedWhenClause}

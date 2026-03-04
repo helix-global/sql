@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlFilterClause))]
     internal sealed class SqlScriptFilterClause : SqlScriptCodeObject<SqlFilterClause>
         {
         #region ctor{IServiceProvider,SqlFilterClause}

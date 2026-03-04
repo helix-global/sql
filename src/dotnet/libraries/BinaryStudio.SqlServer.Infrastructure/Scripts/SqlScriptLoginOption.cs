@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlLoginOption))]
     internal sealed class SqlScriptLoginOption : SqlScriptCodeObject<SqlLoginOption>
         {
         public SqlLoginOptionType Type {get{ return Source.Type; }}

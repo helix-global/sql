@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlConstraint))]
     internal sealed class SqlScriptTypeOnlyConstraint : SqlScriptConstraint<SqlConstraint>
         {
         #region ctor{IServiceProvider,SqlConstraint}

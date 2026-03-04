@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTriggerEvent))]
     internal sealed class SqlScriptTriggerEvent : SqlScriptCodeObject<SqlTriggerEvent>
         {
         public String Name { get { return Source.Name; }}

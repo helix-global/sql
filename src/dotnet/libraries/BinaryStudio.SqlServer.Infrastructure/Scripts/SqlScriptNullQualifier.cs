@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlNullQualifier))]
     internal sealed class SqlScriptNullQualifier : SqlScriptCodeObject<SqlNullQualifier>
         {
         public SqlJsonNullQualifier JsonNullQualifierValue { get { return Source.JsonNullQualifierValue; }}

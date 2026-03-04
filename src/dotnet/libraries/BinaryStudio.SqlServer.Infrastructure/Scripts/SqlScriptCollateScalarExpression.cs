@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCollateScalarExpression))]
     internal sealed class SqlScriptCollateScalarExpression : SqlScriptScalarExpression<SqlCollateScalarExpression>
         {
         #region ctor{IServiceProvider,SqlCollateScalarExpression}

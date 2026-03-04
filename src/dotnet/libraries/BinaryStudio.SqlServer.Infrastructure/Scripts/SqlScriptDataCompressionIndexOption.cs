@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDataCompressionIndexOption))]
     internal sealed class SqlScriptDataCompressionIndexOption : SqlScriptIndexOption<SqlDataCompressionIndexOption>
         {
         public SqlDataCompressionType CompressionType {get{ return Source.CompressionType; }}

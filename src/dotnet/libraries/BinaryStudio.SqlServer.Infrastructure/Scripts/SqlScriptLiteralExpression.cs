@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlLiteralExpression))]
     internal sealed class SqlScriptLiteralExpression : SqlScriptScalarExpression<SqlLiteralExpression>
         {
         public LiteralValueType Type {get{ return Source.Type; }}

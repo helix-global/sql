@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIsNullBooleanExpression))]
     internal sealed class SqlScriptIsNullBooleanExpression : SqlScriptBooleanExpression<SqlIsNullBooleanExpression>
         {
         public Boolean HasNot { get { return Source.HasNot; }}

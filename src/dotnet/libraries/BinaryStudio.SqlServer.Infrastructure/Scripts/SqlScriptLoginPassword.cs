@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlLoginPassword))]
     internal sealed class SqlScriptLoginPassword : SqlScriptCodeObject<SqlLoginPassword>
         {
         public Boolean IsHashed {get{ return Source.IsHashed; }}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDistinctPredicateComparisonBooleanExpression))]
     internal sealed class SqlScriptDistinctPredicateComparisonBooleanExpression : SqlScriptBooleanExpression<SqlDistinctPredicateComparisonBooleanExpression>
         {
         #region ctor{IServiceProvider,SqlDistinctPredicateComparisonBooleanExpression}

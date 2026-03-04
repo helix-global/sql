@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateUserFromCertificateStatement))]
     internal sealed class SqlScriptCreateUserFromCertificateStatement : SqlScriptCreateUserStatement<SqlCreateUserFromCertificateStatement>
         {
         #region ctor{IServiceProvider,SqlCreateUserFromCertificateStatement}

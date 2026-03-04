@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlNotBooleanExpression))]
     internal sealed class SqlScriptNotBooleanExpression : SqlScriptBooleanExpression<SqlNotBooleanExpression>
         {
         #region ctor{IServiceProvider,SqlNotBooleanExpression}

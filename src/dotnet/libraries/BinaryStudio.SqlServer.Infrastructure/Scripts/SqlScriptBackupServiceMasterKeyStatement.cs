@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlBackupServiceMasterKeyStatement))]
     internal class SqlScriptBackupServiceMasterKeyStatement : SqlScriptBackupRestoreServiceMasterKeyStatement<SqlBackupServiceMasterKeyStatement>
         {
         #region ctor{IServiceProvider,SqlBackupServiceMasterKeyStatement}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlMultistatementTableRelationalFunctionDefinition))]
     internal class SqlScriptMultistatementTableRelationalFunctionDefinition : SqlScriptFunctionDefinition<SqlMultistatementTableRelationalFunctionDefinition>
         {
         public String VariableName { get { return Source.VariableName; }}

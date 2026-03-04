@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDropViewStatement))]
     internal sealed class SqlScriptDropViewStatement : SqlScriptDropStatement<SqlDropViewStatement>
         {
         #region ctor{IServiceProvider,SqlDropViewStatement}

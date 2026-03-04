@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlIndexOptionError))]
     internal sealed class SqlScriptIndexOptionError : SqlScriptIndexOption<SqlIndexOptionError>
         {
         #region ctor{IServiceProvider,SqlIndexOptionError}

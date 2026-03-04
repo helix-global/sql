@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCompressionPartitionRange))]
     internal sealed class SqlScriptCompressionPartitionRange : SqlScriptCodeObject<SqlCompressionPartitionRange>
         {
         #region ctor{IServiceProvider,SqlCompressionPartitionRange}

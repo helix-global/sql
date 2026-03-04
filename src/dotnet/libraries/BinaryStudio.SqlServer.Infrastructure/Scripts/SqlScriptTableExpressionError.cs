@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTableExpressionError))]
     internal sealed class SqlScriptTableExpressionError : SqlScriptTableExpression<SqlTableExpressionError>
         {
         #region ctor{IServiceProvider,SqlTableExpressionError}

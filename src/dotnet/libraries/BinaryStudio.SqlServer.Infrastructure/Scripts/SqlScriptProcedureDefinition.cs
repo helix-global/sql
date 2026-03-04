@@ -17,6 +17,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [SqlScriptObject(typeof(SqlProcedureDefinition))]
     internal sealed class SqlScriptProcedureDefinition : SqlScriptProcedureDefinition<SqlProcedureDefinition>
         {
         #region ctor{IServiceProvider,SqlProcedureDefinition}

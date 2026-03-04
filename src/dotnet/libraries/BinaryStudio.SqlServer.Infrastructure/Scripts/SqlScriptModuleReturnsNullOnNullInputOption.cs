@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlModuleReturnsNullOnNullInputOption))]
     internal sealed class SqlScriptModuleReturnsNullOnNullInputOption : SqlScriptModuleOption<SqlModuleReturnsNullOnNullInputOption>
         {
         #region ctor{IServiceProvider,SqlModuleReturnsNullOnNullInputOption}

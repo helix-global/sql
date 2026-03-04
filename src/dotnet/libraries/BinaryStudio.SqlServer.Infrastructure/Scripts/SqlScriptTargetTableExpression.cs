@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTargetTableExpression))]
     internal sealed class SqlScriptTargetTableExpression : SqlScriptCodeObject<SqlTargetTableExpression>
         {
         public String OpenDataSourceCommandString { get { return Source.OpenDataSourceCommandString; }}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlForBrowseClause))]
     internal sealed class SqlScriptForBrowseClause : SqlScriptForClause<SqlForBrowseClause>
         {
         #region ctor{IServiceProvider,SqlForBrowseClause}

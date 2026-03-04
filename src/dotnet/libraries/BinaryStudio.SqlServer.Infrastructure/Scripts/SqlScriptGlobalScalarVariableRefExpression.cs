@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlGlobalScalarVariableRefExpression))]
     internal sealed class SqlScriptGlobalScalarVariableRefExpression : SqlScriptScalarExpression<SqlGlobalScalarVariableRefExpression>
         {
         public String VariableName {get{ return Source.VariableName; }}

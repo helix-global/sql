@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlUpdateBooleanExpression))]
     internal sealed class SqlScriptUpdateBooleanExpression : SqlScriptBooleanExpression<SqlUpdateBooleanExpression>
         {
         #region ctor{IServiceProvider,SqlUpdateBooleanExpression}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlLargeDataStorageInformation))]
     internal sealed class SqlScriptLargeDataStorageInformation : SqlScriptCodeObject<SqlLargeDataStorageInformation>
         {
         #region ctor{IServiceProvider,SqlLargeDataStorageInformation}

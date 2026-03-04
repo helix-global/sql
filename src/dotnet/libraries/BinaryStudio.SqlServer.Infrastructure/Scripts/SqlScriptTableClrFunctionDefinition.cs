@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlTableClrFunctionDefinition))]
     internal sealed class SqlScriptTableClrFunctionDefinition : SqlScriptFunctionDefinition<SqlTableClrFunctionDefinition>
         {
         #region ctor{IServiceProvider,SqlTableClrFunctionDefinition}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlRestoreTableStatement))]
     internal sealed class SqlScriptRestoreTableStatement : SqlScriptBackupRestoreTableStatement<SqlRestoreTableStatement>
         {
         #region ctor{IServiceProvider,SqlRestoreTableStatement}

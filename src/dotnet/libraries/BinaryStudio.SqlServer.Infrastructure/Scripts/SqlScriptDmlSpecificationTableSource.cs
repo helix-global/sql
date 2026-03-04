@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDmlSpecificationTableSource))]
     internal sealed class SqlScriptDmlSpecificationTableSource : SqlScriptTableExpression<SqlDmlSpecificationTableSource>
         {
         #region ctor{IServiceProvider,SqlDmlSpecificationTableSource}

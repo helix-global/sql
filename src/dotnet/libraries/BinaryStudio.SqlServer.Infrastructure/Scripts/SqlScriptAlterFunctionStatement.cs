@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlAlterFunctionStatement))]
     internal class SqlScriptAlterFunctionStatement : SqlScriptCreateAlterFunctionStatementBase<SqlAlterFunctionStatement>
         {
         #region ctor{IServiceProvider,SqlAlterFunctionStatement}

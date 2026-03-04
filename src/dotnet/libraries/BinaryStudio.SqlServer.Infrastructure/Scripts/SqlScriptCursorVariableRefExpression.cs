@@ -16,6 +16,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [SqlScriptObject(typeof(SqlCursorVariableRefExpression))]
     internal sealed class SqlScriptCursorVariableRefExpression : SqlScriptCursorVariableRefExpression<SqlCursorVariableRefExpression>
         {
         #region ctor{IServiceProvider,SqlCursorVariableRefExpression}

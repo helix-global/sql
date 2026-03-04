@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlBreakStatement))]
     internal sealed class SqlScriptBreakStatement : SqlScriptStatement<SqlBreakStatement>
         {
         #region ctor{IServiceProvider,SqlBreakStatement}

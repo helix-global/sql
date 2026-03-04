@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlParameterDeclaration))]
     internal sealed class SqlScriptParameterDeclaration : SqlScriptVariableDeclaration<SqlParameterDeclaration>
         {
         public Boolean IsOutput { get { return Source.IsOutput; }}

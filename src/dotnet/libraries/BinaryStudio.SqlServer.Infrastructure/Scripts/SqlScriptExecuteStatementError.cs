@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlExecuteStatementError))]
     internal sealed class SqlScriptExecuteStatementError : SqlScriptStatementError<SqlExecuteStatementError>
         {
         #region ctor{IServiceProvider,SqlExecuteStatementError}

@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDropSynonymStatement))]
     internal sealed class SqlScriptDropSynonymStatement : SqlScriptDropStatement<SqlDropSynonymStatement>
         {
         #region ctor{IServiceProvider,SqlDropSynonymStatement}

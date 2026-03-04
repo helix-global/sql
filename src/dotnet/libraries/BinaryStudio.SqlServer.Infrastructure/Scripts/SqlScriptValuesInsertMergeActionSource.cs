@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlValuesInsertMergeActionSource))]
     internal sealed class SqlScriptValuesInsertMergeActionSource : SqlScriptInsertMergeActionSource<SqlValuesInsertMergeActionSource>
         {
         #region ctor{IServiceProvider,SqlValuesInsertMergeActionSource}

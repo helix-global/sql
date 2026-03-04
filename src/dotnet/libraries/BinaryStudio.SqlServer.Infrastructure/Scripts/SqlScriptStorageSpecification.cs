@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlStorageSpecification))]
     internal sealed class SqlScriptStorageSpecification : SqlScriptCodeObject<SqlStorageSpecification>
         {
         #region ctor{IServiceProvider,SqlStorageSpecification}

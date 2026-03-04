@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlCreateUserFromExternalProviderStatement))]
     internal sealed class SqlScriptCreateUserFromExternalProviderStatement : SqlScriptCreateUserStatement<SqlCreateUserFromExternalProviderStatement>
         {
         #region ctor{IServiceProvider,SqlCreateUserFromExternalProviderStatement}

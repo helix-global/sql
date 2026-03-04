@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [SqlScriptObject(typeof(SqlDropExistingIndexOption))]
     internal sealed class SqlScriptDropExistingIndexOption : SqlScriptIndexOption<SqlDropExistingIndexOption>
         {
         #region ctor{IServiceProvider,SqlDropExistingIndexOption}
