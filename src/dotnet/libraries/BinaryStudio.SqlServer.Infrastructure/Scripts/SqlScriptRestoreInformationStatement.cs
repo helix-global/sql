@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptRestoreInformationStatement
+    internal class SqlScriptRestoreInformationStatement : SqlScriptStatement<SqlRestoreInformationStatement>
         {
+        #region ctor{IServiceProvider,SqlRestoreInformationStatement}
+        public SqlScriptRestoreInformationStatement(IServiceProvider context,SqlRestoreInformationStatement source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

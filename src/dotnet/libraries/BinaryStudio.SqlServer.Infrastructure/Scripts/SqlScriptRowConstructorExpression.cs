@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptRowConstructorExpression
+    internal sealed class SqlScriptRowConstructorExpression : SqlScriptCodeObject<SqlRowConstructorExpression>
         {
+        #region ctor{IServiceProvider,SqlRowConstructorExpression}
+        public SqlScriptRowConstructorExpression(IServiceProvider context,SqlRowConstructorExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

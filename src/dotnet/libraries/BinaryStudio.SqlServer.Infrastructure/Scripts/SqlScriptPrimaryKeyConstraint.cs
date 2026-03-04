@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptPrimaryKeyConstraint
+    internal sealed class SqlScriptPrimaryKeyConstraint : SqlScriptUniqueConstraintBase<SqlPrimaryKeyConstraint>
         {
+        #region ctor{IServiceProvider,SqlPrimaryKeyConstraint}
+        public SqlScriptPrimaryKeyConstraint(IServiceProvider context,SqlPrimaryKeyConstraint source)
+            : base(context, source)
+            {
+            }
+        #endregion
         }
     }

@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptPivotClause
+    internal sealed class SqlScriptPivotClause : SqlScriptCodeObject<SqlPivotClause>
         {
+        #region ctor{IServiceProvider,SqlPivotClause}
+        public SqlScriptPivotClause(IServiceProvider context,SqlPivotClause source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
