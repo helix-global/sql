@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptGrantStatement
+    internal sealed class SqlScriptGrantStatement : SqlScriptGdrStatement<SqlGrantStatement>
         {
+        #region ctor{IServiceProvider,SqlGrantStatement}
+        public SqlScriptGrantStatement(IServiceProvider context,SqlGrantStatement source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }

@@ -1,0 +1,9 @@
+﻿[*.cs]
+
+# IDE0001: Simplify Names
+dotnet_diagnostic.IDE0001.severity = suggestion
+
+# Disable automatic using organization
+dotnet_remove_unnecessary_usings = false
+dotnet_sort_system_directives_first = false
+dotnet_separate_import_directive_groups = false

@@ -1,6 +1,15 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptFromClause
+    internal class SqlScriptFromClause : SqlScriptCodeObject<SqlFromClause>
         {
+        #region ctor{IServiceProvider,SqlFromClause}
+        public SqlScriptFromClause(IServiceProvider context,SqlFromClause source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
