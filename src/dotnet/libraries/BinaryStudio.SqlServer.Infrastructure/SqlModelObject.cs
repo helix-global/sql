@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -255,16 +256,36 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:CoerceValue(Type,TypeConverter,Object)
-        protected virtual Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
+        protected virtual Object CoerceValue(Type typeT,TypeConverter converter,Object value) {
+            var typeS = value?.GetType();
+            if (value != null) {
+                if (typeof(IEnumerable).IsAssignableFrom(typeS) &&
+                    typeof(IEnumerable).IsAssignableFrom(typeT))
+                    {
+                    if (IsGenericCollection(typeS,out var typeSG,out var typeSE) &&
+                        IsGenericCollection(typeT,out var typeTG,out var typeTE))
+                        {
+                        if (typeTG == typeof(IList<>)) {
+                            if (typeof(IEnumerable<>).IsAssignableFrom(typeSG)) {
+                                var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTE));
+                                foreach (var i in (IEnumerable)value) {
+                                    target.Add(CoerceValue(typeTE,null,i));
+                                    }
+                                return target;
+                                }
+                            }
+                        }
+                    }
+                }
+
             if (converter != null) {
-                var type = value?.GetType();
-                if ((type == null) || (!targetType.IsAssignableFrom(type))) {
+                if ((typeS == null) || (!typeT.IsAssignableFrom(typeS))) {
                     try
                         {
                         if ((converter.GetType()==typeof(TypeConverter)) ||
                             (converter.GetType()==typeof(ReferenceConverter)))
                             {
-                            if ((value == null) && (!targetType.IsValueType)) {
+                            if ((value == null) && (!typeT.IsValueType)) {
                                 return null;
                                 }
                             }
@@ -275,7 +296,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         e.Add("Converter",converter.GetType().FullName);
                         e.Add("SourceValue",value??"{null}");
                         e.AddIfNotEmpty("SourceType",value?.GetType().FullName);
-                        e.Add("TargetType",targetType.FullName);
+                        e.Add("TargetType",typeT.FullName);
                         throw;
                         }
                     }
@@ -293,6 +314,57 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 {
                 throw new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".",e);
                 }
+            }
+        #endregion
+        #region M:IsGenericCollection(Type,{out}Type,{out}Type):Boolean
+        protected virtual Boolean IsGenericCollection(Type TypeI,out Type TypeG,out Type TypeE) {
+            if (TypeI == null) { throw new ArgumentNullException(nameof(TypeI)); }
+            TypeG = default;
+            TypeE = default;
+            var types = new[] {
+                typeof(IList<>),
+                typeof(ISet<>),
+                typeof(ICollection<>),
+                typeof(IEnumerable<>)
+                };
+            if (TypeI.IsConstructedGenericType) {
+                var typeG = TypeI.GetGenericTypeDefinition();
+                foreach (var type in types) {
+                    if (type.IsAssignableFrom(typeG)) {
+                        TypeG = typeG;
+                        TypeE = TypeI.GenericTypeArguments[0];
+                        return true;
+                        }
+                    }
+                }
+
+            var interfaces = new HashSet<Type>(TypeI.GetInterfaces());
+            foreach (var type in types) {
+                if (TryGetGenericCollectionDefinition(interfaces,type,out var typeE)) {
+                    TypeG = type;
+                    TypeE = typeE;
+                    return true;
+                    }
+                }
+            return false;
+            }
+        #endregion
+        #region M:TryGetGenericCollectionDefinition(ISet<Type>,Type,{out}Type):Boolean
+        private static Boolean TryGetGenericCollectionDefinition(ISet<Type> Types,Type TypeG,out Type TypeE) {
+            if (Types == null) { throw new ArgumentNullException(nameof(Types)); }
+            TypeE = default;
+            foreach (var type in Types) {
+                if (type.IsConstructedGenericType) {
+                    var typeG = type.GetGenericTypeDefinition();
+                    if (typeG != null) {
+                        if (typeG == TypeG) {
+                            TypeE = type.GenericTypeArguments[0];
+                            return true;
+                            }
+                        }
+                    }
+                }
+            return false;
             }
         #endregion
 
@@ -397,7 +469,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     if ((attribute != null) && (attribute.EmptyIfNull)) {
                         if (PropertyType.IsConstructedGenericType) {
                             var typeG = PropertyType.GetGenericTypeDefinition();
-                            if (typeG == typeof(IList<>)) {
+                            if (typeof(IList<>).IsAssignableFrom(typeG)) {
                                 var typeT = PropertyType.GenericTypeArguments[0];
                                 return MakeReadOnlyList(typeT);
                                 }
