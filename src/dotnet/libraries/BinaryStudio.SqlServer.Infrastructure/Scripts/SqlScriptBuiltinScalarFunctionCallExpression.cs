@@ -13,4 +13,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlBuiltinScalarFunctionCallExpression))]
+    internal sealed class SqlScriptBuiltinScalarFunctionCallExpression : SqlScriptBuiltinScalarFunctionCallExpression<SqlBuiltinScalarFunctionCallExpression>
+        {
+        #region ctor{IServiceProvider,SqlBuiltinScalarFunctionCallExpression}
+        public SqlScriptBuiltinScalarFunctionCallExpression(IServiceProvider context,SqlBuiltinScalarFunctionCallExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }

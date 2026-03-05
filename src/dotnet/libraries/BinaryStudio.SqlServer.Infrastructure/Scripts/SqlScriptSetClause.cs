@@ -13,4 +13,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlSetClause))]
+    internal sealed class SqlScriptSetClause : SqlScriptCodeObject<SqlSetClause>
+        {
+        #region ctor{IServiceProvider,SqlSetClause}
+        public SqlScriptSetClause(IServiceProvider context,SqlSetClause source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }

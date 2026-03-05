@@ -9,5 +9,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             Type = type;
             }
+
+        public String TypeName { get; }
+        public SqlScriptObjectAttribute(String typename)
+            {
+            TypeName = typename;
+            }
         }
     }

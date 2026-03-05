@@ -15,4 +15,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlVariableDeclaration))]
+    internal sealed class SqlScriptVariableDeclaration : SqlScriptVariableDeclaration<SqlVariableDeclaration>
+        {
+        #region ctor{IServiceProvider,SqlVariableDeclaration}
+        public SqlScriptVariableDeclaration(IServiceProvider context,SqlVariableDeclaration source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }

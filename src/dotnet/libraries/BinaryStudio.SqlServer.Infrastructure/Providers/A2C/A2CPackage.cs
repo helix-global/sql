@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//#define USE_ASYNC
+using System;
 using System.Data;
 using System.IO;
 using System.Threading;
@@ -91,6 +91,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         #region M:ReadFrom(DataSet)
         private void ReadFrom(DataSet source) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            #if USE_ASYNC
             var tasks = new List<Task>();
             using (var cancellation = new CancellationTokenSource()) {
                 var token = cancellation.Token;
@@ -103,6 +104,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                     }
                 Task.WaitAll(tasks.ToArray());
                 }
+            #else
+            foreach (DataTable table in source.Tables) {
+                LoadTable(table);
+                }
+            #endif
             }
         #endregion
         #region M:LoadTable(CancellationToken,DataTable):Task
@@ -114,6 +120,20 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 case "DEF_META":
                     {
                     await LoadSqlObjects(cancellation,source);
+                    }
+                    break;
+                #endregion
+                }
+            }
+        #endregion
+        #region M:LoadTable(DataTable):Task
+        private void LoadTable(DataTable source) {
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            switch (source.TableName) {
+                #region DEF_META
+                case "DEF_META":
+                    {
+                    LoadSqlObjects(source);
                     }
                     break;
                 #endregion
@@ -144,6 +164,68 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         #region M:LoadSqlObjects(CancellationToken):Task
         private async Task LoadSqlObjects(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
+            foreach (DataRow row in source.Rows) {
+                var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
+                var script = row["SQLTEXT"]?.ToString();
+                if (!String.IsNullOrWhiteSpace(script)) {
+                    if (type != SqlObjectType.None) {
+                        switch (type) {
+                            case SqlObjectType.None:
+                                break;
+                            case SqlObjectType.ScriptBefore:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Table:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Function:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Procedure:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Index:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Trigger:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.ForeignKeyConstraint:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.View:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.CheckConstraint:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Statistics:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.Assembly:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.TableType:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.PartitionFunction:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.PartitionScheme:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            case SqlObjectType.ScriptAfter:
+                                (new SqlIndexScriptDecoder()).Decode(script);
+                                break;
+                            default: throw new ArgumentOutOfRangeException();
+                            }
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:LoadSqlObjects
+        private void LoadSqlObjects(DataTable source) {
             foreach (DataRow row in source.Rows) {
                 var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
                 var script = row["SQLTEXT"]?.ToString();

@@ -35,7 +35,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         return (SqlScriptCodeObject)ctor.Invoke(new Object[] { context,source });
                         }
                     }
-                throw new ArgumentOutOfRangeException(nameof(source), $"No registered type for {source.GetType()}");
+                throw (new ArgumentOutOfRangeException(nameof(source), $@"No registered type for ""{source.GetType()}""."))
+                    .Add("SourceType",source.GetType().FullName);
                 }
             return null;
             }
@@ -73,7 +74,33 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     foreach (var attribute in attributes) {
                         try
                             {
-                            g_rtlist.Add(attribute.Type, type);
+                            if (attribute.Type != null)
+                                {
+                                g_rtlist.Add(attribute.Type,type);
+                                continue;
+                                }
+                            if (String.IsNullOrWhiteSpace(attribute.TypeName))
+                                {
+                                throw new InvalidOperationException();
+                                }
+                            var assembly = typeof(SqlCodeObject).Assembly;
+                            var typename = attribute.TypeName;
+                            var rt = assembly.GetType(typename,false);
+                            if (rt != null) {
+                                g_rtlist.Add(rt,type);
+                                continue;
+                                }
+                            var values = typename.Split('.');
+                            typename = String.Join(".",values.Take(values.Length-1));
+                            rt = assembly.GetType(typename,false);
+                            if (rt != null) {
+                                rt = rt.GetNestedType(values[values.Length-1],BindingFlags.NonPublic|BindingFlags.Public);
+                                if (rt != null) {
+                                    g_rtlist.Add(rt,type);
+                                    continue;
+                                    }
+                                }
+                            throw new InvalidOperationException();
                             }
                         catch
                             {

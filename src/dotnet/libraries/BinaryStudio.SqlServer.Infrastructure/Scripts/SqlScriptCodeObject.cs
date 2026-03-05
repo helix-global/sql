@@ -33,20 +33,32 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [TypeConverter(typeof(SqlScriptObjectConverter))]
     internal class SqlScriptCodeObject : SqlModelObject
         {
+        #if DEBUG
         protected IList<SqlScriptCodeObject> Children { get; } = Array.Empty<SqlScriptCodeObject>();
+        #endif
 
         #region ctor{IServiceProvider,SqlCodeObject}
         protected SqlScriptCodeObject(IServiceProvider context,SqlCodeObject source)
             : base(context,source)
             {
             if (source != null) {
+                #if DEBUG
                 var children = new List<SqlScriptCodeObject>();
                 foreach (var o in source.Children) {
                     if (o != null) {
-                        children.Add(CreateObject(context, o));
+                        try
+                            {
+                            children.Add(CreateObject(context, o));
+                            }
+                        catch (Exception e)
+                            {
+                            e.Add("SelfType",GetType().FullName);
+                            throw;
+                            }
                         }
                     }
                 Children = children.AsReadOnly();
+                #endif
                 }
             }
         #endregion

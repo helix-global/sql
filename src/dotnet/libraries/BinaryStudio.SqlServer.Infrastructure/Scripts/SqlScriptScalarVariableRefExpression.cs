@@ -15,4 +15,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlScalarVariableRefExpression))]
+    internal sealed class SqlScriptScalarVariableRefExpression : SqlScriptScalarVariableRefExpression<SqlScalarVariableRefExpression>
+        {
+        #region ctor{IServiceProvider,SqlScalarVariableRefExpression}
+        public SqlScriptScalarVariableRefExpression(IServiceProvider context,SqlScalarVariableRefExpression source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }

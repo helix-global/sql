@@ -13,4 +13,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlColumnDefinition))]
+    internal class SqlScriptColumnDefinition : SqlScriptColumnDefinition<SqlColumnDefinition>
+        {
+        #region ctor{IServiceProvider,SqlColumnDefinition}
+        public SqlScriptColumnDefinition(IServiceProvider context,SqlColumnDefinition source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }

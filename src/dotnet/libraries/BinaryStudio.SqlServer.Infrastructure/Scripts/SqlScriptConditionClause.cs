@@ -13,4 +13,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         }
+
+    [SqlScriptObject(typeof(SqlConditionClause))]
+    internal sealed class SqlScriptConditionClause : SqlScriptConditionClause<SqlConditionClause>
+        {
+        #region ctor{IServiceProvider,SqlConditionClause}
+        public SqlScriptConditionClause(IServiceProvider context,SqlConditionClause source)
+            : base(context,source)
+            {
+            }
+        #endregion
+        }
     }
