@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     [AttributeUsage(AttributeTargets.Property,AllowMultiple = false)]
     internal class RelationshipAttribute : Attribute,ISqlModelMappingAttribute
         {
-        public String SourceName { get;set; }
+        public String Source { get;set; }
         public Multiplicity Multiplicity { get; }
         public RelationshipKind Kind { get;set; } = RelationshipKind.Auto;
 

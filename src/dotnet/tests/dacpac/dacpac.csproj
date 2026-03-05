@@ -4,6 +4,9 @@
     <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Aspose.Zip" Version="26.2.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

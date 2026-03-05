@@ -1,17 +1,13 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2010.CustomUI;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -38,9 +34,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected TextWriter WriteTo(Exception source,TextWriter target) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (target == null) { throw new ArgumentNullException(nameof(target)); }
-            var order = new OrderSequence();
-            var block = new BlockG(order,source,true);
-            block.WriteTo(target);
+            var order = 0;
+            var e = new BlockG(source,ref order);
+            e.WriteTo(target,String.Empty,(order-1).ToString().Length);
             return target;
             }
         #endregion
@@ -184,124 +180,104 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        private class OrderSequence
-            {
-            public Int32 Order { get;private set; }
-            public Int32 NextOrder()
-                {
-                return ++Order;
-                }
-
-            public override String ToString()
-                {
-                return Order.ToString();
-                }
-            }
-
-        private class BlockG
+        private class BlockE
             {
             public Exception Source { get; }
             public Int32 Order { get; }
-            public IList<BlockG> InnerE { get; } = new List<BlockG>();
-            public IList<BlockG> InnerA { get; } = new List<BlockG>();
-            private readonly OrderSequence OrderSequence;
+            protected IList<BlockE> InnerBlocks { get; }=new List<BlockE>();
 
-            public BlockG(OrderSequence order,Exception source,Boolean BuildChain) {
-                OrderSequence = order;
-                Source = source;
-                if (BuildChain) {
-                    var e = source;
-                    while (e != null) {
-                        InnerE.Add(new BlockG(order,e,false));
-                        if (e is AggregateException aggregate) {
-                            break;
-                            }
-                        e = e.InnerException;
+            #region ctor{Exception,{ref}Int32}
+            internal BlockE(Exception Source,ref Int32 Order) {
+                this.Source = Source;
+                this.Order = Order;
+                if (Source is AggregateException aggregate) {
+                    foreach (var e in aggregate.InnerExceptions) {
+                        InnerBlocks.Add(new BlockG(e,ref Order));
                         }
                     }
-                else
-                    {
-                    Order = order.NextOrder();
-                    if (source is AggregateException aggregate) {
-                        foreach (var e in aggregate.InnerExceptions) {
-                            InnerA.Add(new BlockG(order,e,true));
-                            }
-                        }
-                    }
-                }
-
-            public BlockG()
-                {
-                }
-
-            #region M:WriteTo(TextWriter):Void
-            public void WriteTo(TextWriter target) {
-                if (target == null) { throw new ArgumentNullException(nameof(target)); }
-                WriteLevel0(target,String.Empty);
+                Order++;
                 }
             #endregion
-            #region M:WriteToLevel1(TextWriter,String)
-            private void WriteLevel0(TextWriter target,String left) {
-                if (target == null) { throw new ArgumentNullException(nameof(target)); }
-                var offset = (OrderSequence.Order - 1).ToString().Length;
-                foreach (var e in InnerE) {
-                    target.WriteLine($"{left}{{{e.Order.ToString().PadLeft(offset, '0')}}} {{{e.Source.GetType().FullName}}}:{{{e.Source.HResult.ToString("x8")}}}: {e.Source.Message}");
+            #region M:WriteTo(TextWriter,String,Int32)
+            public virtual void WriteTo(TextWriter target,String left,Int32 offset) {
+                if (InnerBlocks.Count > 0) {
+                    target.WriteLine($"{left}{new String(' ',offset)} # Inner exceptions {{Count={InnerBlocks.Count}}}:");
+                    var j = 1;
+                    foreach (var e in InnerBlocks) {
+                        target.WriteLine($"{left}{new String(' ',offset)} # Inner exception {{Order={j}}}:");
+                        e.WriteTo(target,$"{left}{new String(' ',offset)}    ",offset);
+                        j++;
+                        }
                     }
-                if (InnerE.Any(i=>HasStackTrace(i.Source))) {
-                    target.WriteLine($"{left}{new String(' ',offset)} # Exception stack trace:");
-                    foreach (var e in InnerE.Reverse()) {
-                        if (HasStackTrace(e.Source)) {
-                            var stacktr = new StackTrace(e.Source,true);
-                            var j = 0;
-                            foreach (var s in stacktr.GetFrames()) {
-                                if (j == 0)
-                                    {
-                                    target.WriteLine($"{left}{{{e.Order.ToString().PadLeft(offset, '0')}}} at {FormatStackFrame(s)}");
-                                    }
-                                else
-                                    {
-                                    target.WriteLine($"{left}{new String(' ',offset)}   at {FormatStackFrame(s)}");
-                                    }
-                                j++;
-                                }
+                }
+            #endregion
+            }
+
+        private class BlockG : BlockE
+            {
+            #region ctor{Exception,{ref}Int32}
+            public BlockG(Exception Source,ref Int32 Order)
+                :base(Source,ref Order)
+                {
+                var e = Source;
+                while (e != null) {
+                    InnerBlocks.Add(new BlockE(e,ref Order));
+                    if (e is AggregateException) {
+                        break;
+                        }
+                    e = e.InnerException;
+                    }
+                Order--;
+                }
+            #endregion
+            #region M:WriteTo(TextWriter,String,Int32)
+            [SuppressMessage("ReSharper", "UseFormatSpecifierInInterpolation")]
+            public override void WriteTo(TextWriter target,String left,Int32 offset) {
+                foreach (var e in InnerBlocks) {
+                    target.WriteLine($"{left}{{{e.Order.ToString().PadLeft(offset, '0')}}} {{{e.Source.GetType().FullName}}}:{{{e.Source.HResult.ToString("x8")}}}: {e.Source.Message.TrimEnd(' ','\n','\r')}");
+                    }
+                if (InnerBlocks.Any(i=>HasStackTrace(i.Source)))
+                    {
+                    target.WriteLine($"{left}{new String(' ',offset)}   # Exception stack trace:");
+                    }
+                foreach (var e in InnerBlocks.Reverse()) {
+                    if (HasStackTrace(e.Source)) {
+                        var stacktr = new StackTrace(e.Source,true);
+                        var frames = stacktr.GetFrames()??new StackFrame[0];
+                        var j = 0;
+                        foreach (var frame in frames) {
+                            target.WriteLine((j == 0)
+                                ? $"{left}{{{e.Order.ToString().PadLeft(offset, '0')}}} at {FormatStackFrame(frame)}"
+                                : $"{left}{new String(' ',offset)}   at {FormatStackFrame(frame)}");
+                            j++;
                             }
-                        if (HasData(e.Source)) {
-                            target.WriteLine($"{left}{new String(' ',offset)} # Exception data:");
-                            foreach (var key in e.Source.Data.Keys) {
-                                target.Write($@"{left}{new String(' ',offset)} ""{key}"":");
+                        }
+                    if (e.Source.Data.Count > 0) {
+                        target.WriteLine($"{left}{new String(' ',offset)}   # Exception data:");
+                        foreach (DictionaryEntry data in e.Source.Data) {
+                            var value = data.Key;
+                            if (!(value is IExceptionAttachment)) {
+                                target.Write($@"{left}{new String(' ',offset)}     ""{data.Key}"":");
                                 var j = 0;
-                                foreach (var line in Serialize(e.Source.Data[key])) {
-                                    if (j > 0) { target.Write($"{left}{new String(' ',offset)}          "); }
+                                foreach (var line in Serialize(data.Value)) {
+                                    if (j > 0) { target.Write($"{left}{new String(' ',offset)}     "); }
                                     target.WriteLine(line);
                                     j++;
                                     }
                                 }
                             }
-                        if (e.InnerA.Count > 0) {
-                            target.WriteLine($"{left}{new String(' ',offset)} # Inner exceptions {{Count={e.InnerA.Count}}}:");
-                            var j = 1;
-                            foreach (var a in e.InnerA) {
-                                target.WriteLine($"{left}{new String(' ',offset)}   # Inner exception {{Order={j}}}:");
-                                a.WriteLevel0(target,$"{left}{new String(' ',offset)}    ");
-                                j++;
-                                }
-                            }
                         }
+                    e.WriteTo(target,$"{left}{new String(' ',offset)}   ",offset);
                     }
                 }
             #endregion
-            #region M:HasStackTrace(Exception):Boolean
-            private static Boolean HasStackTrace(Exception e) {
-                if (e == null) { throw new ArgumentNullException(nameof(e)); }
-                return !String.IsNullOrEmpty(e.StackTrace);
-                }
-            #endregion
-            #region M:HasData(Exception):Boolean
-            private static Boolean HasData(Exception e) {
-                if (e == null) { throw new ArgumentNullException(nameof(e)); }
-                return e.Data.Count > 0;
-                }
-            #endregion
             }
+
+        #region M:HasStackTrace(Exception):Boolean
+        private static Boolean HasStackTrace(Exception e) {
+            if (e == null) { throw new ArgumentNullException(nameof(e)); }
+            return !String.IsNullOrEmpty(e.StackTrace);
+            }
+        #endregion
         }
     }

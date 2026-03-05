@@ -4,6 +4,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     public interface ISqlModelMappingAttribute
         {
-        String SourceName { get; }
+        String Source { get; }
         }
     }

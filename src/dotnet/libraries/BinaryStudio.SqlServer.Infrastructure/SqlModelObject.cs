@@ -63,7 +63,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             foreach (var o in Type.GetFields(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
                 var attribute = o.GetCustomAttribute<T>();
                 if (attribute != null) {
-                    yield return new KeyValuePair<String,PropertyDescriptor>(attribute.SourceName??o.Name,new PropertyDescriptorF(o));
+                    yield return new KeyValuePair<String,PropertyDescriptor>(attribute.Source??o.Name,new PropertyDescriptorF(o));
                     }
                 }
             foreach (var o in Type.GetProperties(BindingFlags.FlattenHierarchy|BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)) {
@@ -85,14 +85,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             if (fi != null)
                                 {
                                 yield return new KeyValuePair<String,PropertyDescriptor>(
-                                    attribute.SourceName??o.Name,
+                                    attribute.Source??o.Name,
                                     new PropertyDescriptorF(fi,o.Name,o.GetCustomAttributes()));
                                 continue;
                                 }
                             }
                         }
                     yield return new KeyValuePair<String,PropertyDescriptor>(
-                        attribute.SourceName??o.Name,new PropertyDescriptorP(o));
+                        attribute.Source??o.Name,new PropertyDescriptorP(o));
                     }
                 }
             }
@@ -254,18 +254,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
             throw new InvalidOperationException($"Unsupported member type: {member.GetType().FullName}");
             }
         #endregion
-        #region M:CoerceValue(PropertyDescriptor,Object):Object
-        protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value)
-            {
-            var converter = descriptor.Converter;
-            var PropertyType = descriptor.PropertyType;
+        #region M:CoerceValue(Type,TypeConverter,Object)
+        protected virtual Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter != null) {
                 var type = value?.GetType();
-                if ((type == null) || (!PropertyType.IsAssignableFrom(type))) {
+                if ((type == null) || (!targetType.IsAssignableFrom(type))) {
                     try
                         {
-                        if (converter.GetType()==typeof(TypeConverter)) {
-                            if ((value == null) && (PropertyType.IsClass)) {
+                        if ((converter.GetType()==typeof(TypeConverter)) ||
+                            (converter.GetType()==typeof(ReferenceConverter)))
+                            {
+                            if ((value == null) && (!targetType.IsValueType)) {
                                 return null;
                                 }
                             }
@@ -273,12 +272,27 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         }
                     catch (Exception e)
                         {
-                        e.Data["Converter"] = converter.GetType().FullName;
-                        throw new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".");
+                        e.Add("Converter",converter.GetType().FullName);
+                        e.Add("SourceValue",value??"{null}");
+                        e.AddIfNotEmpty("SourceType",value?.GetType().FullName);
+                        e.Add("TargetType",targetType.FullName);
+                        throw;
                         }
                     }
                 }
             return value;
+            }
+        #endregion
+        #region M:CoerceValue(PropertyDescriptor,Object):Object
+        protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value) {
+            try
+                {
+                return CoerceValue(descriptor.PropertyType,descriptor.Converter,value);
+                }
+            catch (Exception e)
+                {
+                throw new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".",e);
+                }
             }
         #endregion
 
@@ -334,7 +348,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
 
-        private abstract class  PropertyDescriptor<T>: PropertyDescriptor
+        private abstract class PropertyDescriptor<T>: PropertyDescriptor
             where T: MemberInfo
             {
             protected T Source { get; }
@@ -374,6 +388,31 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public override Boolean CanResetValue(Object component)
                 {
                 return false;
+                }
+            #endregion
+            #region M:CoerceValue(Object):Object
+            protected Object CoerceValue(Object value) {
+                if (value == null) {
+                    var attribute = (SqlModelFieldMappingAttribute)Attributes[typeof(SqlModelFieldMappingAttribute)];
+                    if ((attribute != null) && (attribute.EmptyIfNull)) {
+                        if (PropertyType.IsConstructedGenericType) {
+                            var typeG = PropertyType.GetGenericTypeDefinition();
+                            if (typeG == typeof(IList<>)) {
+                                var typeT = PropertyType.GenericTypeArguments[0];
+                                return MakeReadOnlyList(typeT);
+                                }
+                            }
+                        }
+                    }
+                return value;
+                }
+            #endregion
+            #region M:MakeReadOnlyList(Type):Object
+            private static Object MakeReadOnlyList(Type type) {
+                var typeG = typeof(EmptyArray<>);
+                var typeT = typeG.MakeGenericType(type);
+                var fi = typeT.GetField("List",BindingFlags.Public|BindingFlags.Static);
+                return fi?.GetValue(null);
                 }
             #endregion
             #region M:ResetValue(Object)
@@ -428,6 +467,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:SetValue(Object,Object)
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
+                value = CoerceValue(value);
                 Source.SetValue(component,(component is SqlModelObject target)
                     ? target.CoerceValue(this,value)
                     : value);
@@ -462,6 +502,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:SetValue(Object,Object)
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
+                value = CoerceValue(value);
                 Source.SetValue(component,(component is SqlModelObject target)
                     ? target.CoerceValue(this,value)
                     : value);

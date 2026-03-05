@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/BinaryStudio.SqlServer.Infrastructure.csproj" Id="cc1ff3e7-0595-4c56-a60e-bb3312eb69e6" />
   <Project Path="src/dotnet/tests/dacpac/dacpac.csproj" Id="ea3b3cd3-f284-4215-84b5-35d0655397b4" />
 </Solution>

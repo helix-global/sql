@@ -1,22 +1,20 @@
-﻿using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class SqlScriptCodeObject<T> : SqlScriptCodeObject
-        where T: SqlCodeObject
+        where T : SqlCodeObject
         {
         protected T Source { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptCodeObject(IServiceProvider context,T source)
-            :base(context,source)
+            : base(context,source)
             {
             Source = source;
             }
@@ -32,6 +30,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         }
 
+    [TypeConverter(typeof(SqlScriptObjectConverter))]
     internal class SqlScriptCodeObject : SqlModelObject
         {
         protected IList<SqlScriptCodeObject> Children { get; } = Array.Empty<SqlScriptCodeObject>();
@@ -44,71 +43,65 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 var children = new List<SqlScriptCodeObject>();
                 foreach (var o in source.Children) {
                     if (o != null) {
-                        children.Add(CreateObject(context,o));
+                        children.Add(CreateObject(context, o));
                         }
                     }
                 Children = children.AsReadOnly();
                 }
             }
         #endregion
-        #region M:CoerceValue(PropertyDescriptor,Object):Object
-        protected override Object CoerceValue(PropertyDescriptor descriptor,Object value) {
-            if (value is SqlCodeObject SqlCodeObject) {
-                if (typeof(SqlScriptCodeObject).IsAssignableFrom(descriptor.PropertyType)) {
-                    return CreateObject(Context,SqlCodeObject);
+
+        #region M:CoerceValue(Type,TypeConverter,Object):Object
+        protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
+            if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
+            if (value != null) {
+                CheckConstructedGenericCollectionType(value.GetType(),out var typeGS,out var typeTS);
+                CheckConstructedGenericCollectionType(targetType,out var typeGP,out var typeTP);
+                if ((typeGS == typeof(SqlCollection<>)) && (typeGP == typeof(IList<>))) {
+                    var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTP));
+                    var source = (IEnumerable)value;
+                    foreach (SqlCodeObject i in source) {
+                        target.Add(CoerceValue(typeTP,null,SqlScriptObjectConverter.CreateFrom(Context,i)));
+                        }
+                    return (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(typeTP),target);
                     }
                 }
-            return base.CoerceValue(descriptor, value);
+            return base.CoerceValue(targetType,converter,value);
             }
         #endregion
         #region M:CreateObject(IServiceProvider,SqlCodeObject):SqlScriptCodeObject
-        private static SqlScriptCodeObject CreateObject(IServiceProvider context,SqlCodeObject source) {
-            if (source != null) {
-                var RequestedType = source.GetType();
-                Type type;
-                using (UpgradeableReadLock(g_rtlock)) {
-                    if (!RegisteredTypes.TryGetValue(RequestedType,out type)) {
-                        foreach (var pair in RegisteredTypes) {
-                            if (pair.Key.IsAssignableFrom(RequestedType)) {
-                                using (WriteLock(g_rtlock)) {
-                                    RegisteredTypes[RequestedType] = type = pair.Value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                if (type != null) {
-                    var ctor = type.GetConstructor(new[] { typeof(IServiceProvider), source.GetType() });
-                    if (ctor != null) {
-                        return (SqlScriptCodeObject)ctor.Invoke(new Object[] { context,source });
-                        }
-                    }
-                throw new ArgumentOutOfRangeException(nameof(source), $"No registered type for {source.GetType()}");
-                }
-            return null;
+        private static SqlScriptCodeObject CreateObject(IServiceProvider context,SqlCodeObject source)
+            {
+            return SqlScriptObjectConverter.CreateFrom(context, source);
             }
         #endregion
 
-        protected static readonly IDictionary<Type,Type> RegisteredTypes = new ConcurrentDictionary<Type,Type>();
-        private static readonly ReaderWriterLockSlim g_rtlock = new ReaderWriterLockSlim();
-
-        static SqlScriptCodeObject() {
-            foreach (var type in typeof(SqlScriptCodeObject).Assembly.GetTypes()) {
-                var attributes = type.GetCustomAttributes<SqlScriptObjectAttribute>().ToArray();
-                if (attributes.Length > 0) {
-                    foreach (var attribute in attributes)
-                        {
-                        try
-                            {
-                            RegisteredTypes.Add(attribute.Type,type);
-                            }
-                        catch
-                            {
-                            throw;
-                            }
+        private static Boolean CheckConstructedGenericCollectionType(Type TypeS,out Type TypeG,out Type TypeT) {
+            TypeG = default;
+            TypeT = default;
+            var typeS = TypeS;
+            if (typeS.IsConstructedGenericType) {
+                var typeG = typeS.GetGenericTypeDefinition();
+                if (typeG == typeof(IList<>)) {
+                    TypeG = typeG;
+                    TypeT = typeS.GenericTypeArguments[0];
+                    return true;
+                    }
+                return false;
+                }
+            typeS = TypeS.BaseType;
+            if (typeS != null) {
+                if (typeS.IsConstructedGenericType) {
+                    var typeG = typeS.GetGenericTypeDefinition();
+                    if (typeG == typeof(SqlCollection<>)) {
+                        TypeG = typeG;
+                        TypeT = typeS.GenericTypeArguments[0];
+                        return true;
                         }
+                    return false;
                     }
                 }
+            return false;
             }
         }
     }

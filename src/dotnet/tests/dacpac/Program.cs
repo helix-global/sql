@@ -1,15 +1,54 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using BinaryStudio.SqlServer.Infrastructure.DAC;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.IO;
+using Aspose.Zip.Saving;
+using Aspose.Zip.SevenZip;
+using BinaryStudio.SqlServer.Infrastructure;
 using BinaryStudio.SqlServer.Infrastructure.A2C;
+using BinaryStudio.SqlServer.Infrastructure.DAC;
+//using SharpCompress.Archives.SevenZip;
+using SharpSevenZipArchive=SharpCompress.Archives.SevenZip.SevenZipArchive;
 
 namespace dacpac
     {
     internal class Program
         {
+        #region M:RebuildA2CX(String)
+        private static void RebuildA2CX(String filename) {
+            var ds = new DataSet();
+            using (var stream = File.OpenRead(filename)) {
+                using (var archive = SharpSevenZipArchive.OpenArchive(stream)) {
+                    foreach (var entry in archive.Entries) {
+                        if (!entry.IsDirectory) {
+                            ds.ReadXml(entry.OpenEntryStream());
+                            break;
+                            }
+                        }
+                    }
+                }
+            var table = ds.Tables["DEF_ASSEMBLY_FILES"];
+            while (table.Rows.Count > 1) {
+                var row = table.Rows[0];
+                if (!String.Equals("A2Core.dll",row["FILENAME"].ToString(),StringComparison.OrdinalIgnoreCase)) {
+                    table.Rows.RemoveAt(0);
+                    }
+                }
+            using (var stream = File.Open(Path.ChangeExtension(filename,".xml"), FileMode.Create)) {
+                ds.WriteXml(stream);
+                }
+            //var e = new MemoryStream();
+            //using (var stream = File.Open(filename+"x", FileMode.Create)) {
+            //    using (var archive = new SevenZipArchive(new SevenZipEntrySettings(new SevenZipLZMA2CompressionSettings()))) {
+            //        archive.CreateEntry(Path.GetFileNameWithoutExtension(filename),e,new SevenZipEntrySettings(new SevenZipStoreCompressionSettings()));
+            //        archive.Save(stream);
+            //        }
+            //    }
+            return;
+            }
+        #endregion
+
         private static void Main(String[] args) {
             //var maxN = 0;
             //foreach (SqlPermission i in Enum.GetValues(typeof(SqlPermission))) {
@@ -19,7 +58,17 @@ namespace dacpac
             //    Debug.WriteLine(String.Format($"{{0,-{maxN}}} = 0x{{1:x4}},", i,(Int32)i));
             //    }
             //var r = DataSchemaModel.LoadFrom("dev.xml");
-            var r = A2CPackage.LoadFrom("2022.07.05.0847.a2cx");
+            try
+                {
+                //RebuildA2CX("2022.07.05.0847.a2cx");
+                var r = A2CPackage.LoadFrom("2022.07.05.0847.7z");
+                }
+            catch (Exception e)
+                {
+                Debug.WriteLine(Exceptions.Format(e));
+                throw;
+                }
+            
             //var r = A2CPackage.LoadFrom("2026.03.02.1623.a2c");
             //try
             //    {

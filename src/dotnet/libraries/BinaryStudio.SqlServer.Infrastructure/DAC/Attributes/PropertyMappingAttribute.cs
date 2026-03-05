@@ -6,6 +6,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     internal class PropertyMappingAttribute : Attribute,ISqlModelMappingAttribute
         {
-        public String SourceName { get; }
+        public String Source { get; }
         }
     }

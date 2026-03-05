@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -16,7 +16,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
         [SqlModelFieldMapping][UsedImplicitly] public SqlScriptStorageSpecification FileStream { get; }
         [SqlModelFieldMapping][UsedImplicitly] public SqlScriptStorageSpecification StorageSpecification { get; }
         [SqlModelFieldMapping][UsedImplicitly] public SqlScriptFilterClause FilterClause { get; }
-        [SqlModelFieldMapping(SourceName="IndexedColunms")][UsedImplicitly] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
+        [SqlModelFieldMapping(Source="IndexedColunms")][UsedImplicitly] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
+        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<SqlIdentifier> IncludedColumns { get; }
+        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<ISqlScriptIndexOption> Options { get; }
 
         #region ctor{IServiceProvider,SqlCreateIndexStatement}
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)

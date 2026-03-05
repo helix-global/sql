@@ -153,35 +153,49 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                             case SqlObjectType.None:
                                 break;
                             case SqlObjectType.ScriptBefore:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Table:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Function:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Procedure:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Index:
                                 (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Trigger:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.ForeignKeyConstraint:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.View:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.CheckConstraint:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Statistics:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Assembly:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.TableType:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.PartitionFunction:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.PartitionScheme:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.ScriptAfter:
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             default: throw new ArgumentOutOfRangeException();
                             }
