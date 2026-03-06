@@ -5,12 +5,14 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlTableDefinition))]
     internal sealed class SqlScriptTableDefinition : SqlScriptCodeObject<SqlTableDefinition>
         {
-        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<SqlScriptColumnDefinition> ColumnDefinitions { get; }
-        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<ISqlScriptConstraint> Constraints { get; }
-        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<SqlScriptTemporalPeriodDefinition> TemporalPeriodDefinitions { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptColumnDefinition> ColumnDefinitions { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptConstraint> Constraints { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<SqlScriptTemporalPeriodDefinition> TemporalPeriodDefinitions { get; }
 
         #region ctor{IServiceProvider,SqlTableDefinition}
         public SqlScriptTableDefinition(IServiceProvider context,SqlTableDefinition source)

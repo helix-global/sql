@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System;
+using System.IO;
 
 namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {

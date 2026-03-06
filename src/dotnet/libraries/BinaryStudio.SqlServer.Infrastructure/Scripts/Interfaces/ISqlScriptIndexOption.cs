@@ -1,6 +1,6 @@
 ﻿namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public interface ISqlScriptIndexOption
+    internal interface ISqlScriptIndexOption
         {
         }
     }

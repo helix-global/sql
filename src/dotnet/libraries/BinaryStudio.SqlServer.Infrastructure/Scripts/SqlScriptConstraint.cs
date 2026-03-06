@@ -1,11 +1,17 @@
 ﻿using System;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptConstraint<T> : SqlScriptCodeObject<T>
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
+    internal abstract class SqlScriptConstraint<T> : SqlScriptCodeObject<T>,ISqlScriptConstraint
         where T : SqlConstraint
         {
+        [UsedImplicitly][Field] public SqlIdentifier Name { get; }
+        [UsedImplicitly][Field] public SqlConstraintType Type { get; }
+
         #region ctor{IServiceProvider,T}
         protected SqlScriptConstraint(IServiceProvider context,T source)
             : base(context,source)

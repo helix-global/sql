@@ -61,7 +61,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is SqlCodeObject SqlCodeObject) { return CreateFrom(context, SqlCodeObject); }
+            if (value is SqlCodeObject SqlCodeObject) { return CreateFrom(context,SqlCodeObject); }
             return base.ConvertFrom(context, culture, value);
             }
         #endregion

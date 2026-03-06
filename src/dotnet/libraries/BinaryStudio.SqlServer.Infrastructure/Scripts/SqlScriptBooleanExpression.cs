@@ -3,7 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptBooleanExpression<T> : SqlScriptCodeObject<T>
+    internal abstract class SqlScriptBooleanExpression<T> : SqlScriptCodeObject<T>,ISqlScriptBooleanExpression
         where T : SqlBooleanExpression
         {
         #region ctor{IServiceProvider,T}

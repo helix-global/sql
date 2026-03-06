@@ -3,7 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptColumnDefinition<T> : SqlScriptCodeObject<T>
+    internal abstract class SqlScriptColumnDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptColumnDefinition
         where T: SqlColumnDefinition
         {
         #region ctor{IServiceProvider,T}

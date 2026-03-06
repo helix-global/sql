@@ -1,12 +1,15 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlOrderByItem))]
     internal sealed class SqlScriptOrderByItem : SqlScriptCodeObject<SqlOrderByItem>
         {
-        public SqlSortOrder SortOrder { get { return Source.SortOrder; }}
+        [UsedImplicitly][Field] public SqlSortOrder SortOrder { get; }
 
         #region ctor{IServiceProvider,SqlOrderByItem}
         public SqlScriptOrderByItem(IServiceProvider context,SqlOrderByItem source)

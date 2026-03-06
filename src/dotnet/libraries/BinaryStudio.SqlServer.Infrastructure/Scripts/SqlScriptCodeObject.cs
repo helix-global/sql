@@ -66,6 +66,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:CoerceValue(Type,TypeConverter,Object):Object
         protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
+            if (value is SqlCodeObject SqlCodeObject) {
+                var r = CreateObject(Context,SqlCodeObject);
+                return base.CoerceValue(targetType,converter,r);
+                }
             if (value != null) {
                 CheckConstructedGenericCollectionType(value.GetType(),out var typeGS,out var typeTS);
                 CheckConstructedGenericCollectionType(targetType,out var typeGP,out var typeTP);
@@ -87,6 +91,24 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return SqlScriptObjectConverter.CreateFrom(context, source);
             }
         #endregion
+        //#region M:IsGenericCollection(Type,{out}Type,{out}Type):Boolean
+        //protected override Boolean IsGenericCollection(Type TypeI,out Type TypeG,out Type TypeE) {
+        //    if (TypeI == null) { throw new ArgumentNullException(nameof(TypeI)); }
+        //    TypeG = default;
+        //    TypeE = default;
+        //    if (TypeI.IsConstructedGenericType) {
+        //        var typeG = TypeI.GetGenericTypeDefinition();
+        //        foreach (var type in types) {
+        //            if (type.IsAssignableFrom(typeG)) {
+        //                TypeG = typeG;
+        //                TypeE = TypeI.GenericTypeArguments[0];
+        //                return true;
+        //                }
+        //            }
+        //        }
+        //    return base.IsGenericCollection(TypeI,out TypeG,out TypeE);
+        //    }
+        //#endregion
 
         private static Boolean CheckConstructedGenericCollectionType(Type TypeS,out Type TypeG,out Type TypeT) {
             TypeG = default;

@@ -5,20 +5,22 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [UsedImplicitly]
     [SqlScriptObject(typeof(SqlCreateIndexStatement))]
     internal sealed class SqlScriptCreateIndexStatement : SqlScriptDdlStatement<SqlCreateIndexStatement>
         {
-        [SqlModelFieldMapping][UsedImplicitly] public Boolean IsUnique { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlIdentifier Name { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlObjectIdentifier TargetObject { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlClusterOption ClusterOption { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlScriptStorageSpecification FileStream { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlScriptStorageSpecification StorageSpecification { get; }
-        [SqlModelFieldMapping][UsedImplicitly] public SqlScriptFilterClause FilterClause { get; }
-        [SqlModelFieldMapping(Source="IndexedColunms")][UsedImplicitly] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
-        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<SqlIdentifier> IncludedColumns { get; }
-        [SqlModelFieldMapping(EmptyIfNull = true)][UsedImplicitly] public IList<ISqlScriptIndexOption> Options { get; }
+        [UsedImplicitly][Field] public Boolean IsUnique { get; }
+        [UsedImplicitly][Field] public SqlIdentifier Name { get; }
+        [UsedImplicitly][Field] public SqlObjectIdentifier TargetObject { get; }
+        [UsedImplicitly][Field] public SqlClusterOption ClusterOption { get; }
+        [UsedImplicitly][Field] public SqlScriptStorageSpecification FileStream { get; }
+        [UsedImplicitly][Field] public SqlScriptStorageSpecification StorageSpecification { get; }
+        [UsedImplicitly][Field] public SqlScriptFilterClause FilterClause { get; }
+        [UsedImplicitly][Field(Source="IndexedColunms")] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<SqlIdentifier> IncludedColumns { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption> Options { get; }
 
         #region ctor{IServiceProvider,SqlCreateIndexStatement}
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)

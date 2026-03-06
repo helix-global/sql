@@ -1,13 +1,18 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
-using System;
+using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal abstract class SqlScriptUniqueConstraintBase<T> : SqlScriptConstraint<T>
         where T : SqlUniqueConstraintBase
         {
-        [SqlModelFieldMapping][UsedImplicitly] public SqlClusterOption ClusterOption { get; }
+        [UsedImplicitly][Field] public SqlClusterOption ClusterOption { get; }
+        [UsedImplicitly][Field] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption> IndexOptions { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptUniqueConstraintBase(IServiceProvider context,T source)

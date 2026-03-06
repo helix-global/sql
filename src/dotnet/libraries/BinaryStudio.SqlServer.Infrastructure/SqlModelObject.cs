@@ -350,7 +350,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:TryGetGenericCollectionDefinition(ISet<Type>,Type,{out}Type):Boolean
-        private static Boolean TryGetGenericCollectionDefinition(ISet<Type> Types,Type TypeG,out Type TypeE) {
+        protected static Boolean TryGetGenericCollectionDefinition(ISet<Type> Types,Type TypeG,out Type TypeE) {
             if (Types == null) { throw new ArgumentNullException(nameof(Types)); }
             TypeE = default;
             foreach (var type in Types) {

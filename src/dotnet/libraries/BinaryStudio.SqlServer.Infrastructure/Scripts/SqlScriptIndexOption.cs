@@ -3,7 +3,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptIndexOption<T> : SqlScriptCodeObject<T>
+    internal class SqlScriptIndexOption<T> : SqlScriptCodeObject<T>,ISqlScriptIndexOption
         where T : SqlIndexOption
         {
         #region ctor{IServiceProvider,T}
