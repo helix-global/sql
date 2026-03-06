@@ -7,48 +7,27 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlScriptCodeObject<T> : SqlScriptCodeObject
+    internal class SqlScriptCodeObject<T> : SqlScriptObject
         where T : SqlCodeObject
         {
         protected T Source { get; }
+        #if DEBUG
+        protected IList<SqlScriptObject> Children { get; } = EmptyArray<SqlScriptObject>.List;
+        #endif
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptCodeObject(IServiceProvider context,T source)
             : base(context,source)
             {
             Source = source;
-            }
-        #endregion
-
-        #region M:ToString:String
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <returns>A string that represents the current object.</returns>
-        public override String ToString()
-            {
-            return $"{{{typeof(T).Name}}}";
-            }
-        #endregion
-        }
-
-    [TypeConverter(typeof(SqlScriptObjectConverter))]
-    internal class SqlScriptCodeObject : SqlModelObject
-        {
-        #if DEBUG
-        protected IList<SqlScriptCodeObject> Children { get; } = Array.Empty<SqlScriptCodeObject>();
-        #endif
-
-        #region ctor{IServiceProvider,SqlCodeObject}
-        protected SqlScriptCodeObject(IServiceProvider context,SqlCodeObject source)
-            : base(context,source)
-            {
             if (source != null) {
                 #if DEBUG
-                var children = new List<SqlScriptCodeObject>();
+                var children = new List<SqlScriptObject>();
                 foreach (var o in source.Children) {
                     if (o != null) {
                         try
                             {
-                            children.Add(CreateObject(context, o));
+                            children.Add(SqlScriptObjectConverter.CreateFrom(context,o));
                             }
                         catch (Exception e)
                             {
@@ -67,7 +46,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
             if (value is SqlCodeObject SqlCodeObject) {
-                var r = CreateObject(Context,SqlCodeObject);
+                var r = SqlScriptObjectConverter.CreateFrom(Context,SqlCodeObject);
                 return base.CoerceValue(targetType,converter,r);
                 }
             if (value != null) {
@@ -85,31 +64,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return base.CoerceValue(targetType,converter,value);
             }
         #endregion
-        #region M:CreateObject(IServiceProvider,SqlCodeObject):SqlScriptCodeObject
-        private static SqlScriptCodeObject CreateObject(IServiceProvider context,SqlCodeObject source)
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
             {
-            return SqlScriptObjectConverter.CreateFrom(context, source);
+            return $"{{{typeof(T).Name}}}";
             }
         #endregion
-        //#region M:IsGenericCollection(Type,{out}Type,{out}Type):Boolean
-        //protected override Boolean IsGenericCollection(Type TypeI,out Type TypeG,out Type TypeE) {
-        //    if (TypeI == null) { throw new ArgumentNullException(nameof(TypeI)); }
-        //    TypeG = default;
-        //    TypeE = default;
-        //    if (TypeI.IsConstructedGenericType) {
-        //        var typeG = TypeI.GetGenericTypeDefinition();
-        //        foreach (var type in types) {
-        //            if (type.IsAssignableFrom(typeG)) {
-        //                TypeG = typeG;
-        //                TypeE = TypeI.GenericTypeArguments[0];
-        //                return true;
-        //                }
-        //            }
-        //        }
-        //    return base.IsGenericCollection(TypeI,out TypeG,out TypeE);
-        //    }
-        //#endregion
-
         private static Boolean CheckConstructedGenericCollectionType(Type TypeS,out Type TypeG,out Type TypeT) {
             TypeG = default;
             TypeT = default;

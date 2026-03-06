@@ -160,6 +160,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     SetValue(o,descriptor.Value.GetValue(source));
                     }
                 }
+            foreach (var pi in source.GetType().GetProperties(BindingFlags.Instance|BindingFlags.NonPublic)) {
+                if (mapping.TryGetValue(pi.Name,out var o)) {
+                    SetValue(o,pi.GetValue(source));
+                    }
+                }
             }
         #endregion
         #region M:SetValue(PropertyDescriptor,Object)
@@ -266,13 +271,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         IsGenericCollection(typeT,out var typeTG,out var typeTE))
                         {
                         if (typeTG == typeof(IList<>)) {
-                            if (typeof(IEnumerable<>).IsAssignableFrom(typeSG)) {
-                                var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTE));
-                                foreach (var i in (IEnumerable)value) {
-                                    target.Add(CoerceValue(typeTE,null,i));
-                                    }
-                                return target;
+                            var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTE));
+                            foreach (var i in (IEnumerable)value) {
+                                target.Add(CoerceValue(typeTE,null,i));
                                 }
+                            return target;
                             }
                         }
                     }

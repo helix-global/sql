@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Management.SqlParser.Parser;
-using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -15,7 +14,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 var ParserResult = Parser.Parse(script);
                 if (ParserResult != null) {
                     batches = ParserResult.Script.Batches
-                        .OfType<SqlBatch>()
                         .Select(i=>new SqlScriptBatch(service,i))
                         .AsReadOnly();
                     }

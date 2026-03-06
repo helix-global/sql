@@ -9,7 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlCreateTableStatement))]
     internal sealed class SqlScriptCreateTableStatement : SqlScriptDdlStatement<SqlCreateTableStatement>
         {
-        [UsedImplicitly][Field] public SqlScriptTableDefinition Definition { get; }
+        [UsedImplicitly][Field] public ISqlScriptTableDefinition Definition { get; }
         [UsedImplicitly][Field] public SqlScriptLargeDataStorageInformation LargeDataStorageInformation { get; }
         [UsedImplicitly][Field] public SqlObjectIdentifier Name { get; }
         [UsedImplicitly][Field] public SqlScriptStorageSpecification StorageSpecification { get; }

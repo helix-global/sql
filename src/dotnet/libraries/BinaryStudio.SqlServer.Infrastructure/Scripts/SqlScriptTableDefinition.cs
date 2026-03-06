@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlTableDefinition))]
-    internal sealed class SqlScriptTableDefinition : SqlScriptCodeObject<SqlTableDefinition>
+    internal sealed class SqlScriptTableDefinition : SqlScriptCodeObject<SqlTableDefinition>,ISqlScriptTableDefinition
         {
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptColumnDefinition> ColumnDefinitions { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptConstraint> Constraints { get; }

@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptUniqueConstraintBase<T> : SqlScriptConstraint<T>
+    internal abstract class SqlScriptUniqueConstraintBase<T> : SqlScriptConstraint<T>,ISqlScriptUniqueConstraint
         where T : SqlUniqueConstraintBase
         {
         [UsedImplicitly][Field] public SqlClusterOption ClusterOption { get; }

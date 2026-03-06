@@ -7,13 +7,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class SqlScriptObjectConverter : TypeConverter
         {
-        #region M:CreateFrom(IServiceProvider,SqlCodeObject):SqlScriptCodeObject
-        internal static SqlScriptCodeObject CreateFrom(IServiceProvider context,SqlCodeObject source) {
+        #region M:CreateFrom(IServiceProvider,TSqlFragment):SqlScriptObject
+        internal static SqlScriptObject CreateFrom(IServiceProvider context,TSqlFragment source) {
             if (source != null) {
                 var rt = source.GetType();
                 Type type;
@@ -32,7 +33,45 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (type != null) {
                     var ctor = type.GetConstructor(new[] { typeof(IServiceProvider),source.GetType() });
                     if (ctor != null) {
-                        return (SqlScriptCodeObject)ctor.Invoke(new Object[] { context,source });
+                        return (SqlScriptObject)ctor.Invoke(new Object[] { context,source });
+                        }
+                    }
+                throw (new ArgumentOutOfRangeException(nameof(source), $@"No registered type for ""{source.GetType()}""."))
+                    .Add("SourceType",source.GetType().FullName);
+                }
+            return null;
+            }
+        #endregion
+        #region M:CreateFrom(IServiceProvider,SqlCodeObject):SqlScriptObject
+        internal static SqlScriptObject CreateFrom(IServiceProvider context,SqlCodeObject source) {
+            if (source != null) {
+                var rt = source.GetType();
+                Type type;
+                using (SqlModelObject.UpgradeableReadLock(g_rtlock)) {
+                    if (!g_rtlist.TryGetValue(rt, out type)) {
+                        foreach (var pair in g_rtlist) {
+                            if (pair.Key.IsAssignableFrom(rt)) {
+                                using (SqlModelObject.WriteLock(g_rtlock)) 
+                                    {
+                                    g_rtlist[rt] = type = pair.Value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                if (type != null) {
+                    var ctor = type.GetConstructor(new[] { typeof(IServiceProvider),source.GetType() });
+                    if (ctor != null) {
+                        var r = (SqlScriptObject)ctor.Invoke(new Object[] { context,source });
+                        if (r is SqlScriptNullStatement NullStatement) {
+                            if (g_splist.TryGetValue(NullStatement.StatementPhrase,out type)) {
+                                ctor = type.GetConstructor(new[] { typeof(IServiceProvider),source.GetType() });
+                                if (ctor != null) {
+                                    r = ((SqlScriptFactoryStatement)ctor.Invoke(new Object[] { context,source })).Statement;
+                                    }
+                                }
+                            }
+                        return r;
                         }
                     }
                 throw (new ArgumentOutOfRangeException(nameof(source), $@"No registered type for ""{source.GetType()}""."))
@@ -62,16 +101,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
             if (value is SqlCodeObject SqlCodeObject) { return CreateFrom(context,SqlCodeObject); }
+            if (value is TSqlFragment  SqlFragment)   { return CreateFrom(context,SqlFragment);   }
             return base.ConvertFrom(context, culture, value);
             }
         #endregion
 
         #region sctor
         static SqlScriptObjectConverter() {
-            foreach (var type in typeof(SqlScriptCodeObject).Assembly.GetTypes()) {
-                var attributes = type.GetCustomAttributes<SqlScriptObjectAttribute>().ToArray();
-                if (attributes.Length > 0) {
-                    foreach (var attribute in attributes) {
+            foreach (var type in typeof(SqlScriptObject).Assembly.GetTypes()) {
+                var rtA = type.GetCustomAttributes<SqlScriptObjectAttribute>().ToArray();
+                if (rtA.Length > 0) {
+                    foreach (var attribute in rtA) {
                         try
                             {
                             if (attribute.Type != null)
@@ -108,11 +148,30 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             }
                         }
                     }
+                var spA = type.GetCustomAttributes<SqlScriptObjectStatementPhraseAttribute>().ToArray();
+                if (spA.Length > 0) {
+                    foreach (var attribute in spA) {
+                        try
+                            {
+                            if (!String.IsNullOrWhiteSpace(attribute.StatementPhrase))
+                                {
+                                g_splist.Add(attribute.StatementPhrase,type);
+                                continue;
+                                }
+                            throw new InvalidOperationException();
+                            }
+                        catch
+                            {
+                            throw;
+                            }
+                        }
+                    }
                 }
             }
         #endregion
 
-        protected static readonly IDictionary<Type, Type> g_rtlist = new ConcurrentDictionary<Type, Type>();
+        protected static readonly IDictionary<Type,Type>   g_rtlist = new ConcurrentDictionary<Type,Type>();
+        protected static readonly IDictionary<String,Type> g_splist = new ConcurrentDictionary<String,Type>();
         private static readonly ReaderWriterLockSlim g_rtlock = new ReaderWriterLockSlim();
         }
     }

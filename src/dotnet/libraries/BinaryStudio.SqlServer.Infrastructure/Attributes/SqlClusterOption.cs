@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         NonClustered,
         NonClusteredHash,
         Hash,
-        ClusteredColumnstore,
-        NonClusteredColumnstore
+        ClusteredColumnStore,
+        NonClusteredColumnStore
         }
     }

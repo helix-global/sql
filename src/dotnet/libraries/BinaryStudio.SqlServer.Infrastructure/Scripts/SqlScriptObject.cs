@@ -1,6 +1,16 @@
-﻿namespace BinaryStudio.SqlServer.Infrastructure
+﻿using System;
+using System.ComponentModel;
+
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptObject
+    [TypeConverter(typeof(SqlScriptObjectConverter))]
+    internal abstract class SqlScriptObject : SqlModelObject
         {
+        #region ctor{IServiceProvider,SqlCodeObject}
+        protected SqlScriptObject(IServiceProvider context,Object source)
+            : base(context,source)
+            {
+            }
+        #endregion
         }
     }
