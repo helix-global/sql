@@ -11,7 +11,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T : SqlUniqueConstraintBase
         {
         [UsedImplicitly][Field] public SqlClusterOption ClusterOption { get; }
-        [UsedImplicitly][Field] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
+        [UsedImplicitly][Field] public IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption> IndexOptions { get; }
 
         #region ctor{IServiceProvider,T}

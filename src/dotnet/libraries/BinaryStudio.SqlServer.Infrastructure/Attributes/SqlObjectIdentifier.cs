@@ -42,7 +42,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:Create(IList<SqlIdentifier>):SqlObjectIdentifier
-        public static SqlObjectIdentifier Create(IList<SqlIdentifier> identifiers) {
+        private static SqlObjectIdentifier Create(IList<SqlIdentifier> identifiers) {
             switch (identifiers.Count) {
                 case 1: return Create(identifiers[0]);
                 case 2: return Create(identifiers[0],identifiers[1]);
@@ -50,6 +50,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 case 4: return Create(identifiers[0],identifiers[1],identifiers[2],identifiers[3]);
                 default: return new MultiPartObjectIdentifier(identifiers);
                 }
+            }
+        #endregion
+        #region M:Create(IEnumerable<SqlIdentifier>):SqlObjectIdentifier
+        public static SqlObjectIdentifier Create(IEnumerable<SqlIdentifier> identifiers) {
+            return Create(identifiers.ToArray());
             }
         #endregion
         #region M:Create({params}String[]):SqlObjectIdentifier

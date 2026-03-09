@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -11,6 +12,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         public SqlClusterOption ClusterOption { get; } = SqlClusterOption.Default;
         [UsedImplicitly][Field] public Boolean IsPrimaryKey { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption>   IndexOptions { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true,Source = "Columns")] public IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
 
         #region ctor{IServiceProvider,UniqueConstraintDefinition}
         public SqlScriptDomUniqueConstraintDefinition(IServiceProvider context,UniqueConstraintDefinition source)

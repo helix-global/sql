@@ -15,7 +15,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptAlterTableAddTableElementStatement(IServiceProvider context,AlterTableAddTableElementStatement source)
             : base(context,source)
             {
-            return;
             }
         #endregion
         }

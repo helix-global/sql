@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -7,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal abstract class SqlScriptDomObject<T> : SqlScriptObject
         where T : TSqlFragment
         {
-        protected T Source { get; }
+        protected internal T Source { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptDomObject(IServiceProvider context,T source)
@@ -20,6 +21,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
             if (value is TSqlFragment SqlFragment) {
+                if (SqlFragment is MultiPartIdentifier MultiPartIdentifier) {
+                    return base.CoerceValue(targetType,converter,SqlObjectIdentifier.Create(MultiPartIdentifier.Identifiers.Select(i => new SqlIdentifier(i.Value))));
+                    }
+                if (SqlFragment is IndexExpressionOption ExpressionOption) {
+                    switch (ExpressionOption.OptionKind)
+                        {
+                        case IndexOptionKind.FillFactor: return base.CoerceValue(targetType,converter,new SqlScriptDomFillFactorIndexOption(Context,ExpressionOption));
+                        }
+                    }
                 var r = SqlScriptObjectConverter.CreateFrom(Context,SqlFragment);
                 return base.CoerceValue(targetType,converter,r);
                 }

@@ -10,8 +10,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(TableDefinition))]
     internal class SqlScriptDomTableDefinition : SqlScriptDomObject<TableDefinition>,ISqlScriptTableDefinition
         {
-        public IList<ISqlScriptConstraint> Constraints { get; }
-        [UsedImplicitly][Field] public IList<ISqlScriptConstraint> TableConstraints { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true,Source="TableConstraints")] public IList<ISqlScriptConstraint> Constraints { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptColumnDefinition> ColumnDefinitions { get; }
 
         #region ctor{IServiceProvider,TableDefinition}
         public SqlScriptDomTableDefinition(IServiceProvider context,TableDefinition source)

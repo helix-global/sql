@@ -109,43 +109,46 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region sctor
         static SqlScriptObjectConverter() {
             foreach (var type in typeof(SqlScriptObject).Assembly.GetTypes()) {
-                var rtA = type.GetCustomAttributes<SqlScriptObjectAttribute>().ToArray();
+                var rtA = type.GetCustomAttributes<SqlScriptObjectAttribute>(false).ToArray();
                 if (rtA.Length > 0) {
                     foreach (var attribute in rtA) {
-                        try
+                        if (attribute.Type != null)
                             {
-                            if (attribute.Type != null)
+                            try
                                 {
                                 g_rtlist.Add(attribute.Type,type);
-                                continue;
                                 }
-                            if (String.IsNullOrWhiteSpace(attribute.TypeName))
+                            catch(Exception e)
                                 {
-                                throw new InvalidOperationException();
+                                e.Add("Key",attribute.Type.FullName);
+                                e.Add("PrevValue",g_rtlist[attribute.Type]);
+                                throw;
                                 }
-                            var assembly = typeof(SqlCodeObject).Assembly;
-                            var typename = attribute.TypeName;
-                            var rt = assembly.GetType(typename,false);
+
+                            continue;
+                            }
+                        if (String.IsNullOrWhiteSpace(attribute.TypeName))
+                            {
+                            throw new InvalidOperationException();
+                            }
+                        var assembly = typeof(SqlCodeObject).Assembly;
+                        var typename = attribute.TypeName;
+                        var rt = assembly.GetType(typename,false);
+                        if (rt != null) {
+                            g_rtlist.Add(rt,type);
+                            continue;
+                            }
+                        var values = typename.Split('.');
+                        typename = String.Join(".",values.Take(values.Length-1));
+                        rt = assembly.GetType(typename,false);
+                        if (rt != null) {
+                            rt = rt.GetNestedType(values[values.Length-1],BindingFlags.NonPublic|BindingFlags.Public);
                             if (rt != null) {
                                 g_rtlist.Add(rt,type);
                                 continue;
                                 }
-                            var values = typename.Split('.');
-                            typename = String.Join(".",values.Take(values.Length-1));
-                            rt = assembly.GetType(typename,false);
-                            if (rt != null) {
-                                rt = rt.GetNestedType(values[values.Length-1],BindingFlags.NonPublic|BindingFlags.Public);
-                                if (rt != null) {
-                                    g_rtlist.Add(rt,type);
-                                    continue;
-                                    }
-                                }
-                            throw new InvalidOperationException();
                             }
-                        catch
-                            {
-                            throw;
-                            }
+                        throw new InvalidOperationException();
                         }
                     }
                 var spA = type.GetCustomAttributes<SqlScriptObjectStatementPhraseAttribute>().ToArray();
