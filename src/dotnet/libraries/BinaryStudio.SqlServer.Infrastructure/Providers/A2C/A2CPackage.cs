@@ -230,11 +230,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
                 var script = row["SQLTEXT"]?.ToString();
                 if (!String.IsNullOrWhiteSpace(script)) {
-                    script = @"
-alter table [dbo].[FC_FAILURERATES_FARS_FACODE] drop constraint [_ConstraintName];
-alter table [dbo].[FC_FAILURERATES_FARS_FACODE] alter column [ID] bigint not null;
-alter table [dbo].[FC_FAILURERATES_FARS_FACODE] add primary key clustered ([ID] asc) with fillfactor = 19;
-";
+//                    script = @"
+//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] drop constraint [_ConstraintName];
+//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] alter column [ID] bigint not null;
+//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] add primary key clustered ([ID] asc) with fillfactor = 19;
+//";
 
 
                     if (type != SqlObjectType.None) {

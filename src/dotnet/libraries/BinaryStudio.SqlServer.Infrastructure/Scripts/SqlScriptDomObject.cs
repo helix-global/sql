@@ -21,9 +21,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
             if (value is TSqlFragment SqlFragment) {
-                if (SqlFragment is MultiPartIdentifier MultiPartIdentifier) {
-                    return base.CoerceValue(targetType,converter,SqlObjectIdentifier.Create(MultiPartIdentifier.Identifiers.Select(i => new SqlIdentifier(i.Value))));
-                    }
+                if (SqlFragment is MultiPartIdentifier MultiPartIdentifier) { return base.CoerceValue(targetType,converter,SqlObjectIdentifier.Create(MultiPartIdentifier.Identifiers.Select(i => new SqlIdentifier(i.Value)))); }
+                if (SqlFragment is Identifier Identifier) { return base.CoerceValue(targetType,converter,new SqlIdentifier(Identifier.Value)); }
                 if (SqlFragment is IndexExpressionOption ExpressionOption) {
                     switch (ExpressionOption.OptionKind)
                         {
