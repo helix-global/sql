@@ -5,13 +5,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    [SqlScriptObject(typeof(SqlStatisticsOnlyIndexOption))]
-    internal sealed class SqlScriptStatisticsOnlyIndexOption : SqlScriptOnOffIndexOption<SqlStatisticsOnlyIndexOption>
+    internal abstract class SqlScriptOnOffIndexOption<T> : SqlScriptIndexOption<T>
+        where T : SqlIndexOption
         {
-        public Int32 Value { get { return Source.Value; }}
+        [Field] public SqlOnOffValue OnOffValue { get; }
 
-        #region ctor{IServiceProvider,SqlStatisticsOnlyIndexOption}
-        public SqlScriptStatisticsOnlyIndexOption(IServiceProvider context,SqlStatisticsOnlyIndexOption source)
+        #region ctor{IServiceProvider,T}
+        protected SqlScriptOnOffIndexOption(IServiceProvider context,T source)
             : base(context,source)
             {
             }

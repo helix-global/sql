@@ -7,9 +7,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T : IndexStateOption
         {
         #region ctor{IServiceProvider,T}
-        public SqlScriptDomIndexStateOption(IServiceProvider context,T source)
+        protected SqlScriptDomIndexStateOption(IServiceProvider context,T source)
             : base(context,source)
             {
+            }
+        #endregion
+
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return $"{Phrase.ToLowerInvariant()} = {Source.OptionState.ToString().ToLowerInvariant()}";
             }
         #endregion
         }

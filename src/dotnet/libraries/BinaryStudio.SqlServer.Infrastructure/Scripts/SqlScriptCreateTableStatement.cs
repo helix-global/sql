@@ -21,6 +21,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return;
             }
         #endregion
+
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>

@@ -229,12 +229,64 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             foreach (DataRow row in source.Rows) {
                 var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
                 var script = row["SQLTEXT"]?.ToString();
+                var name = row["NAME"]?.ToString();
+                var oid = row["OID"]?.ToString();
                 if (!String.IsNullOrWhiteSpace(script)) {
-//                    script = @"
-//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] drop constraint [_ConstraintName];
-//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] alter column [ID] bigint not null;
-//alter table [dbo].[FC_FAILURERATES_FARS_FACODE] add primary key clustered ([ID] asc) with fillfactor = 19;
-//";
+                    //File.WriteAllText($@"{type},{oid},{name}.sql",script);
+                                        script = @"
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[COM_SKILLS](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[GID] [uniqueidentifier] NULL,
+	[S_S] [int] NOT NULL,
+	[S_CR] [int] NOT NULL,
+	[S_CDT] [datetime] NOT NULL,
+	[S_MR] [int] NULL,
+	[S_MDT] [datetime] NULL,
+	[ARC] [int] NULL,
+	[DEPID] [int] NOT NULL,
+	[NAME] [nvarchar](250) NOT NULL,
+	[DESCRIPTION] [nvarchar](4000) NULL,
+	[EXPIRATION_TERM] [int] NULL,
+	[EXPIRATION_TERM_TYPE_ID] [int] NULL,
+	[NEEDS_APPROVAL] [int] NULL,
+	[ITERATIONS] [int] NOT NULL,
+	[PRODUCTION_SUPPORT] [int] NULL,
+	[ITERATIONS_REPEAT] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [IX_COM_SKILLS] UNIQUE NONCLUSTERED 
+(
+	[NAME] ASC,
+	[DEPID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--ALTER TABLE [dbo].[COM_SKILLS] ADD  CONSTRAINT [DF_COM_SKILLS_ITERATIONS_REPEAT]  DEFAULT ((1)) FOR [ITERATIONS_REPEAT]
+GO
+
+--ALTER TABLE [dbo].[COM_SKILLS]  WITH NOCHECK ADD  CONSTRAINT [FK_COM_SKILLS_DEPID] FOREIGN KEY([DEPID])
+--REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+GO
+
+--ALTER TABLE [dbo].[COM_SKILLS] CHECK CONSTRAINT [FK_COM_SKILLS_DEPID]
+ALTER TABLE [dbo].[COM_SKILLS] ADD PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+GO
+
+
+                    ";
 
 
                     if (type != SqlObjectType.None) {
@@ -245,7 +297,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                                 //(new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Table:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Function:
                                 //(new SqlIndexScriptDecoder()).Decode(script);
@@ -266,7 +318,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                                 //(new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.CheckConstraint:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
+                                (new SqlIndexScriptDecoder()).Decode(script);
                                 break;
                             case SqlObjectType.Statistics:
                                 //(new SqlIndexScriptDecoder()).Decode(script);

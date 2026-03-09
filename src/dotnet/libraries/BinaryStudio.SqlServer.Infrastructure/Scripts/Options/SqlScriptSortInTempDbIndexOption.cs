@@ -3,11 +3,11 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [SqlScriptObject(typeof(SqlSortInTempDbIndexOption))]
-    internal sealed class SqlScriptSortInTempDbIndexOption : SqlScriptIndexOption<SqlSortInTempDbIndexOption>
-        {
-        public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}
+    using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [SqlScriptObject(typeof(SqlSortInTempDbIndexOption))]
+    internal sealed class SqlScriptSortInTempDbIndexOption : SqlScriptOnOffIndexOption<SqlSortInTempDbIndexOption>
+        {
         #region ctor{IServiceProvider,SqlSortInTempDbIndexOption}
         public SqlScriptSortInTempDbIndexOption(IServiceProvider context,SqlSortInTempDbIndexOption source)
             : base(context,source)

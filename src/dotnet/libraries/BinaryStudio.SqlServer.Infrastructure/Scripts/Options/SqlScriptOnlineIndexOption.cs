@@ -3,11 +3,11 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [SqlScriptObject(typeof(SqlOnlineIndexOption))]
-    internal sealed class SqlScriptOnlineIndexOption : SqlScriptIndexOption<SqlOnlineIndexOption>
-        {
-        public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}
+    using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [SqlScriptObject(typeof(SqlOnlineIndexOption))]
+    internal sealed class SqlScriptOnlineIndexOption : SqlScriptOnOffIndexOption<SqlOnlineIndexOption>
+        {
         #region ctor{IServiceProvider,SqlOnlineIndexOption}
         public SqlScriptOnlineIndexOption(IServiceProvider context,SqlOnlineIndexOption source)
             : base(context,source)

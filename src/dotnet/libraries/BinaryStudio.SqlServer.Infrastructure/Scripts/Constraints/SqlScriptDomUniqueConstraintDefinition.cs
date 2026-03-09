@@ -14,6 +14,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         [UsedImplicitly][Field] public Boolean IsPrimaryKey { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption>   IndexOptions { get; }
         [UsedImplicitly][Field(EmptyIfNull = true,Source = "Columns")] public IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
+        public override SqlConstraintType Type { get; }
 
         #region ctor{IServiceProvider,UniqueConstraintDefinition}
         public SqlScriptDomUniqueConstraintDefinition(IServiceProvider context,UniqueConstraintDefinition source)
@@ -30,6 +31,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     default: throw new ArgumentOutOfRangeException();
                     }
                 }
+            Type = IsPrimaryKey
+                ? SqlConstraintType.PrimaryKey
+                : SqlConstraintType.Unique;
             return;
             }
         #endregion

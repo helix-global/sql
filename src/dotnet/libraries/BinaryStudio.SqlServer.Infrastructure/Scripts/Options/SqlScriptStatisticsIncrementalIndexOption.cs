@@ -3,11 +3,11 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [SqlScriptObject(typeof(SqlStatisticsIncrementalIndexOption))]
-    internal sealed class SqlScriptStatisticsIncrementalIndexOption : SqlScriptIndexOption<SqlStatisticsIncrementalIndexOption>
-        {
-        public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}
+    using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [SqlScriptObject(typeof(SqlStatisticsIncrementalIndexOption))]
+    internal sealed class SqlScriptStatisticsIncrementalIndexOption : SqlScriptOnOffIndexOption<SqlStatisticsIncrementalIndexOption>
+        {
         #region ctor{IServiceProvider,SqlStatisticsIncrementalIndexOption}
         public SqlScriptStatisticsIncrementalIndexOption(IServiceProvider context,SqlStatisticsIncrementalIndexOption source)
             : base(context,source)

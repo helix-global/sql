@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using SqlCodeDomObjectIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlObjectIdentifier;
+using System.Linq;
+using SqlCodeObjectIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlMultipartIdentifier;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -15,7 +16,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override Boolean CanConvertFrom(ITypeDescriptorContext context,Type sourceType) {
             if ((sourceType == typeof(String)) ||
                 (sourceType == typeof(SqlObjectIdentifier)) ||
-                (sourceType == typeof(SqlCodeDomObjectIdentifier)))
+                (sourceType == typeof(SqlCodeObjectIdentifier)))
                 {
                 return true;
                 }
@@ -32,7 +33,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
             if (value is SqlObjectIdentifier E) { return E; }
-            if (value is SqlCodeDomObjectIdentifier CodeDomObjectIdentifier) { return SqlObjectIdentifier.Parse(CodeDomObjectIdentifier.ToString()); }
+            if (value is SqlCodeObjectIdentifier CodeDomObjectIdentifier) { return SqlObjectIdentifier.Create(CodeDomObjectIdentifier.Select(i=>new SqlIdentifier(i.Value))); }
+            //if (value is SqlScriptObjectIdentifier SqlScriptObjectIdentifier) { return SqlObjectIdentifier.Create(SqlScriptObjectIdentifier.Source.Select(i=>new SqlIdentifier(i.Value))); }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
             return SqlObjectIdentifier.Parse(S);

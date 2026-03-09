@@ -18,5 +18,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             }
         #endregion
+
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return (Name != null)
+                ? Name.ToString()
+                : Type.ToString();
+            }
+        #endregion
         }
     }

@@ -3,11 +3,11 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [SqlScriptObject(typeof(SqlOptimizeForSequentialKeyIndexOption))]
-    internal sealed class SqlScriptOptimizeForSequentialKeyIndexOption : SqlScriptIndexOption<SqlOptimizeForSequentialKeyIndexOption>
-        {
-        public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}
+    using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [SqlScriptObject(typeof(SqlOptimizeForSequentialKeyIndexOption))]
+    internal sealed class SqlScriptOptimizeForSequentialKeyIndexOption : SqlScriptOnOffIndexOption<SqlOptimizeForSequentialKeyIndexOption>
+        {
         #region ctor{IServiceProvider,SqlOptimizeForSequentialKeyIndexOption}
         public SqlScriptOptimizeForSequentialKeyIndexOption(IServiceProvider context,SqlOptimizeForSequentialKeyIndexOption source)
             : base(context,source)

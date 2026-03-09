@@ -3,16 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
+using SqlCodeDomMultipartIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlMultipartIdentifier;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class SqlScriptCodeObject<T> : SqlScriptObject
         where T : SqlCodeObject
         {
-        protected T Source { get; }
+        protected internal T Source { get; }
         #if DEBUG
-        protected IList<SqlScriptObject> Children { get; } = EmptyArray<SqlScriptObject>.List;
+        //protected IList<SqlScriptObject> Children { get; } = EmptyArray<SqlScriptObject>.List;
         #endif
 
         #region ctor{IServiceProvider,T}
@@ -21,23 +23,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             Source = source;
             if (source != null) {
-                #if DEBUG
-                var children = new List<SqlScriptObject>();
-                foreach (var o in source.Children) {
-                    if (o != null) {
-                        try
-                            {
-                            children.Add(SqlScriptObjectConverter.CreateFrom(context,o));
-                            }
-                        catch (Exception e)
-                            {
-                            e.Add("SelfType",GetType().FullName);
-                            throw;
-                            }
-                        }
-                    }
-                Children = children.AsReadOnly();
-                #endif
+                //#if DEBUG
+                //var children = new List<SqlScriptObject>();
+                //foreach (var o in source.Children) {
+                //    if (o != null) {
+                //        try
+                //            {
+                //            children.Add(SqlScriptObjectConverter.CreateFrom(context,o));
+                //            }
+                //        catch (Exception e)
+                //            {
+                //            e.Add("SelfType",GetType().FullName);
+                //            throw;
+                //            }
+                //        }
+                //    }
+                //Children = children.AsReadOnly();
+                //#endif
                 }
             }
         #endregion
@@ -45,6 +47,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:CoerceValue(Type,TypeConverter,Object):Object
         protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
+            if (value is SqlCodeDomMultipartIdentifier CodeDomMultipartIdentifier) {
+                var r = SqlObjectIdentifier.Create(CodeDomMultipartIdentifier.Select(i => new SqlIdentifier(i.Value)));
+                return base.CoerceValue(targetType,converter,r);
+                }
             if (value is SqlCodeObject SqlCodeObject) {
                 var r = SqlScriptObjectConverter.CreateFrom(Context,SqlCodeObject);
                 return base.CoerceValue(targetType,converter,r);

@@ -3,11 +3,11 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    [SqlScriptObject(typeof(SqlStatisticsNoRecomputeIndexOption))]
-    internal sealed class SqlScriptStatisticsNoRecomputeIndexOption : SqlScriptIndexOption<SqlStatisticsNoRecomputeIndexOption>
-        {
-        public SqlOnOffValue OnOffValue { get { return Source.OnOffValue; }}
+    using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [SqlScriptObject(typeof(SqlStatisticsNoRecomputeIndexOption))]
+    internal sealed class SqlScriptStatisticsNoRecomputeIndexOption : SqlScriptOnOffIndexOption<SqlStatisticsNoRecomputeIndexOption>
+        {
         #region ctor{IServiceProvider,SqlStatisticsNoRecomputeIndexOption}
         public SqlScriptStatisticsNoRecomputeIndexOption(IServiceProvider context,SqlStatisticsNoRecomputeIndexOption source)
             : base(context,source)

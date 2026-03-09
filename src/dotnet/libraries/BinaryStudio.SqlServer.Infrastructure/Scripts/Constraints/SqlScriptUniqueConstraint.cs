@@ -10,6 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptUniqueConstraint(IServiceProvider context,SqlUniqueConstraint source)
             : base(context,source)
             {
+            return;
             }
         #endregion
         }
