@@ -1,9 +1,12 @@
 ﻿//#define USE_ASYNC
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Compressors;
@@ -11,6 +14,8 @@ using SharpCompress.Compressors.Deflate;
 
 namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     public class A2CPackage: SqlModelObject
         {
         public Int32 FileVersion { get; }
@@ -226,124 +231,393 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         #endregion
         #region M:LoadSqlObjects
         private void LoadSqlObjects(DataTable source) {
-            foreach (DataRow row in source.Rows) {
-                var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
-                var script = row["SQLTEXT"]?.ToString();
-                var name = row["NAME"]?.ToString();
-                var oid = row["OID"]?.ToString();
+            foreach (var row in source.Rows
+                .OfType<DataRow>()
+                .Select(i => new MetadataRecord(i))
+                .Where(i => i.Type != SqlObjectType.None)
+                .OrderBy(i=>i))
+                {
+                var script = row.Script;
                 if (!String.IsNullOrWhiteSpace(script)) {
-                    //File.WriteAllText($@"{type},{oid},{name}.sql",script);
-                                        script = @"
-SET ANSI_NULLS ON
-GO
+                    //                    //File.WriteAllText($@"{type},{oid},{name}.sql",script);
+                    ////                    script = @"
+                    ////SET ANSI_NULLS ON
+                    ////GO
 
-SET QUOTED_IDENTIFIER ON
-GO
+                    ////SET QUOTED_IDENTIFIER ON
+                    ////GO
 
-CREATE TABLE [dbo].[COM_SKILLS](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[GID] [uniqueidentifier] NULL,
-	[S_S] [int] NOT NULL,
-	[S_CR] [int] NOT NULL,
-	[S_CDT] [datetime] NOT NULL,
-	[S_MR] [int] NULL,
-	[S_MDT] [datetime] NULL,
-	[ARC] [int] NULL,
-	[DEPID] [int] NOT NULL,
-	[NAME] [nvarchar](250) NOT NULL,
-	[DESCRIPTION] [nvarchar](4000) NULL,
-	[EXPIRATION_TERM] [int] NULL,
-	[EXPIRATION_TERM_TYPE_ID] [int] NULL,
-	[NEEDS_APPROVAL] [int] NULL,
-	[ITERATIONS] [int] NOT NULL,
-	[PRODUCTION_SUPPORT] [int] NULL,
-	[ITERATIONS_REPEAT] [int] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
- CONSTRAINT [IX_COM_SKILLS] UNIQUE NONCLUSTERED 
-(
-	[NAME] ASC,
-	[DEPID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
+                    ////CREATE TABLE [dbo].[COM_SKILLS](
+                    ////	[ID] [int] IDENTITY(1,1) NOT NULL,
+                    ////	[GID] [uniqueidentifier] NULL,
+                    ////	[S_S] [int] NOT NULL,
+                    ////	[S_CR] [int] NOT NULL,
+                    ////	[S_CDT] [datetime] NOT NULL,
+                    ////	[S_MR] [int] NULL,
+                    ////	[S_MDT] [datetime] NULL,
+                    ////	[ARC] [int] NULL,
+                    ////	[DEPID] [int] NOT NULL,
+                    ////	[NAME] [nvarchar](250) NOT NULL,
+                    ////	[DESCRIPTION] [nvarchar](4000) NULL,
+                    ////	[EXPIRATION_TERM] [int] NULL,
+                    ////	[EXPIRATION_TERM_TYPE_ID] [int] NULL,
+                    ////	[NEEDS_APPROVAL] [int] NULL,
+                    ////	[ITERATIONS] [int] NOT NULL,
+                    ////	[PRODUCTION_SUPPORT] [int] NULL,
+                    ////	[ITERATIONS_REPEAT] [int] NOT NULL,
+                    ////PRIMARY KEY CLUSTERED 
+                    ////(
+                    ////	[ID] ASC
+                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+                    //// CONSTRAINT [IX_COM_SKILLS] UNIQUE NONCLUSTERED 
+                    ////(
+                    ////	[NAME] ASC,
+                    ////	[DEPID] ASC
+                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+                    ////) ON [PRIMARY]
+                    ////GO
 
---ALTER TABLE [dbo].[COM_SKILLS] ADD  CONSTRAINT [DF_COM_SKILLS_ITERATIONS_REPEAT]  DEFAULT ((1)) FOR [ITERATIONS_REPEAT]
-GO
+                    ////--ALTER TABLE [dbo].[COM_SKILLS] ADD  CONSTRAINT [DF_COM_SKILLS_ITERATIONS_REPEAT]  DEFAULT ((1)) FOR [ITERATIONS_REPEAT]
+                    ////GO
 
---ALTER TABLE [dbo].[COM_SKILLS]  WITH NOCHECK ADD  CONSTRAINT [FK_COM_SKILLS_DEPID] FOREIGN KEY([DEPID])
---REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
-GO
+                    ////--ALTER TABLE [dbo].[COM_SKILLS]  WITH NOCHECK ADD  CONSTRAINT [FK_COM_SKILLS_DEPID] FOREIGN KEY([DEPID])
+                    ////--REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+                    ////GO
 
---ALTER TABLE [dbo].[COM_SKILLS] CHECK CONSTRAINT [FK_COM_SKILLS_DEPID]
-ALTER TABLE [dbo].[COM_SKILLS] ADD PRIMARY KEY CLUSTERED 
-(
-	[ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-GO
-
-
-                    ";
+                    ////--ALTER TABLE [dbo].[COM_SKILLS] CHECK CONSTRAINT [FK_COM_SKILLS_DEPID]
+                    ////ALTER TABLE [dbo].[COM_SKILLS] ADD PRIMARY KEY CLUSTERED 
+                    ////(
+                    ////	[ID] ASC
+                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+                    ////GO
+                    ////GO
 
 
-                    if (type != SqlObjectType.None) {
-                        switch (type) {
-                            case SqlObjectType.None:
-                                break;
-                            case SqlObjectType.ScriptBefore:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Table:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Function:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Procedure:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Index:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Trigger:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.ForeignKeyConstraint:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.View:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.CheckConstraint:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Statistics:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Assembly:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.TableType:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.PartitionFunction:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.PartitionScheme:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.ScriptAfter:
-                                //(new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            default: throw new ArgumentOutOfRangeException();
-                            }
+                    ////                    ";
+
+                    switch (row.Type) {
+                        case SqlObjectType.ScriptBefore:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Table:
+                            (new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Function:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Procedure:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Index:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Trigger:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.ForeignKeyConstraint:
+                            (new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.View:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.CheckConstraint:
+                            (new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Statistics:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.Assembly:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.TableType:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.PartitionFunction:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.PartitionScheme:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        case SqlObjectType.ScriptAfter:
+                            //(new SqlIndexScriptDecoder()).Decode(script);
+                            break;
+                        default: throw new ArgumentOutOfRangeException();
                         }
                     }
                 }
             }
         #endregion
+
+        private class MetadataRecord : SqlModelObject,IComparable<MetadataRecord>
+            {
+            [UsedImplicitly][Field(Source = "NAME")]    public String Name { get; }
+            [UsedImplicitly][Field(Source = "SQLTEXT")] public String Script { get; }
+            [UsedImplicitly][Field(Source = "OID")]     public Int32 OID { get; }
+            [UsedImplicitly][Field(Source = "MTYPE")]   public SqlObjectType Type { get; }
+
+            #region ctor{DataRow}
+            public MetadataRecord(DataRow row)
+                : base(row)
+                {
+                }
+            #endregion
+            #region M:CompareTo(MetadataRecord):Int32
+            public Int32 CompareTo(MetadataRecord other) {
+                if (ReferenceEquals(other,null)) { return 1; }
+                if (ReferenceEquals(other,this)) { return 0; }
+                if (other.Type == Type) { return Name.CompareTo(other.Name); }
+                return values[PropSI4((Int16)(Int32)other.Type,(Int16)(Int32)Type)];
+                }
+            #endregion
+            #region M:ToString:String
+            public override String ToString()
+                {
+                return $"{{{Type}}}:{{{Name}}}";
+                }
+            #endregion
+
+            private static readonly IDictionary<Int32,Int32> values = new Dictionary<Int32,Int32> {
+                /* None:ScriptBefore                      */ { 0x0000000a,-1},
+                /* None:Table                             */ { 0x00000014,-1},
+                /* None:Function                          */ { 0x0000001e,-1},
+                /* None:Procedure                         */ { 0x00000028,-1},
+                /* None:Index                             */ { 0x00000032,-1},
+                /* None:Trigger                           */ { 0x0000003c,-1},
+                /* None:ForeignKeyConstraint              */ { 0x00000046,-1},
+                /* None:View                              */ { 0x00000050,-1},
+                /* None:CheckConstraint                   */ { 0x0000005a,-1},
+                /* None:Statistics                        */ { 0x00000064,-1},
+                /* None:Assembly                          */ { 0x000000c8,-1},
+                /* None:TableType                         */ { 0x000000d2,-1},
+                /* None:PartitionFunction                 */ { 0x000000dc,-1},
+                /* None:PartitionScheme                   */ { 0x000000e6,-1},
+                /* None:ScriptAfter                       */ { 0x000003e8,-1},
+                /* ScriptBefore:None                      */ { 0x000a0000,+1},
+                /* ScriptBefore:Table                     */ { 0x000a0014,-1},
+                /* ScriptBefore:Function                  */ { 0x000a001e,-1},
+                /* ScriptBefore:Procedure                 */ { 0x000a0028,-1},
+                /* ScriptBefore:Index                     */ { 0x000a0032,-1},
+                /* ScriptBefore:Trigger                   */ { 0x000a003c,-1},
+                /* ScriptBefore:ForeignKeyConstraint      */ { 0x000a0046,-1},
+                /* ScriptBefore:View                      */ { 0x000a0050,-1},
+                /* ScriptBefore:CheckConstraint           */ { 0x000a005a,-1},
+                /* ScriptBefore:Statistics                */ { 0x000a0064,-1},
+                /* ScriptBefore:Assembly                  */ { 0x000a00c8,-1},
+                /* ScriptBefore:TableType                 */ { 0x000a00d2,-1},
+                /* ScriptBefore:PartitionFunction         */ { 0x000a00dc,-1},
+                /* ScriptBefore:PartitionScheme           */ { 0x000a00e6,-1},
+                /* ScriptBefore:ScriptAfter               */ { 0x000a03e8,-1},
+                /* Table:None                             */ { 0x00140000,+1},
+                /* Table:ScriptBefore                     */ { 0x0014000a,+1},
+                /* Table:Function                         */ { 0x0014001e,+1},
+                /* Table:Procedure                        */ { 0x00140028,+1},
+                /* Table:Index                            */ { 0x00140032,+1},
+                /* Table:Trigger                          */ { 0x0014003c,+1},
+                /* Table:ForeignKeyConstraint             */ { 0x00140046,+1},
+                /* Table:View                             */ { 0x00140050,+1},
+                /* Table:CheckConstraint                  */ { 0x0014005a,+1},
+                /* Table:Statistics                       */ { 0x00140064,+1},
+                /* Table:Assembly                         */ { 0x001400c8,+1},
+                /* Table:TableType                        */ { 0x001400d2,+1},
+                /* Table:PartitionFunction                */ { 0x001400dc,+1},
+                /* Table:PartitionScheme                  */ { 0x001400e6,+1},
+                /* Table:ScriptAfter                      */ { 0x001403e8,+1},
+                /* Function:None                          */ { 0x001e0000,+1},
+                /* Function:ScriptBefore                  */ { 0x001e000a,+1},
+                /* Function:Table                         */ { 0x001e0014,-1},
+                /* Function:Procedure                     */ { 0x001e0028,+1},
+                /* Function:Index                         */ { 0x001e0032,-1},
+                /* Function:Trigger                       */ { 0x001e003c,-1},
+                /* Function:ForeignKeyConstraint          */ { 0x001e0046,-1},
+                /* Function:View                          */ { 0x001e0050,-1},
+                /* Function:CheckConstraint               */ { 0x001e005a,-1},
+                /* Function:Statistics                    */ { 0x001e0064,-1},
+                /* Function:Assembly                      */ { 0x001e00c8,-1},
+                /* Function:TableType                     */ { 0x001e00d2,-1},
+                /* Function:PartitionFunction             */ { 0x001e00dc,-1},
+                /* Function:PartitionScheme               */ { 0x001e00e6,-1},
+                /* Function:ScriptAfter                   */ { 0x001e03e8,+1},
+                /* Procedure:None                         */ { 0x00280000,+1},
+                /* Procedure:ScriptBefore                 */ { 0x0028000a,+1},
+                /* Procedure:Table                        */ { 0x00280014,-1},
+                /* Procedure:Function                     */ { 0x0028001e,-1},
+                /* Procedure:Index                        */ { 0x00280032,-1},
+                /* Procedure:Trigger                      */ { 0x0028003c,-1},
+                /* Procedure:ForeignKeyConstraint         */ { 0x00280046,-1},
+                /* Procedure:View                         */ { 0x00280050,-1},
+                /* Procedure:CheckConstraint              */ { 0x0028005a,-1},
+                /* Procedure:Statistics                   */ { 0x00280064,-1},
+                /* Procedure:Assembly                     */ { 0x002800c8,-1},
+                /* Procedure:TableType                    */ { 0x002800d2,-1},
+                /* Procedure:PartitionFunction            */ { 0x002800dc,-1},
+                /* Procedure:PartitionScheme              */ { 0x002800e6,-1},
+                /* Procedure:ScriptAfter                  */ { 0x002803e8,+1},
+                /* Index:None                             */ { 0x00320000,+1},
+                /* Index:ScriptBefore                     */ { 0x0032000a,+1},
+                /* Index:Table                            */ { 0x00320014,-1},
+                /* Index:Function                         */ { 0x0032001e,+1},
+                /* Index:Procedure                        */ { 0x00320028,+1},
+                /* Index:Trigger                          */ { 0x0032003c,-1},
+                /* Index:ForeignKeyConstraint             */ { 0x00320046,-1},
+                /* Index:View                             */ { 0x00320050,-1},
+                /* Index:CheckConstraint                  */ { 0x0032005a,-1},
+                /* Index:Statistics                       */ { 0x00320064,-1},
+                /* Index:Assembly                         */ { 0x003200c8,-1},
+                /* Index:TableType                        */ { 0x003200d2,-1},
+                /* Index:PartitionFunction                */ { 0x003200dc,-1},
+                /* Index:PartitionScheme                  */ { 0x003200e6,-1},
+                /* Index:ScriptAfter                      */ { 0x003203e8,+1},
+                /* Trigger:None                           */ { 0x003c0000,-1},
+                /* Trigger:ScriptBefore                   */ { 0x003c000a,-1},
+                /* Trigger:Table                          */ { 0x003c0014,-1},
+                /* Trigger:Function                       */ { 0x003c001e,+1},
+                /* Trigger:Procedure                      */ { 0x003c0028,+1},
+                /* Trigger:Index                          */ { 0x003c0032,-1},
+                /* Trigger:ForeignKeyConstraint           */ { 0x003c0046,-1},
+                /* Trigger:View                           */ { 0x003c0050,-1},
+                /* Trigger:CheckConstraint                */ { 0x003c005a,-1},
+                /* Trigger:Statistics                     */ { 0x003c0064,-1},
+                /* Trigger:Assembly                       */ { 0x003c00c8,-1},
+                /* Trigger:TableType                      */ { 0x003c00d2,-1},
+                /* Trigger:PartitionFunction              */ { 0x003c00dc,-1},
+                /* Trigger:PartitionScheme                */ { 0x003c00e6,-1},
+                /* Trigger:ScriptAfter                    */ { 0x003c03e8,+1},
+                /* ForeignKeyConstraint:None              */ { 0x00460000,+1},
+                /* ForeignKeyConstraint:ScriptBefore      */ { 0x0046000a,+1},
+                /* ForeignKeyConstraint:Table             */ { 0x00460014,-1},
+                /* ForeignKeyConstraint:Function          */ { 0x0046001e,+1},
+                /* ForeignKeyConstraint:Procedure         */ { 0x00460028,+1},
+                /* ForeignKeyConstraint:Index             */ { 0x00460032,+1},
+                /* ForeignKeyConstraint:Trigger           */ { 0x0046003c,-1},
+                /* ForeignKeyConstraint:View              */ { 0x00460050,-1},
+                /* ForeignKeyConstraint:CheckConstraint   */ { 0x0046005a,-1},
+                /* ForeignKeyConstraint:Statistics        */ { 0x00460064,+1},
+                /* ForeignKeyConstraint:Assembly          */ { 0x004600c8,+1},
+                /* ForeignKeyConstraint:TableType         */ { 0x004600d2,+1},
+                /* ForeignKeyConstraint:PartitionFunction */ { 0x004600dc,+1},
+                /* ForeignKeyConstraint:PartitionScheme   */ { 0x004600e6,+1},
+                /* ForeignKeyConstraint:ScriptAfter       */ { 0x004603e8,+1},
+                /* View:None                              */ { 0x00500000,+1},
+                /* View:ScriptBefore                      */ { 0x0050000a,+1},
+                /* View:Table                             */ { 0x00500014,-1},
+                /* View:Function                          */ { 0x0050001e,+1},
+                /* View:Procedure                         */ { 0x00500028,+1},
+                /* View:Index                             */ { 0x00500032,+1},
+                /* View:Trigger                           */ { 0x0050003c,+1},
+                /* View:ForeignKeyConstraint              */ { 0x00500046,+1},
+                /* View:CheckConstraint                   */ { 0x0050005a,+1},
+                /* View:Statistics                        */ { 0x00500064,+1},
+                /* View:Assembly                          */ { 0x005000c8,+1},
+                /* View:TableType                         */ { 0x005000d2,+1},
+                /* View:PartitionFunction                 */ { 0x005000dc,+1},
+                /* View:PartitionScheme                   */ { 0x005000e6,+1},
+                /* View:ScriptAfter                       */ { 0x005003e8,+1},
+                /* CheckConstraint:None                   */ { 0x005a0000,+1},
+                /* CheckConstraint:ScriptBefore           */ { 0x005a000a,+1},
+                /* CheckConstraint:Table                  */ { 0x005a0014,-1},
+                /* CheckConstraint:Function               */ { 0x005a001e,+1},
+                /* CheckConstraint:Procedure              */ { 0x005a0028,+1},
+                /* CheckConstraint:Index                  */ { 0x005a0032,+1},
+                /* CheckConstraint:Trigger                */ { 0x005a003c,+1},
+                /* CheckConstraint:ForeignKeyConstraint   */ { 0x005a0046,+1},
+                /* CheckConstraint:View                   */ { 0x005a0050,-1},
+                /* CheckConstraint:Statistics             */ { 0x005a0064,+1},
+                /* CheckConstraint:Assembly               */ { 0x005a00c8,+1},
+                /* CheckConstraint:TableType              */ { 0x005a00d2,+1},
+                /* CheckConstraint:PartitionFunction      */ { 0x005a00dc,+1},
+                /* CheckConstraint:PartitionScheme        */ { 0x005a00e6,+1},
+                /* CheckConstraint:ScriptAfter            */ { 0x005a03e8,+1},
+                /* Statistics:None                        */ { 0x00640000,+1},
+                /* Statistics:ScriptBefore                */ { 0x0064000a,+1},
+                /* Statistics:Table                       */ { 0x00640014,-1},
+                /* Statistics:Function                    */ { 0x0064001e,-1},
+                /* Statistics:Procedure                   */ { 0x00640028,-1},
+                /* Statistics:Index                       */ { 0x00640032,-1},
+                /* Statistics:Trigger                     */ { 0x0064003c,-1},
+                /* Statistics:ForeignKeyConstraint        */ { 0x00640046,-1},
+                /* Statistics:View                        */ { 0x00640050,-1},
+                /* Statistics:CheckConstraint             */ { 0x0064005a,-1},
+                /* Statistics:Assembly                    */ { 0x006400c8,-1},
+                /* Statistics:TableType                   */ { 0x006400d2,-1},
+                /* Statistics:PartitionFunction           */ { 0x006400dc,-1},
+                /* Statistics:PartitionScheme             */ { 0x006400e6,-1},
+                /* Statistics:ScriptAfter                 */ { 0x006403e8,+1},
+                /* Assembly:None                          */ { 0x00c80000,+1},
+                /* Assembly:ScriptBefore                  */ { 0x00c8000a,+1},
+                /* Assembly:Table                         */ { 0x00c80014,-1},
+                /* Assembly:Function                      */ { 0x00c8001e,+1},
+                /* Assembly:Procedure                     */ { 0x00c80028,+1},
+                /* Assembly:Index                         */ { 0x00c80032,-1},
+                /* Assembly:Trigger                       */ { 0x00c8003c,-1},
+                /* Assembly:ForeignKeyConstraint          */ { 0x00c80046,-1},
+                /* Assembly:View                          */ { 0x00c80050,-1},
+                /* Assembly:CheckConstraint               */ { 0x00c8005a,-1},
+                /* Assembly:Statistics                    */ { 0x00c80064,+1},
+                /* Assembly:TableType                     */ { 0x00c800d2,+1},
+                /* Assembly:PartitionFunction             */ { 0x00c800dc,+1},
+                /* Assembly:PartitionScheme               */ { 0x00c800e6,+1},
+                /* Assembly:ScriptAfter                   */ { 0x00c803e8,+1},
+                /* TableType:None                         */ { 0x00d20000,+1},
+                /* TableType:ScriptBefore                 */ { 0x00d2000a,+1},
+                /* TableType:Table                        */ { 0x00d20014,-1},
+                /* TableType:Function                     */ { 0x00d2001e,+1},
+                /* TableType:Procedure                    */ { 0x00d20028,+1},
+                /* TableType:Index                        */ { 0x00d20032,-1},
+                /* TableType:Trigger                      */ { 0x00d2003c,-1},
+                /* TableType:ForeignKeyConstraint         */ { 0x00d20046,-1},
+                /* TableType:View                         */ { 0x00d20050,-1},
+                /* TableType:CheckConstraint              */ { 0x00d2005a,-1},
+                /* TableType:Statistics                   */ { 0x00d20064,-1},
+                /* TableType:Assembly                     */ { 0x00d200c8,-1},
+                /* TableType:PartitionFunction            */ { 0x00d200dc,-1},
+                /* TableType:PartitionScheme              */ { 0x00d200e6,-1},
+                /* TableType:ScriptAfter                  */ { 0x00d203e8,+1},
+                /* PartitionFunction:None                 */ { 0x00dc0000,+1},
+                /* PartitionFunction:ScriptBefore         */ { 0x00dc000a,+1},
+                /* PartitionFunction:Table                */ { 0x00dc0014,-1},
+                /* PartitionFunction:Function             */ { 0x00dc001e,-1},
+                /* PartitionFunction:Procedure            */ { 0x00dc0028,-1},
+                /* PartitionFunction:Index                */ { 0x00dc0032,-1},
+                /* PartitionFunction:Trigger              */ { 0x00dc003c,-1},
+                /* PartitionFunction:ForeignKeyConstraint */ { 0x00dc0046,-1},
+                /* PartitionFunction:View                 */ { 0x00dc0050,-1},
+                /* PartitionFunction:CheckConstraint      */ { 0x00dc005a,-1},
+                /* PartitionFunction:Statistics           */ { 0x00dc0064,-1},
+                /* PartitionFunction:Assembly             */ { 0x00dc00c8,-1},
+                /* PartitionFunction:TableType            */ { 0x00dc00d2,-1},
+                /* PartitionFunction:PartitionScheme      */ { 0x00dc00e6,-1},
+                /* PartitionFunction:ScriptAfter          */ { 0x00dc03e8,+1},
+                /* PartitionScheme:None                   */ { 0x00e60000,+1},
+                /* PartitionScheme:ScriptBefore           */ { 0x00e6000a,+1},
+                /* PartitionScheme:Table                  */ { 0x00e60014,-1},
+                /* PartitionScheme:Function               */ { 0x00e6001e,-1},
+                /* PartitionScheme:Procedure              */ { 0x00e60028,-1},
+                /* PartitionScheme:Index                  */ { 0x00e60032,-1},
+                /* PartitionScheme:Trigger                */ { 0x00e6003c,-1},
+                /* PartitionScheme:ForeignKeyConstraint   */ { 0x00e60046,-1},
+                /* PartitionScheme:View                   */ { 0x00e60050,-1},
+                /* PartitionScheme:CheckConstraint        */ { 0x00e6005a,-1},
+                /* PartitionScheme:Statistics             */ { 0x00e60064,-1},
+                /* PartitionScheme:Assembly               */ { 0x00e600c8,-1},
+                /* PartitionScheme:TableType              */ { 0x00e600d2,-1},
+                /* PartitionScheme:PartitionFunction      */ { 0x00e600dc,-1},
+                /* PartitionScheme:ScriptAfter            */ { 0x00e603e8,+1},
+                /* ScriptAfter:None                       */ { 0x03e80000,+1},
+                /* ScriptAfter:ScriptBefore               */ { 0x03e8000a,+1},
+                /* ScriptAfter:Table                      */ { 0x03e80014,-1},
+                /* ScriptAfter:Function                   */ { 0x03e8001e,-1},
+                /* ScriptAfter:Procedure                  */ { 0x03e80028,-1},
+                /* ScriptAfter:Index                      */ { 0x03e80032,-1},
+                /* ScriptAfter:Trigger                    */ { 0x03e8003c,-1},
+                /* ScriptAfter:ForeignKeyConstraint       */ { 0x03e80046,-1},
+                /* ScriptAfter:View                       */ { 0x03e80050,-1},
+                /* ScriptAfter:CheckConstraint            */ { 0x03e8005a,-1},
+                /* ScriptAfter:Statistics                 */ { 0x03e80064,-1},
+                /* ScriptAfter:Assembly                   */ { 0x03e800c8,-1},
+                /* ScriptAfter:TableType                  */ { 0x03e800d2,-1},
+                /* ScriptAfter:PartitionFunction          */ { 0x03e800dc,-1},
+                /* ScriptAfter:PartitionScheme            */ { 0x03e800e6,-1},
+            };
+            }
         }
     }

@@ -234,9 +234,39 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return SqlInt64Converter.ConvertFromObject(value);
             }
         #endregion
+        #region M:PropSI8(Int32,Int32):Int64
+        internal static Int64 PropSI8(Int32 hi, Int32 lo)
+            {
+            var r = unchecked((Int64)PropUI8(
+                unchecked((UInt32)hi),
+                unchecked((UInt32)lo)));
+            return r;
+            }
+        #endregion
+        #region M:PropUI8(UInt32,UInt32):UInt64
+        protected internal static UInt64 PropUI8(UInt32 hi, UInt32 lo) {
+            var r = (((UInt64)hi) << 32) | lo;
+            return r;
+            }
+        #endregion
         #region M:PropSI4(Object):Int32?
         protected static Int32? PropSI4(Object value) {
             return SqlInt32Converter.ConvertFromObject(value);
+            }
+        #endregion
+        #region M:PropSI4(Int16,Int16):Int32
+        internal static Int32 PropSI4(Int16 hi,Int16 lo)
+            {
+            var r = unchecked((Int32)PropUI4(
+                unchecked((UInt16)hi),
+                unchecked((UInt16)lo)));
+            return r;
+            }
+        #endregion
+        #region M:PropUI4(UInt16,UInt16):UInt32
+        protected internal static UInt32 PropUI4(UInt16 hi,UInt16 lo) {
+            var r = (((UInt32)hi) << 16) | lo;
+            return r;
             }
         #endregion
         #region M:PropE<E>(Object):E?
