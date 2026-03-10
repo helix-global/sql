@@ -4,6 +4,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="DAC\**" />
+    <EmbeddedResource Remove="DAC\**" />
+    <None Remove="DAC\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.19.0" />
     <PackageReference Include="Microsoft.SqlServer.Management.SqlParser" Version="173.8.0" />
@@ -11,7 +16,6 @@
     <PackageReference Include="SharpCompress" Version="0.46.4" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DAC\Constraints\" />
     <Folder Include="Indexes\" />
     <Folder Include="Constraints\" />
     <Folder Include="Columns\" />
