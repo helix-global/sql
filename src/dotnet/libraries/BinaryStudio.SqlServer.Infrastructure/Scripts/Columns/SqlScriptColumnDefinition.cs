@@ -10,6 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal abstract class SqlScriptColumnDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptColumnDefinition
         where T: SqlColumnDefinition
         {
+        public virtual Boolean IsComputed { get { return false; }}
         [UsedImplicitly][Field] public SqlIdentifier Name { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptConstraint> Constraints { get; }
 

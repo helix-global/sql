@@ -17,11 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Indexes\" />
-    <Folder Include="Constraints\" />
-    <Folder Include="Columns\" />
-    <Folder Include="Providers\A2C\Columns\" />
-    <Folder Include="Providers\A2C\Constraints\" />
-    <Folder Include="Providers\A2C\Tables\" />
     <Folder Include="Scripts\Indexes\" />
     <Folder Include="Scripts\Logins\" />
     <Folder Include="Scripts\Procedures\" />
@@ -29,6 +24,5 @@
     <Folder Include="Scripts\Triggers\" />
     <Folder Include="Scripts\Tables\" />
     <Folder Include="Types\" />
-    <Folder Include="Tables\" />
   </ItemGroup>
 </Project>

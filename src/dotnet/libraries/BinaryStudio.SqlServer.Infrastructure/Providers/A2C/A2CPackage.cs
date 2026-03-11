@@ -255,17 +255,24 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 #region Table
                 case SqlObjectType.Table:
                     {
-                    Boolean? IsAnsiNulls = null;
+                    SqlTable o = null;
+                    Boolean? IsAnsiNullsOn = null;
                     Boolean? IsQuotedIdentifier = null;
                     foreach (var statement in source.SelectMany(i => i.Statements)) {
                         var flag = false;
                         if (statement is SqlFragmentPredicateSetStatement PredicateSetStatement) {
-                            if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNulls        = true; flag = true; }
-                            if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier = true; flag = true; }
+                            if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNullsOn        = true; continue; }
+                            if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier   = true; continue; }
                             }
                         if (statement is SqlScriptCreateTableStatement CreateTableStatement) {
-                            
+                            o = new SqlTable(CreateTableStatement);
+                            m_tbN[o.QualifiedName] = o;
+                            continue;
                             }
+                        throw new NotImplementedException();
+                        }
+                    if (o != null) {
+                        if (IsAnsiNullsOn == true) { o.IsAnsiNullsOn = true; }
                         }
                     }
                     break;
@@ -297,6 +304,18 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 #region ForeignKeyConstraint
                 case SqlObjectType.ForeignKeyConstraint:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        if (statement is SqlScriptAlterTableAddTableElementStatement AlterTableAddTableElementStatement) {
+                            foreach (var constraint in AlterTableAddTableElementStatement.Definition.Constraints) {
+                                var table = m_tbN[AlterTableAddTableElementStatement.Name];
+                                if (table.Constraints.All(i => !i.Name.Equals(constraint.Name))) {
+                                    table.Constraints.Add(constraint);
+                                    }
+                                }
+                            continue;
+                            }
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
@@ -621,7 +640,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 /* ScriptAfter:TableType                  */ { 0x03e800d2,-1},
                 /* ScriptAfter:PartitionFunction          */ { 0x03e800dc,-1},
                 /* ScriptAfter:PartitionScheme            */ { 0x03e800e6,-1},
-            };
+                };
             }
+
+        private readonly IDictionary<SqlObjectIdentifier,SqlTable> m_tbN = new Dictionary<SqlObjectIdentifier,SqlTable>();
         }
     }

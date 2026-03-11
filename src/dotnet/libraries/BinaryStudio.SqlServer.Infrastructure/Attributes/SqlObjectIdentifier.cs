@@ -156,6 +156,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return Create(r);
             }
 
+        public static SqlObjectIdentifier operator +(SqlObjectIdentifier x,SqlIdentifier y) {
+            var r = new List<SqlIdentifier>();
+            r.AddRange(x.Children);
+            r.Add(y);
+            return Create(r);
+            }
+
         public static Boolean operator ==(SqlObjectIdentifier x,SqlObjectIdentifier y)
             {
             return Equals(x,y);

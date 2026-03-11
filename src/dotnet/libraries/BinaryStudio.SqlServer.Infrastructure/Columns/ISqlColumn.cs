@@ -1,6 +1,7 @@
 ﻿namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal interface ISqlScriptConstraint : ISqlConstraint
+    public interface ISqlColumn
         {
+        SqlIdentifier Name { get; }
         }
     }

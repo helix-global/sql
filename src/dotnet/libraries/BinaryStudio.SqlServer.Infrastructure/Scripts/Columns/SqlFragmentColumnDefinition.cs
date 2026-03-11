@@ -10,6 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T: ColumnDefinitionBase
         {
         [UsedImplicitly][Field(Source="ColumnIdentifier")] public SqlIdentifier Name { get; }
+        public virtual Boolean IsComputed { get { return false; }}
 
         #region ctor{IServiceProvider,T}
         public SqlFragmentColumnDefinition(IServiceProvider context,T source)
