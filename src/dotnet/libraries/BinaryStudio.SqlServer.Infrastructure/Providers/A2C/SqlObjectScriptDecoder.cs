@@ -1,16 +1,18 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {
-    internal abstract class SqlObjectScriptDecoder
+    internal class SqlObjectScriptDecoder
         {
-        public void Decode(String script) {
+        #region M:Decode(String):IList<SqlScriptBatch>
+        public IList<SqlScriptBatch> Decode(String script) {
             (new SqlScriptParser()).Parse(script,out var batches);
             if (batches.Count > 0) {
-                return;
+                return batches;
                 }
+            return Array.Empty<SqlScriptBatch>();
             }
+        #endregion
         }
     }

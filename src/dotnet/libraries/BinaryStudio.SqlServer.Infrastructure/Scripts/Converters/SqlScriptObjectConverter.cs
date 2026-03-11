@@ -67,8 +67,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             if (g_splist.TryGetValue(NullStatement.StatementPhrase,out type)) {
                                 ctor = type.GetConstructor(new[] { typeof(IServiceProvider),source.GetType() });
                                 if (ctor != null) {
-                                    r = ((SqlScriptFactoryStatement)ctor.Invoke(new Object[] { context,source })).Statement;
+                                    r = ((SqlScriptFactoryStatement)ctor.Invoke(new Object[] { context,source })).Statements[0];
                                     }
+                                }
+                            else
+                                {
+                                throw (new ArgumentOutOfRangeException(nameof(source), $@"No registered type for statement phrase ""{NullStatement.StatementPhrase}""."))
+                                    .Add("StatementPhrase", NullStatement.StatementPhrase);
                                 }
                             }
                         return r;
@@ -124,7 +129,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 e.Add("PrevValue",g_rtlist[attribute.Type]);
                                 throw;
                                 }
-
                             continue;
                             }
                         if (String.IsNullOrWhiteSpace(attribute.TypeName))
@@ -163,8 +167,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 }
                             throw new InvalidOperationException();
                             }
-                        catch
+                        catch(Exception e)
                             {
+                            e.Add("Key",attribute.StatementPhrase);
+                            e.Add("PrevValue",g_splist[attribute.StatementPhrase]);
                             throw;
                             }
                         }

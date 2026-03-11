@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using JetBrains.Annotations;
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
@@ -234,131 +236,133 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             foreach (var row in source.Rows
                 .OfType<DataRow>()
                 .Select(i => new MetadataRecord(i))
-                .Where(i => i.Type != SqlObjectType.None)
+                .Where(i => (i.Type != SqlObjectType.None) && !String.IsNullOrWhiteSpace(i.Script) && !i.IsDisabled)
                 .OrderBy(i=>i))
                 {
-                var script = row.Script;
-                if (!String.IsNullOrWhiteSpace(script)) {
-                    //                    //File.WriteAllText($@"{type},{oid},{name}.sql",script);
-                    ////                    script = @"
-                    ////SET ANSI_NULLS ON
-                    ////GO
-
-                    ////SET QUOTED_IDENTIFIER ON
-                    ////GO
-
-                    ////CREATE TABLE [dbo].[COM_SKILLS](
-                    ////	[ID] [int] IDENTITY(1,1) NOT NULL,
-                    ////	[GID] [uniqueidentifier] NULL,
-                    ////	[S_S] [int] NOT NULL,
-                    ////	[S_CR] [int] NOT NULL,
-                    ////	[S_CDT] [datetime] NOT NULL,
-                    ////	[S_MR] [int] NULL,
-                    ////	[S_MDT] [datetime] NULL,
-                    ////	[ARC] [int] NULL,
-                    ////	[DEPID] [int] NOT NULL,
-                    ////	[NAME] [nvarchar](250) NOT NULL,
-                    ////	[DESCRIPTION] [nvarchar](4000) NULL,
-                    ////	[EXPIRATION_TERM] [int] NULL,
-                    ////	[EXPIRATION_TERM_TYPE_ID] [int] NULL,
-                    ////	[NEEDS_APPROVAL] [int] NULL,
-                    ////	[ITERATIONS] [int] NOT NULL,
-                    ////	[PRODUCTION_SUPPORT] [int] NULL,
-                    ////	[ITERATIONS_REPEAT] [int] NOT NULL,
-                    ////PRIMARY KEY CLUSTERED 
-                    ////(
-                    ////	[ID] ASC
-                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-                    //// CONSTRAINT [IX_COM_SKILLS] UNIQUE NONCLUSTERED 
-                    ////(
-                    ////	[NAME] ASC,
-                    ////	[DEPID] ASC
-                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-                    ////) ON [PRIMARY]
-                    ////GO
-
-                    ////--ALTER TABLE [dbo].[COM_SKILLS] ADD  CONSTRAINT [DF_COM_SKILLS_ITERATIONS_REPEAT]  DEFAULT ((1)) FOR [ITERATIONS_REPEAT]
-                    ////GO
-
-                    ////--ALTER TABLE [dbo].[COM_SKILLS]  WITH NOCHECK ADD  CONSTRAINT [FK_COM_SKILLS_DEPID] FOREIGN KEY([DEPID])
-                    ////--REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
-                    ////GO
-
-                    ////--ALTER TABLE [dbo].[COM_SKILLS] CHECK CONSTRAINT [FK_COM_SKILLS_DEPID]
-                    ////ALTER TABLE [dbo].[COM_SKILLS] ADD PRIMARY KEY CLUSTERED 
-                    ////(
-                    ////	[ID] ASC
-                    ////)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-                    ////GO
-                    ////GO
-
-
-                    ////                    ";
-
-                    switch (row.Type) {
-                        case SqlObjectType.ScriptBefore:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Table:
-                            (new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Function:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Procedure:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Index:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Trigger:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.ForeignKeyConstraint:
-                            (new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.View:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.CheckConstraint:
-                            (new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Statistics:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.Assembly:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.TableType:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.PartitionFunction:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.PartitionScheme:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        case SqlObjectType.ScriptAfter:
-                            //(new SqlIndexScriptDecoder()).Decode(script);
-                            break;
-                        default: throw new ArgumentOutOfRangeException();
+                Merge(row.Type,row.Script);
+                }
+            }
+        #endregion
+        #region M:Merge(SqlObjectType,String)
+        private void Merge(SqlObjectType type,String script)
+            {
+            Merge(type,(new SqlObjectScriptDecoder()).Decode(script));
+            }
+        #endregion
+        #region M:Merge(SqlObjectType,IEnumerable<SqlScriptBatch>)
+        private void Merge(SqlObjectType type,IEnumerable<SqlScriptBatch> source) {
+            switch (type) {
+                #region Table
+                case SqlObjectType.Table:
+                    {
+                    Boolean? IsAnsiNulls = null;
+                    Boolean? IsQuotedIdentifier = null;
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        var flag = false;
+                        if (statement is SqlFragmentPredicateSetStatement PredicateSetStatement) {
+                            if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNulls        = true; flag = true; }
+                            if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier = true; flag = true; }
+                            }
+                        if (statement is SqlScriptCreateTableStatement CreateTableStatement) {
+                            
+                            }
                         }
                     }
+                    break;
+                #endregion
+                #region Function
+                case SqlObjectType.Function:
+                    {
+                    }
+                    break;
+                #endregion
+                #region Procedure
+                case SqlObjectType.Procedure:
+                    {
+                    }
+                    break;
+                #endregion
+                #region Index
+                case SqlObjectType.Index:
+                    {
+                    }
+                    break;
+                #endregion
+                #region Trigger
+                case SqlObjectType.Trigger:
+                    {
+                    }
+                    break;
+                #endregion
+                #region ForeignKeyConstraint
+                case SqlObjectType.ForeignKeyConstraint:
+                    {
+                    }
+                    break;
+                #endregion
+                #region View
+                case SqlObjectType.View:
+                    {
+                    }
+                    break;
+                #endregion
+                #region CheckConstraint
+                case SqlObjectType.CheckConstraint:
+                    {
+                    }
+                    break;
+                #endregion
+                #region Statistics
+                case SqlObjectType.Statistics:
+                    {
+                    }
+                    break;
+                #endregion
+                #region Assembly
+                case SqlObjectType.Assembly:
+                    {
+                    }
+                    break;
+                #endregion
+                #region TableType
+                case SqlObjectType.TableType:
+                    {
+                    }
+                    break;
+                #endregion
+                #region PartitionFunction
+                case SqlObjectType.PartitionFunction:
+                    {
+                    }
+                    break;
+                #endregion
+                #region PartitionScheme
+                case SqlObjectType.PartitionScheme:
+                    {
+                    }
+                    break;
+                #endregion
+                case SqlObjectType.ScriptAfter:
+                case SqlObjectType.ScriptBefore:
+                case SqlObjectType.None:
+                    break;
                 }
             }
         #endregion
 
         private class MetadataRecord : SqlModelObject,IComparable<MetadataRecord>
             {
-            [UsedImplicitly][Field(Source = "NAME")]    public String Name { get; }
-            [UsedImplicitly][Field(Source = "SQLTEXT")] public String Script { get; }
-            [UsedImplicitly][Field(Source = "OID")]     public Int32 OID { get; }
-            [UsedImplicitly][Field(Source = "MTYPE")]   public SqlObjectType Type { get; }
+            [UsedImplicitly][Field(Source = "NAME")]     public String Name { get; }
+            [UsedImplicitly][Field(Source = "SQLTEXT")]  public String Script { get; }
+            [UsedImplicitly][Field(Source = "OID")]      public Int32 OID { get; }
+            [UsedImplicitly][Field(Source = "MTYPE")]    public SqlObjectType Type { get; }
+            [UsedImplicitly][Field(Source = "DISABLED")] public Boolean IsDisabled { get; }
 
             #region ctor{DataRow}
             public MetadataRecord(DataRow row)
                 : base(row)
                 {
+                return;
                 }
             #endregion
             #region M:CompareTo(MetadataRecord):Int32

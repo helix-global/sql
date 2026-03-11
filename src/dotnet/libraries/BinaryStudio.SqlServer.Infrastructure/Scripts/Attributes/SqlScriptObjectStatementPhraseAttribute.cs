@@ -2,6 +2,7 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [AttributeUsage(AttributeTargets.Class,AllowMultiple=true,Inherited = false)]
     internal class SqlScriptObjectStatementPhraseAttribute : Attribute
         {
         public String StatementPhrase { get; }

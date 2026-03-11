@@ -23,7 +23,6 @@
     <Folder Include="Providers\A2C\Constraints\" />
     <Folder Include="Providers\A2C\Tables\" />
     <Folder Include="Scripts\Indexes\" />
-    <Folder Include="Scripts\Functions\" />
     <Folder Include="Scripts\Logins\" />
     <Folder Include="Scripts\Procedures\" />
     <Folder Include="Scripts\Views\" />

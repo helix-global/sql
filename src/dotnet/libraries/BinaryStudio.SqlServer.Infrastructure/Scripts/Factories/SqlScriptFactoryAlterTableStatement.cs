@@ -17,30 +17,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             }
         #endregion
-        #region M:ProcessFragment(TSqlFragment,{out}SqlScriptObject)
-        protected override void ProcessFragment(TSqlFragment fragment,out SqlScriptObject statement) {
-            statement = default;
+        #region M:ProcessFragment(TSqlFragment,{out}IList<SqlScriptObject>)
+        protected override void ProcessFragment(TSqlFragment fragment,out IList<SqlScriptObject> statements) {
+            statements = new List<SqlScriptObject>();
             var r = fragment.Descendants<AlterTableStatement>().FirstOrDefault();
             if (r != null) {
-                statement = SqlScriptObjectConverter.CreateFrom(Context,r);
-                //var rt = r.GetType();
-                //if (g_rt.TryGetValue(rt,out var type)) {
-                //    var ctor = type.GetConstructor(new[] { typeof(IServiceProvider),r.GetType() });
-                //    statement = (SqlScriptCodeObject)ctor.Invoke(new Object[] { Context,r });
-                //    return;
-                //    }
-                //throw (new ArgumentOutOfRangeException(nameof(fragment), $@"No registered type for ""{r.GetType()}""."))
-                //    .Add("SourceType",r.GetType().FullName);
+                statements.Add(SqlScriptObjectConverter.CreateFrom(Context,r));
                 return;
                 }
-            base.ProcessFragment(fragment, out statement);
+            base.ProcessFragment(fragment, out statements);
             }
         #endregion
-
-        private static readonly IDictionary<Type,Type> g_rt = new Dictionary<Type,Type> {
-            {typeof(AlterTableAddTableElementStatement),typeof(SqlScriptAlterTableAddTableElementStatement) },
-            {typeof(AlterTableDropTableElementStatement),typeof(SqlScriptAlterTableDropTableElementStatement) },
-            {typeof(AlterTableAlterColumnStatement),typeof(SqlScriptAlterTableAlterColumnStatement) }
-            };
         }
     }
