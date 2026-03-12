@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(ForeignKeyConstraintDefinition))]
-    internal sealed class SqlScriptDomForeignKeyConstraintDefinition : SqlScriptDomConstraintDefinition<ForeignKeyConstraintDefinition>
+    internal sealed class SqlFragmentForeignKeyConstraintDefinition : SqlFragmentConstraintDefinition<ForeignKeyConstraintDefinition>
         {
         [UsedImplicitly][Field] public IList<SqlIdentifier> Columns { get; }
         [UsedImplicitly][Field] public SqlForeignKeyAction DeleteAction { get; }
@@ -19,7 +19,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override SqlConstraintType Type { get{ return SqlConstraintType.ForeignKey; }}
 
         #region ctor{IServiceProvider,ForeignKeyConstraintDefinition}
-        public SqlScriptDomForeignKeyConstraintDefinition(IServiceProvider context,ForeignKeyConstraintDefinition source)
+        public SqlFragmentForeignKeyConstraintDefinition(IServiceProvider context,ForeignKeyConstraintDefinition source)
             : base(context,source)
             {
             return;

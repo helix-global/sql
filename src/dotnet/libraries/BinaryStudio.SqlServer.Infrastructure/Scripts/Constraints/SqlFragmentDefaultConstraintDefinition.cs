@@ -8,12 +8,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(DefaultConstraintDefinition))]
-    internal class SqlScriptDomDefaultConstraintDefinition : SqlScriptDomConstraintDefinition<DefaultConstraintDefinition>
+    internal class SqlFragmentDefaultConstraintDefinition : SqlFragmentConstraintDefinition<DefaultConstraintDefinition>
         {
         public override SqlConstraintType Type { get{ return SqlConstraintType.Default; }}
 
         #region ctor{IServiceProvider,DefaultConstraintDefinition}
-        public SqlScriptDomDefaultConstraintDefinition(IServiceProvider context,DefaultConstraintDefinition source)
+        public SqlFragmentDefaultConstraintDefinition(IServiceProvider context,DefaultConstraintDefinition source)
             : base(context,source)
             {
             return;

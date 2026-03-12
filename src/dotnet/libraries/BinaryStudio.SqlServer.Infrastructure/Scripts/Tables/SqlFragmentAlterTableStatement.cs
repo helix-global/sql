@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptAlterTableStatement<T> : SqlScriptDomObject<T>,ISqlScriptStatement
+    internal abstract class SqlScriptAlterTableStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement
         where T : AlterTableStatement
         {
         public String StatementPhrase { get { return "ALTER TABLE"; }}

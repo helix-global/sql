@@ -6,14 +6,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptDomIndexOption<T> : SqlScriptDomObject<T>,ISqlScriptIndexOption
+    internal abstract class SqlFragmentIndexOption<T> : SqlFragmentObject<T>,ISqlScriptIndexOption
         where T: IndexOption
         {
         [UsedImplicitly][Field] public IndexOptionKind OptionKind { get; }
         public String Phrase { get; }
 
         #region ctor{IServiceProvider,T}
-        protected SqlScriptDomIndexOption(IServiceProvider context,T source)
+        protected SqlFragmentIndexOption(IServiceProvider context,T source)
             : base(context,source)
             {
             switch (OptionKind) {

@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(VectorMetricIndexOption))]
-    internal sealed class SqlScriptDomVectorMetricIndexOption : SqlScriptDomIndexOption<VectorMetricIndexOption>
+    internal sealed class SqlFragmentVectorMetricIndexOption : SqlFragmentIndexOption<VectorMetricIndexOption>
         {
         #region ctor{IServiceProvider,VectorMetricIndexOption}
-        public SqlScriptDomVectorMetricIndexOption(IServiceProvider context,VectorMetricIndexOption source)
+        public SqlFragmentVectorMetricIndexOption(IServiceProvider context,VectorMetricIndexOption source)
             : base(context,source)
             {
             }

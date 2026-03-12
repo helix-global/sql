@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal class SqlFragmentColumnDefinition<T> : SqlScriptDomObject<T>,ISqlScriptColumnDefinition
+    internal class SqlFragmentColumnDefinition<T> : SqlFragmentObject<T>,ISqlScriptColumnDefinition
         where T: ColumnDefinitionBase
         {
         [UsedImplicitly][Field(Source="ColumnIdentifier")] public SqlIdentifier Name { get; }

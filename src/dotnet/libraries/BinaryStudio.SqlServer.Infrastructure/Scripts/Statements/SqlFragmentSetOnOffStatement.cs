@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlFragmentSetOnOffStatement<T> : SqlScriptDomObject<T>,ISqlScriptStatement
+    internal abstract class SqlFragmentSetOnOffStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement
         where T: SetOnOffStatement
         {
         public String StatementPhrase { get; }

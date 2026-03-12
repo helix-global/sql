@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(MoveToDropIndexOption))]
-    internal sealed class SqlScriptDomMoveToDropIndexOption : SqlScriptDomIndexOption<MoveToDropIndexOption>
+    internal sealed class SqlFragmentMoveToDropIndexOption : SqlFragmentIndexOption<MoveToDropIndexOption>
         {
         #region ctor{IServiceProvider,MoveToDropIndexOption}
-        public SqlScriptDomMoveToDropIndexOption(IServiceProvider context,MoveToDropIndexOption source)
+        public SqlFragmentMoveToDropIndexOption(IServiceProvider context,MoveToDropIndexOption source)
             : base(context,source)
             {
             }

@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(IndexExpressionOption))]
-    internal class SqlScriptDomIndexExpressionOption : SqlScriptDomIndexOption<IndexExpressionOption>
+    internal class SqlFragmentIndexExpressionOption : SqlFragmentIndexOption<IndexExpressionOption>
         {
         #region ctor{IServiceProvider,IndexExpressionOption}
-        public SqlScriptDomIndexExpressionOption(IServiceProvider context,IndexExpressionOption source)
+        public SqlFragmentIndexExpressionOption(IServiceProvider context,IndexExpressionOption source)
             : base(context,source)
             {
             }

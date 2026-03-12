@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(CreateAggregateStatement))]
-    internal class SqlFragmentCreateAggregateStatement : SqlScriptDomObject<CreateAggregateStatement>,ISqlScriptStatement
+    internal class SqlFragmentCreateAggregateStatement : SqlFragmentObject<CreateAggregateStatement>,ISqlScriptStatement
         {
         public String StatementPhrase { get { return "CREATE AGGREGATE"; }}
 

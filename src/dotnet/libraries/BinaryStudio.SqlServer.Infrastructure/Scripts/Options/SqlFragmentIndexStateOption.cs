@@ -3,11 +3,11 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptDomIndexStateOption<T> : SqlScriptDomIndexOption<T>
+    internal abstract class SqlFragmentIndexStateOption<T> : SqlFragmentIndexOption<T>
         where T : IndexStateOption
         {
         #region ctor{IServiceProvider,T}
-        protected SqlScriptDomIndexStateOption(IServiceProvider context,T source)
+        protected SqlFragmentIndexStateOption(IServiceProvider context,T source)
             : base(context,source)
             {
             }
@@ -22,10 +22,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         }
 
     [SqlScriptObject(typeof(IndexStateOption))]
-    internal sealed class SqlScriptDomIndexStateOption : SqlScriptDomIndexStateOption<IndexStateOption>
+    internal sealed class SqlFragmentIndexStateOption : SqlFragmentIndexStateOption<IndexStateOption>
         {
         #region ctor{IServiceProvider,IndexStateOption}
-        public SqlScriptDomIndexStateOption(IServiceProvider context,IndexStateOption source)
+        public SqlFragmentIndexStateOption(IServiceProvider context,IndexStateOption source)
             : base(context,source)
             {
             }

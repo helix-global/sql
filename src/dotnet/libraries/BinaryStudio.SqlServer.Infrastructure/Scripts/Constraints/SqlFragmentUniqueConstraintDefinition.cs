@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(UniqueConstraintDefinition))]
-    internal class SqlScriptDomUniqueConstraintDefinition : SqlScriptDomConstraintDefinition<UniqueConstraintDefinition>,ISqlScriptUniqueConstraint
+    internal class SqlFragmentUniqueConstraintDefinition : SqlFragmentConstraintDefinition<UniqueConstraintDefinition>,ISqlScriptUniqueConstraint
         {
         public SqlClusterOption ClusterOption { get; } = SqlClusterOption.Default;
         [UsedImplicitly][Field] public Boolean IsPrimaryKey { get; }
@@ -17,7 +17,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override SqlConstraintType Type { get; }
 
         #region ctor{IServiceProvider,UniqueConstraintDefinition}
-        public SqlScriptDomUniqueConstraintDefinition(IServiceProvider context,UniqueConstraintDefinition source)
+        public SqlFragmentUniqueConstraintDefinition(IServiceProvider context,UniqueConstraintDefinition source)
             : base(context,source)
             {
             var IndexType = source.IndexType;

@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(OnlineIndexOption))]
-    internal sealed class SqlScriptDomOnlineIndexOption : SqlScriptDomIndexStateOption<OnlineIndexOption>
+    internal sealed class SqlFragmentOnlineIndexOption : SqlFragmentIndexStateOption<OnlineIndexOption>
         {
         #region ctor{IServiceProvider,OnlineIndexOption}
-        public SqlScriptDomOnlineIndexOption(IServiceProvider context,OnlineIndexOption source)
+        public SqlFragmentOnlineIndexOption(IServiceProvider context,OnlineIndexOption source)
             : base(context,source)
             {
             }

@@ -5,7 +5,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlFragmentAssemblyStatement<T> : SqlScriptDomObject<T>,ISqlScriptStatement
+    internal abstract class SqlFragmentAssemblyStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement
         where T: AssemblyStatement
         {
         public String StatementPhrase { get; }

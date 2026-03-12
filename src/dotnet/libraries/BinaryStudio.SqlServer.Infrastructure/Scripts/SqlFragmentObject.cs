@@ -5,13 +5,13 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptDomObject<T> : SqlScriptObject
+    internal abstract class SqlFragmentObject<T> : SqlScriptObject
         where T : TSqlFragment
         {
         protected internal T Source { get; }
 
         #region ctor{IServiceProvider,T}
-        protected SqlScriptDomObject(IServiceProvider context,T source)
+        protected SqlFragmentObject(IServiceProvider context,T source)
             : base(context,source)
             {
             Source = source;
@@ -26,7 +26,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (SqlFragment is IndexExpressionOption ExpressionOption) {
                     switch (ExpressionOption.OptionKind)
                         {
-                        case IndexOptionKind.FillFactor: return base.CoerceValue(targetType,converter,new SqlScriptDomFillFactorIndexOption(Context,ExpressionOption));
+                        case IndexOptionKind.FillFactor: return base.CoerceValue(targetType,converter,new SqlFragmentFillFactorIndexOption(Context,ExpressionOption));
                         }
                     }
                 var r = SqlScriptObjectConverter.CreateFrom(Context,SqlFragment);

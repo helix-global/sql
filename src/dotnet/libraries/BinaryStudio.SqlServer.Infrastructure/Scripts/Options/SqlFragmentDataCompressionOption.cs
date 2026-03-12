@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(DataCompressionOption))]
-    internal sealed class SqlScriptDomDataCompressionOption : SqlScriptDomIndexOption<DataCompressionOption>
+    internal sealed class SqlFragmentDataCompressionOption : SqlFragmentIndexOption<DataCompressionOption>
         {
         #region ctor{IServiceProvider,DataCompressionOption}
-        public SqlScriptDomDataCompressionOption(IServiceProvider context,DataCompressionOption source)
+        public SqlFragmentDataCompressionOption(IServiceProvider context,DataCompressionOption source)
             : base(context,source)
             {
             }

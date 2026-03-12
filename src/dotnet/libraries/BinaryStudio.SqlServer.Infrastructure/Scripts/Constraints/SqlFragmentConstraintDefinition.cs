@@ -6,14 +6,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptDomConstraintDefinition<T> : SqlScriptDomObject<T>,ISqlScriptConstraint
+    internal abstract class SqlFragmentConstraintDefinition<T> : SqlFragmentObject<T>,ISqlScriptConstraint
         where T : ConstraintDefinition
         {
         [UsedImplicitly][Field(Source="ConstraintIdentifier")] public SqlIdentifier Name { get; }
         public abstract SqlConstraintType Type { get; }
 
         #region ctor{IServiceProvider,T}
-        protected SqlScriptDomConstraintDefinition(IServiceProvider context,T source)
+        protected SqlFragmentConstraintDefinition(IServiceProvider context,T source)
             : base(context,source)
             {
             return;

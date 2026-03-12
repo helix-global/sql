@@ -4,12 +4,12 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal sealed class SqlScriptDomFillFactorIndexOption : SqlScriptDomIndexExpressionOption
+    internal sealed class SqlFragmentFillFactorIndexOption : SqlFragmentIndexExpressionOption
         {
         public Int32 FillFactor { get; }
 
         #region ctor{IServiceProvider,IndexExpressionOption}
-        public SqlScriptDomFillFactorIndexOption(IServiceProvider context,IndexExpressionOption source)
+        public SqlFragmentFillFactorIndexOption(IServiceProvider context,IndexExpressionOption source)
             : base(context,source)
             {
             if (source.OptionKind != IndexOptionKind.FillFactor) { throw new ArgumentOutOfRangeException(nameof(source)); }
