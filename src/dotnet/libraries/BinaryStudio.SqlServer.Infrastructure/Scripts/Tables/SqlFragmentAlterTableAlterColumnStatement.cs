@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(AlterTableAlterColumnStatement))]
-    internal sealed class SqlScriptAlterTableAlterColumnStatement : SqlScriptAlterTableStatement<AlterTableAlterColumnStatement>
+    internal sealed class SqlFragmentAlterTableAlterColumnStatement : SqlFragmentAlterTableStatement<AlterTableAlterColumnStatement>
         {
         #region ctor{IServiceProvider,AlterTableAlterColumnStatement}
-        public SqlScriptAlterTableAlterColumnStatement(IServiceProvider context,AlterTableAlterColumnStatement source)
+        public SqlFragmentAlterTableAlterColumnStatement(IServiceProvider context,AlterTableAlterColumnStatement source)
             : base(context,source)
             {
             }

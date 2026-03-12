@@ -280,24 +280,52 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 #region Function
                 case SqlObjectType.Function:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
                 #region Procedure
                 case SqlObjectType.Procedure:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
                 #region Index
                 case SqlObjectType.Index:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        if (statement is SqlScriptCreateIndexStatement index) {
+                            if (m_tbN.TryGetValue(index.TargetObject,out var table)) {
+                                if (table.Indexes.All(i => !i.Name.Equals(index.Name))) {
+                                    table.Indexes.Add(index);
+                                    }
+                                }
+                            continue;
+                            }
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
                 #region Trigger
                 case SqlObjectType.Trigger:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        if (statement is SqlScriptCreateTriggerStatement trigger) {
+                            //if (m_tbN.TryGetValue(index.TargetObject,out var table)) {
+                            //    if (table.Indexes.All(i => !i.Name.Equals(index.Name))) {
+                            //        table.Indexes.Add(index);
+                            //        }
+                            //    }
+                            continue;
+                            }
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
@@ -305,11 +333,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 case SqlObjectType.ForeignKeyConstraint:
                     {
                     foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is SqlScriptAlterTableAddTableElementStatement AlterTableAddTableElementStatement) {
+                        if (statement is SqlFragmentAlterTableAddTableElementStatement AlterTableAddTableElementStatement) {
                             foreach (var constraint in AlterTableAddTableElementStatement.Definition.Constraints) {
-                                var table = m_tbN[AlterTableAddTableElementStatement.Name];
-                                if (table.Constraints.All(i => !i.Name.Equals(constraint.Name))) {
-                                    table.Constraints.Add(constraint);
+                                if (m_tbN.TryGetValue(AlterTableAddTableElementStatement.Name,out var table)) {
+                                    if (table.Constraints.All(i => !i.Name.Equals(constraint.Name))) {
+                                        table.Constraints.Add(constraint);
+                                        }
                                     }
                                 }
                             continue;
@@ -322,12 +351,23 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 #region View
                 case SqlObjectType.View:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        if (statement is SqlScriptCreateViewStatement CreateViewStatement) {
+                            var o = new SqlView(CreateViewStatement);
+                            m_viN[o.QualifiedName] = o;
+                            continue;
+                            }
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
                 #region CheckConstraint
                 case SqlObjectType.CheckConstraint:
                     {
+                    foreach (var statement in source.SelectMany(i => i.Statements)) {
+                        throw new NotImplementedException();
+                        }
                     }
                     break;
                 #endregion
@@ -643,6 +683,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 };
             }
 
-        private readonly IDictionary<SqlObjectIdentifier,SqlTable> m_tbN = new Dictionary<SqlObjectIdentifier,SqlTable>();
+        private readonly IDictionary<SqlObjectIdentifier,SqlTable> m_tbN = new SortedDictionary<SqlObjectIdentifier,SqlTable>();
+        private readonly IDictionary<SqlObjectIdentifier,SqlView>  m_viN = new SortedDictionary<SqlObjectIdentifier,SqlView>();
         }
     }

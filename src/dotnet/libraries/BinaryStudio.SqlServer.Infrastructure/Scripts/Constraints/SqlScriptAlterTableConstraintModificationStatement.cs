@@ -4,10 +4,10 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [SqlScriptObject(typeof(AlterTableConstraintModificationStatement))]
-    internal sealed class SqlScriptAlterTableConstraintModificationStatement : SqlScriptAlterTableStatement<AlterTableConstraintModificationStatement>
+    internal sealed class SqlFragmentAlterTableConstraintModificationStatement : SqlFragmentAlterTableStatement<AlterTableConstraintModificationStatement>
         {
         #region ctor{IServiceProvider,AlterTableConstraintModificationStatement}
-        public SqlScriptAlterTableConstraintModificationStatement(IServiceProvider context,AlterTableConstraintModificationStatement source)
+        public SqlFragmentAlterTableConstraintModificationStatement(IServiceProvider context,AlterTableConstraintModificationStatement source)
             : base(context,source)
             {
             }

@@ -149,6 +149,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return x + Parse(y);
             }
 
+        public static SqlObjectIdentifier operator +(String x,SqlObjectIdentifier y)
+            {
+            return Parse(x) + y;
+            }
+
         public static SqlObjectIdentifier operator +(SqlObjectIdentifier x,SqlObjectIdentifier y) {
             var r = new List<SqlIdentifier>();
             r.AddRange(x.Children);

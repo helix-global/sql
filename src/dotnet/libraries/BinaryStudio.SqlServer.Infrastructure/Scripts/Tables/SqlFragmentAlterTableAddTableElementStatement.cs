@@ -7,12 +7,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(AlterTableAddTableElementStatement))]
-    internal sealed class SqlScriptAlterTableAddTableElementStatement : SqlScriptAlterTableStatement<AlterTableAddTableElementStatement>
+    internal sealed class SqlFragmentAlterTableAddTableElementStatement : SqlFragmentAlterTableStatement<AlterTableAddTableElementStatement>
         {
         [UsedImplicitly][Field] public ISqlScriptTableDefinition Definition { get; }
 
         #region ctor{IServiceProvider,AlterTableAddTableElementStatement}
-        public SqlScriptAlterTableAddTableElementStatement(IServiceProvider context,AlterTableAddTableElementStatement source)
+        public SqlFragmentAlterTableAddTableElementStatement(IServiceProvider context,AlterTableAddTableElementStatement source)
             : base(context,source)
             {
             }

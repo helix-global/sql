@@ -16,7 +16,6 @@
     <PackageReference Include="SharpCompress" Version="0.46.4" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Indexes\" />
     <Folder Include="Scripts\Indexes\" />
     <Folder Include="Scripts\Logins\" />
     <Folder Include="Scripts\Procedures\" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 using JetBrains.Annotations;
+using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -9,8 +9,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
     [UsedImplicitly]
     [SqlScriptObject(typeof(SqlCreateIndexStatement))]
-    internal sealed class SqlScriptCreateIndexStatement : SqlScriptDdlStatement<SqlCreateIndexStatement>
+    internal sealed class SqlScriptCreateIndexStatement : SqlScriptDdlStatement<SqlCreateIndexStatement>,ISqlIndex
         {
+        public SqlObjectIdentifier QualifiedName { get; }
         [UsedImplicitly][Field] public Boolean IsUnique { get; }
         [UsedImplicitly][Field] public SqlIdentifier Name { get; }
         [UsedImplicitly][Field] public SqlObjectIdentifier TargetObject { get; }
@@ -26,6 +27,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)
             : base(context,source)
             {
+            if (TargetObject.SchemaName.Equals(SqlIdentifier.Null)) { TargetObject = "dbo" + TargetObject; }
+            QualifiedName = TargetObject + Name;
             return;
             }
         #endregion
@@ -35,7 +38,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return $"{Name}";
+            return $"{QualifiedName}";
             }
         #endregion
         }

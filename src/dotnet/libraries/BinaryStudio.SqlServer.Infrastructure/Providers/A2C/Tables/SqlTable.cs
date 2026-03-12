@@ -14,6 +14,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         public SqlLockEscalationMethod LockEscalation { get;set; }
         public IList<ISqlColumn> Columns { get; }
         public IList<ISqlConstraint> Constraints { get; } = new List<ISqlConstraint>();
+        public IList<ISqlIndex> Indexes { get; } = new List<ISqlIndex>();
+        public IList<ISqlTrigger> Triggers { get; } = new List<ISqlTrigger>();
 
         public SqlTable(SqlScriptCreateTableStatement source)
             {
@@ -26,5 +28,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         private ISqlColumn From(ISqlScriptColumnDefinition source) {
             return new SqlColumn(this,source);
             }
+
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return QualifiedName.ToString();
+            }
+        #endregion
         }
     }
