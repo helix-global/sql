@@ -116,6 +116,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 LoadTable(table);
                 }
             #endif
+            foreach (var pair in m_tbN) {
+                (new SqlTableFormatter()).WriteTo(pair.Value,out var script);
+                File.WriteAllText($"{pair.Key}.sql",script);
+                }
+            return;
             }
         #endregion
         #region M:LoadTable(CancellationToken,DataTable):Task
@@ -171,63 +176,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         #region M:LoadSqlObjects(CancellationToken):Task
         private async Task LoadSqlObjects(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
-            foreach (DataRow row in source.Rows) {
-                var type = PropE<SqlObjectType>(row["MTYPE"],SqlObjectType.None);
-                var script = row["SQLTEXT"]?.ToString();
-                if (!String.IsNullOrWhiteSpace(script)) {
-                    if (type != SqlObjectType.None) {
-                        switch (type) {
-                            case SqlObjectType.None:
-                                break;
-                            case SqlObjectType.ScriptBefore:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Table:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Function:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Procedure:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Index:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Trigger:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.ForeignKeyConstraint:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.View:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.CheckConstraint:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Statistics:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.Assembly:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.TableType:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.PartitionFunction:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.PartitionScheme:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            case SqlObjectType.ScriptAfter:
-                                (new SqlIndexScriptDecoder()).Decode(script);
-                                break;
-                            default: throw new ArgumentOutOfRangeException();
-                            }
-                        }
-                    }
+            foreach (var row in source.Rows
+                .OfType<DataRow>()
+                .Select(i => new MetadataRecord(i))
+                .Where(i => (i.Type != SqlObjectType.None) && !String.IsNullOrWhiteSpace(i.Script) && !i.IsDisabled)
+                .OrderBy(i=>i))
+                {
+                Merge(row.Type,row.Script);
                 }
             }
         #endregion
@@ -255,7 +210,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 #region Table
                 case SqlObjectType.Table:
                     {
-                    var properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
                     SqlTable o = null;
                     Boolean? IsAnsiNullsOn = null;
                     Boolean? IsQuotedIdentifier = null;
@@ -333,7 +287,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                                     case "VIEW"                  : { objectclass = SqlObjectClass.View;                 } break;
                                     case "XML SCHEMA COLLECTION" : { objectclass = SqlObjectClass.XmlSchemaCollection;  } break;
                                     }
-                                properties[new SqlExtendedPropertyIdentity(objectclass,identifier,name)] = value;
+                                m_properties[new SqlExtendedPropertyIdentity(objectclass,identifier,name)] = value;
                                 continue;
                                 }
                             #endregion
@@ -765,5 +719,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         private readonly IDictionary<SqlObjectIdentifier,SqlView>  m_viN = new SortedDictionary<SqlObjectIdentifier,SqlView>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlFunction>   m_fuN = new SortedDictionary<SqlObjectIdentifier,ISqlFunction>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlProcedure>  m_pcN = new SortedDictionary<SqlObjectIdentifier,ISqlProcedure>();
+        private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
@@ -17,6 +18,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptColumnIdentity(IServiceProvider context,SqlColumnIdentity source)
             : base(context,source)
             {
+            }
+        #endregion
+
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString() {
+            var r = new StringBuilder();
+            r.Append("identity");
+            if ((Increment != null) && (Seed != null)) {
+                r.Append($"({Seed},{Increment})");
+                }
+            else if (Seed != null)
+                {
+                r.Append($"({Seed})");
+                }
+            return r.ToString();
             }
         #endregion
         }

@@ -22,6 +22,5 @@
     <Folder Include="Scripts\Views\" />
     <Folder Include="Scripts\Triggers\" />
     <Folder Include="Scripts\Tables\" />
-    <Folder Include="Types\" />
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal class SqlFragmentColumnDefinition<T> : SqlFragmentObject<T>,ISqlScriptColumnDefinition
+    internal class SqlFragmentColumnDefinition<T> : SqlFragmentObject<T>
         where T: ColumnDefinitionBase
         {
         [UsedImplicitly][Field(Source="ColumnIdentifier")] public SqlIdentifier Name { get; }
@@ -21,8 +21,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         }
 
     [SqlScriptObject(typeof(ColumnDefinition))]
-    internal class SqlFragmentColumnDefinition : SqlFragmentColumnDefinition<ColumnDefinition>
+    internal class SqlFragmentColumnDefinition : SqlFragmentColumnDefinition<ColumnDefinition>,ISqlScriptColumnDefinition
         {
+        public ISqlTypeSpecifier TypeSpecifier { get { throw new NotImplementedException(); }}
+
         #region ctor{IServiceProvider,ColumnDefinition}
         public SqlFragmentColumnDefinition(IServiceProvider context,ColumnDefinition source)
             : base(context,source)

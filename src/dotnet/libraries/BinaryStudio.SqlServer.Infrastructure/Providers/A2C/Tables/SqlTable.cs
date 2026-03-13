@@ -20,13 +20,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         public SqlTable(SqlScriptCreateTableStatement source)
             {
             QualifiedName = source.Name;
-            Columns = source.Definition.ColumnDefinitions.Select(From).AsReadOnly();
+            Columns = source.Definition.ColumnDefinitions.OfType<ISqlColumn>().AsReadOnly();
             Constraints.AddRange(source.Definition.Constraints);
             return;
-            }
-
-        private ISqlColumn From(ISqlScriptColumnDefinition source) {
-            return new SqlColumn(this,source);
             }
 
         #region M:ToString:String

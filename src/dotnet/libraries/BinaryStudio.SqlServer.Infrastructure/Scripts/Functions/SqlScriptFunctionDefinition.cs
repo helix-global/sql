@@ -15,6 +15,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected SqlScriptFunctionDefinition(IServiceProvider context,T source)
             : base(context,source)
             {
+            if (Name.SchemaName.Equals(SqlIdentifier.Null)) { Name = "dbo" + Name; }
             }
         #endregion
 
