@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal sealed class SqlScriptDmlTriggerDefinition : SqlScriptTriggerDefinition<SqlDmlTriggerDefinition>
         {
         public SqlObjectIdentifier QualifiedName { get; }
-        [UsedImplicitly][Field] public SqlObjectIdentifier TargetName { get; }
+        [UsedImplicitly][Field] public override SqlObjectIdentifier TargetName { get; }
 
         #region ctor{IServiceProvider,SqlDmlTriggerDefinition}
         public SqlScriptDmlTriggerDefinition(IServiceProvider context,SqlDmlTriggerDefinition source)

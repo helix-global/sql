@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -8,6 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal abstract class SqlFragmentObject<T> : SqlScriptObject
         where T : TSqlFragment
         {
+        protected String Script { get; }
         protected internal T Source { get; }
 
         #region ctor{IServiceProvider,T}
@@ -15,6 +17,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             : base(context,source)
             {
             Source = source;
+            if (source != null) {
+                if (source.ScriptTokenStream != null) {
+                    var script = new StringBuilder();
+                    for (var i = source.FirstTokenIndex;i <= source.LastTokenIndex; i++) {
+                        script.Append(source.ScriptTokenStream[i].Text);
+                        }
+                    Script = script.ToString();
+                    }
+                }
             }
         #endregion
         #region M:CoerceValue(Type,TypeConverter,Object):Object

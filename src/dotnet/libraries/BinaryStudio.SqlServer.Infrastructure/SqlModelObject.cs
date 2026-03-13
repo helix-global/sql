@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
@@ -398,6 +399,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             return false;
+            }
+        #endregion
+        #region M:IsMatch(String,String):Boolean
+        protected static Boolean IsMatch(String input,String pattern)
+            {
+            return Regex.IsMatch(input,pattern);
+            }
+        #endregion
+        #region M:IsMatch(String,String,{out}Match):Boolean
+        protected static Boolean IsMatch(String input,String pattern,out Match match)
+            {
+            match = Regex.Match(input,pattern);
+            return match.Success;
             }
         #endregion
 

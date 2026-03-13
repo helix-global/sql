@@ -61,7 +61,7 @@ namespace dacpac
             try
                 {
                 //RebuildA2CX("2022.07.05.0847.a2cx");
-                var r = A2CPackage.LoadFrom("2022.07.05.0847.7z");
+                var r = A2CPackage.LoadFrom("2026.03.02.1553.7z");
                 }
             catch (Exception e)
                 {

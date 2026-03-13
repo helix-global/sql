@@ -1,7 +1,7 @@
 ﻿namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public interface ISqlTrigger
+    public interface ISqlProcedure
         {
-        SqlIdentifier Name { get; }
+        SqlObjectIdentifier Name { get; }
         }
     }

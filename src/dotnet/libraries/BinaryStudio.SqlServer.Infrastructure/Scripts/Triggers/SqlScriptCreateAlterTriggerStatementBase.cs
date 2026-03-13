@@ -10,6 +10,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T : SqlCreateAlterTriggerStatementBase
         {
         [UsedImplicitly][Field] public ISqlScriptTriggerDefinition Definition { get; }
+        public SqlIdentifier Name { get { return Definition.Name; }}
+        public SqlObjectIdentifier TargetName { get { return Definition.TargetName; }}
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptCreateAlterTriggerStatementBase(IServiceProvider context,T source)

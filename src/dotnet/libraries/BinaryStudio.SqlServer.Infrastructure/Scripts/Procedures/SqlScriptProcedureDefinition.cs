@@ -1,18 +1,31 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptProcedureDefinition<T> : SqlScriptCodeObject<T>
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
+    internal abstract class SqlScriptProcedureDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptProcedureDefinition
         where T: SqlProcedureDefinition
         {
-        public Boolean IsForReplication { get { return Source.IsForReplication; }}
-        public Int32? Number { get { return Source.Number; }}
+        [UsedImplicitly][Field] public SqlObjectIdentifier Name { get; }
+        [UsedImplicitly][Field] public Boolean IsForReplication { get; }
+        [UsedImplicitly][Field] public Int32? Number { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptProcedureDefinition(IServiceProvider context,T source)
             : base(context, source)
             {
+            }
+        #endregion
+
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
+            {
+            return Name.ToString();
             }
         #endregion
         }

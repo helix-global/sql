@@ -1,17 +1,29 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal abstract class SqlScriptScalarVariableRefExpression<T> : SqlScriptScalarExpression<T>
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
+    internal abstract class SqlScriptScalarVariableRefExpression<T> : SqlScriptScalarExpression<T>,ISqlScriptScalarVariableRefExpression
         where T : SqlScalarVariableRefExpression
         {
-        public String VariableName { get { return Source.VariableName; }}
+        [UsedImplicitly][Field] public String VariableName { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptScalarVariableRefExpression(IServiceProvider context,T source)
             : base(context,source)
             {
+            }
+        #endregion
+
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
+            {
+            return VariableName;
             }
         #endregion
         }

@@ -9,6 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal abstract class SqlScriptTriggerDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptTriggerDefinition
         where T : SqlTriggerDefinition
         {
+        public virtual SqlObjectIdentifier TargetName { get { return null; }}
         [UsedImplicitly][Field] public SqlIdentifier Name { get; }
 
         #region ctor{IServiceProvider,T}

@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 using SqlCodeDomMultipartIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlMultipartIdentifier;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal class SqlScriptCodeObject<T> : SqlScriptObject
         where T : SqlCodeObject
         {
+        [UsedImplicitly][Field(Source="Sql")] protected String Script { get; }
         protected internal T Source { get; }
         #if DEBUG
         //protected IList<SqlScriptObject> Children { get; } = EmptyArray<SqlScriptObject>.List;
