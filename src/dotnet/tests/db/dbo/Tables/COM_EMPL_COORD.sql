@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[COM_EMPL_COORD] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [EMPLID] INT              NOT NULL,
+    [DD]     DATETIME         NOT NULL,
+    [COORDX] DECIMAL (9, 6)   NOT NULL,
+    [COORDY] DECIMAL (9, 6)   NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_EMPL_COORD_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_EMPL_COORD]
+    ON [dbo].[COM_EMPL_COORD]([EMPLID] ASC, [DD] ASC)
+    INCLUDE([COORDX], [COORDY]);
+

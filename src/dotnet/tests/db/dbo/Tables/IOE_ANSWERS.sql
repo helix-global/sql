@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[IOE_ANSWERS] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [VNESHID]     INT              NOT NULL,
+    [ANSWTEXT]    NTEXT            NOT NULL,
+    [ANSWCORRECT] INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_IOE_ANSWERS_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[IOE_CHAPTER_QUESTIONS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_IOE_ANSWERS_GID]
+    ON [dbo].[IOE_ANSWERS]([GID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_IOE_ANSWERS]
+    ON [dbo].[IOE_ANSWERS]([VNESHID] ASC);
+

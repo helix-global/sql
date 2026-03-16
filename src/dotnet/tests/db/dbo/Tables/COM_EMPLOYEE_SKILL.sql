@@ -1,0 +1,36 @@
+﻿CREATE TABLE [dbo].[COM_EMPLOYEE_SKILL] (
+    [ID]               INT              IDENTITY (1, 1) NOT NULL,
+    [GID]              UNIQUEIDENTIFIER NULL,
+    [S_S]              INT              NOT NULL,
+    [S_CR]             INT              NOT NULL,
+    [S_CDT]            DATETIME         NOT NULL,
+    [S_MR]             INT              NULL,
+    [S_MDT]            DATETIME         NULL,
+    [ARC]              INT              NULL,
+    [EMPLOYEEID]       INT              NOT NULL,
+    [SKILLID]          INT              NOT NULL,
+    [CAN_TRAIN]        INT              NULL,
+    [WITHOUT_TRAINING] INT              NULL,
+    [SKILL_DATE]       DATETIME         NULL,
+    [NOT_EXPIRING]     INT              NULL,
+    [REMARK]           NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_EMPLOYEE_SKILL_EMPLOYEEID] FOREIGN KEY ([EMPLOYEEID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_COM_EMPLOYEE_SKILL_SKILLID] FOREIGN KEY ([SKILLID]) REFERENCES [dbo].[COM_SKILLS] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_EMPLOYEE_SKILL_2]
+    ON [dbo].[COM_EMPLOYEE_SKILL]([SKILLID] ASC, [EMPLOYEEID] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_EMPLOYEE_SKILL_1]
+    ON [dbo].[COM_EMPLOYEE_SKILL]([EMPLOYEEID] ASC, [SKILLID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_EMPLOYEE_SKILL]
+    ON [dbo].[COM_EMPLOYEE_SKILL]([EMPLOYEEID] ASC);
+

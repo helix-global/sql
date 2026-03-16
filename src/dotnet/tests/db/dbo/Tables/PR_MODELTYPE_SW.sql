@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[PR_MODELTYPE_SW] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [TYPEID] INT              NOT NULL,
+    [NAME]   NVARCHAR (300)   NOT NULL,
+    [SWTYPE] INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_MODELTYPE_SW_TYPEID] FOREIGN KEY ([TYPEID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MODELTYPE_SW]
+    ON [dbo].[PR_MODELTYPE_SW]([TYPEID] ASC);
+

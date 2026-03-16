@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[DEF_MUTEX] (
+    [LABEL] NVARCHAR (50) NOT NULL,
+    [SPID]  INT           NOT NULL,
+    [S_CR]  INT           NOT NULL,
+    [S_CDT] DATETIME      NOT NULL
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_MUTEX]
+    ON [dbo].[DEF_MUTEX]([LABEL] ASC);
+

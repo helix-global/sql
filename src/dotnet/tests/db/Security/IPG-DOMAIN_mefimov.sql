@@ -1,0 +1,2 @@
+﻿CREATE USER [IPG-DOMAIN\mefimov] FOR LOGIN [IPG-DOMAIN\mefimov];
+

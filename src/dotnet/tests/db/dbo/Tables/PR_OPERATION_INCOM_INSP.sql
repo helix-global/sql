@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[PR_OPERATION_INCOM_INSP] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [OPERID]     INT              NOT NULL,
+    [PN]         NVARCHAR (16)    NOT NULL,
+    [BATCHN]     NVARCHAR (20)    NOT NULL,
+    [FAILED_QTY] DECIMAL (16, 4)  NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_OPERATION_INCOM_INSP_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATION] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_OPERATION_INCOM_INSP]
+    ON [dbo].[PR_OPERATION_INCOM_INSP]([OPERID] ASC);
+

@@ -1,0 +1,24 @@
+﻿CREATE TABLE [dbo].[PR_OPERATIONS_FILES] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [OPERID]     INT              NOT NULL,
+    [FILENAME]   NVARCHAR (255)   NOT NULL,
+    [FILEDATE]   DATETIME         NOT NULL,
+    [FILESIZE]   INT              NULL,
+    [FILEBLOB]   IMAGE            NULL,
+    [FILEDESC]   NTEXT            NULL,
+    [FILEHIDDEN] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_OPERATIONS_FILES_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATIONS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_OPERATIONS_FILES]
+    ON [dbo].[PR_OPERATIONS_FILES]([OPERID] ASC) WITH (FILLFACTOR = 90);
+

@@ -1,0 +1,17 @@
+﻿CREATE TABLE [dbo].[MSG_DEADLOCKSTIMEOUTS] (
+    [DD]                  DATE            NOT NULL,
+    [COU]                 INT             NOT NULL,
+    [ONLINECALLS]         INT             NOT NULL,
+    [ONLINECALLTIME_AVG]  DECIMAL (14, 2) NULL,
+    [ONLINECALLTIME_MAX]  DECIMAL (14, 2) NULL,
+    [USERSAFFECTED]       INT             NULL,
+    [OPERATIONSCMPL]      INT             NULL,
+    [OPER_ISTMELUNG_CMPL] INT             NULL,
+    [DO_POSTINGS_LOCKS]   INT             NULL
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_MSG_DEADLOCKSTIMEOUTS_DD]
+    ON [dbo].[MSG_DEADLOCKSTIMEOUTS]([DD] ASC);
+

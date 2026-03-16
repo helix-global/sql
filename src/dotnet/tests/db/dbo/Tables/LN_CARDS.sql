@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[LN_CARDS] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [CARDN]  INT              NOT NULL,
+    [EMPLID] INT              NOT NULL,
+    [REMARK] NTEXT            NULL,
+    [S_S]    INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_LN_CARDS_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_LN_CARDS_EMPLID]
+    ON [dbo].[LN_CARDS]([EMPLID] ASC) WHERE ([S_S]=(2000011));
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_LN_CARDS_CARDN]
+    ON [dbo].[LN_CARDS]([CARDN] ASC) WHERE ([S_S]=(2000011));
+

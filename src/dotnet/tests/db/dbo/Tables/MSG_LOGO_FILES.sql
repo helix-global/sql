@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[MSG_LOGO_FILES] (
+    [ID]       INT              IDENTITY (1, 1) NOT NULL,
+    [GID]      UNIQUEIDENTIFIER NULL,
+    [S_CR]     INT              NOT NULL,
+    [S_CDT]    DATETIME         NOT NULL,
+    [S_MR]     INT              NULL,
+    [S_MDT]    DATETIME         NULL,
+    [ARC]      INT              NULL,
+    [VNESHID]  INT              NOT NULL,
+    [FILENAME] NVARCHAR (250)   NOT NULL,
+    [FILEDATE] DATETIME         NOT NULL,
+    [FILESIZE] INT              NULL,
+    [FILEBLOB] IMAGE            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_MSG_LOGO_FILES_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[MSG_LOGOS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_MSG_LOGO_FILES]
+    ON [dbo].[MSG_LOGO_FILES]([VNESHID] ASC);
+

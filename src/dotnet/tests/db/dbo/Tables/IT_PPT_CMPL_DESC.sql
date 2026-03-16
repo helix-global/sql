@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[IT_PPT_CMPL_DESC] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [TASKID] INT              NOT NULL,
+    [DESCR]  NTEXT            NULL,
+    [REMARK] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_IT_PPT_CMPL_DESC_TASKID] FOREIGN KEY ([TASKID]) REFERENCES [dbo].[IT_TASKS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_IT_PPT_CMPL_DESC_TASKID]
+    ON [dbo].[IT_PPT_CMPL_DESC]([TASKID] ASC);
+

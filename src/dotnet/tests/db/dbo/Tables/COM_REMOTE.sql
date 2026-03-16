@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[COM_REMOTE] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [NAME]      NVARCHAR (200)   NOT NULL,
+    [CSTR]      NVARCHAR (500)   NOT NULL,
+    [CODE]      NVARCHAR (10)    NOT NULL,
+    [ROOTDEPID] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_REMOTE_ROOTDEPID] FOREIGN KEY ([ROOTDEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_REMOTE_CODE]
+    ON [dbo].[COM_REMOTE]([CODE] ASC);
+

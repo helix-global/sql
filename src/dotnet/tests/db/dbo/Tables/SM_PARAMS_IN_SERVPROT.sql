@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[SM_PARAMS_IN_SERVPROT] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [MTID]   INT              NOT NULL,
+    [REMARK] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SM_PARAMS_IN_SERVPROT_MTID] FOREIGN KEY ([MTID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SM_PARAMS_IN_SERVPROT_MTID]
+    ON [dbo].[SM_PARAMS_IN_SERVPROT]([MTID] ASC);
+

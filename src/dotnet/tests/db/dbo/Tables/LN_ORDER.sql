@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[LN_ORDER] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [WEEKID] INT              NOT NULL,
+    [EMPLID] INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_LN_ORDER_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]),
+    CONSTRAINT [FK_LN_ORDER_WEEKID] FOREIGN KEY ([WEEKID]) REFERENCES [dbo].[LN_WEEKS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_LN_ORDER]
+    ON [dbo].[LN_ORDER]([EMPLID] ASC, [WEEKID] ASC);
+

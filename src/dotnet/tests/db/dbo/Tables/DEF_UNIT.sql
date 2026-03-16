@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[DEF_UNIT] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [OID]         INT              NOT NULL,
+    [LABEL]       NVARCHAR (40)    NOT NULL,
+    [NAME]        NVARCHAR (100)   NOT NULL,
+    [MODULEOID]   INT              NOT NULL,
+    [TEXT]        NTEXT            NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NULL,
+    [S_MR]        INT              NULL,
+    [S_CDT]       DATETIME         NULL,
+    [S_MDT]       DATETIME         NULL,
+    [NATIVECLASS] NVARCHAR (150)   NULL,
+    [DESCRIPTION] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_DEF_UNIT_MODULEOID] FOREIGN KEY ([MODULEOID]) REFERENCES [dbo].[DEF_MODULES] ([OID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_UNIT_1]
+    ON [dbo].[DEF_UNIT]([LABEL] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_UNIT]
+    ON [dbo].[DEF_UNIT]([OID] ASC) WITH (FILLFACTOR = 90);
+

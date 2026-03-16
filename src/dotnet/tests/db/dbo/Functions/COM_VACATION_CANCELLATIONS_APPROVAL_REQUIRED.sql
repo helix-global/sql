@@ -1,0 +1,19 @@
+﻿CREATE FUNCTION [dbo].[COM_VACATION_CANCELLATIONS_APPROVAL_REQUIRED](@UserID int)
+RETURNS @t TABLE (ID INT) 
+AS
+BEGIN
+	insert into @t (ID)
+	SELECT A.ID FROM COM_VACATION A 
+	where A.S_S=1000140 and dbo.COM_VACATION_ACCESS3(A.S_CR,A.S_S,A.EMPLID,@UserID,0,getdate())=1 
+
+	insert into @t (ID)
+	select distinct VACATIONID from dbo.COM_VACATION_CANCEL B 
+		join COM_VACATION A ON B.VACATIONID=A.ID
+	where B.S_S=1000159			
+		AND dbo.COM_VACATION_ACCESS3(A.S_CR,A.S_S,A.EMPLID,@UserID,0,getdate())=1 
+		AND A.S_S<>1000147
+	except
+	select ID from @t
+
+	return
+END

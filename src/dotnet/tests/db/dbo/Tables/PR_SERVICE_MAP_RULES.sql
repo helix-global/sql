@@ -1,0 +1,15 @@
+﻿CREATE TABLE [dbo].[PR_SERVICE_MAP_RULES] (
+    [ID]    INT              IDENTITY (1, 1) NOT NULL,
+    [GID]   UNIQUEIDENTIFIER NULL,
+    [S_CR]  INT              NOT NULL,
+    [S_CDT] DATETIME         NOT NULL,
+    [S_MR]  INT              NULL,
+    [S_MDT] DATETIME         NULL,
+    [ARC]   INT              NULL,
+    [MAPID] INT              NOT NULL,
+    [DEPID] INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_SERVICE_MAP_RULES_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_SERVICE_MAP_RULES_MAPID] FOREIGN KEY ([MAPID]) REFERENCES [dbo].[PR_MAP] ([ID])
+);
+

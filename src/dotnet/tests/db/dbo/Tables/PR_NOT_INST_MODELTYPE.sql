@@ -1,0 +1,15 @@
+﻿CREATE TABLE [dbo].[PR_NOT_INST_MODELTYPE] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [EMPLOYEEID] INT              NOT NULL,
+    [DEPID]      INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_NOT_INST_MODELTYPE_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_NOT_INST_MODELTYPE_EMPLOYEEID] FOREIGN KEY ([EMPLOYEEID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+

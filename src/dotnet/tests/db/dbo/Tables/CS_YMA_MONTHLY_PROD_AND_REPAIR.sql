@@ -1,0 +1,15 @@
+﻿CREATE TABLE [dbo].[CS_YMA_MONTHLY_PROD_AND_REPAIR] (
+    [YY]       INT             NULL,
+    [MM]       INT             NULL,
+    [DBEG]     DATETIME        NULL,
+    [DEND]     DATETIME        NULL,
+    [PRODUCED] DECIMAL (20, 4) NULL,
+    [REPAIRED] DECIMAL (20, 4) NULL,
+    [MN]       INT             NULL
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_CS_YMA_MONTHLY_PROD_AND_REPAIR]
+    ON [dbo].[CS_YMA_MONTHLY_PROD_AND_REPAIR]([YY] ASC, [MM] ASC);
+

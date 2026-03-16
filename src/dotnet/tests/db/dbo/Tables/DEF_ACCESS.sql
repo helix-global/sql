@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[DEF_ACCESS] (
+    [ARC]   INT      NOT NULL,
+    [UID]   INT      NOT NULL,
+    [ACT]   INT      NOT NULL,
+    [RES]   INT      NOT NULL,
+    [S_CR]  INT      NULL,
+    [S_CDT] DATETIME NULL,
+    CONSTRAINT [IX_DEF_ACCESS] UNIQUE CLUSTERED ([ARC] ASC, [UID] ASC, [ACT] ASC) WITH (FILLFACTOR = 90)
+);
+

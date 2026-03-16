@@ -1,0 +1,125 @@
+﻿create FUNCTION [dbo].[PRR_OPER_RELATIVE_PERF_COMMON2]
+(
+    @START_DATE DATE
+    ,@END_DATE DATE
+    ,@AVIABLE_OPERATIONS NVARCHAR(MAX)
+    ,@USER_ID INT
+    ,@mode int
+)
+RETURNS 
+@RES TABLE 
+    (
+        EMPID INT
+        ,NAME NVARCHAR(255)
+        ,DEPT_NAME NVARCHAR(255)
+        ,EMPLOYEE_COMMON_OPERATIONS INT
+        ,OPER_DT DATE
+        ,PIECE int
+    )
+AS
+BEGIN
+    
+    
+declare @spvGroup int = 17
+if @mode = 1
+  set @spvGroup = -21481/*не существующее значение*/
+    
+    DECLARE @TMP_DEPTS TABLE(ID INT PRIMARY KEY,NAME NVARCHAR(100))
+    DECLARE @TMP_OPERATIONS TABLE (ID INT PRIMARY KEY,OPERTYPEID INT,DEVICEID INT,USR_PER_OPER INT,PREP_RESULT INT)
+    DECLARE @TMP_AVIABLE_OPER TABLE (ID INT PRIMARY KEY)
+    DECLARE @TMP_OPER_CNT_FULL TABLE(USERID INT,OPER_CNT INT, OPER_DT DATE)
+
+    DECLARE @TMP_IDLE_TIMES TABLE(
+                EMP_ID INT PRIMARY KEY
+                ,IDLE_TIME INT
+            )
+
+
+    SELECT @START_DATE = DATEADD(day, DATEDIFF(day, 0,@START_DATE), 0)
+    SELECT @END_DATE = DATEADD(DAY, 1, CAST(@END_DATE AS DATE))
+    
+    INSERT INTO @TMP_DEPTS
+    SELECT DISTINCT
+            T.ID
+            ,NAME
+        FROM [dbo].[COM_ACCESS_DEPARTMENTS] (@USER_ID,3,GETDATE()) T
+            JOIN COM_DEPARTMENTS DEPT with (nolock) ON T.ID = DEPT.ID
+
+    INSERT INTO @TMP_AVIABLE_OPER
+    SELECT Item = CONVERT(INT, Item) FROM
+             ( SELECT Item = x.i.value('(./text())[1]', 'varchar(max)')
+            FROM ( SELECT [XML] = CONVERT(XML, '<i>'
+            + REPLACE(@AVIABLE_OPERATIONS, ',', '</i><i>') + '</i>').query('.')
+              ) AS a CROSS APPLY [XML].nodes('i') AS x(i) ) AS y
+          WHERE Item IS NOT NULL
+
+    INSERT INTO @TMP_OPERATIONS
+    SELECT
+            OP.ID
+            ,OP.OPERTYPEID
+            ,OP.DEVICEID
+            ,COUNT(DISTINCT OP_TIME.USERID) AS USR_PER_OPER
+            ,OP.PREP_RESULT
+        FROM PR_OPERATION OP with (nolock)
+            JOIN @TMP_AVIABLE_OPER OP_T ON OP.OPERTYPEID = OP_T.ID
+            JOIN PR_OPERATION_TIME OP_TIME with (nolock) ON OP.ID = OP_TIME.OPERID
+            JOIN DEF_USERS USR with (nolock) ON OP_TIME.USERID = USR.ID
+            JOIN COM_EMPLOYEE EMP with (nolock) ON USR.EMPLOYEEID = EMP.ID
+        WHERE
+            (OP.COMPLETED_DT >= @START_DATE AND OP.COMPLETED_DT < @END_DATE)
+        GROUP BY
+            OP.ID, OP.OPERTYPEID, OP.DEVICEID, OP.PREP_RESULT
+
+    
+    INSERT INTO @TMP_OPER_CNT_FULL
+    SELECT
+        OP_T.USERID
+        ,COUNT(DISTINCT OPERID) AS OPER_CNT
+        ,CAST(O.COMPLETED_DT as DATE)
+    FROM PR_OPERATION_TIME OP_T with (nolock)
+        JOIN @TMP_OPERATIONS OP ON OP_T.OPERID = OP.ID
+        join PR_OPERATION O with (nolock) on OP_T.OPERID=O.ID
+    GROUP BY 
+        OP_T.USERID, CAST(O.COMPLETED_DT as DATE)
+        
+
+    INSERT INTO @RES ( EMPID, NAME, DEPT_NAME, EMPLOYEE_COMMON_OPERATIONS,OPER_DT)
+    SELECT
+        EMPID
+        ,NAME
+        ,DEPT_NAME
+        ,FULL_OP.OPER_CNT AS EMPLOYEE_COMMON_OPERATIONS
+        ,FULL_OP.OPER_DT
+    FROM (
+
+        SELECT
+            EMP.ID AS EMPID
+            ,EMP.NAME
+            ,USR.ID AS USERID
+            ,DEP.NAME AS DEPT_NAME
+        FROM COM_EMPLOYEE EMP with (nolock)
+        JOIN @TMP_DEPTS DEP ON EMP.DEPID = DEP.ID
+        JOIN DEF_USERS USR with (nolock) ON EMP.ID = USR.EMPLOYEEID
+        WHERE
+            NOT EXISTS (SELECT ID FROM DEF_USERSTOGROUP with (nolock) WHERE USERID = USR.ID AND GROUPID = @spvGroup)
+        ) T
+    LEFT JOIN  @TMP_OPER_CNT_FULL FULL_OP ON T.USERID = FULL_OP.USERID
+
+    LEFT JOIN @TMP_IDLE_TIMES IT ON T.EMPID = IT.EMP_ID
+    where isnull(FULL_OP.OPER_CNT,0)>0
+    GROUP BY 
+        EMPID, NAME, DEPT_NAME,FULL_OP.OPER_CNT,FULL_OP.OPER_DT
+
+    declare @tPieces table (ROWNUM int, EMPID int, PIECE int)
+
+    insert into @tPieces
+        select ROW_NUMBER() OVER(ORDER BY DEPT_NAME,NAME), EMPID, null
+            from (select distinct R.EMPID, NAME, DEPT_NAME from @RES R ) G
+
+    update @tPieces set PIECE = (ROWNUM - 1) / 20 + 1
+
+    update @RES set PIECE=P.PIECE
+        from @RES R join @tPieces P on R.EMPID=P.EMPID
+    
+    RETURN 
+END

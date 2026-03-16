@@ -1,0 +1,30 @@
+﻿CREATE TABLE [dbo].[PR_REV_FILES] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NULL,
+    [S_CDT]       DATETIME         NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [FILENAME]    NVARCHAR (255)   NOT NULL,
+    [FILEDATE]    DATETIME         NOT NULL,
+    [FILESIZE]    INT              NULL,
+    [FILEBLOB]    IMAGE            NULL,
+    [FILEDESC]    NTEXT            NULL,
+    [REVISIONID]  INT              NOT NULL,
+    [FILEPREVIEW] IMAGE            NULL,
+    [FILEHIDDEN]  INT              NULL,
+    [FILESHOWIN]  INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_REV_FILES_REVISIONID] FOREIGN KEY ([REVISIONID]) REFERENCES [dbo].[PR_REVISION] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_REV_FILES_GID]
+    ON [dbo].[PR_REV_FILES]([GID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_REV_FILES]
+    ON [dbo].[PR_REV_FILES]([REVISIONID] ASC) WITH (FILLFACTOR = 90);
+

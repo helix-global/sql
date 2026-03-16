@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[SH_REMOTE_RECIPIENTS] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [DEPID]       INT              NOT NULL,
+    [REMOTEDEPID] INT              NOT NULL,
+    [EMAIL]       NVARCHAR (200)   NOT NULL,
+    [SUBJ]        NVARCHAR (100)   NOT NULL,
+    [REMARK]      NTEXT            NULL,
+    [AUTOSEND]    INT              NULL,
+    [TRANSFERQTY] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SH_REMOTE_RECIPIENTS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_SH_REMOTE_RECIPIENTS_REMOTEDEPID] FOREIGN KEY ([REMOTEDEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SH_REMOTE_RECIPIENTS]
+    ON [dbo].[SH_REMOTE_RECIPIENTS]([DEPID] ASC, [EMAIL] ASC, [SUBJ] ASC);
+

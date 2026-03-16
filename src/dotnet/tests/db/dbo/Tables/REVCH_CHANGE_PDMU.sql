@@ -1,0 +1,32 @@
+﻿CREATE TABLE [dbo].[REVCH_CHANGE_PDMU] (
+    [ID]            INT              IDENTITY (1, 1) NOT NULL,
+    [GID]           UNIQUEIDENTIFIER NULL,
+    [S_CR]          INT              NOT NULL,
+    [S_CDT]         DATETIME         NOT NULL,
+    [S_MR]          INT              NULL,
+    [S_MDT]         DATETIME         NULL,
+    [ARC]           INT              NULL,
+    [VNESHID]       INT              NOT NULL,
+    [PACT]          INT              NOT NULL,
+    [OPERID]        INT              NOT NULL,
+    [OLD_MID]       INT              NULL,
+    [MID]           INT              NULL,
+    [NOADDQUANTITY] INT              NULL,
+    [USEINREPEATED] INT              NULL,
+    [ONLYOPTION]    INT              NULL,
+    [USEOPTQTY]     INT              NULL,
+    [TYPICAL2NAV]   INT              NULL,
+    [QUANTITY]      DECIMAL (18, 6)  NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_REVCH_CHANGE_PDMU_MID] FOREIGN KEY ([MID]) REFERENCES [dbo].[PR_NAV_PN_CACHE] ([ID]),
+    CONSTRAINT [FK_REVCH_CHANGE_PDMU_OLD_MID] FOREIGN KEY ([OLD_MID]) REFERENCES [dbo].[PR_NAV_PN_CACHE] ([ID]),
+    CONSTRAINT [FK_REVCH_CHANGE_PDMU_ONLYOPTION] FOREIGN KEY ([ONLYOPTION]) REFERENCES [dbo].[PR_MODELTYPE_OPTIONS] ([ID]),
+    CONSTRAINT [FK_REVCH_CHANGE_PDMU_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATIONS] ([ID]),
+    CONSTRAINT [FK_REVCH_CHANGE_PDMU_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[REVCH_CHANGE] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_REVCH_CHANGE_PDMU]
+    ON [dbo].[REVCH_CHANGE_PDMU]([VNESHID] ASC);
+

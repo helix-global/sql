@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[DEF_FEEDBACK_FILES] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [FEEDBACKID] INT              NOT NULL,
+    [FILENAME]   NVARCHAR (250)   NOT NULL,
+    [FILEDATE]   DATETIME         NOT NULL,
+    [FILESIZE]   INT              NULL,
+    [FILEBLOB]   IMAGE            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_DEF_FEEDBACK_FILES_FEEDBACKID] FOREIGN KEY ([FEEDBACKID]) REFERENCES [dbo].[DEF_FEEDBACK] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_DEF_FEEDBACK_FILES]
+    ON [dbo].[DEF_FEEDBACK_FILES]([FEEDBACKID] ASC);
+

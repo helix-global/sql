@@ -1,0 +1,45 @@
+﻿CREATE TABLE [dbo].[SW_STORAGE] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [PARENTID]    INT              NULL,
+    [FILENAME]    NVARCHAR (255)   NOT NULL,
+    [FILESIZE]    INT              NOT NULL,
+    [FILEDESC]    NTEXT            NULL,
+    [FILEDATE]    DATETIME         NOT NULL,
+    [FILEBLOB]    IMAGE            NULL,
+    [FILEPREVIEW] IMAGE            NULL,
+    [DEPID]       INT              NOT NULL,
+    [TAGS]        NVARCHAR (300)   NULL,
+    [REMARK]      NTEXT            NULL,
+    [DOC_ISSUER]  INT              NULL,
+    [TITLE]       NVARCHAR (200)   NULL,
+    [DOC_TYPE]    NVARCHAR (200)   NULL,
+    [SHORTCUTID]  INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SW_STORAGE_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_SW_STORAGE_DOC_ISSUER] FOREIGN KEY ([DOC_ISSUER]) REFERENCES [dbo].[SW_DOCUMENT_ISSUER] ([ID]),
+    CONSTRAINT [FK_SW_STORAGE_PARENTID] FOREIGN KEY ([PARENTID]) REFERENCES [dbo].[SW_STORAGE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SW_STORAGE_PARENTID_NAME]
+    ON [dbo].[SW_STORAGE]([PARENTID] ASC, [FILENAME] ASC);
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[SW_STORAGE] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[SW_STORAGE] TO [EMEA\DEPCS]
+    AS [dbo];
+

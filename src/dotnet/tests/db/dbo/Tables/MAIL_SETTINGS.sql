@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[MAIL_SETTINGS] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [DBSRVNAME]  NVARCHAR (50)    NOT NULL,
+    [EXCHURL]    NVARCHAR (300)   NOT NULL,
+    [ADGROUP]    NVARCHAR (100)   NULL,
+    [REMARK]     NTEXT            NULL,
+    [OPT]        NVARCHAR (250)   NULL,
+    [EXCHURLWEB] NVARCHAR (300)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_MAIL_SETTINGS_DBSRVNAME]
+    ON [dbo].[MAIL_SETTINGS]([DBSRVNAME] ASC)
+    INCLUDE([EXCHURL], [ADGROUP]);
+

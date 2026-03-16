@@ -1,0 +1,7 @@
+﻿
+
+CREATE PROCEDURE dbo.MOBILE_PUSH_ADD_TRB_CHANGE @REQUESTID int
+AS
+BEGIN
+	declare @res int = 1
+END

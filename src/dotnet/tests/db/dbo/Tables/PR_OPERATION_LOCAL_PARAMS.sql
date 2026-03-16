@@ -1,0 +1,15 @@
+﻿CREATE TABLE [dbo].[PR_OPERATION_LOCAL_PARAMS] (
+    [ID]           INT            IDENTITY (1, 1) NOT NULL,
+    [S_CR]         INT            NOT NULL,
+    [S_MR]         INT            NULL,
+    [S_CDT]        DATETIME       NOT NULL,
+    [S_MDT]        DATETIME       NULL,
+    [OPERID]       INT            NOT NULL,
+    [PARAMNAME]    NVARCHAR (256) NOT NULL,
+    [PARAMUNIQUE]  INT            NOT NULL,
+    [PARAMVALUE]   NTEXT          NULL,
+    [PARAMOPTIONS] NVARCHAR (512) NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_OPERATION_LOCAL_PARAMS_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATION] ([ID])
+);
+

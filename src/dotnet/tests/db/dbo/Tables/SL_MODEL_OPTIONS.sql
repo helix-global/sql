@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[SL_MODEL_OPTIONS] (
+    [ID]                 INT              NOT NULL,
+    [GID]                UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]               INT              NULL,
+    [S_CDT]              DATETIME         NULL,
+    [S_MR]               INT              NULL,
+    [S_MDT]              DATETIME         NULL,
+    [OPTIONID]           INT              NOT NULL,
+    [MODELID]            INT              NOT NULL,
+    [PREDEFINEDOPT]      INT              NULL,
+    [CODE]               NVARCHAR (20)    NOT NULL,
+    [NAME]               NVARCHAR (300)   NULL,
+    [GROUPNAME]          NVARCHAR (300)   NULL,
+    [OVERPTYPE]          INT              NULL,
+    [CUSTOM4GROUP]       INT              NULL,
+    [CUSTOM4ID]          INT              NULL,
+    [CMP_OUT2]           NVARCHAR (200)   NULL,
+    [CMP_REQ]            NVARCHAR (200)   NULL,
+    [CMP_BLOCK]          NVARCHAR (200)   NULL,
+    [CMP_OUT2_OVERRIDE]  INT              NULL,
+    [CMP_REQ_OVERRIDE]   INT              NULL,
+    [CMP_BLOCK_OVERRIDE] INT              NULL,
+    [PRTYPE_OVERRIDE]    INT              NULL,
+    [ARC]                INT              NULL,
+    [PRTYPE]             INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+

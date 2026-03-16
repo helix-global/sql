@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[EQ_MEASURING_TOOL] (
+    [ID]                INT              IDENTITY (1, 1) NOT NULL,
+    [GID]               UNIQUEIDENTIFIER NULL,
+    [S_S]               INT              NOT NULL,
+    [S_CR]              INT              NOT NULL,
+    [S_CDT]             DATETIME         NOT NULL,
+    [S_MR]              INT              NULL,
+    [S_MDT]             DATETIME         NULL,
+    [ARC]               INT              NULL,
+    [DEPID]             INT              NOT NULL,
+    [SN]                NVARCHAR (50)    NOT NULL,
+    [SRANGE]            FLOAT (53)       NULL,
+    [USAGEPLACE]        NVARCHAR (250)   NULL,
+    [MANUFACTURER]      INT              NULL,
+    [EQTYPE]            INT              NOT NULL,
+    [LASTCALIBRATION]   DATETIME         NULL,
+    [PERIODCALIBRATION] INT              NULL,
+    [EMPTYATT1]         NVARCHAR (250)   NULL,
+    [EMPTYATT2]         NVARCHAR (250)   NULL,
+    [EMPTYATT3]         INT              NULL,
+    [EMPTYATT3_2]       NVARCHAR (250)   NULL,
+    [temp_OLDSRANGE]    NVARCHAR (250)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_EQ_MEASURING_TOOL_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_EQ_MEASURING_TOOL_EQTYPE] FOREIGN KEY ([EQTYPE]) REFERENCES [dbo].[EQ_TYPES] ([ID]),
+    CONSTRAINT [FK_EQ_MEASURING_TOOL_MANUFACTURER] FOREIGN KEY ([MANUFACTURER]) REFERENCES [dbo].[EQ_MANUFACTURER] ([ID])
+);
+

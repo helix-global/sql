@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[SW_TOOL_VER_SOURCE_FILES] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [VERID]       INT              NOT NULL,
+    [FILENAME]    NVARCHAR (255)   NOT NULL,
+    [FILESIZE]    INT              NOT NULL,
+    [FILEDESC]    NTEXT            NULL,
+    [FILEDATE]    DATETIME         NULL,
+    [FILEBLOB]    IMAGE            NULL,
+    [FILEPREVIEW] IMAGE            NULL,
+    [FILEGROUP]   INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SW_TOOL_VER_SOURCE_FILES_FILEGROUP] FOREIGN KEY ([FILEGROUP]) REFERENCES [dbo].[SW_TOOL_GROUPS_FGROUP] ([ID]),
+    CONSTRAINT [FK_SW_TOOL_VER_SOURCE_FILES_VERID] FOREIGN KEY ([VERID]) REFERENCES [dbo].[SW_TOOL_VERSIONS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SW_TOOL_VER_SOURCE_FILES]
+    ON [dbo].[SW_TOOL_VER_SOURCE_FILES]([VERID] ASC);
+

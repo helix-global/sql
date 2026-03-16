@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[temp_back_PR_REV_PDMU_updated_USEINREPEATED] (
+    [ID]              INT              IDENTITY (1, 1) NOT NULL,
+    [GID]             UNIQUEIDENTIFIER NULL,
+    [S_CR]            INT              NOT NULL,
+    [S_CDT]           DATETIME         NOT NULL,
+    [S_MR]            INT              NULL,
+    [S_MDT]           DATETIME         NULL,
+    [REVID]           INT              NOT NULL,
+    [OPERID]          INT              NOT NULL,
+    [QUANTITY]        DECIMAL (18, 6)  NOT NULL,
+    [MID]             INT              NOT NULL,
+    [NOADDQUANTITY]   INT              NULL,
+    [USEINREPEATED]   INT              NULL,
+    [ONLYOPTION]      INT              NULL,
+    [USEOPTQTY]       INT              NULL,
+    [TYPICAL2NAV]     INT              NULL,
+    [USORTBY]         INT              NULL,
+    [QTYPEROPERATION] INT              NULL,
+    [SHELFNUM]        NVARCHAR (100)   NULL,
+    [UCATEGORY]       NVARCHAR (200)   NULL,
+    [WITHOUTOPTION]   INT              NULL,
+    [ARC]             INT              NULL,
+    [ASDEFECTIVE]     INT              NULL
+);
+

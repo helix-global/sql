@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[SM_WORKORDER_EQ] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [VNESHID]   INT              NOT NULL,
+    [EQID]      INT              NOT NULL,
+    [RETOPTION] INT              NULL,
+    [REMARK]    NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SM_WORKORDER_EQ_EQID] FOREIGN KEY ([EQID]) REFERENCES [dbo].[EQ_EQUIPMENT] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_EQ_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[SM_WORKORDER] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_EQ]
+    ON [dbo].[SM_WORKORDER_EQ]([VNESHID] ASC);
+

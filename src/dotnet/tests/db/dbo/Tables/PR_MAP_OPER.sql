@@ -1,0 +1,93 @@
+﻿CREATE TABLE [dbo].[PR_MAP_OPER] (
+    [ID]               INT              IDENTITY (1, 1) NOT NULL,
+    [GID]              UNIQUEIDENTIFIER NULL,
+    [S_CR]             INT              NOT NULL,
+    [S_CDT]            DATETIME         NOT NULL,
+    [S_MR]             INT              NULL,
+    [S_MDT]            DATETIME         NULL,
+    [ARC]              INT              NULL,
+    [MAPID]            INT              NOT NULL,
+    [OPERID]           INT              NOT NULL,
+    [MANHOUR]          DECIMAL (10, 1)  NULL,
+    [SCHEME_X]         INT              NULL,
+    [SCHEME_Y]         INT              NULL,
+    [SCHEME_GROUP]     INT              NULL,
+    [BCODE]            NVARCHAR (20)    NULL,
+    [TC_QUALIFICATION] INT              NULL,
+    [TC_ACTION]        INT              NULL,
+    [TC_MINUTE]        DECIMAL (12, 2)  NULL,
+    [CONDITION]        INT              NULL,
+    [C_OPTGR]          INT              NULL,
+    [C_PARAMID]        INT              NULL,
+    [C_ACT]            INT              NULL,
+    [C_PARAMID2]       INT              NULL,
+    [C_PARAM2CONST]    SQL_VARIANT      NULL,
+    [INMAPORDER]       INT              NULL,
+    [REMARK]           NTEXT            NULL,
+    [C_BOMID]          INT              NULL,
+    [USERCHREQUIRED]   INT              NULL,
+    [MAPSTAGEID]       INT              NULL,
+    [TC_PARAMID]       INT              NULL,
+    [C_BOMID2]         INT              NULL,
+    [WAITNORM]         INT              NULL,
+    [HIDEOTHER]        INT              NULL,
+    [C_OPTID]          INT              NULL,
+    [ALLOWMULTYSTART]  INT              NULL,
+    [STARTNEWBATCH]    INT              NULL,
+    [DONNOTCOPYQ_IN]   INT              NULL,
+    [TYPICALQ2NAV]     INT              NULL,
+    [TYPICAL2NAV]      INT              NULL,
+    [ISSUPPDEFAULT]    INT              NULL,
+    [UINMAPORDER]      INT              NULL,
+    [BLOCKCMPLLIMIT]   INT              NULL,
+    [BLOCKCMPLLOW]     INT              NULL,
+    [MULTIPLI]         DECIMAL (12, 2)  NULL,
+    [ALTIFCONDKB3724]  INT              NULL,
+    CONSTRAINT [PK__PR_MAP_O__3214EC270A537D18] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_MAP_OPER_C_BOMID] FOREIGN KEY ([C_BOMID]) REFERENCES [dbo].[PR_MODELTYPE_BOM] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_C_BOMID2] FOREIGN KEY ([C_BOMID2]) REFERENCES [dbo].[PR_MODELTYPE_BOM] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_C_OPTGR] FOREIGN KEY ([C_OPTGR]) REFERENCES [dbo].[PR_MODELTYPE_OPTION_GR] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_C_OPTID] FOREIGN KEY ([C_OPTID]) REFERENCES [dbo].[PR_MODELTYPE_OPTIONS] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_C_PARAMID] FOREIGN KEY ([C_PARAMID]) REFERENCES [dbo].[PR_MODELTYPE_PARAMS] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_C_PARAMID2] FOREIGN KEY ([C_PARAMID2]) REFERENCES [dbo].[PR_MODELTYPE_PARAMS] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_MAPID] FOREIGN KEY ([MAPID]) REFERENCES [dbo].[PR_MAP] ([ID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_PR_MAP_OPER_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATIONS] ([ID]),
+    CONSTRAINT [FK_PR_MAP_OPER_TC_PARAMID] FOREIGN KEY ([TC_PARAMID]) REFERENCES [dbo].[PR_MODELTYPE_PARAMS] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER_TC_PARAMID]
+    ON [dbo].[PR_MAP_OPER]([TC_PARAMID] ASC) WHERE ([TC_PARAMID] IS NOT NULL);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER_MAPID_OPERID]
+    ON [dbo].[PR_MAP_OPER]([MAPID] DESC)
+    INCLUDE([OPERID]);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_MAP_OPER_GID]
+    ON [dbo].[PR_MAP_OPER]([GID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER_C_PARAMID2]
+    ON [dbo].[PR_MAP_OPER]([C_PARAMID2] ASC) WHERE ([C_PARAMID2] IS NOT NULL);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER_C_PARAMID]
+    ON [dbo].[PR_MAP_OPER]([C_PARAMID] ASC) WHERE ([C_PARAMID] IS NOT NULL);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER_2]
+    ON [dbo].[PR_MAP_OPER]([OPERID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_OPER]
+    ON [dbo].[PR_MAP_OPER]([MAPID] ASC) WITH (FILLFACTOR = 90);
+

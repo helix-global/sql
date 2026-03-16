@@ -1,0 +1,51 @@
+﻿CREATE TABLE [dbo].[PR_REV_OVER_MH] (
+    [ID]       INT              IDENTITY (1, 1) NOT NULL,
+    [GID]      UNIQUEIDENTIFIER NULL,
+    [S_CR]     INT              NOT NULL,
+    [S_CDT]    DATETIME         NOT NULL,
+    [S_MR]     INT              NULL,
+    [S_MDT]    DATETIME         NULL,
+    [ARC]      INT              NULL,
+    [REVID]    INT              NOT NULL,
+    [OPERID]   INT              NOT NULL,
+    [MANHOUR2] DECIMAL (10, 4)  NOT NULL,
+    [REMARK]   NVARCHAR (200)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_REV_OVER_MH_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATIONS] ([ID]),
+    CONSTRAINT [FK_PR_REV_OVER_MH_REVID] FOREIGN KEY ([REVID]) REFERENCES [dbo].[PR_REVISION] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_REV_OVER_MH_OPERID_REVID_MANHOUR]
+    ON [dbo].[PR_REV_OVER_MH]([OPERID] ASC, [REVID] ASC)
+    INCLUDE([MANHOUR2]);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_REV_OVER_MH_2]
+    ON [dbo].[PR_REV_OVER_MH]([OPERID] ASC, [REVID] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_REV_OVER_MH]
+    ON [dbo].[PR_REV_OVER_MH]([REVID] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+create trigger [dbo].[TR_PR_REV_OVER_MH] on [dbo].[PR_REV_OVER_MH]
+FOR update
+as 
+  
+if TRIGGER_NESTLEVEL() > 1 return
+set nocount on  
+  
+
+insert into PR_NORM_HISTORY (GID,S_CR,S_CDT,OPERID,REVID,USERID,DD,OLDVALUE,NEWVALUE,REMARK)
+select newid(),A.S_MR,getdate(),A.OPERID,A.REVID,A.S_MR,getdate(),B.MANHOUR2,A.MANHOUR2,A.REMARK
+from inserted A
+left join deleted B on B.ID = A.ID
+where isnull(A.MANHOUR2,-546114) <> isnull(B.MANHOUR2,-546114)
+
+  
+set nocount off

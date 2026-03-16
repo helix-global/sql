@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[SL_TEMPLATE_EXPORT] (
+    [ID]            INT              NOT NULL,
+    [S_CDT]         DATETIME         NULL,
+    [ND]            NVARCHAR (50)    NULL,
+    [CUSTID]        INT              NULL,
+    [REMARK]        NVARCHAR (MAX)   NULL,
+    [MODELID]       INT              NULL,
+    [WARRANTY]      INT              NULL,
+    [FAPPLICATION]  NVARCHAR (50)    NULL,
+    [CUST_CRMGUID]  UNIQUEIDENTIFIER NULL,
+    [MODEL_CRMGUID] UNIQUEIDENTIFIER NULL,
+    [MODEL_CODE]    NVARCHAR (16)    NULL,
+    CONSTRAINT [PK_SL_TEMPLATES_EXPORT] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[SL_TEMPLATE_EXPORT] TO [IPG-DOMAIN\IPGL_Admin_MSCRM]
+    AS [dbo];
+

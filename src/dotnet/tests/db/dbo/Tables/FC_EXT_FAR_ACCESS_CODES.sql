@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[FC_EXT_FAR_ACCESS_CODES] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [ACCESSID]   INT              NOT NULL,
+    [EMPLOYEEID] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_FC_EXT_FAR_ACCESS_CODES_ACCESSID] FOREIGN KEY ([ACCESSID]) REFERENCES [dbo].[FC_EXT_FAR_ACCESS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_FC_EXT_FAR_ACCESS_CODES]
+    ON [dbo].[FC_EXT_FAR_ACCESS_CODES]([ACCESSID] ASC);
+

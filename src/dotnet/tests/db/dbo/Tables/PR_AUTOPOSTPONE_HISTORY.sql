@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[PR_AUTOPOSTPONE_HISTORY] (
+    [OPERID] INT      NULL,
+    [DD]     DATETIME NULL
+);
+

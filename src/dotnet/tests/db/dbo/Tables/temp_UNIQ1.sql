@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[temp_UNIQ1] (
+    [ID] INT IDENTITY (1, 1) NOT NULL,
+    [A1] INT NULL,
+    [A2] INT NULL
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_temp_UNIQ1]
+    ON [dbo].[temp_UNIQ1]([A1] ASC, [A2] ASC);
+

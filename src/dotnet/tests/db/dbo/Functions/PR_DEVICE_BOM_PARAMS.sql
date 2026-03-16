@@ -1,0 +1,39 @@
+﻿CREATE function [dbo].[PR_DEVICE_BOM_PARAMS] (@DeviceID int, @aMode int)
+returns @res table (BOMID int, BOMNAME nvarchar(250), PARTID int, PARTSN nvarchar(50)
+                   ,PARTMODELID int,PARTMODELNAME nvarchar(300),PARTMODELCODE nvarchar(50)
+                   ,PARTREVID int, PARTREVNAME nvarchar(300)
+                   ,PARAMID int,PARAMNAME nvarchar(500),PARAMDATATYPE int ,PARAMKIND int, VALUE sql_variant)
+as 
+begin
+
+insert into @res (BOMID,BOMNAME,PARTID,PARTSN,PARTMODELID,PARTMODELNAME,PARTMODELCODE,PARTREVID,PARTREVNAME,PARAMID,PARAMNAME,PARAMDATATYPE,PARAMKIND,VALUE)
+select
+     BOM.BOMID
+    ,MTB.NAME
+    ,CMP.ID
+	,CMP.SN
+	,CMP.MODELID
+	,CMPM.NAME 
+	,CMPM.CODE 
+	,CMPR.ID
+	,CMPR.NAME
+	,PRMS.ID
+	,PRMS.NAME
+	,PRMS.DATATYPE
+	,PRMS.PARAMKIND
+	,dbo.PR_DEVICE_PARAM(CMP.ID,PRMS.ID) 
+FROM PR_DEVICE DEV with (nolock)
+LEFT JOIN PR_DEVICE_BOM BOM  with (nolock) on BOM.DEVICEID = DEV.ID
+left join PR_MODELTYPE_BOM MTB  with (nolock) on MTB.ID = BOM.BOMID
+LEFT JOIN PR_DEVICE CMP with (nolock) on CMP.ID = BOM.PARTID
+left join PR_REVISION CMPR with (nolock) on CMPR.ID = CMP.ID
+LEFT JOIN PR_MODELS CMPM with (nolock) on CMPM.ID = CMP.MODELID
+LEFT JOIN PR_MODELTYPE_PARAMS PRMS with (nolock) ON PRMS.TYPEID = CMPM.TYPEID AND (PRMS.SHAREPRM = 1 or 1 = 2)
+WHERE DEV.ID = @DeviceID
+  and BOM.UNINSTALLOPERID is null
+  
+  
+  
+return
+
+end

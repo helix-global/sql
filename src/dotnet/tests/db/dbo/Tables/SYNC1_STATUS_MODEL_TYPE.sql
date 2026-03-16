@@ -1,0 +1,17 @@
+﻿CREATE TABLE [dbo].[SYNC1_STATUS_MODEL_TYPE] (
+    [ID]              INT              IDENTITY (1, 1) NOT NULL,
+    [S_S]             INT              NOT NULL,
+    [S_CR]            INT              NOT NULL,
+    [S_MR]            INT              NULL,
+    [S_CDT]           DATETIME         NOT NULL,
+    [S_MDT]           DATETIME         NULL,
+    [MODEL_TYPE_UUID] UNIQUEIDENTIFIER NOT NULL,
+    [MODEL_TYPE_NAME] NVARCHAR (512)   NOT NULL,
+    [SOURCE_LOC_ID]   INT              NOT NULL,
+    [TARGET_LOC_ID]   INT              NOT NULL,
+    [STATUS]          NVARCHAR (MAX)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SYNC1_STATUS_MODEL_TYPE_SOURCE_LOC_ID] FOREIGN KEY ([SOURCE_LOC_ID]) REFERENCES [dbo].[COM_REMOTE] ([ID]),
+    CONSTRAINT [FK_SYNC1_STATUS_MODEL_TYPE_TARGET_LOC_ID] FOREIGN KEY ([TARGET_LOC_ID]) REFERENCES [dbo].[COM_REMOTE] ([ID])
+);
+

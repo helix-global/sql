@@ -1,0 +1,10 @@
+﻿create PROCEDURE [dbo].[WEB_OPERATION_UNJOIN] @aUserID int, @aOperID int
+AS
+BEGIN
+
+update PR_OPERATION_TIME set DEND = getdate()
+where PR_OPERATION_TIME.OPERID = @aOperID
+  and PR_OPERATION_TIME.USERID = @aUserID
+  and PR_OPERATION_TIME.DEND is null
+
+END

@@ -1,0 +1,3 @@
+﻿CREATE TYPE [dbo].[DEF_IDS] AS TABLE (
+    [ID] INT NOT NULL);
+

@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[PU_SEARCH_ITEMS_R] (
+    [ID]       INT              IDENTITY (1, 1) NOT NULL,
+    [GID]      UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]     INT              NOT NULL,
+    [S_CDT]    DATETIME         NOT NULL,
+    [S_MR]     INT              NULL,
+    [S_MDT]    DATETIME         NULL,
+    [ARC]      INT              NULL,
+    [ITEMID]   INT              NOT NULL,
+    [COMPANY]  NVARCHAR (1000)  NULL,
+    [QTY]      INT              NULL,
+    [URL]      NVARCHAR (2000)  NULL,
+    [VENDORNO] NVARCHAR (500)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PU_SEARCH_ITEMS_R_ITEMID] FOREIGN KEY ([ITEMID]) REFERENCES [dbo].[PU_SEARCH_ITEMS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PU_SEARCH_ITEMS_R]
+    ON [dbo].[PU_SEARCH_ITEMS_R]([ITEMID] ASC);
+

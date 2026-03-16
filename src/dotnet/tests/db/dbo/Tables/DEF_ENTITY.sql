@@ -1,0 +1,80 @@
+﻿CREATE TABLE [dbo].[DEF_ENTITY] (
+    [ID]                   INT              IDENTITY (1, 1) NOT NULL,
+    [OID]                  INT              NOT NULL,
+    [LABEL]                NVARCHAR (256)   NOT NULL,
+    [MODULEOID]            INT              NOT NULL,
+    [MASTEROID]            INT              NULL,
+    [NAME]                 NVARCHAR (2048)  NOT NULL,
+    [MAINTABLE]            NVARCHAR (150)   NOT NULL,
+    [IDFIELDNAME]          NVARCHAR (50)    NULL,
+    [HISTORYFIELDS]        INT              NULL,
+    [MASTERIDFIELD]        NVARCHAR (40)    NULL,
+    [CHILDINDEXFIELD]      NVARCHAR (40)    NULL,
+    [LISTDEFAULTGROUPBY]   NVARCHAR (100)   NULL,
+    [LISTDEFAULTPREVIEW]   NVARCHAR (50)    NULL,
+    [STATESCOUNT]          INT              NULL,
+    [SQLFILTER]            NVARCHAR (512)   NULL,
+    [DISABLEGID]           INT              NULL,
+    [DISABLETF]            INT              NULL,
+    [S_CR]                 INT              NULL,
+    [S_MR]                 INT              NULL,
+    [S_CDT]                DATETIME         NULL,
+    [S_MDT]                DATETIME         NULL,
+    [GID]                  UNIQUEIDENTIFIER NULL,
+    [DATEFIELD]            NVARCHAR (40)    NULL,
+    [EOPTION]              NVARCHAR (200)   NULL,
+    [DISABLEARC]           INT              NULL,
+    [ACCFILTER]            NVARCHAR (300)   NULL,
+    [ARC]                  INT              NULL,
+    [PAGEALIAS]            NVARCHAR (100)   NULL,
+    [PAGEPOS]              INT              NULL,
+    [PAGEPOSITION]         INT              NULL,
+    [LISTDEFSORT]          NVARCHAR (150)   NULL,
+    [LISTDEFAULTPAGE]      NVARCHAR (50)    NULL,
+    [LIVECOLUMNSOID]       INT              NULL,
+    [READONLYF]            NVARCHAR (300)   NULL,
+    [READONLYCHECK]        INT              NULL,
+    [READONLYMESS]         NVARCHAR (200)   NULL,
+    [TOPN]                 INT              NULL,
+    [AGROUP]               INT              NULL,
+    [LISTDEFREDCOLUMNS]    NVARCHAR (100)   NULL,
+    [LISTPAGESQUERY]       INT              NULL,
+    [LISTDEFAULTPAGEALIAS] NVARCHAR (50)    NULL,
+    [REMARKS]              NTEXT            NULL,
+    [ADDHEADER]            NVARCHAR (200)   NULL,
+    [LISTDEFAULTTAGS]      NVARCHAR (50)    NULL,
+    [DATAUNITOID]          INT              NULL,
+    [JOINSTR1]             NVARCHAR (300)   NULL,
+    [SRVOID]               INT              NULL,
+    [BEFOREOPENLIST_QOID]  INT              NULL,
+    [FTSQUERY]             INT              NULL,
+    [SQLPROLOG]            NTEXT            NULL,
+    [SQLCLAUSEOPTION]      NVARCHAR (512)   NULL,
+    [BEFOREOPENLIST_UOID]  INT              NULL,
+    CONSTRAINT [PK__DEF_ENTI__3214EC27286302EC] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_DEF_ENTITY_BEFOREOPENLIST_QOID] FOREIGN KEY ([BEFOREOPENLIST_QOID]) REFERENCES [dbo].[DEF_SQL] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_BEFOREOPENLIST_UOID] FOREIGN KEY ([BEFOREOPENLIST_UOID]) REFERENCES [dbo].[DEF_UNIT] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_DATAUNITOID] FOREIGN KEY ([DATAUNITOID]) REFERENCES [dbo].[DEF_UNIT] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_FTSQUERY] FOREIGN KEY ([FTSQUERY]) REFERENCES [dbo].[DEF_SQL] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_LISTPAGESQUERY] FOREIGN KEY ([LISTPAGESQUERY]) REFERENCES [dbo].[DEF_SQL] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_LIVECOLUMNSOID] FOREIGN KEY ([LIVECOLUMNSOID]) REFERENCES [dbo].[DEF_SQL] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_MASTEROID] FOREIGN KEY ([MASTEROID]) REFERENCES [dbo].[DEF_ENTITY] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_MODULEOID] FOREIGN KEY ([MODULEOID]) REFERENCES [dbo].[DEF_MODULES] ([OID]),
+    CONSTRAINT [FK_DEF_ENTITY_SRVOID] FOREIGN KEY ([SRVOID]) REFERENCES [dbo].[DEF_SERVERS] ([OID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_DEF_ENTITY_2]
+    ON [dbo].[DEF_ENTITY]([MASTEROID] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_ENTITY_1]
+    ON [dbo].[DEF_ENTITY]([LABEL] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_ENTITY]
+    ON [dbo].[DEF_ENTITY]([OID] ASC) WITH (FILLFACTOR = 90);
+

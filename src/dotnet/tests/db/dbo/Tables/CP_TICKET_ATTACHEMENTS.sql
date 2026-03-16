@@ -1,0 +1,29 @@
+﻿CREATE TABLE [dbo].[CP_TICKET_ATTACHEMENTS] (
+    [ID]              INT              IDENTITY (1, 1) NOT NULL,
+    [GID]             UNIQUEIDENTIFIER NULL,
+    [S_CR]            INT              NOT NULL,
+    [S_CDT]           DATETIME         NOT NULL,
+    [S_MR]            INT              NULL,
+    [S_MDT]           DATETIME         NULL,
+    [ARC]             INT              NULL,
+    [VNESHID]         INT              NOT NULL,
+    [FILENAME]        NVARCHAR (250)   NOT NULL,
+    [FILEDATE]        DATETIME         NOT NULL,
+    [FILESIZE]        INT              NULL,
+    [FILEBLOB]        IMAGE            NULL,
+    [FILEDESC]        NTEXT            NULL,
+    [NOTY_OUT_FILEID] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_CP_TICKET_ATTACHEMENTS_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[CP_TICKETS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_CP_TICKET_ATTACHEMENTS_2]
+    ON [dbo].[CP_TICKET_ATTACHEMENTS]([VNESHID] ASC, [NOTY_OUT_FILEID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_CP_TICKET_ATTACHEMENTS]
+    ON [dbo].[CP_TICKET_ATTACHEMENTS]([VNESHID] ASC);
+

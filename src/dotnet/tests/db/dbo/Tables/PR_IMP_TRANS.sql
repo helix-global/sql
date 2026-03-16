@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[PR_IMP_TRANS] (
+    [ID]             INT              IDENTITY (1, 1) NOT NULL,
+    [GID]            UNIQUEIDENTIFIER NULL,
+    [S_CR]           INT              NOT NULL,
+    [S_CDT]          DATETIME         NOT NULL,
+    [S_MR]           INT              NULL,
+    [S_MDT]          DATETIME         NULL,
+    [ARC]            INT              NULL,
+    [NAME]           NVARCHAR (50)    NOT NULL,
+    [PTYPE]          INT              NOT NULL,
+    [DEPID]          INT              NOT NULL,
+    [DEFAULTPATH]    NVARCHAR (250)   NULL,
+    [IMPMODELTYPE]   INT              NOT NULL,
+    [MSGSUBJ]        NVARCHAR (100)   NULL,
+    [MSGCC]          NVARCHAR (512)   NULL,
+    [TARGETSTATE]    INT              NULL,
+    [BACKUPFILEPATH] NVARCHAR (255)   NULL,
+    [CSVSKIP1LINE]   INT              NULL,
+    [ONLYMT]         INT              NULL,
+    [DIRECTLINK]     INT              NULL,
+    [ERRMSGCC]       NVARCHAR (512)   NULL,
+    [TYPEDISABLED]   INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_IMP_TRANS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_IMP_TRANS_DIRECTLINK] FOREIGN KEY ([DIRECTLINK]) REFERENCES [dbo].[PR_IMP_SOURCES] ([ID])
+);
+

@@ -1,0 +1,34 @@
+﻿CREATE TABLE [dbo].[DEF_OPERATION] (
+    [ID]            INT              IDENTITY (1, 1) NOT NULL,
+    [OID]           INT              NOT NULL,
+    [LABEL]         NVARCHAR (256)   NOT NULL,
+    [NAME]          NVARCHAR (2048)  NOT NULL,
+    [MODULEOID]     INT              NOT NULL,
+    [UNITOID]       INT              NULL,
+    [OPERATIONTYPE] INT              NOT NULL,
+    [FORMOID]       INT              NULL,
+    [GID]           UNIQUEIDENTIFIER NULL,
+    [S_CR]          INT              NULL,
+    [S_MR]          INT              NULL,
+    [S_CDT]         DATETIME         NULL,
+    [S_MDT]         DATETIME         NULL,
+    [ARC]           INT              NULL,
+    [SPELLCHECKER]  INT              NULL,
+    [REMARK]        NTEXT            NULL,
+    [FOLDERIMG]     NVARCHAR (120)   NULL,
+    CONSTRAINT [PK__DEF_OPER__3214EC2731B762FC] PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_DEF_OPERATION_FORMOID] FOREIGN KEY ([FORMOID]) REFERENCES [dbo].[DEF_FORM] ([OID]),
+    CONSTRAINT [FK_DEF_OPERATION_MODULEOID] FOREIGN KEY ([MODULEOID]) REFERENCES [dbo].[DEF_MODULES] ([OID]),
+    CONSTRAINT [FK_DEF_OPERATION_UNITOID] FOREIGN KEY ([UNITOID]) REFERENCES [dbo].[DEF_UNIT] ([OID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_OPERATION_1]
+    ON [dbo].[DEF_OPERATION]([LABEL] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_OPERATION]
+    ON [dbo].[DEF_OPERATION]([OID] ASC);
+

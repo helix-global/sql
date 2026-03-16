@@ -1,0 +1,14 @@
+﻿create function [dbo].[PR_DEVICE_BOMITEM_MODELS] (@DeviceID int,@BomID int)
+returns @res table (PARTMODELID int,PARTONLYREVID int,PARTMODELFROM int,BOMIDMODELSCOUNT int)
+as 
+begin
+
+insert into @res (PARTMODELID,PARTMODELFROM,BOMIDMODELSCOUNT)
+select PARTMODELID,PARTMODELFROM,BOMIDMODELSCOUNT 
+from dbo.PR_DEVICE_BOM_MODELS(@DeviceID) A
+where A.BOMID = @BomID 
+
+return
+
+
+end

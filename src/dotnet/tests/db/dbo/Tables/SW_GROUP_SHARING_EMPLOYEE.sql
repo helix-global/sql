@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[SW_GROUP_SHARING_EMPLOYEE] (
+    [ID]               INT              IDENTITY (1, 1) NOT NULL,
+    [GID]              UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]             INT              NOT NULL,
+    [S_CDT]            DATETIME         NOT NULL,
+    [S_MR]             INT              NULL,
+    [S_MDT]            DATETIME         NULL,
+    [ARC]              INT              NULL,
+    [VNESHID]          INT              NOT NULL,
+    [EMPLOYEEID]       INT              NOT NULL,
+    [ALLOW_LINK_FILES] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SW_GROUP_SHARING_EMPLOYEE_EMPLOYEEID] FOREIGN KEY ([EMPLOYEEID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]),
+    CONSTRAINT [FK_SW_GROUP_SHARING_EMPLOYEE_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[SW_TOOL_GROUPS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SW_GROUP_SHARING_EMPLOYEE]
+    ON [dbo].[SW_GROUP_SHARING_EMPLOYEE]([VNESHID] ASC);
+

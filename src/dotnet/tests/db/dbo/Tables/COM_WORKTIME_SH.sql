@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[COM_WORKTIME_SH] (
+    [ID]           INT              IDENTITY (1, 1) NOT NULL,
+    [GID]          UNIQUEIDENTIFIER NULL,
+    [S_CR]         INT              NOT NULL,
+    [S_CDT]        DATETIME         NOT NULL,
+    [S_MR]         INT              NULL,
+    [S_MDT]        DATETIME         NULL,
+    [ARC]          INT              NULL,
+    [VNESHID]      INT              NOT NULL,
+    [WTURN]        INT              NOT NULL,
+    [WTURN_MIDDLE] DATETIME         NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_WORKTIME_SH_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[COM_WORKTIME] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_WORKTIME_SH_WTURN]
+    ON [dbo].[COM_WORKTIME_SH]([VNESHID] ASC, [WTURN] ASC)
+    INCLUDE([WTURN_MIDDLE]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_WORKTIME_SH]
+    ON [dbo].[COM_WORKTIME_SH]([VNESHID] ASC);
+

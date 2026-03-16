@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[FC_CORRECTIVEACTIONS] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [DEPARTID]    INT              NOT NULL,
+    [ATEXT]       NVARCHAR (400)   NOT NULL,
+    [DESCRIPTION] NTEXT            NULL,
+    [POSORDER]    INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_FC_CORRECTIVEACTIONS_DEPARTID] FOREIGN KEY ([DEPARTID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_FC_CORRECTIVEACTIONS_GID]
+    ON [dbo].[FC_CORRECTIVEACTIONS]([GID] ASC);
+

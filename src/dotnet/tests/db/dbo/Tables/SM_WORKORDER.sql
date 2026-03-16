@@ -1,0 +1,76 @@
+﻿CREATE TABLE [dbo].[SM_WORKORDER] (
+    [ID]                     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]                    UNIQUEIDENTIFIER NULL,
+    [S_S]                    INT              NOT NULL,
+    [S_CR]                   INT              NOT NULL,
+    [S_CDT]                  DATETIME         NOT NULL,
+    [S_MR]                   INT              NULL,
+    [S_MDT]                  DATETIME         NULL,
+    [ARC]                    INT              NULL,
+    [SDEPID]                 INT              NOT NULL,
+    [NN]                     NVARCHAR (30)    NOT NULL,
+    [SCASEID]                INT              NULL,
+    [CUSTID]                 INT              NOT NULL,
+    [CONTACTID]              INT              NULL,
+    [PRIORITY]               INT              NOT NULL,
+    [REMARK]                 NTEXT            NULL,
+    [EMPLID]                 INT              NULL,
+    [PROMISEDBEG]            DATETIME         NULL,
+    [PROMISEDEND]            DATETIME         NULL,
+    [DEVICEID]               INT              NOT NULL,
+    [SORDERID]               INT              NOT NULL,
+    [ADR_CODE]               NVARCHAR (50)    NULL,
+    [ADR_CITY]               NVARCHAR (150)   NULL,
+    [ADR_STREET]             NVARCHAR (150)   NULL,
+    [ADR_COUNTRY]            INT              NULL,
+    [DD]                     DATETIME         NOT NULL,
+    [SH_DBEG]                DATETIME         NULL,
+    [SH_DEND]                DATETIME         NULL,
+    [SUM_TIME_PLANNED_TASKS] INT              NULL,
+    [STARTTIMEFROMOFFICE]    DATETIME         NULL,
+    [BACKTIMETOOFFICE]       DATETIME         NULL,
+    [WO_START_TIME]          DATETIME         NULL,
+    [FAILURE_DESCRIPTION]    NTEXT            NULL,
+    [REASON4DELAY]           INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SM_WORKORDER_ADR_COUNTRY] FOREIGN KEY ([ADR_COUNTRY]) REFERENCES [dbo].[COM_COUNTRIES] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_CONTACTID] FOREIGN KEY ([CONTACTID]) REFERENCES [dbo].[COM_CUST_CONTACTS] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_CUSTID] FOREIGN KEY ([CUSTID]) REFERENCES [dbo].[COM_CUSTOMER] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_DEVICEID] FOREIGN KEY ([DEVICEID]) REFERENCES [dbo].[PR_DEVICE] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_REASON4DELAY] FOREIGN KEY ([REASON4DELAY]) REFERENCES [dbo].[SM_REASONS4DELAY] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_SCASEID] FOREIGN KEY ([SCASEID]) REFERENCES [dbo].[SM_SERVICECASE] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_SDEPID] FOREIGN KEY ([SDEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_SM_WORKORDER_SORDERID] FOREIGN KEY ([SORDERID]) REFERENCES [dbo].[PR_PRORDER] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_S_S]
+    ON [dbo].[SM_WORKORDER]([S_S] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_S_CR]
+    ON [dbo].[SM_WORKORDER]([S_CR] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SM_WORKORDER_NN]
+    ON [dbo].[SM_WORKORDER]([NN] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_EMPLID_DBEG_DEND]
+    ON [dbo].[SM_WORKORDER]([EMPLID] ASC, [SH_DBEG] ASC, [SH_DEND] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_DEVICEID]
+    ON [dbo].[SM_WORKORDER]([DEVICEID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_WORKORDER_DD]
+    ON [dbo].[SM_WORKORDER]([DD] ASC);
+

@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[PR_NAV_PN_CACHE] (
+    [ID]      INT              IDENTITY (1, 1) NOT NULL,
+    [GID]     UNIQUEIDENTIFIER NULL,
+    [S_CR]    INT              NOT NULL,
+    [S_CDT]   DATETIME         NOT NULL,
+    [S_MR]    INT              NULL,
+    [S_MDT]   DATETIME         NULL,
+    [CODE]    NVARCHAR (16)    NOT NULL,
+    [NAME]    NVARCHAR (250)   NULL,
+    [S_S]     INT              NOT NULL,
+    [DESCSTR] NVARCHAR (300)   NULL,
+    [MPICT]   IMAGE            NULL,
+    CONSTRAINT [PK__PR_NAV_P__3214EC273449B6E4] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_NAV_PN_CACHE]
+    ON [dbo].[PR_NAV_PN_CACHE]([CODE] ASC) WITH (FILLFACTOR = 90);
+

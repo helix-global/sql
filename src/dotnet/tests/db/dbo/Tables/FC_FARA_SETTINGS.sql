@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[FC_FARA_SETTINGS] (
+    [ID]       INT              IDENTITY (1, 1) NOT NULL,
+    [GID]      UNIQUEIDENTIFIER NULL,
+    [S_CR]     INT              NOT NULL,
+    [S_CDT]    DATETIME         NOT NULL,
+    [S_MR]     INT              NULL,
+    [S_MDT]    DATETIME         NULL,
+    [ARC]      INT              NULL,
+    [DEPID]    INT              NOT NULL,
+    [MTID]     INT              NULL,
+    [REMARK]   NTEXT            NULL,
+    [EMPLID]   INT              NULL,
+    [FARAVIEW] INT              NULL,
+    [FACVIEW]  INT              NULL,
+    [FCVIEW]   INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_FC_FARA_SETTINGS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_FC_FARA_SETTINGS_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]),
+    CONSTRAINT [FK_FC_FARA_SETTINGS_MTID] FOREIGN KEY ([MTID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_FC_FARA_SETTINGS_2]
+    ON [dbo].[FC_FARA_SETTINGS]([EMPLID] ASC, [DEPID] ASC)
+    INCLUDE([MTID], [FARAVIEW], [FACVIEW]);
+

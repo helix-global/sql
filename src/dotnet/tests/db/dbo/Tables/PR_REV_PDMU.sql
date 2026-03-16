@@ -1,0 +1,48 @@
+﻿CREATE TABLE [dbo].[PR_REV_PDMU] (
+    [ID]              INT              IDENTITY (1, 1) NOT NULL,
+    [GID]             UNIQUEIDENTIFIER NULL,
+    [S_CR]            INT              NOT NULL,
+    [S_CDT]           DATETIME         NOT NULL,
+    [S_MR]            INT              NULL,
+    [S_MDT]           DATETIME         NULL,
+    [REVID]           INT              NOT NULL,
+    [OPERID]          INT              NOT NULL,
+    [QUANTITY]        DECIMAL (18, 6)  NOT NULL,
+    [MID]             INT              NOT NULL,
+    [NOADDQUANTITY]   INT              NULL,
+    [USEINREPEATED]   INT              NULL,
+    [ONLYOPTION]      INT              NULL,
+    [USEOPTQTY]       INT              NULL,
+    [TYPICAL2NAV]     INT              NULL,
+    [USORTBY]         INT              NULL,
+    [QTYPEROPERATION] INT              NULL,
+    [SHELFNUM]        NVARCHAR (100)   NULL,
+    [UCATEGORY]       NVARCHAR (200)   NULL,
+    [WITHOUTOPTION]   INT              NULL,
+    [ARC]             INT              NULL,
+    [ASDEFECTIVE]     INT              NULL,
+    [REMARK]          NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_REV_PDMU_MID] FOREIGN KEY ([MID]) REFERENCES [dbo].[PR_NAV_PN_CACHE] ([ID]),
+    CONSTRAINT [FK_PR_REV_PDMU_ONLYOPTION] FOREIGN KEY ([ONLYOPTION]) REFERENCES [dbo].[PR_MODELTYPE_OPTIONS] ([ID]),
+    CONSTRAINT [FK_PR_REV_PDMU_OPERID] FOREIGN KEY ([OPERID]) REFERENCES [dbo].[PR_OPERATIONS] ([ID]),
+    CONSTRAINT [FK_PR_REV_PDMU_REVID] FOREIGN KEY ([REVID]) REFERENCES [dbo].[PR_REVISION] ([ID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_PR_REV_PDMU_WITHOUTOPTION] FOREIGN KEY ([WITHOUTOPTION]) REFERENCES [dbo].[PR_MODELTYPE_OPTIONS] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_REV_PDMU_MID]
+    ON [dbo].[PR_REV_PDMU]([MID] ASC)
+    INCLUDE([REVID]);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_REV_PDMU_GID]
+    ON [dbo].[PR_REV_PDMU]([GID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_REV_PDMU]
+    ON [dbo].[PR_REV_PDMU]([REVID] ASC) WITH (FILLFACTOR = 90);
+

@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[PR_DEV_MODEL_CH_SETTINGS] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [DEPID]      INT              NOT NULL,
+    [ALLOWTODEP] INT              NOT NULL,
+    [REMARK]     NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_DEV_MODEL_CH_SETTINGS_ALLOWTODEP] FOREIGN KEY ([ALLOWTODEP]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_DEV_MODEL_CH_SETTINGS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+

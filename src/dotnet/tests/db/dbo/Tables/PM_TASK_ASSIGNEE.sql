@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[PM_TASK_ASSIGNEE] (
+    [ID]               INT              IDENTITY (1, 1) NOT NULL,
+    [GID]              UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]             INT              NOT NULL,
+    [S_CDT]            DATETIME         NOT NULL,
+    [S_MR]             INT              NULL,
+    [S_MDT]            DATETIME         NULL,
+    [ARC]              INT              NULL,
+    [VNESHID]          INT              NOT NULL,
+    [EMPLID]           INT              NOT NULL,
+    [EMPL_NOTIFIED]    DATETIME         NULL,
+    [EMPL_NOTIFIED_ID] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PM_TASK_ASSIGNEE_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID]),
+    CONSTRAINT [FK_PM_TASK_ASSIGNEE_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[PM_TASK] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PM_TASK_ASSIGNEE_EMPLID]
+    ON [dbo].[PM_TASK_ASSIGNEE]([EMPLID] ASC, [VNESHID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PM_TASK_ASSIGNEE]
+    ON [dbo].[PM_TASK_ASSIGNEE]([VNESHID] ASC);
+

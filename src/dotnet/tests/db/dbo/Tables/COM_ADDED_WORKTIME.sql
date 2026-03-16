@@ -1,0 +1,34 @@
+﻿CREATE TABLE [dbo].[COM_ADDED_WORKTIME] (
+    [ID]            INT              IDENTITY (1, 1) NOT NULL,
+    [GID]           UNIQUEIDENTIFIER NULL,
+    [S_CR]          INT              NOT NULL,
+    [S_CDT]         DATETIME         NOT NULL,
+    [S_MR]          INT              NULL,
+    [S_MDT]         DATETIME         NULL,
+    [ARC]           INT              NULL,
+    [EMPLID]        INT              NOT NULL,
+    [DBEG]          DATETIME         NOT NULL,
+    [DEND]          DATETIME         NOT NULL,
+    [AUTOADDEDTIME] INT              NULL,
+    [REMARK]        NTEXT            NULL,
+    [OVERTIME_TYPE] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_COM_ADDED_WORKTIME_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_ADDED_WORKTIME3]
+    ON [dbo].[COM_ADDED_WORKTIME]([DBEG] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_ADDED_WORKTIME2]
+    ON [dbo].[COM_ADDED_WORKTIME]([EMPLID] ASC, [DBEG] ASC, [DEND] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_ADDED_WORKTIME1]
+    ON [dbo].[COM_ADDED_WORKTIME]([EMPLID] ASC, [DBEG] ASC)
+    INCLUDE([DEND]) WITH (FILLFACTOR = 90);
+

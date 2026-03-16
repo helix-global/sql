@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[PR_IMP_INDEX_PRMS] (
+    [ID]    INT              IDENTITY (1, 1) NOT NULL,
+    [GID]   UNIQUEIDENTIFIER NULL,
+    [S_CR]  INT              NOT NULL,
+    [S_CDT] DATETIME         NOT NULL,
+    [S_MR]  INT              NULL,
+    [S_MDT] DATETIME         NULL,
+    [ARC]   INT              NULL,
+    [PRMID] INT              NOT NULL,
+    [MTID]  INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_IMP_INDEX_PRMS_MTID] FOREIGN KEY ([MTID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_IMP_INDEX_PRMS_PRMID]
+    ON [dbo].[PR_IMP_INDEX_PRMS]([PRMID] ASC);
+

@@ -1,0 +1,32 @@
+﻿CREATE TABLE [dbo].[COM_CUST_GROUP] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [NAME]   NVARCHAR (200)   NOT NULL,
+    [DEPID]  INT              NOT NULL,
+    [REMARK] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_CUST_GROUP_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_CUST_GROUP_NAME]
+    ON [dbo].[COM_CUST_GROUP]([NAME] ASC);
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[COM_CUST_GROUP] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[COM_CUST_GROUP] TO [EMEA\DEPCS]
+    AS [dbo];
+

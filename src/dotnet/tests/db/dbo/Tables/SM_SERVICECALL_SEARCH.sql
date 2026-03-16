@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[SM_SERVICECALL_SEARCH] (
+    [ID]     INT             NOT NULL,
+    [SCBODY] VARBINARY (MAX) NULL,
+    [DT]     AS              ('.html'),
+    CONSTRAINT [PK_SM_SERVICECALL_SEARCH] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+

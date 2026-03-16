@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[COM_SHARED_ACCOUNTS] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NULL,
+    [S_S]       INT              NOT NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [ACCOUNTID] INT              NOT NULL,
+    [DEPID]     INT              NOT NULL,
+    [NAME]      NVARCHAR (50)    NOT NULL,
+    [CODE]      INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_SHARED_ACCOUNTS_ACCOUNTID] FOREIGN KEY ([ACCOUNTID]) REFERENCES [dbo].[DEF_USERS] ([ID]),
+    CONSTRAINT [FK_COM_SHARED_ACCOUNTS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_SHARED_ACCOUNTS]
+    ON [dbo].[COM_SHARED_ACCOUNTS]([CODE] ASC);
+

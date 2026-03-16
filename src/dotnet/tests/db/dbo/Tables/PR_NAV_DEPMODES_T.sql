@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[PR_NAV_DEPMODES_T] (
+    [ID]             INT              IDENTITY (1, 1) NOT NULL,
+    [GID]            UNIQUEIDENTIFIER NULL,
+    [S_CR]           INT              NOT NULL,
+    [S_CDT]          DATETIME         NOT NULL,
+    [S_MR]           INT              NULL,
+    [S_MDT]          DATETIME         NULL,
+    [ARC]            INT              NULL,
+    [VNESHID]        INT              NOT NULL,
+    [MODELID]        INT              NOT NULL,
+    [REMARK]         NTEXT            NULL,
+    [CUTRMAAFTERDOT] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_NAV_DEPMODES_T_MODELID] FOREIGN KEY ([MODELID]) REFERENCES [dbo].[PR_MODELS] ([ID]),
+    CONSTRAINT [FK_PR_NAV_DEPMODES_T_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[PR_NAV_DEPMODES] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_NAV_DEPMODES_T2]
+    ON [dbo].[PR_NAV_DEPMODES_T]([VNESHID] ASC, [MODELID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_NAV_DEPMODES_T]
+    ON [dbo].[PR_NAV_DEPMODES_T]([VNESHID] ASC);
+

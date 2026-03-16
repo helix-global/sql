@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[COM_CH_BALANCE_INPUT] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [EMPLID]    INT              NOT NULL,
+    [INP_VALUE] DECIMAL (10, 2)  NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_CH_BALANCE_INPUT_EMPLID] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_COM_CH_BALANCE_INPUT]
+    ON [dbo].[COM_CH_BALANCE_INPUT]([EMPLID] ASC);
+

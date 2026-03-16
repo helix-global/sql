@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[REVCH_MODEL_SHARINGR] (
+    [ID]           INT              IDENTITY (1, 1) NOT NULL,
+    [GID]          UNIQUEIDENTIFIER NULL,
+    [S_CR]         INT              NULL,
+    [S_CDT]        DATETIME         NOT NULL,
+    [S_MR]         INT              NULL,
+    [S_MDT]        DATETIME         NULL,
+    [ARC]          INT              NULL,
+    [ACTION]       INT              NOT NULL,
+    [DEPARTMENTID] INT              NOT NULL,
+    [RULETYPE]     INT              NOT NULL,
+    [VNESHID]      INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_MODEL_SHARINGR_DEPARTMENTID_copy] FOREIGN KEY ([DEPARTMENTID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_REVCH_MODEL_SHARINGR_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[REVCH_MODEL] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_MODEL_SHARINGR_GID]
+    ON [dbo].[REVCH_MODEL_SHARINGR]([GID] ASC);
+

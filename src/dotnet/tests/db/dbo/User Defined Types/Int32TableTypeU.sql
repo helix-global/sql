@@ -1,0 +1,4 @@
+﻿CREATE TYPE [dbo].[Int32TableTypeU] AS TABLE (
+    [ID] INT NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC));
+

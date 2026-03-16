@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[SW_TOOL_VER_LINK_FILES_OVERGROUP] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [VERID]       INT              NULL,
+    [FILEID]      INT              NULL,
+    [OVERGROUPID] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SW_TOOL_VER_LINK_FILES_OVERGROUP_OVERGROUPID] FOREIGN KEY ([OVERGROUPID]) REFERENCES [dbo].[SW_TOOL_GROUPS_FGROUP] ([ID]),
+    CONSTRAINT [FK_SW_TOOL_VER_LINK_FILES_OVERGROUP_VERID] FOREIGN KEY ([VERID]) REFERENCES [dbo].[SW_TOOL_VERSIONS] ([ID])
+);
+

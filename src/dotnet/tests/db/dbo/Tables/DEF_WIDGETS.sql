@@ -1,0 +1,30 @@
+﻿CREATE TABLE [dbo].[DEF_WIDGETS] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [OID]        INT              NOT NULL,
+    [LABEL]      NVARCHAR (50)    NOT NULL,
+    [MODULEOID]  INT              NOT NULL,
+    [NAME]       NVARCHAR (150)   NOT NULL,
+    [WIDGETTYPE] INT              NOT NULL,
+    [REMARK]     NTEXT            NULL,
+    [QOID]       INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_DEF_WIDGETS_MODULEOID] FOREIGN KEY ([MODULEOID]) REFERENCES [dbo].[DEF_MODULES] ([OID]),
+    CONSTRAINT [FK_DEF_WIDGETS_QOID] FOREIGN KEY ([QOID]) REFERENCES [dbo].[DEF_SQL] ([OID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_WIDGETS_OID]
+    ON [dbo].[DEF_WIDGETS]([OID] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_WIDGETS_LABEL]
+    ON [dbo].[DEF_WIDGETS]([LABEL] ASC);
+

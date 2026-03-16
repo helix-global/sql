@@ -1,0 +1,24 @@
+﻿CREATE TABLE [dbo].[PR_PRORDER_TP] (
+    [ID]      INT              IDENTITY (1, 1) NOT NULL,
+    [GID]     UNIQUEIDENTIFIER NULL,
+    [S_CR]    INT              NOT NULL,
+    [S_CDT]   DATETIME         NOT NULL,
+    [S_MR]    INT              NULL,
+    [S_MDT]   DATETIME         NULL,
+    [ARC]     INT              NULL,
+    [OPID]    INT              NOT NULL,
+    [PARAMID] INT              NOT NULL,
+    [PVALUE]  SQL_VARIANT      NULL,
+    [SWID]    INT              NULL,
+    [SWVERID] INT              NULL,
+    [SWMODE]  INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_PRORDER_TP_OPID] FOREIGN KEY ([OPID]) REFERENCES [dbo].[PR_PRORDER_T] ([ID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_PR_PRORDER_TP_PARAMID] FOREIGN KEY ([PARAMID]) REFERENCES [dbo].[PR_MODELTYPE_PARAMS] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_PRORDER_TP]
+    ON [dbo].[PR_PRORDER_TP]([OPID] ASC) WITH (FILLFACTOR = 90);
+

@@ -1,0 +1,24 @@
+﻿CREATE TABLE [dbo].[COM_EMPLOYEE_SKILL_FILES] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [VNESHID]     INT              NOT NULL,
+    [FILENAME]    NVARCHAR (255)   NOT NULL,
+    [FILESIZE]    INT              NOT NULL,
+    [FILEDESC]    NTEXT            NULL,
+    [FILEDATE]    DATE             NULL,
+    [FILEBLOB]    IMAGE            NULL,
+    [FILEPREVIEW] IMAGE            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_COM_EMPLOYEE_SKILL_FILES_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[COM_EMPLOYEE_SKILL] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_COM_EMPLOYEE_SKILL_FILES]
+    ON [dbo].[COM_EMPLOYEE_SKILL_FILES]([VNESHID] ASC);
+

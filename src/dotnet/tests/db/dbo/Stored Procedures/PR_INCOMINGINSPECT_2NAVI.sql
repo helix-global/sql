@@ -1,0 +1,14 @@
+﻿CREATE procedure [dbo].[PR_INCOMINGINSPECT_2NAVI] @OperID int, @aUserID int
+WITH EXECUTE AS OWNER , RECOMPILE
+as 
+SET nocount on
+
+update PDB_BUFFER..INCOMINGINSPECTION set S_S = 2000004 /*canceled*/ where OPERID = @OperID
+
+insert into PDB_BUFFER..INCOMINGINSPECTION (OPERID,S_S,S_CR,S_CDT,PARTNUMBER,GELINUMBER,FAILEDQTY)
+select A.OPERID,2000002/*wait*/,@aUserID,getdate(),A.PN,A.BATCHN,A.FAILED_QTY
+from PR_OPERATION_INCOM_INSP A with (nolock) 
+where A.OPERID = @OperID
+  and A.FAILED_QTY > 0
+
+SET nocount off

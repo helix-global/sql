@@ -1,0 +1,2 @@
+﻿CREATE USER [IPG-DOMAIN\IPGL-bu-pdbAndroidSr] FOR LOGIN [IPG-DOMAIN\IPGL-bu-pdbAndroidSr];
+

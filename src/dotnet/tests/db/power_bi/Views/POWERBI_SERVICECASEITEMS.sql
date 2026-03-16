@@ -1,0 +1,19 @@
+﻿
+CREATE VIEW [power_bi].[POWERBI_SERVICECASEITEMS]
+AS
+/*KB5414*/
+SELECT			
+	SCI.[VNESHID] [Service Case ID],
+	ISNULL(FR.[ID], 0) [Failure Report],
+	ISNULL(M.[NAME], '') [Model],
+	ISNULL(M.[CODE], '') [Model Code (PN)],
+	ISNULL(FR.[SN], '') [Serial Number]
+
+FROM [dbo].[SM_SERVICECASE_ITEMS] SCI WITH(NOLOCK) 
+LEFT JOIN [dbo].[FC_REPORT] FR WITH(NOLOCK) ON FR.[ID] = ISNULL(SCI.[FRID], 0)
+LEFT JOIN [dbo].[PR_MODELS] M WITH(NOLOCK) ON M.[ID] = ISNULL(SCI.[MODELID], 0)
+GO
+GRANT SELECT
+    ON OBJECT::[power_bi].[POWERBI_SERVICECASEITEMS] TO [EMEA\ltishina]
+    AS [dbo];
+

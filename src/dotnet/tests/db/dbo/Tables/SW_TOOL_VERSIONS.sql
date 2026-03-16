@@ -1,0 +1,42 @@
+﻿CREATE TABLE [dbo].[SW_TOOL_VERSIONS] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_S]         INT              NOT NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [NAME]        NVARCHAR (200)   NOT NULL,
+    [DESCRIPTION] NTEXT            NULL,
+    [TOOLID]      INT              NOT NULL,
+    [PATH]        NVARCHAR (400)   NULL,
+    [LINKVER]     INT              NULL,
+    [TS]          ROWVERSION       NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_SW_TOOL_VERSIONS_LINKVER] FOREIGN KEY ([LINKVER]) REFERENCES [dbo].[SW_TOOL_VERSIONS] ([ID]),
+    CONSTRAINT [FK_SW_TOOL_VERSIONS_TOOLID] FOREIGN KEY ([TOOLID]) REFERENCES [dbo].[SW_TOOLS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SW_TOOL_VERSIONS_GID]
+    ON [dbo].[SW_TOOL_VERSIONS]([GID] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_SW_TOOL_VERSIONS]
+    ON [dbo].[SW_TOOL_VERSIONS]([TOOLID] ASC, [NAME] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[SW_TOOL_VERSIONS] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[SW_TOOL_VERSIONS] TO [EMEA\DEPCS]
+    AS [dbo];
+

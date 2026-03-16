@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[PR_NAVIOUT] (
+    [ID]          INT             IDENTITY (1, 1) NOT NULL,
+    [OPERID]      INT             NOT NULL,
+    [PARTNUMBER]  NVARCHAR (50)   NOT NULL,
+    [PARTSN]      NVARCHAR (50)   NULL,
+    [QUANTITY]    DECIMAL (20, 3) NOT NULL,
+    [VERS]        INT             NULL,
+    [BOMID]       INT             NULL,
+    [UNITEMSTAT]  INT             NULL,
+    [REPAIRABLE]  INT             NULL,
+    [BATCHN]      NVARCHAR (100)  NULL,
+    [ASDEFECTIVE] INT             NULL
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_NAVIOUT_2]
+    ON [dbo].[PR_NAVIOUT]([OPERID] ASC, [VERS] ASC, [PARTNUMBER] ASC, [PARTSN] ASC)
+    INCLUDE([BATCHN]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_NAVIOUT]
+    ON [dbo].[PR_NAVIOUT]([OPERID] ASC) WITH (FILLFACTOR = 90);
+

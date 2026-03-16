@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[SL_REJECTIONS] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [DD]        DATETIME         NOT NULL,
+    [CAPTION]   NVARCHAR (200)   NOT NULL,
+    [PRODUCTID] INT              NULL,
+    [OPTIONID]  INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SL_REJECTIONS_PRODUCTID]
+    ON [dbo].[SL_REJECTIONS]([PRODUCTID] ASC) WHERE ([PRODUCTID] IS NOT NULL);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SL_REJECTIONS_OPTIONID]
+    ON [dbo].[SL_REJECTIONS]([OPTIONID] ASC) WHERE ([OPTIONID] IS NOT NULL);
+

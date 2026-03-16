@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[PR_SCAN_SESSIONS] (
+    [ID]          INT           IDENTITY (1, 1) NOT NULL,
+    [SESSIONGUID] NVARCHAR (50) NOT NULL,
+    [USERID]      INT           NOT NULL,
+    [DTBEGIN]     DATETIME      NOT NULL,
+    [LANGUAGEID]  INT           NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90)
+);
+

@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[DEF_META_OBJECTS] (
+    [KEYID]     BIGINT         IDENTITY (1, 1) NOT NULL,
+    [OBJID]     INT            NULL,
+    [OBJSCHEMA] NVARCHAR (128) NULL,
+    [OBJTYPE]   INT            NOT NULL,
+    [OBJDATE]   DATETIME       NULL,
+    [OBJSQL]    NVARCHAR (MAX) NULL,
+    [OBJXML]    XML            NULL,
+    [MAJORNAME] NVARCHAR (128) NOT NULL,
+    [MINORNAME] NVARCHAR (128) NULL,
+    [MAJORID]   INT            NOT NULL,
+    [MINORID]   INT            NOT NULL,
+    [QNAME]     NVARCHAR (MAX) NULL,
+    PRIMARY KEY CLUSTERED ([KEYID] ASC)
+);
+

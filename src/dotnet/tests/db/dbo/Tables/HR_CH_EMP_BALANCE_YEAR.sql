@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[HR_CH_EMP_BALANCE_YEAR] (
+    [ID]      INT      IDENTITY (1, 1) NOT NULL,
+    [S_S]     INT      NOT NULL,
+    [S_CR]    INT      NOT NULL,
+    [S_CDT]   DATETIME NOT NULL,
+    [S_MR]    INT      NULL,
+    [S_MDT]   DATETIME NULL,
+    [ARC]     INT      NULL,
+    [EMPID]   INT      NULL,
+    [YEAR]    INT      NULL,
+    [BALANCE] INT      NULL,
+    [AUTO]    INT      NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_HR_CH_EMP_BALANCE_YEAR_EMPID] FOREIGN KEY ([EMPID]) REFERENCES [dbo].[COM_EMPLOYEE] ([ID])
+);
+

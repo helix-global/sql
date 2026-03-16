@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[EQ_EQUIPMENT_FILES] (
+    [ID]       INT              IDENTITY (1, 1) NOT NULL,
+    [GID]      UNIQUEIDENTIFIER NULL,
+    [S_CR]     INT              NOT NULL,
+    [S_CDT]    DATETIME         NOT NULL,
+    [S_MR]     INT              NULL,
+    [S_MDT]    DATETIME         NULL,
+    [ARC]      INT              NULL,
+    [VNESHID]  INT              NOT NULL,
+    [FILENAME] NVARCHAR (255)   NOT NULL,
+    [FILEDATE] DATETIME         NOT NULL,
+    [FILESIZE] INT              NULL,
+    [FILEBLOB] IMAGE            NULL,
+    [FILEDESC] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_EQ_EQUIPMENT_FILES_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[EQ_EQUIPMENT] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_EQ_EQUIPMENT_FILES]
+    ON [dbo].[EQ_EQUIPMENT_FILES]([VNESHID] ASC);
+

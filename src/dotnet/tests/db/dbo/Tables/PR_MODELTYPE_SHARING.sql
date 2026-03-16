@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[PR_MODELTYPE_SHARING] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [MODELTYPEID] INT              NOT NULL,
+    [NAME]        NVARCHAR (300)   NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_MODELTYPE_SHARING_MODELTYPEID] FOREIGN KEY ([MODELTYPEID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_MODELTYPE_SHARING_GID]
+    ON [dbo].[PR_MODELTYPE_SHARING]([GID] ASC);
+

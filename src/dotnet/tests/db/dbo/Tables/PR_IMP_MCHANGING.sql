@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[PR_IMP_MCHANGING] (
+    [ID]        INT              IDENTITY (1, 1) NOT NULL,
+    [GID]       UNIQUEIDENTIFIER NULL,
+    [S_CR]      INT              NOT NULL,
+    [S_CDT]     DATETIME         NOT NULL,
+    [S_MR]      INT              NULL,
+    [S_MDT]     DATETIME         NULL,
+    [ARC]       INT              NULL,
+    [PN]        NVARCHAR (16)    NOT NULL,
+    [MODELID]   INT              NOT NULL,
+    [REMARK]    NTEXT            NULL,
+    [IMPTYPEID] INT              NOT NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_IMP_MCHANGING_IMPTYPEID] FOREIGN KEY ([IMPTYPEID]) REFERENCES [dbo].[PR_IMP_TRANS] ([ID]),
+    CONSTRAINT [FK_PR_IMP_MCHANGING_MODELID] FOREIGN KEY ([MODELID]) REFERENCES [dbo].[PR_MODELS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_IMP_MCHANGING_1]
+    ON [dbo].[PR_IMP_MCHANGING]([IMPTYPEID] ASC, [PN] ASC);
+

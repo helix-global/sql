@@ -1,0 +1,15 @@
+﻿CREATE TABLE [dbo].[IT_TASK_REL_SQL] (
+    [ID]      INT            IDENTITY (1, 1) NOT NULL,
+    [S_CR]    INT            NULL,
+    [S_CDT]   DATETIME       NULL,
+    [S_MR]    INT            NULL,
+    [S_MDT]   DATETIME       NULL,
+    [TASKID]  INT            NOT NULL,
+    [RELOID]  INT            NOT NULL,
+    [COMMENT] NVARCHAR (MAX) NULL,
+    [DT]      DATETIME       NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_IT_TASK_REL_SQL_RELOID] FOREIGN KEY ([RELOID]) REFERENCES [dbo].[DEF_SQL] ([OID]),
+    CONSTRAINT [FK_IT_TASK_REL_SQL_TASKID] FOREIGN KEY ([TASKID]) REFERENCES [dbo].[IT_TASKS] ([ID])
+);
+

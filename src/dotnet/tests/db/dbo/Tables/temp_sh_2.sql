@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[temp_sh_2] (
+    [SN]        NVARCHAR (200) NOT NULL,
+    [MODELNAME] NVARCHAR (200) NOT NULL,
+    [DEVICEID]  INT            NOT NULL,
+    CONSTRAINT [PK_temp_sh_2] PRIMARY KEY CLUSTERED ([DEVICEID] ASC)
+);
+

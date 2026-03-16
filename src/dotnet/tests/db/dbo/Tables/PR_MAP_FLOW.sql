@@ -1,0 +1,59 @@
+﻿CREATE TABLE [dbo].[PR_MAP_FLOW] (
+    [ID]            INT              IDENTITY (1, 1) NOT NULL,
+    [GID]           UNIQUEIDENTIFIER NULL,
+    [S_CR]          INT              NOT NULL,
+    [S_CDT]         DATETIME         NOT NULL,
+    [S_MR]          INT              NULL,
+    [S_MDT]         DATETIME         NULL,
+    [ARC]           INT              NULL,
+    [MAPID]         INT              NOT NULL,
+    [OP_FROM]       INT              NULL,
+    [OP_TO]         INT              NULL,
+    [CONDITION]     INT              NULL,
+    [C_PARAMID]     INT              NULL,
+    [C_PARAMVAL]    SQL_VARIANT      NULL,
+    [C_ACT]         INT              NULL,
+    [C_PARAMID2]    INT              NULL,
+    [FLOWNOWAIT]    INT              NULL,
+    [FLOWUP]        INT              NULL,
+    [C_OPTGR]       INT              NULL,
+    [C_PARAM2CONST] SQL_VARIANT      NULL,
+    [C_BOMID]       INT              NULL,
+    [DELAYTIME]     DECIMAL (10, 1)  NULL,
+    [DELAYPARAM]    INT              NULL,
+    [C_BOMID2]      INT              NULL,
+    [CREATEHIDDEN]  INT              NULL,
+    [C_OPTID]       INT              NULL,
+    CONSTRAINT [PK__PR_MAP_F__3214EC27100C566E] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_MAP_FLOW_C_BOMID] FOREIGN KEY ([C_BOMID]) REFERENCES [dbo].[PR_MODELTYPE_BOM] ([ID]),
+    CONSTRAINT [FK_PR_MAP_FLOW_C_BOMID2] FOREIGN KEY ([C_BOMID2]) REFERENCES [dbo].[PR_MODELTYPE_BOM] ([ID]),
+    CONSTRAINT [FK_PR_MAP_FLOW_C_OPTGR] FOREIGN KEY ([C_OPTGR]) REFERENCES [dbo].[PR_MODELTYPE_OPTION_GR] ([ID]),
+    CONSTRAINT [FK_PR_MAP_FLOW_C_OPTID] FOREIGN KEY ([C_OPTID]) REFERENCES [dbo].[PR_MODELTYPE_OPTIONS] ([ID]),
+    CONSTRAINT [FK_PR_MAP_FLOW_DELAYPARAM] FOREIGN KEY ([DELAYPARAM]) REFERENCES [dbo].[PR_MODELTYPE_PARAMS] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_MAP_FLOW_GID]
+    ON [dbo].[PR_MAP_FLOW]([GID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_FLOW_DELAYPARAM]
+    ON [dbo].[PR_MAP_FLOW]([DELAYPARAM] ASC) WHERE ([DELAYPARAM] IS NOT NULL);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_FLOW_3]
+    ON [dbo].[PR_MAP_FLOW]([OP_FROM] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_FLOW_2]
+    ON [dbo].[PR_MAP_FLOW]([OP_TO] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_MAP_FLOW]
+    ON [dbo].[PR_MAP_FLOW]([MAPID] ASC) WITH (FILLFACTOR = 90);
+

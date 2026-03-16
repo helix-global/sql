@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[PR_MT_CHANGE_NOTIFY] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [MTID]   INT              NOT NULL,
+    [MSGTO]  NVARCHAR (1024)  NULL,
+    [MSGCC]  NVARCHAR (1024)  NULL,
+    [CHTYPE] INT              NOT NULL,
+    [REMARK] NTEXT            NULL,
+    [MID]    INT              NULL,
+    CONSTRAINT [PK__PR_MT_CH__3214EC27D5091199] PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_MT_CHANGE_NOTIFY_MID] FOREIGN KEY ([MID]) REFERENCES [dbo].[PR_MODELS] ([ID]),
+    CONSTRAINT [FK_PR_MT_CHANGE_NOTIFY_MTID] FOREIGN KEY ([MTID]) REFERENCES [dbo].[PR_MODELTYPE] ([ID])
+);
+

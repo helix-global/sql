@@ -1,0 +1,52 @@
+﻿CREATE PROCEDURE [dbo].[SM_COPY_SERVICECALL] @aCallID int, @UserID int, @newCaseID int ,@aMode int 
+AS
+BEGIN
+set nocount on
+
+/* 4 KB871*/
+
+declare @oldCaseN nvarchar(50)
+declare @newCaseN nvarchar(50)
+declare @subj nvarchar(1024)
+ 
+select @newCaseN = ND from SM_SERVICECASE where ID = @newCaseID
+
+select @oldCaseN = B.ND
+      ,@subj = A.SUBJ
+from SM_SERVICECALL A with (nolock)
+left join SM_SERVICECASE B with (nolock) on B.ID = A.CASEID
+where A.ID = @aCallID
+
+set @subj = replace(@subj,'##'+@oldCaseN+'##','##'+@newCaseN+'##')
+
+declare @copyCallID int
+
+insert into SM_SERVICECALL(GID,S_CR,S_CDT,DD,CUSTID,CONTACTID,SCTYPE,SCDIRECTION,SUBJ,SCBODY,MODELID,SN,CASEID,MSGID,UNREAD,REPLY2ID,SENT_DT,NEWSERVCASE,SENT_UID,REPLY_DT,REPLY_UID,SCBODYRTF,SDEPID,MSGPLAINTEXT,READBY,FORWARD2ID,EXCLUDEFROMSR,HIGHLIGHT)
+select newid(),@UserID,getdate(),DD,CUSTID,CONTACTID,SCTYPE,SCDIRECTION,@subj,SCBODY,MODELID,SN,@newCaseID,null,UNREAD,REPLY2ID,SENT_DT,NEWSERVCASE,SENT_UID,REPLY_DT,REPLY_UID,SCBODYRTF,SDEPID,MSGPLAINTEXT,READBY,FORWARD2ID,EXCLUDEFROMSR,HIGHLIGHT
+from SM_SERVICECALL where ID = @aCallID
+
+set @copyCallID = @@identity
+
+insert into SM_SERVICECALL_FILES(GID,S_CR,S_CDT,VNESHID,FILENAME,FILESIZE,FILEDESC,FILEDATE,FILEBLOB,FILEPREVIEW)
+select newid(),@UserID,getdate(),@copyCallID,FILENAME,FILESIZE,FILEDESC,FILEDATE,FILEBLOB,FILEPREVIEW
+from SM_SERVICECALL_FILES where VNESHID = @aCallID
+
+insert into SM_SERVICE_CALL_T(GID,S_CR,S_CDT,VNESHID,CNTID,USEASCOPY)
+select newid(),@UserID,getdate(),@copyCallID,CNTID,USEASCOPY
+from SM_SERVICE_CALL_T where VNESHID = @aCallID
+
+insert into SM_SERVICE_CALL_T_CC(GID,S_CR,S_CDT,VNESHID,CNTID)
+select newid(),@UserID,getdate(),@copyCallID,CNTID
+from SM_SERVICE_CALL_T_CC where VNESHID = @aCallID
+
+insert into SM_SERVICE_CALL_TINT(GID,S_CR,S_CDT,VNESHID,EMAIL,NAME,UID)
+select newid(),@UserID,getdate(),@copyCallID,EMAIL,NAME,UID
+from SM_SERVICE_CALL_TINT where VNESHID = @aCallID
+
+insert into SM_SERVICE_CALL_TINT_CC(GID,S_CR,S_CDT,VNESHID,EMAIL,NAME,UID)
+select newid(),@UserID,getdate(),@copyCallID,EMAIL,NAME,UID
+from SM_SERVICE_CALL_TINT_CC where VNESHID = @aCallID 
+
+    
+set nocount off
+END

@@ -1,0 +1,113 @@
+﻿GRANT VIEW DEFINITION
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT UPDATE
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT UPDATE
+    ON SCHEMA::[dbo] TO [EMEA\GMSA-AzureDO$];
+
+
+GO
+GRANT UPDATE
+    ON SCHEMA::[dbo] TO [A2Users];
+
+
+GO
+GRANT UPDATE
+    ON SCHEMA::[dbo] TO [A2];
+
+
+GO
+GRANT SELECT
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT SELECT
+    ON SCHEMA::[dbo] TO [EMEA\GMSA-AzureDO$];
+
+
+GO
+GRANT SELECT
+    ON SCHEMA::[dbo] TO [A2Users];
+
+
+GO
+GRANT SELECT
+    ON SCHEMA::[dbo] TO [A2];
+
+
+GO
+GRANT INSERT
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT INSERT
+    ON SCHEMA::[dbo] TO [EMEA\GMSA-AzureDO$];
+
+
+GO
+GRANT INSERT
+    ON SCHEMA::[dbo] TO [A2Users];
+
+
+GO
+GRANT INSERT
+    ON SCHEMA::[dbo] TO [A2];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[dbo] TO [EMEA\GMSA-AzureDO$];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[dbo] TO [EMEA\damaistrenko];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[dbo] TO [A2Users];
+
+
+GO
+GRANT EXECUTE
+    ON SCHEMA::[dbo] TO [A2];
+
+
+GO
+GRANT DELETE
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT DELETE
+    ON SCHEMA::[dbo] TO [A2Users];
+
+
+GO
+GRANT DELETE
+    ON SCHEMA::[dbo] TO [A2];
+
+
+GO
+GRANT CONTROL
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+
+
+GO
+GRANT ALTER
+    ON SCHEMA::[dbo] TO [IPG-DOMAIN\mefimov];
+

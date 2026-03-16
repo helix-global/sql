@@ -1,0 +1,39 @@
+﻿CREATE TABLE [dbo].[CP_TICKETS] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [DEPID]       INT              NOT NULL,
+    [TN]          NVARCHAR (24)    NULL,
+    [TN_PART1]    DECIMAL (10)     NULL,
+    [TN_PART2]    DECIMAL (10)     NULL,
+    [EXPIRED]     DATETIME         NOT NULL,
+    [DEVICEID]    INT              NULL,
+    [REMARK]      NTEXT            NULL,
+    [S_S]         INT              NOT NULL,
+    [DTSENT]      DATETIME         NULL,
+    [AUTOCREATED] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_CP_TICKETS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_CP_TICKETS_DEVICEID] FOREIGN KEY ([DEVICEID]) REFERENCES [dbo].[PR_DEVICE] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_CP_TICKETS_N1_N2]
+    ON [dbo].[CP_TICKETS]([TN_PART1] ASC, [TN_PART2] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_CP_TICKETS_N]
+    ON [dbo].[CP_TICKETS]([TN] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_CP_TICKETS_DEVICEID]
+    ON [dbo].[CP_TICKETS]([DEVICEID] ASC)
+    INCLUDE([AUTOCREATED]);
+

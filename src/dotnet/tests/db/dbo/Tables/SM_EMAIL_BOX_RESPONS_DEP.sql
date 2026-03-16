@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[SM_EMAIL_BOX_RESPONS_DEP] (
+    [ID]              INT              IDENTITY (1, 1) NOT NULL,
+    [GID]             UNIQUEIDENTIFIER NULL,
+    [S_CR]            INT              NOT NULL,
+    [S_CDT]           DATETIME         NOT NULL,
+    [S_MR]            INT              NULL,
+    [S_MDT]           DATETIME         NULL,
+    [ARC]             INT              NULL,
+    [SM_EMAIL_BOX_ID] INT              NOT NULL,
+    [DEPID]           INT              NOT NULL,
+    [REMARK]          NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SM_EMAIL_BOX_RESPONS_DEP_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_SM_EMAIL_BOX_RESPONS_DEP_SM_EMAIL_BOX_ID] FOREIGN KEY ([SM_EMAIL_BOX_ID]) REFERENCES [dbo].[SM_EMAIL_BOXES] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SM_EMAIL_BOX_RESPONS_DEP]
+    ON [dbo].[SM_EMAIL_BOX_RESPONS_DEP]([SM_EMAIL_BOX_ID] ASC);
+

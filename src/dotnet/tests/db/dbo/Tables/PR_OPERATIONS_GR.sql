@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[PR_OPERATIONS_GR] (
+    [ID]           INT              IDENTITY (1, 1) NOT NULL,
+    [GID]          UNIQUEIDENTIFIER NULL,
+    [S_CR]         INT              NOT NULL,
+    [S_CDT]        DATETIME         NOT NULL,
+    [S_MR]         INT              NULL,
+    [S_MDT]        DATETIME         NULL,
+    [NAME]         NVARCHAR (200)   NOT NULL,
+    [OPERCODE]     NVARCHAR (20)    NULL,
+    [DESCRIPTION]  NTEXT            NULL,
+    [DEPARTMENTID] INT              NOT NULL,
+    [ARC]          INT              NULL,
+    [GROUPTYPE]    INT              NULL,
+    [VISTYPE]      INT              NULL,
+    CONSTRAINT [PK__PR_OPERA__3214EC27075714DC] PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_OPERATIONS_GR_DEPARTMENTID] FOREIGN KEY ([DEPARTMENTID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID])
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_OPERATIONS_GR_DEPID]
+    ON [dbo].[PR_OPERATIONS_GR]([DEPARTMENTID] ASC) WITH (FILLFACTOR = 90);
+

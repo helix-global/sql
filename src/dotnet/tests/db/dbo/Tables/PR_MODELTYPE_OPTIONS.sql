@@ -1,0 +1,70 @@
+﻿CREATE TABLE [dbo].[PR_MODELTYPE_OPTIONS] (
+    [ID]                  INT              IDENTITY (1, 1) NOT NULL,
+    [GID]                 UNIQUEIDENTIFIER NULL,
+    [S_CR]                INT              NOT NULL,
+    [S_CDT]               DATETIME         NOT NULL,
+    [S_MR]                INT              NULL,
+    [S_MDT]               DATETIME         NULL,
+    [ARC]                 INT              NULL,
+    [NAME]                NVARCHAR (300)   NOT NULL,
+    [CODE]                NVARCHAR (20)    NOT NULL,
+    [OPTGROUP]            INT              NOT NULL,
+    [SNMASK]              NVARCHAR (20)    NULL,
+    [LINKCODE]            NVARCHAR (50)    NULL,
+    [OLDCODE]             NVARCHAR (16)    NULL,
+    [NEWCODE]             NVARCHAR (20)    NULL,
+    [SNTRACKING]          INT              NULL,
+    [SNBOMID]             INT              NULL,
+    [INTOPTION]           INT              NULL,
+    [TAGS]                NVARCHAR (300)   NULL,
+    [PRTYPE]              INT              NULL,
+    [CMP_OUT]             NVARCHAR (200)   NULL,
+    [CMP_REQ]             NVARCHAR (200)   NULL,
+    [PREDEFINED_CUSTGRID] INT              NULL,
+    [SPEC]                NVARCHAR (200)   NULL,
+    [OPICT]               IMAGE            NULL,
+    [S_S]                 INT              NOT NULL,
+    [CUSTOM4GROUP]        INT              NULL,
+    [CUSTOM4ID]           INT              NULL,
+    [DEPID]               INT              NOT NULL,
+    [CMP_BLOCK]           NVARCHAR (200)   NULL,
+    [CRMGUID]             UNIQUEIDENTIFIER NULL,
+    [TS]                  ROWVERSION       NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90),
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_CUSTOM4GROUP] FOREIGN KEY ([CUSTOM4GROUP]) REFERENCES [dbo].[COM_CUST_GROUP] ([ID]),
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_CUSTOM4ID] FOREIGN KEY ([CUSTOM4ID]) REFERENCES [dbo].[COM_CUSTOMER] ([ID]),
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_OPTIONGR] FOREIGN KEY ([OPTGROUP]) REFERENCES [dbo].[PR_MODELTYPE_OPTION_GR] ([ID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_PREDEFINED_CUSTGRID] FOREIGN KEY ([PREDEFINED_CUSTGRID]) REFERENCES [dbo].[COM_CUST_GROUP] ([ID]),
+    CONSTRAINT [FK_PR_MODELTYPE_OPTIONS_SNBOMID] FOREIGN KEY ([SNBOMID]) REFERENCES [dbo].[PR_MODELTYPE_BOM] ([ID])
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_PR_MODELTYPE_OPTIONS]
+    ON [dbo].[PR_MODELTYPE_OPTIONS]([OPTGROUP] ASC, [CODE] ASC) WITH (FILLFACTOR = 90);
+
+
+GO
+GRANT UPDATE
+    ON OBJECT::[dbo].[PR_MODELTYPE_OPTIONS] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
+    AS [dbo];
+
+
+GO
+GRANT UPDATE
+    ON OBJECT::[dbo].[PR_MODELTYPE_OPTIONS] TO [EMEA\DEPCS]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[PR_MODELTYPE_OPTIONS] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[PR_MODELTYPE_OPTIONS] TO [EMEA\DEPCS]
+    AS [dbo];
+

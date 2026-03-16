@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[DEF_SERVERS] (
+    [ID]      INT              IDENTITY (1, 1) NOT NULL,
+    [GID]     UNIQUEIDENTIFIER NULL,
+    [S_CR]    INT              NOT NULL,
+    [S_CDT]   DATETIME         NOT NULL,
+    [S_MR]    INT              NULL,
+    [S_MDT]   DATETIME         NULL,
+    [ARC]     INT              NULL,
+    [OID]     INT              NOT NULL,
+    [LABEL]   NVARCHAR (50)    NOT NULL,
+    [NAME]    NVARCHAR (50)    NOT NULL,
+    [CSTRING] NVARCHAR (255)   NOT NULL,
+    [REMARK]  NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_SERVERS_OID]
+    ON [dbo].[DEF_SERVERS]([OID] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_SERVERS_LABEL]
+    ON [dbo].[DEF_SERVERS]([LABEL] ASC);
+

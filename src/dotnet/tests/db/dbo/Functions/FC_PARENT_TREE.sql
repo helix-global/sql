@@ -1,0 +1,15 @@
+﻿create function [dbo].[FC_PARENT_TREE](@aFRID int)
+returns table as 
+return
+WITH Parents(PARENTID) AS 
+(
+ SELECT PARENTID
+ FROM FC_REPORT A
+ WHERE A.ID = 90275
+ UNION ALL
+ SELECT A.PARENTID
+ FROM FC_REPORT A
+ INNER JOIN Parents B ON B.PARENTID = A.ID
+)
+SELECT PARENTID 
+FROM Parents where PARENTID is not null;

@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[HH_CV_SKILLS] (
+    [ID]         INT              IDENTITY (1, 1) NOT NULL,
+    [GID]        UNIQUEIDENTIFIER NULL,
+    [S_CR]       INT              NOT NULL,
+    [S_CDT]      DATETIME         NOT NULL,
+    [S_MR]       INT              NULL,
+    [S_MDT]      DATETIME         NULL,
+    [ARC]        INT              NULL,
+    [VNESHID]    INT              NOT NULL,
+    [SKILLID]    INT              NOT NULL,
+    [PRESENT]    INT              NULL,
+    [NOTPRESENT] INT              NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_HH_CV_SKILLS_SKILLID] FOREIGN KEY ([SKILLID]) REFERENCES [dbo].[HH_SKILLS] ([ID]),
+    CONSTRAINT [FK_HH_CV_SKILLS_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[HH_CV] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_HH_CV_SKILLS_U2]
+    ON [dbo].[HH_CV_SKILLS]([VNESHID] ASC, [SKILLID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_HH_CV_SKILLS]
+    ON [dbo].[HH_CV_SKILLS]([VNESHID] ASC);
+

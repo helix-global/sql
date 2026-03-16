@@ -1,0 +1,41 @@
+﻿CREATE TABLE [dbo].[DEF_ASSEMBLY_FILES] (
+    [ID]          INT              IDENTITY (1, 1) NOT NULL,
+    [GID]         UNIQUEIDENTIFIER NULL,
+    [S_CR]        INT              NOT NULL,
+    [S_CDT]       DATETIME         NOT NULL,
+    [S_MR]        INT              NULL,
+    [S_MDT]       DATETIME         NULL,
+    [ARC]         INT              NULL,
+    [ASSEMBLYOID] INT              NOT NULL,
+    [FILENAME]    NVARCHAR (250)   NOT NULL,
+    [FILEDATE]    DATETIME         NOT NULL,
+    [FILESIZE]    INT              NULL,
+    [FILEBLOB]    IMAGE            NULL,
+    [OID]         INT              NOT NULL,
+    [FILEDESC]    NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_DEF_ASSEMBLY_FILES_ASSEMBLYOID] FOREIGN KEY ([ASSEMBLYOID]) REFERENCES [dbo].[DEF_ASSEMBLY] ([OID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_ASSEMBLY_FILES_OID]
+    ON [dbo].[DEF_ASSEMBLY_FILES]([OID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_DEF_ASSEMBLY_FILES]
+    ON [dbo].[DEF_ASSEMBLY_FILES]([ASSEMBLYOID] ASC);
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[DEF_ASSEMBLY_FILES] TO [IPG-DOMAIN\IPGL-bu-pdbAndroidSr]
+    AS [dbo];
+
+
+GO
+GRANT SELECT
+    ON OBJECT::[dbo].[DEF_ASSEMBLY_FILES] TO [EMEA\DEMUS]
+    AS [dbo];
+

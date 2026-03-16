@@ -1,0 +1,2 @@
+﻿CREATE USER [IPG-DOMAIN\Domain Users] FOR LOGIN [IPG-DOMAIN\Domain Users];
+

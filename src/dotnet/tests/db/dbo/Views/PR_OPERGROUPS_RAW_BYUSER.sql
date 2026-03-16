@@ -1,0 +1,9 @@
+﻿CREATE view [dbo].[PR_OPERGROUPS_RAW_BYUSER] with schemabinding as
+select A.ID as USERID, B.GROUPID , B.DEPID, B.ID as LINKID ,  isnull(B.DBEG,convert(datetime,'19000101',112)) as DBEG, isnull(B.DEND,convert(datetime,'40001212',112)) as DEND
+from dbo.DEF_USERS A 
+inner join dbo.PR_EMPL_TO_OPERGR B on B.EMPLOYEEID = A.EMPLOYEEID
+where B.GROUPID is not null
+GO
+CREATE UNIQUE CLUSTERED INDEX [IX_PR_OPERGROUPS_RAW_BYUSER]
+    ON [dbo].[PR_OPERGROUPS_RAW_BYUSER]([USERID] ASC, [GROUPID] ASC, [DEPID] ASC, [LINKID] ASC);
+

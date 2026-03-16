@@ -1,0 +1,40 @@
+﻿
+CREATE VIEW [power_bi].[POWERBI_SERVICECASE]
+AS
+/*KB5414*/
+
+SELECT 			
+	SC.[DD]	[Open Date],
+	ISNULL(CUST.[NAME], '')	[Customer for Service Order],
+	ISNULL(DEP.[CODE], '') [Department],
+	CASE WHEN SC.[RMA_SC_TYPE] IS NULL THEN '' ELSE CASE SC.[RMA_SC_TYPE] 
+		WHEN 1 THEN 'RMA request'
+		WHEN 2 THEN 'SC request'
+		WHEN 3 THEN 'SCAFF request'
+		WHEN 4 THEN 'INT request'
+		ELSE CAST(SC.[RMA_SC_TYPE] AS VARCHAR(10))
+	END END [Service Order Type],
+	ISNULL(SO.[NN], '') [Service Order],
+	SC.[ND] [Service Case],
+	CASE SC.[S_S] 
+		WHEN 1 THEN 'Created'
+		WHEN 1000191 THEN 'Open'
+		WHEN 1000192 THEN 'Problem Solved'
+		WHEN 1000193 THEN 'Service Order requested'
+		WHEN 2000012 THEN 'Service Order Issued'
+		WHEN 2000025 THEN 'Merged'
+		ELSE CAST(SC.[S_S] AS VARCHAR(10))
+	END [State],
+	ISNULL(REQ.[NAME], '') [Requester],
+	SC.[ID] [Service Case ID]
+
+FROM [dbo].[SM_SERVICECASE] SC WITH(NOLOCK) 
+LEFT JOIN [dbo].[COM_CUSTOMER] CUST WITH(NOLOCK) ON CUST.[ID] = ISNULL(SC.[CUSTID_4SERVORD], 0)
+LEFT JOIN [dbo].[COM_DEPARTMENTS] DEP WITH(NOLOCK) ON DEP.[ID] = ISNULL(SC.[SDEPID], 0)
+LEFT JOIN [dbo].[PR_PRORDER] SO WITH(NOLOCK) ON SO.[ID] = ISNULL(SC.[SERVORDID], 0)
+LEFT JOIN [dbo].[COM_CUSTOMER] REQ WITH(NOLOCK) ON REQ.[ID] = ISNULL(SC.[CUSTID], 0)
+GO
+GRANT SELECT
+    ON OBJECT::[power_bi].[POWERBI_SERVICECASE] TO [EMEA\ltishina]
+    AS [dbo];
+

@@ -1,0 +1,18 @@
+﻿CREATE TABLE [dbo].[SYNC1_STATUS_DEPARTMENT] (
+    [ID]            INT              IDENTITY (1, 1) NOT NULL,
+    [S_S]           INT              NOT NULL,
+    [S_CR]          INT              NOT NULL,
+    [S_MR]          INT              NULL,
+    [S_CDT]         DATETIME         NOT NULL,
+    [S_MDT]         DATETIME         NULL,
+    [DEP_UUID]      UNIQUEIDENTIFIER NOT NULL,
+    [DEP_CODE]      NVARCHAR (256)   NOT NULL,
+    [DEP_NAME]      NVARCHAR (512)   NOT NULL,
+    [SOURCE_LOC_ID] INT              NOT NULL,
+    [TARGET_LOC_ID] INT              NOT NULL,
+    [STATUS]        NVARCHAR (MAX)   NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_SYNC1_STATUS_DEPARTMENT_SOURCE_LOC_ID] FOREIGN KEY ([SOURCE_LOC_ID]) REFERENCES [dbo].[COM_REMOTE] ([ID]),
+    CONSTRAINT [FK_SYNC1_STATUS_DEPARTMENT_TARGET_LOC_ID] FOREIGN KEY ([TARGET_LOC_ID]) REFERENCES [dbo].[COM_REMOTE] ([ID])
+);
+

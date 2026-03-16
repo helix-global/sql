@@ -1,0 +1,22 @@
+﻿CREATE TABLE [dbo].[PR_NAV_URLS_T] (
+    [ID]      INT              IDENTITY (1, 1) NOT NULL,
+    [GID]     UNIQUEIDENTIFIER NOT NULL,
+    [S_CR]    INT              NOT NULL,
+    [S_CDT]   DATETIME         NOT NULL,
+    [S_MR]    INT              NULL,
+    [S_MDT]   DATETIME         NULL,
+    [ARC]     INT              NULL,
+    [VNESHID] INT              NOT NULL,
+    [DEPID]   INT              NOT NULL,
+    [NAVURL]  NVARCHAR (250)   NOT NULL,
+    [REMARK]  NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_PR_NAV_URLS_T_DEPID] FOREIGN KEY ([DEPID]) REFERENCES [dbo].[COM_DEPARTMENTS] ([ID]),
+    CONSTRAINT [FK_PR_NAV_URLS_T_VNESHID] FOREIGN KEY ([VNESHID]) REFERENCES [dbo].[PR_NAV_URLS] ([ID]) ON DELETE CASCADE
+);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PR_NAV_URLS_T]
+    ON [dbo].[PR_NAV_URLS_T]([VNESHID] ASC);
+

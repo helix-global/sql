@@ -1,0 +1,18 @@
+﻿CREATE TABLE [dbo].[EQ_MANUFACTURER] (
+    [ID]     INT              IDENTITY (1, 1) NOT NULL,
+    [GID]    UNIQUEIDENTIFIER NULL,
+    [S_CR]   INT              NOT NULL,
+    [S_CDT]  DATETIME         NOT NULL,
+    [S_MR]   INT              NULL,
+    [S_MDT]  DATETIME         NULL,
+    [ARC]    INT              NULL,
+    [NAME]   NVARCHAR (200)   NOT NULL,
+    [REMARK] NTEXT            NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_EQ_MANUFACTURER_NAME]
+    ON [dbo].[EQ_MANUFACTURER]([NAME] ASC);
+

@@ -1,0 +1,16 @@
+﻿CREATE TABLE [dbo].[DEF_LAYOUTS] (
+    [ID]     INT             IDENTITY (1, 1) NOT NULL,
+    [LABEL]  NVARCHAR (250)  NOT NULL,
+    [USERID] INT             NOT NULL,
+    [DATA]   TEXT            NULL,
+    [DATAB]  VARBINARY (MAX) NULL,
+    [DATAX]  XML             NULL,
+    [DATAJ]  NVARCHAR (MAX)  NULL,
+    [S_MDT]  DATETIME        NULL
+);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_DEF_LAYOUTS]
+    ON [dbo].[DEF_LAYOUTS]([USERID] ASC, [LABEL] ASC) WITH (FILLFACTOR = 90);
+
