@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -116,9 +117,15 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 LoadTable(table);
                 }
             #endif
+            var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
+            MakeFolderIfItNotExist(TargetFolder);
             foreach (var pair in m_tbN) {
+                var ObjectName = pair.Key;
+                var SchemaName = ObjectName.SchemaName.ToString();
+                var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
+                MakeFolderIfItNotExist(TargetObjectFolder);
                 (new SqlTableFormatter()).WriteTo(pair.Value,out var script);
-                File.WriteAllText($"{pair.Key}.sql",script);
+                File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script);
                 }
             return;
             }
@@ -152,21 +159,21 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 }
             }
         #endregion
-        #region ReadInt16(Stream):Int16
+        #region M:ReadInt16(Stream):Int16
         private static Int16 ReadInt16(Stream stream) {
             var buffer = new Byte[sizeof(Int16)];
             stream.Read(buffer,0,sizeof(Int16));
             return BitConverter.ToInt16(buffer,0);
             }
         #endregion
-        #region ReadInt64(Stream):Int64
+        #region M:ReadInt64(Stream):Int64
         private static Int64 ReadInt64(Stream stream) {
             var buffer = new Byte[sizeof(Int64)];
             stream.Read(buffer,0,sizeof(Int64));
             return BitConverter.ToInt64(buffer,0);
             }
         #endregion
-        #region ReadUInt16(Stream):UInt16
+        #region M:ReadUInt16(Stream):UInt16
         private static UInt16 ReadUInt16(Stream stream) {
             var buffer = new Byte[sizeof(UInt16)];
             stream.Read(buffer,0,sizeof(UInt16));
@@ -348,6 +355,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                     #endregion
                     throw new NotImplementedException();
                     }
+                }
+            }
+        #endregion
+        #region M:MakeFolderIfItNotExist(String)
+        private static void MakeFolderIfItNotExist(String path) {
+            if (!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
                 }
             }
         #endregion

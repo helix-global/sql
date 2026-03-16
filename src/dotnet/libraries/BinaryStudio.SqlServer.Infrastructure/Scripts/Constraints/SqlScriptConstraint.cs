@@ -27,5 +27,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 : Type.ToString();
             }
         #endregion
+        #region M:ToString(ISqlCase):String
+        public virtual String ToString(ISqlCase Case)
+            {
+            return (Name != null)
+                ? Name.ToString()
+                : Case.ChangeCase(Type.ToString());
+            }
+        #endregion
         }
     }

@@ -2,8 +2,8 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public interface ISqlTypeSpecifier
+    public interface ISqlCase
         {
-        String ToString(ISqlCase Case);
+        String ChangeCase(String value);
         }
     }

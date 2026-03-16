@@ -2,17 +2,31 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     public class SqlTableFormatter : SqlObjectFormatter<ISqlTable>
         {
+        public ISqlCase Case { get; }
+
+        #region ctor
+        public SqlTableFormatter()
+            :this(SqlCase.Uppercase)
+            {
+            }
+        #endregion
+        #region ctor{Boolean}
+        public SqlTableFormatter(ISqlCase Case)
+            {
+            this.Case = Case;
+            }
+        #endregion
+
         #region M:WriteTo(T,TextWriter)
         public override void WriteTo(ISqlTable source,TextWriter target) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (target == null) { throw new ArgumentNullException(nameof(target)); }
-            target.WriteLine($"create table {source.QualifiedName} (");
+            target.WriteLine($"{ChangeCase("create table")} {source.QualifiedName} (");
             var namvl = new String[source.Columns.Count];
             var typvl = new String[namvl.Length];
             var nulvl = new String[namvl.Length];
@@ -26,10 +40,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             foreach (var column in source.Columns) {
                 namvl[j] = $"[{column.Name}]";
                 typvl[j] = $"{FormatDataType(column)}";
-                nulvl[j] = column.IsComputed ? String.Empty : column.Constraints.Any(i => i.Type == SqlConstraintType.NotNull) ? " not null" : " null";
+                nulvl[j] = column.IsComputed ? String.Empty : column.Constraints.Any(i => i.Type == SqlConstraintType.NotNull) ? ChangeCase(" not null") : ChangeCase(" null");
 
                 var identity = column.Constraints.FirstOrDefault(i => i.Type == SqlConstraintType.Identity);
-                idevl[j] = (identity != null)? $" {identity}" : String.Empty;
+                idevl[j] = (identity != null)? $" {identity.ToString(Case)}" : String.Empty;
 
                 namsz = Math.Max(namsz,namvl[j].Length);
                 typsz = Math.Max(typsz,column.IsComputed ? 0 : typvl[j].Length);
@@ -63,11 +77,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:FormatDataType:String
-        private static String FormatDataType(ISqlColumn column) {
+        private String FormatDataType(ISqlColumn column) {
             if (column.IsComputed && column is ISqlComputedColumn c) {
-                return $"as {c.Expression}";
+                return $"{ChangeCase("as")} {c.Expression}";
                 }
-            return column.TypeSpecifier.ToString();
+            return column.TypeSpecifier.ToString(Case);
+            }
+        #endregion
+        #region M:ChangeCase:String
+        private String ChangeCase(String value) {
+            return Case.ChangeCase(value);
             }
         #endregion
         }

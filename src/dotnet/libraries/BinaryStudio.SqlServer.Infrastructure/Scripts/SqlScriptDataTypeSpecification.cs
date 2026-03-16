@@ -58,19 +58,25 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
-
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override String ToString() {
+            return ToString(SqlCase.Lowercase);
+            }
+        #endregion
+        #region M:ToString:String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public String ToString(ISqlCase Case) {
             var r = new StringBuilder();
             if (DataTypeKind != SqlDataType.None) {
                 switch (DataTypeKind) {
                     case SqlDataType.Variant:
-                        r.Append("sql_variant");
+                        r.Append(Case.ChangeCase("sql_variant"));
                         break;
                     default:
-                        r.Append(DataTypeKind.ToString().ToLowerInvariant());
+                        r.Append(Case.ChangeCase(DataTypeKind.ToString()));
                         break;
                     }
                 switch (DataTypeKind) {
@@ -103,7 +109,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     case SqlDataType.VarChar:
                     case SqlDataType.NVarChar:
                         if (IsMaximum || (Length == -1)) {
-                            r.Append("(max)");
+                            r.Append($"({Case.ChangeCase("max")})");
                             }
                         else
                             {
