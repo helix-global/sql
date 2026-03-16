@@ -6,9 +6,10 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         {
             public SqlIdentifier Name { get; }
             public SqlConstraintType Type { get; }
-            public String ToString(ISqlCase Case)
+
+        public string ToString(ISqlObjectFormatter<ISqlConstraint> Formatter)
             {
-                throw new NotImplementedException();
+            throw new NotImplementedException();
             }
         }
     }

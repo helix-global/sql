@@ -28,10 +28,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return Name.ToString();
             }
         #endregion
-        #region M:ToString(ISqlCase):String
-        public virtual String ToString(ISqlCase Case)
+        #region M:ToString(ISqlObjectFormatter<ISqlConstraint>):String
+        public virtual String ToString(ISqlObjectFormatter<ISqlConstraint> formatter)
             {
-            return Name.ToString();
+            throw new NotSupportedException();
             }
         #endregion
         }

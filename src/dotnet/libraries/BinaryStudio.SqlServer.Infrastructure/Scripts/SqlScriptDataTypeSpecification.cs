@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
@@ -24,6 +23,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         [UsedImplicitly][Field] public SqlScriptDataType DataType { get; }
         [UsedImplicitly][Field] public SqlObjectIdentifier XmlSchemaCollection { get; }
         private SqlDataType DataTypeKind { get; }
+        SqlDataType ISqlTypeSpecifier.Type { get { return DataTypeKind; }}
 
         #region ctor{IServiceProvider,SqlDataTypeSpecification}
         public SqlScriptDataTypeSpecification(IServiceProvider context,SqlDataTypeSpecification source)
@@ -62,68 +62,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override String ToString() {
-            return ToString(SqlCase.Lowercase);
+            return ToString(DEFTypeSpecifierFormatter.Instance);
             }
         #endregion
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
-        public String ToString(ISqlCase Case) {
-            var r = new StringBuilder();
-            if (DataTypeKind != SqlDataType.None) {
-                switch (DataTypeKind) {
-                    case SqlDataType.Variant:
-                        r.Append(Case.ChangeCase("sql_variant"));
-                        break;
-                    default:
-                        r.Append(Case.ChangeCase(DataTypeKind.ToString()));
-                        break;
-                    }
-                switch (DataTypeKind) {
-                    case SqlDataType.Time:
-                    case SqlDataType.DateTime2:
-                    case SqlDataType.DateTimeOffset:
-                        if ((Scale != DEFAULT_TIME_SCALE) && (Scale != null)) {
-                            r.AppendFormat("({0})",Scale.Value);
-                            }
-                        break;
-                    case SqlDataType.Float:
-                        if ((Precision != DEFAULT_FLOAT_PRECISION) && (Precision != null)) {
-                            r.AppendFormat("({0})",Precision);
-                            }
-                        break;
-                    case SqlDataType.Decimal:
-                    case SqlDataType.Numeric:
-                        if (Scale == DEFAULT_DECIMAL_SCALE) {
-                            if (Precision != DEFAULT_DECIMAL_PRECISION)
-                                {
-                                r.AppendFormat("({0})",Precision);
-                                }
-                            }
-                        else
-                            {
-                            r.AppendFormat("({0},{1})",Precision,Scale);
-                            }
-                        break;
-                    case SqlDataType.VarBinary:
-                    case SqlDataType.VarChar:
-                    case SqlDataType.NVarChar:
-                        if (IsMaximum || (Length == -1)) {
-                            r.Append($"({Case.ChangeCase("max")})");
-                            }
-                        else
-                            {
-                            r.Append($"({Length})");
-                            }
-                        break;
-                    case SqlDataType.NChar:
-                    case SqlDataType.Char:
-                    case SqlDataType.Binary:
-                        r.Append($"({Length})");
-                        break;
-                    }
-                }
-            return r.ToString();
+        public String ToString(ISqlObjectFormatter<ISqlTypeSpecifier> Formater) {
+            Formater.WriteTo(this,out var r);
+            return r;
             }
         #endregion
 

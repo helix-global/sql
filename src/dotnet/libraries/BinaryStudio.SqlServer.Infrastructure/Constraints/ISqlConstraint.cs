@@ -6,6 +6,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         SqlIdentifier Name { get; }
         SqlConstraintType Type { get; }
-        String ToString(ISqlCase Case);
+        String ToString(ISqlObjectFormatter<ISqlConstraint> formatter);
         }
     }

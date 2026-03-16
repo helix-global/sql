@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public abstract class SqlObjectFormatter<T>
+    public abstract class SqlObjectFormatter<T> : ISqlObjectFormatter<T>
         {
         #region ctor
         protected SqlObjectFormatter()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
@@ -8,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlColumnIdentity))]
-    internal class SqlScriptColumnIdentity : SqlScriptConstraint<SqlColumnIdentity>
+    internal class SqlScriptColumnIdentity : SqlScriptConstraint<SqlColumnIdentity>,ISqlColumnIdentity
         {
         [UsedImplicitly][Field] public Int32? Increment { get; }
         [UsedImplicitly][Field] public Int32? Seed { get; }
@@ -25,16 +24,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override String ToString() {
-            var r = new StringBuilder();
-            r.Append("identity");
-            if ((Increment != null) && (Seed != null)) {
-                r.Append($"({Seed},{Increment})");
-                }
-            else if (Seed != null)
-                {
-                r.Append($"({Seed})");
-                }
-            return r.ToString();
+            return ToString(DEFConstraintFormatter.Instance);
+            }
+        #endregion
+        #region M:ToString(ISqlObjectFormatter<ISqlConstraint>):String
+        public override String ToString(ISqlObjectFormatter<ISqlConstraint> formatter)
+            {
+            formatter.WriteTo(this,out var r);
+            return r;
             }
         #endregion
         }

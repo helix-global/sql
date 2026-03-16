@@ -20,19 +20,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
 
         #region M:ToString:String
-        public override String ToString()
-            {
+        public override String ToString() {
             return (Name != null)
                 ? Name.ToString()
                 : Type.ToString();
             }
         #endregion
-        #region M:ToString(ISqlCase):String
-        public virtual String ToString(ISqlCase Case)
+        #region M:ToString(ISqlObjectFormatter<ISqlConstraint>):String
+        public virtual String ToString(ISqlObjectFormatter<ISqlConstraint> formatter)
             {
-            return (Name != null)
-                ? Name.ToString()
-                : Case.ChangeCase(Type.ToString());
+            throw new NotSupportedException();
             }
         #endregion
         }

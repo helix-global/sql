@@ -18,6 +18,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptComputedColumnDefinition(IServiceProvider context,SqlComputedColumnDefinition source)
             : base(context,source)
             {
+            return;
             }
         #endregion
         }

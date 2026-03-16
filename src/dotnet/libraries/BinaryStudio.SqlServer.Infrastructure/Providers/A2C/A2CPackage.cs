@@ -124,7 +124,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
                 MakeFolderIfItNotExist(TargetObjectFolder);
-                (new SqlTableFormatter()).WriteTo(pair.Value,out var script);
+                (new SSDTTableFormatter()).WriteTo(pair.Value,out var script);
                 File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script);
                 }
             return;
