@@ -622,9 +622,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
                 value = CoerceValue(value);
-                Source.SetValue(component,(component is SqlModelObject target)
-                    ? target.CoerceValue(this,value)
-                    : value);
+                try
+                    {
+                    Source.SetValue(component,(component is SqlModelObject target)
+                        ? target.CoerceValue(this,value)
+                        : value);
+                    }
+                catch (Exception e)
+                    {
+                    e.Add("PropertyName",Name);
+                    e.Add("ComponentType",ComponentType.FullName);
+                    throw;
+                    }
                 }
             #endregion
             }

@@ -43,9 +43,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         Geography        = 240,
         Hierarchy        = 240,
         Xml              = 241,
-        Json,
-        Table,
-        Cursor,
-        Vector,
+        Json             = 8001,
+        Table            = 8002,
+        Cursor           = 8003,
+        Vector           = 8004,
+        UserDefined      = 8005
         }
     }

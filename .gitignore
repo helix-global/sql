@@ -10,3 +10,6 @@
 /src/dotnet/tests/dacpac/.vs/dacpac/v16
 /src/dotnet/tests/dacpac/2022.07.05.0847.a2cx
 /src/dotnet/tests/dacpac/2022.07.05.0847.xml
+/src/dotnet/tests/db/bin/Debug
+/src/dotnet/tests/db/obj/Debug
+*.user

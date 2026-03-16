@@ -18,7 +18,6 @@
   <ItemGroup>
     <Folder Include="Scripts\Indexes\" />
     <Folder Include="Scripts\Logins\" />
-    <Folder Include="Scripts\Expressions\" />
     <Folder Include="Scripts\Views\" />
     <Folder Include="Scripts\Triggers\" />
     <Folder Include="Scripts\Tables\" />

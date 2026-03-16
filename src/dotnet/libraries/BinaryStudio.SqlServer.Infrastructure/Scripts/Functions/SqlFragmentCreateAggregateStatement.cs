@@ -11,7 +11,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     /// Represents CREATE AGGREGATE statement.
     /// </summary>
     [SqlScriptObject(typeof(CreateAggregateStatement))]
-    internal class SqlFragmentCreateAggregateStatement : SqlFragmentObject<CreateAggregateStatement>,ISqlScriptStatement
+    internal class SqlFragmentCreateAggregateStatement : SqlFragmentObject<CreateAggregateStatement>,ISqlScriptStatement,ISqlAggregate
         {
         public String StatementPhrase { get { return "CREATE AGGREGATE"; }}
         #region P:
@@ -24,7 +24,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <summary>
         /// Aggregate function name.
         /// </summary>
-        [UsedImplicitly][Field] public SqlObjectIdentifier Name { get; }
+        [UsedImplicitly][Field(Source="Name")] public SqlObjectIdentifier QualifiedName { get; }
         #endregion
         #region P:Name:SqlObjectIdentifier
         /// <summary>
@@ -32,6 +32,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// </summary>
         [UsedImplicitly][Field] public IList<SqlFragmentProcedureParameter> Parameters { get; }
         #endregion
+        [UsedImplicitly][Field] public ISqlFragmentDataTypeReference ReturnType { get; }
 
         #region ctor{IServiceProvider,CreateAggregateStatement}
         public SqlFragmentCreateAggregateStatement(IServiceProvider context,CreateAggregateStatement source)
@@ -46,7 +47,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return Name.ToString();
+            return QualifiedName.ToString();
             }
         #endregion
         }

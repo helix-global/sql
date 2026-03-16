@@ -32,7 +32,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 idevl[j] = (identity != null)? $" {identity}" : String.Empty;
 
                 namsz = Math.Max(namsz,namvl[j].Length);
-                typsz = Math.Max(typsz,typvl[j].Length);
+                typsz = Math.Max(typsz,column.IsComputed ? 0 : typvl[j].Length);
                 nulsz = Math.Max(nulsz,nulvl[j].Length);
                 idesz = Math.Max(idesz,idevl[j].Length);
                 j++;

@@ -213,10 +213,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 ISqlAssembly Assembly = null;
                 foreach (var statement in source.SelectMany(i => i.Statements)) {
                     var flag = false;
+                    #region SET..
                     if (statement is SqlFragmentPredicateSetStatement PredicateSetStatement) {
                         if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNullsOn        = true; continue; }
                         if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier   = true; continue; }
                         }
+                    #endregion
                     #region CREATE TABLE
                     if (statement is SqlScriptCreateTableStatement CreateTableStatement) {
                         TargetTable = new SqlTable(CreateTableStatement);
@@ -234,14 +236,18 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                         continue;
                         }
                     #endregion
+                    #region CREATE FUNCTION
                     if (statement is ISqlFunction function) {
                         m_fuN[function.Name] = function;
                         continue;
                         }
+                    #endregion
+                    #region CREATE PROCEDURE
                     if (statement is ISqlProcedure procedure) {
                         m_pcN[procedure.Name] = procedure;
                         continue;
                         }
+                    #endregion
                     #region CREATE TRIGGER
                     if (statement is SqlScriptCreateTriggerStatement trigger) {
                         if (m_tbN.TryGetValue(trigger.TargetName,out var table)) {
@@ -274,6 +280,12 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                     #region CREATE ASSEMBLY
                     if (statement is SqlFragmentCreateAssemblyStatement CreateAssembly) {
                         m_asN[CreateAssembly.QualifiedName] = CreateAssembly;
+                        continue;
+                        }
+                    #endregion
+                    #region CREATE AGGREGATE
+                    if (statement is SqlFragmentCreateAggregateStatement CreateAggregate) {
+                        m_agN[CreateAggregate.QualifiedName] = CreateAggregate;
                         continue;
                         }
                     #endregion
@@ -619,6 +631,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         private readonly IDictionary<SqlObjectIdentifier,ISqlFunction>  m_fuN = new SortedDictionary<SqlObjectIdentifier,ISqlFunction>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlProcedure> m_pcN = new SortedDictionary<SqlObjectIdentifier,ISqlProcedure>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlAssembly>  m_asN = new SortedDictionary<SqlObjectIdentifier,ISqlAssembly>();
+        private readonly IDictionary<SqlObjectIdentifier,ISqlAggregate>  m_agN = new SortedDictionary<SqlObjectIdentifier,ISqlAggregate>();
         private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
         }
     }

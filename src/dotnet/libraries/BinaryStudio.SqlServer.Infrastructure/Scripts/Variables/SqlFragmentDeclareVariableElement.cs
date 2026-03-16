@@ -10,7 +10,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T: DeclareVariableElement
         {
         [UsedImplicitly][Field] public SqlIdentifier VariableName { get; }
-        [UsedImplicitly][Field] public SqlFragmentDataTypeReference DataType { get; }
+        [UsedImplicitly][Field] public ISqlFragmentDataTypeReference DataType { get; }
+        [UsedImplicitly][Field] public SqlFragmentNullableConstraintDefinition Nullable { get; }
+        [UsedImplicitly][Field] public ISqlScriptScalarExpression Value { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlFragmentDeclareVariableElement(IServiceProvider context,T source)
