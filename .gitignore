@@ -13,3 +13,5 @@
 /src/dotnet/tests/db/bin/Debug
 /src/dotnet/tests/db/obj/Debug
 *.user
+/src/dotnet/tests/db/db.dbmdl
+/src/dotnet/tests/db/db.jfm
