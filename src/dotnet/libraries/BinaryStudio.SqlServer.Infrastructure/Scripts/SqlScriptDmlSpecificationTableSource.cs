@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlDmlSpecificationTableSource))]
     internal sealed class SqlScriptDmlSpecificationTableSource : SqlScriptTableExpression<SqlDmlSpecificationTableSource>
         {

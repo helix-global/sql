@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal abstract class SqlScriptClrAssemblySpecifier<T> : SqlScriptCodeObject<T>
         where T : SqlClrAssemblySpecifier
         {

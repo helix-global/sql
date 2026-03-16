@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlCreateUserDefinedTypeStatement))]
     internal sealed class SqlScriptCreateUserDefinedTypeStatement : SqlScriptCreateTypeStatement<SqlCreateUserDefinedTypeStatement>
         {

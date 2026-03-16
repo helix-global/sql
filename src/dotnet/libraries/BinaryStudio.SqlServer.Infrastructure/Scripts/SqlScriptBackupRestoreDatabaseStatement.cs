@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal abstract class SqlScriptBackupRestoreDatabaseStatement<T> : SqlScriptBackupRestoreStatement<T>
         where T : SqlBackupRestoreStatement
         {

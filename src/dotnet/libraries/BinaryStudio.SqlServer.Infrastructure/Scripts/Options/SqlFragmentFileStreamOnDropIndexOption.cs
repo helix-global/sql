@@ -3,6 +3,8 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(FileStreamOnDropIndexOption))]
     internal sealed class SqlFragmentFileStreamOnDropIndexOption : SqlFragmentIndexOption<FileStreamOnDropIndexOption>
         {

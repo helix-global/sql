@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlModuleRecompileOption))]
     internal sealed class SqlScriptModuleRecompileOption : SqlScriptModuleOption<SqlModuleRecompileOption>
         {

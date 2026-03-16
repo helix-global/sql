@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlAlterViewStatement))]
     internal sealed class SqlScriptAlterViewStatement : SqlScriptCreateAlterViewStatementBase<SqlAlterViewStatement>
         {

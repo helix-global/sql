@@ -3,6 +3,8 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(IndexExpressionOption))]
     internal class SqlFragmentIndexExpressionOption : SqlFragmentIndexOption<IndexExpressionOption>
         {

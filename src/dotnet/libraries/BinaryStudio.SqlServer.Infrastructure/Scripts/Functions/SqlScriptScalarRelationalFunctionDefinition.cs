@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlScalarRelationalFunctionDefinition))]
     internal sealed class SqlScriptScalarRelationalFunctionDefinition : SqlScriptFunctionDefinition<SqlScalarRelationalFunctionDefinition>
         {

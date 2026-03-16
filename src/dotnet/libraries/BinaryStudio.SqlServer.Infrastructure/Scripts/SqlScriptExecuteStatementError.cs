@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlExecuteStatementError))]
     internal sealed class SqlScriptExecuteStatementError : SqlScriptStatementError<SqlExecuteStatementError>
         {

@@ -206,237 +206,136 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         #endregion
         #region M:Merge(SqlObjectType,IEnumerable<SqlScriptBatch>)
         private void Merge(SqlObjectType type,IEnumerable<SqlScriptBatch> source) {
-            switch (type) {
-                #region Table
-                case SqlObjectType.Table:
-                    {
-                    SqlTable o = null;
-                    Boolean? IsAnsiNullsOn = null;
-                    Boolean? IsQuotedIdentifier = null;
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        var flag = false;
-                        if (statement is SqlFragmentPredicateSetStatement PredicateSetStatement) {
-                            if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNullsOn        = true; continue; }
-                            if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier   = true; continue; }
+            if ((type != SqlObjectType.None) && (type != SqlObjectType.ScriptAfter) && (type != SqlObjectType.ScriptBefore)) {
+                Boolean? IsAnsiNullsOn = null;
+                Boolean? IsQuotedIdentifier = null;
+                SqlTable TargetTable = null;
+                ISqlAssembly Assembly = null;
+                foreach (var statement in source.SelectMany(i => i.Statements)) {
+                    var flag = false;
+                    if (statement is SqlFragmentPredicateSetStatement PredicateSetStatement) {
+                        if (PredicateSetStatement.Options.HasFlag(SetOptions.AnsiNulls))        { IsAnsiNullsOn        = true; continue; }
+                        if (PredicateSetStatement.Options.HasFlag(SetOptions.QuotedIdentifier)) { IsQuotedIdentifier   = true; continue; }
+                        }
+                    #region CREATE TABLE
+                    if (statement is SqlScriptCreateTableStatement CreateTableStatement) {
+                        TargetTable = new SqlTable(CreateTableStatement);
+                        m_tbN[TargetTable.QualifiedName] = TargetTable;
+                        continue;
+                        }
+                    #endregion
+                    #region CREATE INDEX
+                    if (statement is SqlScriptCreateIndexStatement index) {
+                        if (m_tbN.TryGetValue(index.TargetObject,out var table)) {
+                            if (table.Indexes.All(i => !i.Name.Equals(index.Name))) {
+                                table.Indexes.Add(index);
+                                }
                             }
-                        #region CREATE TABLE
-                        if (statement is SqlScriptCreateTableStatement CreateTableStatement) {
-                            o = new SqlTable(CreateTableStatement);
-                            m_tbN[o.QualifiedName] = o;
+                        continue;
+                        }
+                    #endregion
+                    if (statement is ISqlFunction function) {
+                        m_fuN[function.Name] = function;
+                        continue;
+                        }
+                    if (statement is ISqlProcedure procedure) {
+                        m_pcN[procedure.Name] = procedure;
+                        continue;
+                        }
+                    #region CREATE TRIGGER
+                    if (statement is SqlScriptCreateTriggerStatement trigger) {
+                        if (m_tbN.TryGetValue(trigger.TargetName,out var table)) {
+                            if (table.Triggers.All(i => !i.Name.Equals(trigger.Name))) {
+                                table.Triggers.Add(trigger);
+                                }
+                            }
+                        continue;
+                        }
+                    #endregion
+                    #region ALTER TABLE
+                    if (statement is SqlFragmentAlterTableAddTableElementStatement altertable) {
+                        foreach (var constraint in altertable.Definition.Constraints) {
+                            if (m_tbN.TryGetValue(altertable.Name,out var table)) {
+                                if (table.Constraints.All(i => !SqlIdentifier.Equals(i.Name,constraint.Name))) {
+                                    table.Constraints.Add(constraint);
+                                    }
+                                }
+                            }
+                        continue;
+                        }
+                    #endregion
+                    #region CREATE VIEW
+                    if (statement is SqlScriptCreateViewStatement CreateViewStatement) {
+                        var o = new SqlView(CreateViewStatement);
+                        m_viN[o.QualifiedName] = o;
+                        continue;
+                        }
+                    #endregion
+                    #region CREATE ASSEMBLY
+                    if (statement is SqlFragmentCreateAssemblyStatement CreateAssembly) {
+                        m_asN[CreateAssembly.QualifiedName] = CreateAssembly;
+                        continue;
+                        }
+                    #endregion
+                    #region EXECUTE...
+                    if (statement is SqlScriptExecuteModuleStatement execute) {
+                        #region [sp_addextendedproperty]
+                        if (execute.Module.ObjectIdentifier == "sp_addextendedproperty") {
+                            var names = new SortedDictionary<Int32,String>();
+                            var types = new SortedDictionary<Int32,String>();
+                            String name = null,value = null;
+                            foreach (var argument in execute.Arguments) {
+                                if (argument.Parameter.ToString() == "@name" ) { name  = argument.Value.ToString(); }
+                                if (argument.Parameter.ToString() == "@value") { value = argument.Value.ToString(); }
+                                if (IsMatch(argument.Parameter.ToString(),@"@level(\d+)(type|name)",out var match)) {
+                                    var target = (match.Groups[2].Value == "type")
+                                        ? types
+                                        : names;
+                                    target.Add(Int32.Parse(match.Groups[1].Value),argument.Value.ToString());
+                                    }
+                                }
+                            var identifier = SqlObjectIdentifier.Create(names.Values.Select(i => new SqlIdentifier(i)));
+                            var objectclass = SqlObjectClass.Default;
+                            switch (types.Values.LastOrDefault()) {
+                                case "AGGREGATE"             : { objectclass = SqlObjectClass.Aggregate;            } break;
+                                case "ASSEMBLY"              : { objectclass = SqlObjectClass.Assembly;             } break;
+                                case "COLUMN"                : { objectclass = SqlObjectClass.Column;               } break;
+                                case "CONSTRAINT"            : { objectclass = SqlObjectClass.Constraint;           } break;
+                                case "CONTRACT"              : { objectclass = SqlObjectClass.ServiceContract;      } break;
+                                case "EVENT NOTIFICATION"    : { objectclass = SqlObjectClass.EventNotification;    } break;
+                                case "FILEGROUP"             : { objectclass = SqlObjectClass.DatabaseFileGroup;    } break;
+                                case "FUNCTION"              : { objectclass = SqlObjectClass.Function;             } break;
+                                case "INDEX"                 : { objectclass = SqlObjectClass.Index;                } break;
+                                case "LOGICAL FILE NAME"     : { objectclass = SqlObjectClass.LogicalFileName;      } break;
+                                case "MESSAGE TYPE"          : { objectclass = SqlObjectClass.MessageType;          } break;
+                                case "PARAMETER"             : { objectclass = SqlObjectClass.Parameter;            } break;
+                                case "PARTITION FUNCTION"    : { objectclass = SqlObjectClass.PartitionFunction;    } break;
+                                case "PARTITION SCHEME"      : { objectclass = SqlObjectClass.PartitionScheme;      } break;
+                                case "PLAN GUIDE"            : { objectclass = SqlObjectClass.PlanGuide;            } break;
+                                case "PROCEDURE"             : { objectclass = SqlObjectClass.Procedure;            } break;
+                                case "QUEUE"                 : { objectclass = SqlObjectClass.Queue;                } break;
+                                case "REMOTE SERVICE BINDING": { objectclass = SqlObjectClass.RemoteServiceBinding; } break;
+                                case "ROUTE"                 : { objectclass = SqlObjectClass.ServiceRoute;         } break;
+                                case "RULE"                  : { objectclass = SqlObjectClass.Rule;                 } break;
+                                case "SCHEMA"                : { objectclass = SqlObjectClass.Schema;               } break;
+                                case "SEQUENCE"              : { objectclass = SqlObjectClass.Sequence;             } break;
+                                case "SERVICE"               : { objectclass = SqlObjectClass.Service;              } break;
+                                case "SYNONYM"               : { objectclass = SqlObjectClass.Synonym;              } break;
+                                case "TABLE"                 : { objectclass = SqlObjectClass.Table;                } break;
+                                case "TRIGGER"               : { objectclass = SqlObjectClass.Trigger;              } break;
+                                case "TYPE"                  : { objectclass = SqlObjectClass.UserDefinedType;      } break;
+                                case "USER"                  : { objectclass = SqlObjectClass.User;                 } break;
+                                case "VIEW"                  : { objectclass = SqlObjectClass.View;                 } break;
+                                case "XML SCHEMA COLLECTION" : { objectclass = SqlObjectClass.XmlSchemaCollection;  } break;
+                                }
+                            m_properties[new SqlExtendedPropertyIdentity(objectclass,identifier,name)] = value;
                             continue;
                             }
                         #endregion
-                        #region CREATE INDEX
-                        if (statement is SqlScriptCreateIndexStatement index) {
-                            if (m_tbN.TryGetValue(index.TargetObject,out var table)) {
-                                if (table.Indexes.All(i => !i.Name.Equals(index.Name))) {
-                                    table.Indexes.Add(index);
-                                    }
-                                }
-                            continue;
-                            }
-                        #endregion
-                        #region EXECUTE...
-                        if (statement is SqlScriptExecuteModuleStatement execute) {
-                            #region [sp_addextendedproperty]
-                            if (execute.Module.ObjectIdentifier == "sp_addextendedproperty") {
-                                var names = new SortedDictionary<Int32,String>();
-                                var types = new SortedDictionary<Int32,String>();
-                                String name = null,value = null;
-                                foreach (var argument in execute.Arguments) {
-                                    if (argument.Parameter.ToString() == "@name" ) { name  = argument.Value.ToString(); }
-                                    if (argument.Parameter.ToString() == "@value") { value = argument.Value.ToString(); }
-                                    if (IsMatch(argument.Parameter.ToString(),@"@level(\d+)(type|name)",out var match)) {
-                                        var target = (match.Groups[2].Value == "type")
-                                            ? types
-                                            : names;
-                                        target.Add(Int32.Parse(match.Groups[1].Value),argument.Value.ToString());
-                                        }
-                                    }
-                                var identifier = SqlObjectIdentifier.Create(names.Values.Select(i => new SqlIdentifier(i)));
-                                var objectclass = SqlObjectClass.Default;
-                                switch (types.Values.LastOrDefault()) {
-                                    case "AGGREGATE"             : { objectclass = SqlObjectClass.Aggregate;            } break;
-                                    case "ASSEMBLY"              : { objectclass = SqlObjectClass.Assembly;             } break;
-                                    case "COLUMN"                : { objectclass = SqlObjectClass.Column;               } break;
-                                    case "CONSTRAINT"            : { objectclass = SqlObjectClass.Constraint;           } break;
-                                    case "CONTRACT"              : { objectclass = SqlObjectClass.ServiceContract;      } break;
-                                    case "EVENT NOTIFICATION"    : { objectclass = SqlObjectClass.EventNotification;    } break;
-                                    case "FILEGROUP"             : { objectclass = SqlObjectClass.DatabaseFileGroup;    } break;
-                                    case "FUNCTION"              : { objectclass = SqlObjectClass.Function;             } break;
-                                    case "INDEX"                 : { objectclass = SqlObjectClass.Index;                } break;
-                                    case "LOGICAL FILE NAME"     : { objectclass = SqlObjectClass.LogicalFileName;      } break;
-                                    case "MESSAGE TYPE"          : { objectclass = SqlObjectClass.MessageType;          } break;
-                                    case "PARAMETER"             : { objectclass = SqlObjectClass.Parameter;            } break;
-                                    case "PARTITION FUNCTION"    : { objectclass = SqlObjectClass.PartitionFunction;    } break;
-                                    case "PARTITION SCHEME"      : { objectclass = SqlObjectClass.PartitionScheme;      } break;
-                                    case "PLAN GUIDE"            : { objectclass = SqlObjectClass.PlanGuide;            } break;
-                                    case "PROCEDURE"             : { objectclass = SqlObjectClass.Procedure;            } break;
-                                    case "QUEUE"                 : { objectclass = SqlObjectClass.Queue;                } break;
-                                    case "REMOTE SERVICE BINDING": { objectclass = SqlObjectClass.RemoteServiceBinding; } break;
-                                    case "ROUTE"                 : { objectclass = SqlObjectClass.ServiceRoute;         } break;
-                                    case "RULE"                  : { objectclass = SqlObjectClass.Rule;                 } break;
-                                    case "SCHEMA"                : { objectclass = SqlObjectClass.Schema;               } break;
-                                    case "SEQUENCE"              : { objectclass = SqlObjectClass.Sequence;             } break;
-                                    case "SERVICE"               : { objectclass = SqlObjectClass.Service;              } break;
-                                    case "SYNONYM"               : { objectclass = SqlObjectClass.Synonym;              } break;
-                                    case "TABLE"                 : { objectclass = SqlObjectClass.Table;                } break;
-                                    case "TRIGGER"               : { objectclass = SqlObjectClass.Trigger;              } break;
-                                    case "TYPE"                  : { objectclass = SqlObjectClass.UserDefinedType;      } break;
-                                    case "USER"                  : { objectclass = SqlObjectClass.User;                 } break;
-                                    case "VIEW"                  : { objectclass = SqlObjectClass.View;                 } break;
-                                    case "XML SCHEMA COLLECTION" : { objectclass = SqlObjectClass.XmlSchemaCollection;  } break;
-                                    }
-                                m_properties[new SqlExtendedPropertyIdentity(objectclass,identifier,name)] = value;
-                                continue;
-                                }
-                            #endregion
-                            }
-                        #endregion
-                        throw new NotImplementedException();
                         }
-                    if (o != null) {
-                        if (IsAnsiNullsOn == true) { o.IsAnsiNullsOn = true; }
-                        }
+                    #endregion
+                    throw new NotImplementedException();
                     }
-                    break;
-                #endregion
-                #region Function
-                case SqlObjectType.Function:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is ISqlFunction function) {
-                            m_fuN[function.Name] = function;
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region Procedure
-                case SqlObjectType.Procedure:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is ISqlProcedure procedure) {
-                            m_pcN[procedure.Name] = procedure;
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region Index
-                case SqlObjectType.Index:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is SqlScriptCreateIndexStatement index) {
-                            if (m_tbN.TryGetValue(index.TargetObject,out var table)) {
-                                if (table.Indexes.All(i => !i.Name.Equals(index.Name))) {
-                                    table.Indexes.Add(index);
-                                    }
-                                }
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region Trigger
-                case SqlObjectType.Trigger:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is SqlScriptCreateTriggerStatement trigger) {
-                            if (m_tbN.TryGetValue(trigger.TargetName,out var table)) {
-                                if (table.Triggers.All(i => !i.Name.Equals(trigger.Name))) {
-                                    table.Triggers.Add(trigger);
-                                    }
-                                }
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region ForeignKeyConstraint
-                case SqlObjectType.ForeignKeyConstraint:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is SqlFragmentAlterTableAddTableElementStatement altertable) {
-                            foreach (var constraint in altertable.Definition.Constraints) {
-                                if (m_tbN.TryGetValue(altertable.Name,out var table)) {
-                                    if (table.Constraints.All(i => !SqlIdentifier.Equals(i.Name,constraint.Name))) {
-                                        table.Constraints.Add(constraint);
-                                        }
-                                    }
-                                }
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region View
-                case SqlObjectType.View:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        if (statement is SqlScriptCreateViewStatement CreateViewStatement) {
-                            var o = new SqlView(CreateViewStatement);
-                            m_viN[o.QualifiedName] = o;
-                            continue;
-                            }
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region CheckConstraint
-                case SqlObjectType.CheckConstraint:
-                    {
-                    foreach (var statement in source.SelectMany(i => i.Statements)) {
-                        throw new NotImplementedException();
-                        }
-                    }
-                    break;
-                #endregion
-                #region Statistics
-                case SqlObjectType.Statistics:
-                    {
-                    }
-                    break;
-                #endregion
-                #region Assembly
-                case SqlObjectType.Assembly:
-                    {
-                    }
-                    break;
-                #endregion
-                #region TableType
-                case SqlObjectType.TableType:
-                    {
-                    }
-                    break;
-                #endregion
-                #region PartitionFunction
-                case SqlObjectType.PartitionFunction:
-                    {
-                    }
-                    break;
-                #endregion
-                #region PartitionScheme
-                case SqlObjectType.PartitionScheme:
-                    {
-                    }
-                    break;
-                #endregion
-                case SqlObjectType.ScriptAfter:
-                case SqlObjectType.ScriptBefore:
-                case SqlObjectType.None:
-                    break;
                 }
             }
         #endregion
@@ -717,8 +616,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
 
         private readonly IDictionary<SqlObjectIdentifier,SqlTable> m_tbN = new SortedDictionary<SqlObjectIdentifier,SqlTable>();
         private readonly IDictionary<SqlObjectIdentifier,SqlView>  m_viN = new SortedDictionary<SqlObjectIdentifier,SqlView>();
-        private readonly IDictionary<SqlObjectIdentifier,ISqlFunction>   m_fuN = new SortedDictionary<SqlObjectIdentifier,ISqlFunction>();
-        private readonly IDictionary<SqlObjectIdentifier,ISqlProcedure>  m_pcN = new SortedDictionary<SqlObjectIdentifier,ISqlProcedure>();
+        private readonly IDictionary<SqlObjectIdentifier,ISqlFunction>  m_fuN = new SortedDictionary<SqlObjectIdentifier,ISqlFunction>();
+        private readonly IDictionary<SqlObjectIdentifier,ISqlProcedure> m_pcN = new SortedDictionary<SqlObjectIdentifier,ISqlProcedure>();
+        private readonly IDictionary<SqlObjectIdentifier,ISqlAssembly>  m_asN = new SortedDictionary<SqlObjectIdentifier,ISqlAssembly>();
         private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
         }
     }

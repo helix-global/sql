@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal abstract class SqlScriptBooleanExpression<T> : SqlScriptCodeObject<T>,ISqlScriptBooleanExpression
         where T : SqlBooleanExpression
         {

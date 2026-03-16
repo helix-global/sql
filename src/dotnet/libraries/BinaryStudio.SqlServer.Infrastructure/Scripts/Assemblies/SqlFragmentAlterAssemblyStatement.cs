@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(AlterAssemblyStatement))]
-    internal class SqlFragmentAlterAssemblyStatement : SqlFragmentAssemblyStatement<AlterAssemblyStatement>
+    internal class SqlFragmentAlterAssemblyStatement : SqlFragmentObject<AlterAssemblyStatement>
         {
         #region ctor{IServiceProvider,AlterAssemblyStatement}
         public SqlFragmentAlterAssemblyStatement(IServiceProvider context,AlterAssemblyStatement source)

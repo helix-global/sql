@@ -4,6 +4,8 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     internal sealed class SqlFragmentFillFactorIndexOption : SqlFragmentIndexExpressionOption
         {
         public Int32 FillFactor { get; }

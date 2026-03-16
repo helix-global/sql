@@ -3,6 +3,8 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlModelFieldMappingAttribute;
+
     [SqlScriptObject(typeof(SqlLiteralExpression))]
     internal sealed class SqlScriptLiteralExpression : SqlScriptScalarExpression<SqlLiteralExpression>
         {
