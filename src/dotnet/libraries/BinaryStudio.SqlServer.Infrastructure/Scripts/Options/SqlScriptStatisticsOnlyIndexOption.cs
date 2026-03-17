@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -8,7 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlStatisticsOnlyIndexOption))]
     internal sealed class SqlScriptStatisticsOnlyIndexOption : SqlScriptOnOffIndexOption<SqlStatisticsOnlyIndexOption>
         {
-        public Int32 Value { get { return Source.Value; }}
+        [UsedImplicitly][Field] public Int32 Value { get; }
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.StatisticsOnly; }}
 
         #region ctor{IServiceProvider,SqlStatisticsOnlyIndexOption}
         public SqlScriptStatisticsOnlyIndexOption(IServiceProvider context,SqlStatisticsOnlyIndexOption source)

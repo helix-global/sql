@@ -2,10 +2,10 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal interface ISqlScriptUniqueConstraint
+    internal interface ISqlScriptUniqueConstraint : ISqlConstraint
         {
         SqlClusterOption ClusterOption { get; }
-        IList<ISqlScriptIndexOption> IndexOptions { get; }
+        IList<ISqlIndexOption> IndexOptions { get; }
         IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
         }
     }

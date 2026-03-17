@@ -21,7 +21,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         [UsedImplicitly][Field] public SqlScriptFilterClause FilterClause { get; }
         [UsedImplicitly][Field(Source="IndexedColunms")] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<SqlIdentifier> IncludedColumns { get; }
-        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlScriptIndexOption> Options { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlIndexOption> Options { get; }
 
         #region ctor{IServiceProvider,SqlCreateIndexStatement}
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)

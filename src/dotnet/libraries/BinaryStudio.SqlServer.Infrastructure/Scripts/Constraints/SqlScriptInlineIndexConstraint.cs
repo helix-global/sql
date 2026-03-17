@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlInlineIndexConstraint))]
     internal sealed class SqlScriptInlineIndexConstraint : SqlScriptConstraint<SqlInlineIndexConstraint>
         {
-        [UsedImplicitly][Field] public IList<ISqlScriptIndexOption> Options { get; }
+        [UsedImplicitly][Field] public IList<ISqlIndexOption> Options { get; }
 
         #region ctor{IServiceProvider,SqlInlineIndexConstraint}
         public SqlScriptInlineIndexConstraint(IServiceProvider context,SqlInlineIndexConstraint source)

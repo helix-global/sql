@@ -8,6 +8,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlCompressionDelayIndexOption))]
     internal sealed class SqlScriptCompressionDelayIndexOption : SqlScriptIndexOption<SqlCompressionDelayIndexOption>
         {
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.CompressionDelay; }}
+
         #region ctor{IServiceProvider,SqlCompressionDelayIndexOption}
         public SqlScriptCompressionDelayIndexOption(IServiceProvider context,SqlCompressionDelayIndexOption source)
             : base(context,source)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {
@@ -6,8 +7,9 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         {
             public SqlIdentifier Name { get; }
             public SqlConstraintType Type { get; }
+            public IList<ISqlIndexOption> IndexOptions { get; }
 
-        public string ToString(ISqlObjectFormatter<ISqlConstraint> Formatter)
+            public string ToString(ISqlObjectFormatter<ISqlConstraint> Formatter)
             {
             throw new NotImplementedException();
             }

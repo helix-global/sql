@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -119,13 +120,13 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             #endif
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
-            foreach (var pair in m_tbN) {
+            foreach (var pair in m_tbN/*.Where(i => i.Key == "[dbo].[COM_ADDED_WORKTIME_PLAN]")*/) {
                 var ObjectName = pair.Key;
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
                 MakeFolderIfItNotExist(TargetObjectFolder);
                 (new SSDTTableFormatter()).WriteTo(pair.Value,out var script);
-                File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script);
+                File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script,Encoding.UTF8);
                 }
             return;
             }

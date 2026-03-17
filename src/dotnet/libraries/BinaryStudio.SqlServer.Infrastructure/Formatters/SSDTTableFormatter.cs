@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -49,6 +50,52 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     idevl[j]));
                 }
 
+            #region PRIMARY KEY
+            foreach (var constraint in source.Constraints.OfType<ISqlScriptUniqueConstraint>().Where(i=>i.Type == SqlConstraintType.PrimaryKey)) {
+                var r = new StringBuilder();
+                if (constraint.Name != null)
+                    {
+                    r.Append($"CONSTRAINT [{constraint.Name}] ");
+                    }
+                r.Append($"PRIMARY KEY");
+                r.Append(IsClustered(constraint.ClusterOption) ? " CLUSTERED" : " NONCLUSTERED");
+                r.Append(" (");
+                r.Append(String.Join(", ",constraint.IndexedColumns.Select(i => $"[{i.Name}] {(i.SortOrder == SqlSortOrder.Descending ? "DESC":"ASC")}")));
+                r.Append(")");
+                if (constraint.IndexOptions.Any()) {
+                    r.Append(" WITH");
+                    foreach (var option in constraint.IndexOptions) {
+                        switch (option.Type) {
+                            case SqlIndexOptionType.FillFactor: { r.Append($" (FILLFACTOR = {((ISqlFillFactorIndexOption)option).FillFactor})"); } break;
+                            default: throw new NotSupportedException();
+                            }
+                        }
+                    }
+                colvl.Add(r.ToString());
+                }
+            #endregion
+            #region FOREIGN KEY
+            foreach (var constraint in source.Constraints.OfType<ISqlForeignKeyConstraint>()) {
+                var r = new StringBuilder();
+                r.Append($"CONSTRAINT [{constraint.Name}] FOREIGN KEY");
+                r.Append(" (");
+                r.Append(String.Join(", ",constraint.Columns.Select(i => $"[{i}]")));
+                r.Append($") REFERENCES {constraint.ReferencedTable} (");
+                r.Append(String.Join(", ",constraint.ReferencedColumns.Select(i => $"[{i}]")));
+                r.Append(")");
+                if (constraint.DeleteAction != SqlForeignKeyAction.NoAction) {
+                    r.Append(" ON DELETE ");
+                    switch (constraint.DeleteAction) {
+                        case SqlForeignKeyAction.Cascade   : { r.Append("CASCADE");     } break;
+                        case SqlForeignKeyAction.SetNull   : { r.Append("SET NULL");    } break;
+                        case SqlForeignKeyAction.SetDefault: { r.Append("SET DEFAULT"); } break;
+                        default: throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                colvl.Add(r.ToString());
+                }
+            #endregion
+
             namsz = colvl.Count - 1;
             typsz = source.Columns.Count;
 
@@ -60,7 +107,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 target.WriteLine();
                 j++;
                 }
-            target.WriteLine("  )");
+            target.WriteLine(");");
+            target.WriteLine();
+            }
+        #endregion
+        #region M:IsClustered(SqlClusterOption):Boolean
+        private static Boolean IsClustered(SqlClusterOption value) {
+            return (value == SqlClusterOption.Clustered)
+                || (value == SqlClusterOption.ClusteredColumnStore);
             }
         #endregion
         }

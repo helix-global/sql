@@ -8,6 +8,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlStatisticsNoRecomputeIndexOption))]
     internal sealed class SqlScriptStatisticsNoRecomputeIndexOption : SqlScriptOnOffIndexOption<SqlStatisticsNoRecomputeIndexOption>
         {
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.StatisticsNoRecompute; }}
+
         #region ctor{IServiceProvider,SqlStatisticsNoRecomputeIndexOption}
         public SqlScriptStatisticsNoRecomputeIndexOption(IServiceProvider context,SqlStatisticsNoRecomputeIndexOption source)
             : base(context,source)

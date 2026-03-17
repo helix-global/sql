@@ -1,50 +1,64 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlFragmentIndexOption<T> : SqlFragmentObject<T>,ISqlScriptIndexOption
+    internal abstract class SqlFragmentIndexOption<T> : SqlFragmentObject<T>,ISqlIndexOption
         where T: IndexOption
         {
-        [UsedImplicitly][Field] public IndexOptionKind OptionKind { get; }
+        public SqlIndexOptionType Type { get; }
         public String Phrase { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlFragmentIndexOption(IServiceProvider context,T source)
             : base(context,source)
             {
-            switch (OptionKind) {
-                case IndexOptionKind.PadIndex:                 { Phrase = "PAD_INDEX";                   } break;
-                case IndexOptionKind.FillFactor:               { Phrase = "FILLFACTOR";                  } break;
-                case IndexOptionKind.SortInTempDB:             { Phrase = "SORT_IN_TEMPDB";              } break;
-                case IndexOptionKind.IgnoreDupKey:             { Phrase = "IGNORE_DUP_KEY";              } break;
-                case IndexOptionKind.StatisticsNoRecompute:    { Phrase = "STATISTICS_NORECOMPUTE";      } break;
-                case IndexOptionKind.DropExisting:             { Phrase = "DROP_EXISTING";               } break;
-                case IndexOptionKind.Online:                   { Phrase = "ONLINE";                      } break;
-                case IndexOptionKind.AllowRowLocks:            { Phrase = "ALLOW_ROW_LOCKS";             } break;
-                case IndexOptionKind.AllowPageLocks:           { Phrase = "ALLOW_PAGE_LOCKS";            } break;
-                case IndexOptionKind.MaxDop:                   { Phrase = "MAXDOP";                      } break;
-                case IndexOptionKind.DataCompression:          { Phrase = "DATA_COMPRESSION";            } break;
-                case IndexOptionKind.BucketCount:              { Phrase = "BUCKET_COUNT";                } break;
-                case IndexOptionKind.CompressionDelay:         { Phrase = "COMPRESSION_DELAY";           } break;
-                case IndexOptionKind.Resumable:                { Phrase = "RESUMABLE";                   } break;
-                case IndexOptionKind.MaxDuration:              { Phrase = "MAX_DURATION";                } break;
-                case IndexOptionKind.OptimizeForSequentialKey: { Phrase = "OPTIMIZE_FOR_SEQUENTIAL_KEY"; } break;
-                case IndexOptionKind.WaitAtLowPriority:        { Phrase = "WAIT_AT_LOW_PRIORITY";        } break;
-                case IndexOptionKind.XmlCompression:           { Phrase = "XML_COMPRESSION";             } break;
-                case IndexOptionKind.StatisticsIncremental:    { Phrase = "STATISTICS_INCREMENTAL";      } break;
-                case IndexOptionKind.LobCompaction:            { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.FileStreamOn:             { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.MoveTo:                   { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.Order:                    { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.CompressAllRowGroups:     { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.VectorMetric:             { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.VectorType:               { Phrase = OptionKind.ToString(); } break;
-                case IndexOptionKind.OptimizeForArraySearch:   { Phrase = OptionKind.ToString(); } break;
+            switch (source.OptionKind) {
+                case IndexOptionKind.PadIndex:                 { Type = SqlIndexOptionType.PadIndex;                 Phrase = "PAD_INDEX";                   } break;
+                case IndexOptionKind.FillFactor:               { Type = SqlIndexOptionType.FillFactor;               Phrase = "FILLFACTOR";                  } break;
+                case IndexOptionKind.SortInTempDB:             { Type = SqlIndexOptionType.SortInTempDb;             Phrase = "SORT_IN_TEMPDB";              } break;
+                case IndexOptionKind.IgnoreDupKey:             { Type = SqlIndexOptionType.IgnoreDupKey;             Phrase = "IGNORE_DUP_KEY";              } break;
+                case IndexOptionKind.StatisticsNoRecompute:    { Type = SqlIndexOptionType.StatisticsNoRecompute;    Phrase = "STATISTICS_NORECOMPUTE";      } break;
+                case IndexOptionKind.DropExisting:             { Type = SqlIndexOptionType.DropExisting;             Phrase = "DROP_EXISTING";               } break;
+                case IndexOptionKind.Online:                   { Type = SqlIndexOptionType.Online;                   Phrase = "ONLINE";                      } break;
+                case IndexOptionKind.AllowRowLocks:            { Type = SqlIndexOptionType.AllowRowLocks;            Phrase = "ALLOW_ROW_LOCKS";             } break;
+                case IndexOptionKind.AllowPageLocks:           { Type = SqlIndexOptionType.AllowPageLocks;           Phrase = "ALLOW_PAGE_LOCKS";            } break;
+                case IndexOptionKind.MaxDop:                   { Type = SqlIndexOptionType.MaxDegreeOfParallelism;   Phrase = "MAXDOP";                      } break;
+                case IndexOptionKind.DataCompression:          { Type = SqlIndexOptionType.DataCompression;          Phrase = "DATA_COMPRESSION";            } break;
+                case IndexOptionKind.BucketCount:              { Type = SqlIndexOptionType.BucketCount;              Phrase = "BUCKET_COUNT";                } break;
+                case IndexOptionKind.CompressionDelay:         { Type = SqlIndexOptionType.CompressionDelay;         Phrase = "COMPRESSION_DELAY";           } break;
+                case IndexOptionKind.Resumable:                { Type = SqlIndexOptionType.Resumable;                Phrase = "RESUMABLE";                   } break;
+                case IndexOptionKind.MaxDuration:              { Type = SqlIndexOptionType.MaxDuration;              Phrase = "MAX_DURATION";                } break;
+                case IndexOptionKind.OptimizeForSequentialKey: { Type = SqlIndexOptionType.OptimizeForSequentialKey; Phrase = "OPTIMIZE_FOR_SEQUENTIAL_KEY"; } break;
+                case IndexOptionKind.WaitAtLowPriority:        { Type = SqlIndexOptionType.WaitAtLowPriority;        Phrase = "WAIT_AT_LOW_PRIORITY";        } break;
+                case IndexOptionKind.XmlCompression:           { Type = SqlIndexOptionType.XmlCompression;           Phrase = "XML_COMPRESSION";             } break;
+                case IndexOptionKind.StatisticsIncremental:    { Type = SqlIndexOptionType.StatisticsIncremental;    Phrase = "STATISTICS_INCREMENTAL";      } break;
+                case IndexOptionKind.LobCompaction:            { Type = SqlIndexOptionType.LobCompaction;            Phrase = Type.ToString(); } break;
+                case IndexOptionKind.FileStreamOn:             { Type = SqlIndexOptionType.FileStreamOn;             Phrase = Type.ToString(); } break;
+                case IndexOptionKind.MoveTo:                   { Type = SqlIndexOptionType.MoveTo;                   Phrase = Type.ToString(); } break;
+                case IndexOptionKind.Order:                    { Type = SqlIndexOptionType.Order;                    Phrase = Type.ToString(); } break;
+                case IndexOptionKind.CompressAllRowGroups:     { Type = SqlIndexOptionType.CompressAllRowGroups;     Phrase = Type.ToString(); } break;
+                case IndexOptionKind.VectorMetric:             { Type = SqlIndexOptionType.VectorMetric;             Phrase = Type.ToString(); } break;
+                case IndexOptionKind.VectorType:               { Type = SqlIndexOptionType.VectorType;               Phrase = Type.ToString(); } break;
+                case IndexOptionKind.OptimizeForArraySearch:   { Type = SqlIndexOptionType.OptimizeForArraySearch;   Phrase = Type.ToString(); } break;
                 }
+            }
+        #endregion
+
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return $"{Phrase.ToLowerInvariant()}";
+            }
+        #endregion
+        #region M:FormatInline(ISqlObjectFormatter<ISqlIndexOption>):String
+        public virtual String FormatInline(ISqlObjectFormatter<ISqlIndexOption> formatter)
+            {
+            formatter.WriteTo(this,out var r);
+            return r;
             }
         #endregion
         }

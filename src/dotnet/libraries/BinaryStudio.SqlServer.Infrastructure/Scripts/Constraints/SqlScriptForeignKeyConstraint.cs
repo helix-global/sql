@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlForeignKeyConstraint))]
-    internal sealed class SqlScriptForeignKeyConstraint : SqlScriptConstraint<SqlForeignKeyConstraint>
+    internal sealed class SqlScriptForeignKeyConstraint : SqlScriptConstraint<SqlForeignKeyConstraint>,ISqlForeignKeyConstraint
         {
         [UsedImplicitly][Field] public IList<SqlIdentifier> Columns { get; }
         [UsedImplicitly][Field] public IList<SqlIdentifier> ReferencedColumns { get; }

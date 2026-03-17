@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -8,7 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlMaxDurationIndexOption))]
     internal sealed class SqlScriptMaxDurationIndexOption : SqlScriptIndexOption<SqlMaxDurationIndexOption>
         {
-        public Int32 MaxDuration {get{ return Source.MaxDuration; }}
+        [UsedImplicitly][Field] public Int32 MaxDuration { get; }
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.MaxDuration; }}
 
         #region ctor{IServiceProvider,SqlMaxDurationIndexOption}
         public SqlScriptMaxDurationIndexOption(IServiceProvider context,SqlMaxDurationIndexOption source)

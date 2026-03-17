@@ -8,6 +8,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlOptimizeForSequentialKeyIndexOption))]
     internal sealed class SqlScriptOptimizeForSequentialKeyIndexOption : SqlScriptOnOffIndexOption<SqlOptimizeForSequentialKeyIndexOption>
         {
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.OptimizeForSequentialKey; }}
+
         #region ctor{IServiceProvider,SqlOptimizeForSequentialKeyIndexOption}
         public SqlScriptOptimizeForSequentialKeyIndexOption(IServiceProvider context,SqlOptimizeForSequentialKeyIndexOption source)
             : base(context,source)

@@ -8,6 +8,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(SqlSortedDataIndexOption))]
     internal sealed class SqlScriptSortedDataIndexOption : SqlScriptOnOffIndexOption<SqlSortedDataIndexOption>
         {
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.SortedData; }}
+
         #region ctor{IServiceProvider,SqlSortedDataIndexOption}
         public SqlScriptSortedDataIndexOption(IServiceProvider context,SqlSortedDataIndexOption source)
             : base(context,source)

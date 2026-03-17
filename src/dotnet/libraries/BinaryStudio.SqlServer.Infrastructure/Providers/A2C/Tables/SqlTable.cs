@@ -16,9 +16,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         public IList<ISqlConstraint> Constraints { get; } = new List<ISqlConstraint>();
         public IList<ISqlIndex> Indexes { get; } = new List<ISqlIndex>();
         public IList<ISqlTrigger> Triggers { get; } = new List<ISqlTrigger>();
+        private SqlScriptCreateTableStatement source;
 
         public SqlTable(SqlScriptCreateTableStatement source)
             {
+            this.source = source;
             QualifiedName = source.Name;
             Columns = source.Definition.ColumnDefinitions.OfType<ISqlColumn>().AsReadOnly();
             Constraints.AddRange(source.Definition.Constraints);

@@ -26,9 +26,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 switch (source.Type) {
                     case SqlDataType.Time:
                     case SqlDataType.DateTime2:
-                    case SqlDataType.DateTimeOffset:
                         if ((source.Scale != DEFAULT_TIME_SCALE) && (source.Scale != null)) {
                             target.Write($" ({source.Scale.Value})");
+                            }
+                        break;
+                    case SqlDataType.DateTimeOffset:
+                        if (source.Scale != null) {
+                            target.Write($" ({source.Scale.Value})");
+                            }
+                        else
+                            {
+                            target.Write($" (7)");
                             }
                         break;
                     case SqlDataType.Float:
@@ -46,7 +54,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             }
                         else
                             {
-                            target.Write($" ({source.Precision},{source.Scale})");
+                            target.Write($" ({source.Precision}, {source.Scale})");
                             }
                         break;
                     case SqlDataType.VarBinary:

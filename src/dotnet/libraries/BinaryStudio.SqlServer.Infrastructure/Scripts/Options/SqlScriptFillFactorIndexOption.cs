@@ -7,9 +7,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlFillFactorIndexOption))]
-    internal sealed class SqlScriptFillFactorIndexOption : SqlScriptIndexOption<SqlFillFactorIndexOption>
+    internal sealed class SqlScriptFillFactorIndexOption : SqlScriptIndexOption<SqlFillFactorIndexOption>,ISqlFillFactorIndexOption
         {
         [UsedImplicitly][Field] public Int32 FillFactor { get; }
+        public override SqlIndexOptionType Type { get { return SqlIndexOptionType.FillFactor; }}
 
         #region ctor{IServiceProvider,SqlFillFactorIndexOption}
         public SqlScriptFillFactorIndexOption(IServiceProvider context,SqlFillFactorIndexOption source)
