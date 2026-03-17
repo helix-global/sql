@@ -13,5 +13,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         SqlLockEscalationMethod LockEscalation { get; }
         IList<ISqlColumn> Columns { get; }
         IList<ISqlConstraint> Constraints { get; }
+        IList<ISqlIndex> Indexes { get; }
         }
     }

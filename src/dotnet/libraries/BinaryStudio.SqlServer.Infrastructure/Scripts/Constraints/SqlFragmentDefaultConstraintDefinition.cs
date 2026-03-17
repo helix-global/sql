@@ -8,9 +8,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(DefaultConstraintDefinition))]
-    internal class SqlFragmentDefaultConstraintDefinition : SqlFragmentConstraintDefinition<DefaultConstraintDefinition>
+    internal class SqlFragmentDefaultConstraintDefinition : SqlFragmentConstraintDefinition<DefaultConstraintDefinition>,ISqlDefaultConstraint
         {
         public override SqlConstraintType Type { get{ return SqlConstraintType.Default; }}
+        [UsedImplicitly][Field] public ISqlScriptScalarExpression Expression { get; }
+        String ISqlDefaultConstraint.Expression { get { return Expression.ToString(); }}
 
         #region ctor{IServiceProvider,DefaultConstraintDefinition}
         public SqlFragmentDefaultConstraintDefinition(IServiceProvider context,DefaultConstraintDefinition source)

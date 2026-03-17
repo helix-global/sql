@@ -8,5 +8,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         IList<SqlIdentifier> ReferencedColumns { get; }
         SqlObjectIdentifier ReferencedTable { get; }
         SqlForeignKeyAction DeleteAction { get; }
+        SqlForeignKeyAction UpdateAction { get; }
         }
     }

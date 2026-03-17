@@ -6,6 +6,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         SqlClusterOption ClusterOption { get; }
         IList<ISqlIndexOption> IndexOptions { get; }
-        IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
+        IList<ISqlIndexedColumn> IndexedColumns { get; }
         }
     }

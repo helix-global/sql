@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
@@ -22,6 +23,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         [UsedImplicitly][Field(Source="IndexedColunms")] public IList<SqlScriptIndexedColumn> IndexedColumns { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<SqlIdentifier> IncludedColumns { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlIndexOption> Options { get; }
+        IList<ISqlIndexedColumn> ISqlIndex.IndexedColumns { get { return IndexedColumns.OfType<ISqlIndexedColumn>().AsReadOnly(); }}
+        String ISqlIndex.FilterExpression { get { return FilterClause?.FilterExpression?.ToString(); }}
 
         #region ctor{IServiceProvider,SqlCreateIndexStatement}
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)

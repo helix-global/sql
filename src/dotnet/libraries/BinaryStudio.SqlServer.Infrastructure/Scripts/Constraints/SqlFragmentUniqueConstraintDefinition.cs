@@ -13,7 +13,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlClusterOption ClusterOption { get; } = SqlClusterOption.Default;
         [UsedImplicitly][Field] public Boolean IsPrimaryKey { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlIndexOption> IndexOptions { get; }
-        [UsedImplicitly][Field(EmptyIfNull = true,Source = "Columns")] public IList<ISqlScriptIndexedColumn> IndexedColumns { get; }
+        [UsedImplicitly][Field(EmptyIfNull = true,Source = "Columns")] public IList<ISqlIndexedColumn> IndexedColumns { get; }
         public override SqlConstraintType Type { get; }
 
         #region ctor{IServiceProvider,UniqueConstraintDefinition}

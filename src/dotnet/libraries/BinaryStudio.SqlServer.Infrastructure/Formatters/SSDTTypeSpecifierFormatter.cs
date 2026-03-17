@@ -47,14 +47,21 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     case SqlDataType.Decimal:
                     case SqlDataType.Numeric:
                         if (source.Scale == DEFAULT_DECIMAL_SCALE) {
-                            if (source.Precision != DEFAULT_DECIMAL_PRECISION)
+                            if ((source.Precision != DEFAULT_DECIMAL_PRECISION) && (source.Precision != null))
                                 {
-                                target.Write($" ({source.Precision})");
+                                target.Write($" ({source.Precision.Value})");
                                 }
                             }
                         else
                             {
-                            target.Write($" ({source.Precision}, {source.Scale})");
+                            if (source.Scale != null)
+                                {
+                                target.Write($" ({source.Precision}, {source.Scale})");
+                                }
+                            else
+                                {
+                                target.Write($" ({source.Precision})");
+                                }
                             }
                         break;
                     case SqlDataType.VarBinary:

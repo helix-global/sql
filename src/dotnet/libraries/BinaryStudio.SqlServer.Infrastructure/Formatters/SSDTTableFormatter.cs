@@ -1,5 +1,4 @@
-﻿using BinaryStudio.SqlServer.Infrastructure.Formatters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,9 +28,32 @@ namespace BinaryStudio.SqlServer.Infrastructure
             foreach (var column in source.Columns) {
                 namvl[j] = $"[{column.Name}]";
                 typvl[j] = column.IsComputed ? "AS" : column.TypeSpecifier.ToString(SSDTTypeSpecifierFormatter.Instance);
-                nulvl[j] = column.IsComputed
-                    ? $" {((ISqlComputedColumn)column).Expression}"
-                    : column.Constraints.Any(i => i.Type == SqlConstraintType.NotNull) ? " NOT NULL" : " NULL";
+                if (column.IsComputed)
+                    {
+                    nulvl[j] = $" {((ISqlComputedColumn)column).Expression}";
+                    }
+                else
+                    {
+                    var r = new StringBuilder();
+                    foreach (var constraint in column.Constraints) {
+                        switch (constraint.Type) {
+                            case SqlConstraintType.NotNull : { r.Append(" NOT NULL");} break;
+                            case SqlConstraintType.Null    : { r.Append(" NULL");    } break;
+                            case SqlConstraintType.Identity: break;
+                            case SqlConstraintType.Default:
+                                {
+                                if (constraint.Name != null) {
+                                    r.Append($" CONSTRAINT [{constraint.Name}]");
+                                    }
+                                r.Append($" DEFAULT {((ISqlDefaultConstraint)constraint).Expression}");
+                                }
+                                break;
+                            default: throw new NotSupportedException();
+                            }
+                        }
+                    //r.Append(column.Constraints.Any(i => i.Type == SqlConstraintType.NotNull) ? " NOT NULL" : " NULL");
+                    nulvl[j] = r.ToString();
+                    }
 
                 var identity = column.Constraints.FirstOrDefault(i => i.Type == SqlConstraintType.Identity);
                 idevl[j] = (identity != null)? $" {identity.ToString(SSDTConstraintFormatter.Instance)}" : String.Empty;
@@ -74,6 +96,30 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 colvl.Add(r.ToString());
                 }
             #endregion
+            #region UNIQUE CONSTRAINT
+            foreach (var constraint in source.Constraints.OfType<ISqlScriptUniqueConstraint>().Where(i=>i.Type == SqlConstraintType.Unique)) {
+                var r = new StringBuilder();
+                if (constraint.Name != null)
+                    {
+                    r.Append($"CONSTRAINT [{constraint.Name}] ");
+                    }
+                r.Append($"UNIQUE");
+                r.Append(IsClustered(constraint.ClusterOption) ? " CLUSTERED" : " NONCLUSTERED");
+                r.Append(" (");
+                r.Append(String.Join(", ",constraint.IndexedColumns.Select(i => $"[{i.Name}] {(i.SortOrder == SqlSortOrder.Descending ? "DESC":"ASC")}")));
+                r.Append(")");
+                if (constraint.IndexOptions.Any()) {
+                    r.Append(" WITH");
+                    foreach (var option in constraint.IndexOptions) {
+                        switch (option.Type) {
+                            case SqlIndexOptionType.FillFactor: { r.Append($" (FILLFACTOR = {((ISqlFillFactorIndexOption)option).FillFactor})"); } break;
+                            default: throw new NotSupportedException();
+                            }
+                        }
+                    }
+                colvl.Add(r.ToString());
+                }
+            #endregion
             #region FOREIGN KEY
             foreach (var constraint in source.Constraints.OfType<ISqlForeignKeyConstraint>()) {
                 var r = new StringBuilder();
@@ -85,6 +131,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 r.Append(")");
                 if (constraint.DeleteAction != SqlForeignKeyAction.NoAction) {
                     r.Append(" ON DELETE ");
+                    switch (constraint.DeleteAction) {
+                        case SqlForeignKeyAction.Cascade   : { r.Append("CASCADE");     } break;
+                        case SqlForeignKeyAction.SetNull   : { r.Append("SET NULL");    } break;
+                        case SqlForeignKeyAction.SetDefault: { r.Append("SET DEFAULT"); } break;
+                        default: throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                if (constraint.UpdateAction != SqlForeignKeyAction.NoAction) {
+                    r.Append(" ON UPDATE ");
                     switch (constraint.DeleteAction) {
                         case SqlForeignKeyAction.Cascade   : { r.Append("CASCADE");     } break;
                         case SqlForeignKeyAction.SetNull   : { r.Append("SET NULL");    } break;
@@ -109,6 +164,42 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             target.WriteLine(");");
             target.WriteLine();
+
+            foreach (var index in source.Indexes.OrderByDescending(i=>i.Name)) {
+                if (source.Constraints.Any(i => SqlIdentifier.Equals(i.Name,index.Name))) { continue; }
+                target.WriteLine();
+                target.WriteLine("GO");
+                target.Write("CREATE");
+                if (index.IsUnique)
+                    {
+                    target.Write(" UNIQUE");
+                    }
+                target.Write(IsClustered(index.ClusterOption) ? " CLUSTERED" : " NONCLUSTERED");
+                target.WriteLine($" INDEX [{index.Name}]");
+                target.Write($"    ON {index.TargetObject}(");
+                target.Write(String.Join(", ",index.IndexedColumns.Select(i=> $"[{i.Name}] {(i.SortOrder == SqlSortOrder.Descending ? "DESC":"ASC")}")));
+                target.Write(")");
+                if (index.IncludedColumns.Any()) {
+                    target.WriteLine();
+                    target.Write("    INCLUDE(");
+                    target.Write(String.Join(", ",index.IncludedColumns.Select(i=>$"[{i}]")));
+                    target.Write(")");
+                    }
+                if (!String.IsNullOrWhiteSpace(index.FilterExpression)) {
+                    target.Write($" WHERE ({index.FilterExpression})");
+                    }
+                if (index.Options.Any()) {
+                    target.Write(" WITH");
+                    foreach (var option in index.Options) {
+                        switch (option.Type) {
+                            case SqlIndexOptionType.FillFactor: { target.Write($" (FILLFACTOR = {((ISqlFillFactorIndexOption)option).FillFactor})"); } break;
+                            default: throw new NotSupportedException();
+                            }
+                        }
+                    }
+                target.WriteLine(";");
+                target.WriteLine();
+                }
             }
         #endregion
         #region M:IsClustered(SqlClusterOption):Boolean

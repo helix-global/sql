@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace BinaryStudio.SqlServer.Infrastructure.Formatters
+namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class SSDTConstraintFormatter : SqlObjectFormatter<ISqlConstraint>
         {

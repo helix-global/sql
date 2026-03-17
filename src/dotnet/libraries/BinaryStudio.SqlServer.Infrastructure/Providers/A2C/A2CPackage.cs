@@ -120,7 +120,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             #endif
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
-            foreach (var pair in m_tbN/*.Where(i => i.Key == "[dbo].[COM_ADDED_WORKTIME_PLAN]")*/) {
+            foreach (var pair in m_tbN/*.Where(i => i.Key == "[dbo].[COM_CURRENCIES]")*/) {
                 var ObjectName = pair.Key;
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");

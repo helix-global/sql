@@ -1,6 +1,6 @@
 ﻿namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal interface ISqlScriptIndexedColumn
+    public interface ISqlIndexedColumn
         {
         SqlSortOrder SortOrder { get; }
         SqlIdentifier Name { get; }

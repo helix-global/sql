@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(ColumnWithSortOrder))]
-    internal class SqlFragmentIndexedColumn : SqlFragmentObject<ColumnWithSortOrder>, ISqlScriptIndexedColumn
+    internal class SqlFragmentIndexedColumn : SqlFragmentObject<ColumnWithSortOrder>, ISqlIndexedColumn
         {
         [UsedImplicitly][Field] public SqlSortOrder SortOrder { get; }
         public SqlIdentifier Name { get{ return new SqlIdentifier(Source.Column.MultiPartIdentifier[0].Value); }}

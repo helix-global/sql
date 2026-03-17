@@ -7,7 +7,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlIndexedColumn))]
-    internal sealed class SqlScriptIndexedColumn : SqlScriptCodeObject<SqlIndexedColumn>,ISqlScriptIndexedColumn
+    internal sealed class SqlScriptIndexedColumn : SqlScriptCodeObject<SqlIndexedColumn>,ISqlIndexedColumn
         {
         [UsedImplicitly][Field] public SqlSortOrder SortOrder { get; }
         [UsedImplicitly][Field] public SqlIdentifier Name { get; }
