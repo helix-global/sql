@@ -5,9 +5,9 @@ using SqlCodeDomIdentifier=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.S
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [TypeConverter(typeof(SqlIdentifierConverter))]
-    public class SqlIdentifier : IEquatable<SqlIdentifier>,IComparable<SqlIdentifier>
+    public class SqlIdentifier : IEquatable<SqlIdentifier>,IComparable<SqlIdentifier>,IEquatable<String>
         {
-        public static readonly SqlIdentifier Null = new NullSqlIdentifier();
+        public static readonly SqlIdentifier Null    = new NullSqlIdentifier();
         public static readonly SqlIdentifier Missing = new MissingSqlIdentifier();
         public String Value { get; }
 
@@ -33,7 +33,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         #region M:IsNullOrEmpty(SqlIdentifier):Boolean
         public static Boolean IsNullOrEmpty(SqlIdentifier value) {
-            if (value == null) { return true; }
+            if (ReferenceEquals(value,null))   { return true; }
             if (value is NullSqlIdentifier)    { return true; }
             if (value is MissingSqlIdentifier) { return true; }
             return String.IsNullOrWhiteSpace(value.Value);
@@ -62,9 +62,22 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <param name="other">An object to compare with this object.</param>
         /// <returns><see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
         public Boolean Equals(SqlIdentifier other) {
-            if (ReferenceEquals(null, other)) { return false; }
-            if (ReferenceEquals(this, other)) { return true;  }
+            if (ReferenceEquals(null,other)) {
+                return ReferenceEquals(this,Null);
+                }
+            if (ReferenceEquals(this,other)) { return true;  }
             return String.Equals(Value,other.Value);
+            }
+        #endregion
+        #region M:Equals(String):Boolean
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns><see langword="true"/> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+        public Boolean Equals(String other) {
+            if (ReferenceEquals(null,other)) {
+                return ReferenceEquals(this,Null);;
+                }
+            return String.Equals(Value,other);
             }
         #endregion
         #region M:Equals(Object):Boolean
@@ -77,6 +90,29 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return (other is SqlIdentifier r) && Equals(r);
             }
         #endregion
+        #region M:Equals(SqlIdentifier,SqlIdentifier):Boolean
+        public static Boolean Equals(SqlIdentifier x,SqlIdentifier y) {
+            if (ReferenceEquals(x,y)) { return true; }
+            if (ReferenceEquals(x,null) && ReferenceEquals(y,Null)) { return true; }
+            if (ReferenceEquals(y,null) && ReferenceEquals(x,Null)) { return true; }
+            return !ReferenceEquals(x,null)
+                ? x.Equals(y)
+                : false;
+            }
+        #endregion
+        #region M:Equals(SqlIdentifier,String):Boolean
+        public static Boolean Equals(SqlIdentifier x,String y) {
+            if ((ReferenceEquals(x,null)) && (ReferenceEquals(y,null))) { return true; }
+            return !ReferenceEquals(x,null)
+                ? x.Equals(y)
+                : false;
+            }
+        #endregion
+        #region M:Equals(String,SqlIdentifier):Boolean
+        public static Boolean Equals(String x,SqlIdentifier y) {
+            return Equals(y,x);
+            }
+        #endregion
         #region M:GetHashCode:Int32
         /// <summary>Serves as the default hash function.</summary>
         /// <returns>A hash code for the current object.</returns>
@@ -84,14 +120,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return Value != null
                 ? Value.GetHashCode()
                 : 0;
-            }
-        #endregion
-        #region M:Equals(SqlIdentifier,SqlIdentifier):Boolean
-        public static Boolean Equals(SqlIdentifier x,SqlIdentifier y) {
-            if (ReferenceEquals(x,y)) { return true; }
-            return !ReferenceEquals(x,null)
-                ? x.Equals(y)
-                : false;
             }
         #endregion
         #region M:CompareTo(SqlIdentifier):Int32
@@ -118,6 +146,31 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return !ReferenceEquals(x,null)
                 ? x.CompareTo(y)
                 : -1;
+            }
+        #endregion
+
+        #region operator ==(SqlIdentifier,String):Boolean
+        public static Boolean operator ==(SqlIdentifier x,String y)
+            {
+            return Equals(x,y);
+            }
+        #endregion
+        #region operator !=(SqlIdentifier,String):Boolean
+        public static Boolean operator !=(SqlIdentifier x,String y)
+            {
+            return !Equals(x,y);
+            }
+        #endregion
+        #region operator ==(SqlIdentifier,SqlIdentifier):Boolean
+        public static Boolean operator ==(SqlIdentifier x,SqlIdentifier y)
+            {
+            return Equals(x,y);
+            }
+        #endregion
+        #region operator !=(SqlIdentifier,SqlIdentifier):Boolean
+        public static Boolean operator !=(SqlIdentifier x,SqlIdentifier y)
+            {
+            return !Equals(x,y);
             }
         #endregion
 

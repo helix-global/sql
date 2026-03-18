@@ -69,7 +69,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public String ToString(ISqlObjectFormatter<ISqlTypeSpecifier> Formater) {
-            Formater.WriteTo(this,out var r);
+            Formater.WriteTo(Context,this,out var r);
             return r;
             }
         #endregion

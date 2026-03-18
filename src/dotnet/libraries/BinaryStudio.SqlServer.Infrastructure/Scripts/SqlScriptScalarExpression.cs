@@ -12,6 +12,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected SqlScriptScalarExpression(IServiceProvider context,T source)
             : base(context, source)
             {
+            return;
             }
         #endregion
 

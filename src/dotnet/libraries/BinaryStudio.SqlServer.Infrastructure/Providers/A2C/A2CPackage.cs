@@ -20,7 +20,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class A2CPackage: SqlModelObject
+    public class A2CPackage: SqlModelObject,ISqlExtendedPropertyResolver
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
@@ -120,12 +120,14 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             #endif
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
+            //UpdateColumnDescription("[dbo].[DEF_CUSTOM_VIEWS]","ITEMTYPEID","ID типа item'а для кастомных view когда он (view) сосздается с закладки с выбранным типом (KB2089)");
+            //UpdateTableDescription("[dbo].[EQ_OPERATION_PARAMS]","Operation Equipment Parameters");
             foreach (var pair in m_tbN/*.Where(i => i.Key == "[dbo].[COM_CURRENCIES]")*/) {
                 var ObjectName = pair.Key;
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
                 MakeFolderIfItNotExist(TargetObjectFolder);
-                (new SSDTTableFormatter()).WriteTo(pair.Value,out var script);
+                (new SSDTTableFormatter()).WriteTo(this,pair.Value,out var script);
                 File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script,Encoding.UTF8);
                 }
             return;
@@ -218,7 +220,6 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 Boolean? IsAnsiNullsOn = null;
                 Boolean? IsQuotedIdentifier = null;
                 SqlTable TargetTable = null;
-                ISqlAssembly Assembly = null;
                 foreach (var statement in source.SelectMany(i => i.Statements)) {
                     var flag = false;
                     #region SET..
@@ -364,6 +365,37 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             if (!Directory.Exists(path)) {
                 Directory.CreateDirectory(path);
                 }
+            }
+        #endregion
+        #region M:UpdateColumnDescription(String,String,String)
+        private void UpdateColumnDescription(String TableName,String ColumnName,String Description) {
+            var r = m_tbN[SqlObjectIdentifier.Parse(TableName)].Columns.FirstOrDefault(i => i.Name == ColumnName);
+            if (r != null) {
+                r.Description = Description;
+                }
+            }
+        #endregion
+        #region M:UpdateTableDescription(String,String)
+        private void UpdateTableDescription(String TableName,String Description) {
+            m_tbN[SqlObjectIdentifier.Parse(TableName)].Description = Description;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<SqlExtendedPropertyIdentity,String>.GetObject(SqlExtendedPropertyIdentity):String
+        String ISqlObjectResolver<SqlExtendedPropertyIdentity,String>.GetObject(SqlExtendedPropertyIdentity key) {
+            return m_properties.TryGetValue(key,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:GetService(Type):Object
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <param name="service">An object that specifies the type of service object to get.</param>
+        /// <returns>A service object of type <paramref name="service"/>.
+        /// -or-
+        /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
+        protected override Object GetService(Type service) {
+            if (service == typeof(ISqlExtendedPropertyResolver)) { return this; }
+            return base.GetService(service);
             }
         #endregion
 

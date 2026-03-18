@@ -7,19 +7,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         public static readonly ISqlObjectFormatter<ISqlConstraint> Instance = new DEFConstraintFormatter();
 
-        #region M:WriteTo(ISqlConstraint,TextWriter)
-        public override void WriteTo(ISqlConstraint source,TextWriter target) {
+        #region M:WriteTo(IServiceProvider,ISqlConstraint,TextWriter)
+        public override void WriteTo(IServiceProvider provider,ISqlConstraint source,TextWriter target) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (target == null) { throw new ArgumentNullException(nameof(target)); }
-            if (source is ISqlColumnIdentity ColumnIdentity) { WriteTo(ColumnIdentity,target); }
+            if (source is ISqlColumnIdentity ColumnIdentity) { WriteTo(provider,ColumnIdentity,target); }
             else
                 {
                 throw new NotSupportedException();
                 }
             }
         #endregion
-        #region M:WriteTo(ISqlColumnIdentity,TextWriter)
-        private void WriteTo(ISqlColumnIdentity source,TextWriter target) {
+        #region M:WriteTo(IServiceProvider,ISqlColumnIdentity,TextWriter)
+        private void WriteTo(IServiceProvider provider,ISqlColumnIdentity source,TextWriter target) {
             target.Write("identity");
             if ((source.Increment != null) && (source.Seed != null)) {
                 target.Write($"({source.Seed},{source.Increment})");

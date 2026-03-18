@@ -92,7 +92,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             var identifiers = new List<SqlIdentifier>();
             SqlIdentifier identifier;
-            while ((identifier = ReadNextIdentifier(reader,escape)) != null)
+            while (!ReferenceEquals(identifier = ReadNextIdentifier(reader,escape),null))
                 {
                 identifiers.Add(identifier);
                 }

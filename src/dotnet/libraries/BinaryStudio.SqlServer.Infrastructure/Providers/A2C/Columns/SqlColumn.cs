@@ -10,6 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
         public Boolean IsComputed { get; }
         public ISqlTypeSpecifier TypeSpecifier { get; }
         public IList<ISqlConstraint> Constraints { get; }
+        public String Description { get;set; }
 
         public SqlColumn(ISqlQualifiedObject owner,ISqlColumn source) {
             TypeSpecifier = source.TypeSpecifier;
@@ -17,6 +18,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             Name = source.Name;
             QualifiedName = owner.QualifiedName + source.Name;
             IsComputed = source.IsComputed;
+            Description = source.Description;
             }
 
         #region M:ToString:String

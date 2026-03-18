@@ -21,7 +21,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         #region M:ToString:String
         public override String ToString() {
-            return (Name != null)
+            return !ReferenceEquals(Name,null)
                 ? Name.ToString()
                 : Type.ToString();
             }

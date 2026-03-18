@@ -14,7 +14,7 @@ using System.Xml.Serialization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public abstract class SqlModelObject : IXmlSerializable
+    public abstract class SqlModelObject : IXmlSerializable,IServiceProvider
         {
         public IServiceProvider Context { get; }
 
@@ -412,6 +412,37 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             match = Regex.Match(input,pattern);
             return match.Success;
+            }
+        #endregion
+        #region M:GetService(Type):Object
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <param name="service">An object that specifies the type of service object to get.</param>
+        /// <returns>A service object of type <paramref name="service"/>.
+        /// -or-
+        /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
+        Object IServiceProvider.GetService(Type service) {
+            return GetService(service);
+            }
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <param name="service">An object that specifies the type of service object to get.</param>
+        /// <returns>A service object of type <paramref name="service"/>.
+        /// -or-
+        /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
+        protected virtual Object GetService(Type service) {
+            if (service == GetType()) { return this; }
+            return null;
+            }
+        #endregion
+        #region M:GetService<T>:T
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <typeparam name="T">The type of service object to get.</typeparam>
+        /// <returns>A service object of type <typeparamref name="T"/>.
+        /// -or-
+        /// <see langword="null"/> if there is no service object of type <typeparamref name="T"/>.</returns>
+        public T GetService<T>()
+            where T:class
+            {
+            return (T)GetService(typeof(T));
             }
         #endregion
 

@@ -28,7 +28,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:FormatInline(ISqlObjectFormatter<ISqlIndexOption>):String
         public virtual String FormatInline(ISqlObjectFormatter<ISqlIndexOption> formatter)
             {
-            formatter.WriteTo(this,out var r);
+            formatter.WriteTo(Context,this,out var r);
             return r;
             }
         #endregion

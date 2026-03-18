@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public abstract class SqlObjectFormatter<T> : ISqlObjectFormatter<T>
+    public abstract class SqlObjectFormatter<T> : SqlModelObject,ISqlObjectFormatter<T>
         {
         #region ctor
         protected SqlObjectFormatter()
@@ -12,14 +12,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        public abstract void WriteTo(T source,TextWriter target);
+        public abstract void WriteTo(IServiceProvider provider,T source,TextWriter target);
 
-        #region M:WriteTo(T,{out}String})
-        public void WriteTo(T source,out String target) {
+        #region M:WriteTo(IServiceProvider,T,{out}String})
+        public void WriteTo(IServiceProvider provider,T source,out String target) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             var r = new StringBuilder();
             using (var writer = new StringWriter(r)) {
-                WriteTo(source,writer);
+                WriteTo(provider,source,writer);
                 }
             target = r.ToString();
             }

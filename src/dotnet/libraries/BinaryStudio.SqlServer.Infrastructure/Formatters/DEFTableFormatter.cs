@@ -9,8 +9,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         public static readonly ISqlObjectFormatter<ISqlTable> Instance = new DEFTableFormatter();
 
-        #region M:WriteTo(T,TextWriter)
-        public override void WriteTo(ISqlTable source,TextWriter target) {
+        #region M:WriteTo(IServiceProvider,T,TextWriter)
+        public override void WriteTo(IServiceProvider provider,ISqlTable source,TextWriter target) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (target == null) { throw new ArgumentNullException(nameof(target)); }
             target.WriteLine($"create table {source.QualifiedName} (");

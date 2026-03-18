@@ -12,8 +12,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         public static readonly ISqlObjectFormatter<ISqlTypeSpecifier> Instance = new SSDTTypeSpecifierFormatter();
 
-        #region M:WriteTo(ISqlTypeSpecifier,TextWriter)
-        public override void WriteTo(ISqlTypeSpecifier source,TextWriter target)
+        #region M:WriteTo(IServiceProvider,ISqlTypeSpecifier,TextWriter)
+        public override void WriteTo(IServiceProvider provider,ISqlTypeSpecifier source,TextWriter target)
             {
             if (source.Type != SqlDataType.None) {
                 switch (source.Type) {

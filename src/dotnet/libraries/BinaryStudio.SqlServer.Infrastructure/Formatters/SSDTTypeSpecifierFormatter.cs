@@ -12,8 +12,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         public static readonly ISqlObjectFormatter<ISqlTypeSpecifier> Instance = new SSDTTypeSpecifierFormatter();
 
-        #region M:WriteTo(ISqlTypeSpecifier,TextWriter)
-        public override void WriteTo(ISqlTypeSpecifier source,TextWriter target) {
+        #region M:WriteTo(IServiceProvider,ISqlTypeSpecifier,TextWriter)
+        public override void WriteTo(IServiceProvider provider,ISqlTypeSpecifier source,TextWriter target) {
             if (source.Type != SqlDataType.None) {
                 switch (source.Type) {
                     case SqlDataType.Variant:
@@ -43,6 +43,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         if ((source.Precision != DEFAULT_FLOAT_PRECISION) && (source.Precision != null)) {
                             target.Write($" ({source.Precision})");
                             }
+                        else
+                            {
+                            target.Write($" (53)");
+                            }
                         break;
                     case SqlDataType.Decimal:
                     case SqlDataType.Numeric:
@@ -68,7 +72,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     case SqlDataType.VarChar:
                     case SqlDataType.NVarChar:
                         if (source.IsMaximum || (source.Length == -1)) {
-                            target.Write($" (MAX))");
+                            target.Write($" (MAX)");
                             }
                         else
                             {

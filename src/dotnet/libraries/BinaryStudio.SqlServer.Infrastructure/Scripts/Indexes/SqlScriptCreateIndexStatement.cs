@@ -30,7 +30,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlScriptCreateIndexStatement(IServiceProvider context,SqlCreateIndexStatement source)
             : base(context,source)
             {
-            if (TargetObject.SchemaName.Equals(SqlIdentifier.Null)) { TargetObject = "dbo" + TargetObject; }
+            if (TargetObject.SchemaName == SqlIdentifier.Null) { TargetObject = "dbo" + TargetObject; }
             QualifiedName = TargetObject + Name;
             return;
             }

@@ -6,6 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
     {
     internal class SqlTable : ISqlTable,ISqlQualifiedObject
         {
+        public String Description { get;set; }
         public SqlObjectIdentifier QualifiedName { get; }
         public Boolean IsAnsiNullsOn { get;set; }
         public Boolean IsLargeValueTypesOutOfRow { get;set; }

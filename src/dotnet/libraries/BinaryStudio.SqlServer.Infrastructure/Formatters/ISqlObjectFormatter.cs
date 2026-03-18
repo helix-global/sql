@@ -4,6 +4,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     public interface ISqlObjectFormatter<T>
         {
-        void WriteTo(T source,out String target);
+        void WriteTo(IServiceProvider provider,T source,out String target);
         }
     }
