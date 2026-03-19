@@ -8,7 +8,7 @@
     [Manufacturer] VARCHAR (50)  NULL,
     [Model]        VARCHAR (250) NULL,
     [DeviceName]   VARCHAR (250) NULL,
-    [UpdateDT]     DATETIME      CONSTRAINT [DF_temp_PUSH_UpdateDT] DEFAULT (getdate()) NOT NULL,
+    [UpdateDT]     DATETIME      DEFAULT (getdate()) NOT NULL,
     [UserID]       INT           NOT NULL,
     CONSTRAINT [PK_Table_PUSH_ID] PRIMARY KEY CLUSTERED ([ID] ASC)
 );

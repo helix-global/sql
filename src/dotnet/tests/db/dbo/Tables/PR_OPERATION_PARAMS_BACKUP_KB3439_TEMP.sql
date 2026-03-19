@@ -16,6 +16,6 @@
     [SN]         NVARCHAR (50)    NULL,
     [TYPEID]     INT              NULL,
     [NEW_VAL]    SQL_VARIANT      NULL,
-    [CONVERTED]  BIT              CONSTRAINT [DF_PR_OPERATION_PARAMS_BACKUP_KB3439_TEMP_CONVERTED] DEFAULT ((0)) NULL
+    [CONVERTED]  BIT              DEFAULT ((0)) NULL
 );
 

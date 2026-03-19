@@ -23,7 +23,7 @@
     [IS_SKV]           SMALLINT      NULL,
     [IS_KLIR]          SMALLINT      NULL,
     [USE_CODE_COUNTRY] VARCHAR (3)   NULL,
-    [GID]              VARCHAR (38)  CONSTRAINT [DF__COM_CURRENC__GID__37A5467C] DEFAULT (newid()) NOT NULL,
+    [GID]              VARCHAR (38)  DEFAULT (newid()) NOT NULL,
     [S_CR]             INT           NULL,
     [S_MR]             INT           NULL,
     [S_CDT]            DATETIME      NULL,

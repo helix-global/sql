@@ -26,7 +26,7 @@
     [FAILURE_DESCRIPTION] NTEXT            NULL,
     [RESPSERV]            INT              NULL,
     [REMINDER_DATETIME]   DATETIME         NULL,
-    [REMINDER_SENT]       INT              CONSTRAINT [DF_SM_SERVICECASE_REMINDER_SENT] DEFAULT ((0)) NULL,
+    [REMINDER_SENT]       INT              DEFAULT ((0)) NULL,
     [REMINDER_USERID]     INT              NULL,
     [CONTACTID]           INT              NULL,
     [CONTACTID_4SERVORD]  INT              NULL,

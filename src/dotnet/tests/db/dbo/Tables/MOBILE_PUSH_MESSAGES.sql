@@ -5,7 +5,7 @@
     [BODY]           VARCHAR (MAX)   NULL,
     [DOCOID]         INT             NULL,
     [DOCID]          INT             NULL,
-    [CR_DT]          DATETIME        CONSTRAINT [DF_MOBILE_PUSH_MESSAGES_CR_DT] DEFAULT (getdate()) NULL,
+    [CR_DT]          DATETIME        DEFAULT (getdate()) NULL,
     [LASTSEND_DT]    DATETIME        NULL,
     [ISSENDED]       BIT             NULL,
     [CANCELED]       BIT             NULL,
