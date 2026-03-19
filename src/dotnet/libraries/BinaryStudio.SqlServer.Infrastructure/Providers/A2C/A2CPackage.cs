@@ -129,7 +129,8 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 (new SSDTTableFormatter{
                     IgnorePrimaryKeySystemName = true,
                     IgnoreDefaultConstraintSystemName = true,
-                    IgnorePrimaryKeyOptions = true
+                    IgnorePrimaryKeyOptions = true,
+                    IgnoreIndexOptions = true
                     }).WriteTo(this,pair.Value,out var script);
                 File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script,Encoding.UTF8);
                 }

@@ -15,6 +15,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public Boolean IgnorePrimaryKeySystemName { get;set; }
         public Boolean IgnorePrimaryKeyOptions { get;set; }
         public Boolean IgnoreDefaultConstraintSystemName { get;set; }
+        public Boolean IgnoreIndexOptions { get;set; }
 
         #region M:WriteTo(IServiceProvider,T,TextWriter)
         public override void WriteTo(IServiceProvider provider,ISqlTable source,TextWriter target) {
@@ -242,7 +243,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (!String.IsNullOrWhiteSpace(index.FilterExpression)) {
                     target.Write($" WHERE ({index.FilterExpression})");
                     }
-                if (index.Options.Any()) {
+                if (!IgnoreIndexOptions && index.Options.Any()) {
                     target.Write(" WITH");
                     foreach (var option in index.Options) {
                         switch (option.Type) {
