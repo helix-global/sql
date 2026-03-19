@@ -39,7 +39,7 @@ CREATE NONCLUSTERED INDEX [IX_PRR_LU_REPORT_REQUEST_DATA]
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'процент Production Support Assigment Share (по месяц-год-отдел)', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'PRR_LU_REPORT_REQUEST_DATA', @level2type = N'COLUMN', @level2name = N'DEP_PROD_SUPP_FACTOR';
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'числитель для вычисления Production Support Assigment Share (по месяц-год-отдел)', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'PRR_LU_REPORT_REQUEST_DATA', @level2type = N'COLUMN', @level2name = N'DEP_AVAILABLE_PRODSUPPORT';
 
 
 GO
@@ -47,5 +47,5 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'знаме�
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'числитель для вычисления Production Support Assigment Share (по месяц-год-отдел)', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'PRR_LU_REPORT_REQUEST_DATA', @level2type = N'COLUMN', @level2name = N'DEP_AVAILABLE_PRODSUPPORT';
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'процент Production Support Assigment Share (по месяц-год-отдел)', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'PRR_LU_REPORT_REQUEST_DATA', @level2type = N'COLUMN', @level2name = N'DEP_PROD_SUPP_FACTOR';
 
