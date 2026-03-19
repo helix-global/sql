@@ -49,14 +49,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 Type type;
                 using (SqlModelObject.UpgradeableReadLock(g_rtlock)) {
                     if (!g_rtlist.TryGetValue(rt, out type)) {
-                        foreach (var pair in g_rtlist) {
-                            if (pair.Key.IsAssignableFrom(rt)) {
-                                using (SqlModelObject.WriteLock(g_rtlock)) 
-                                    {
-                                    g_rtlist[rt] = type = pair.Value;
-                                    }
-                                }
-                            }
+                        //foreach (var pair in g_rtlist) {
+                        //    if (pair.Key.IsAssignableFrom(rt)) {
+                        //        using (SqlModelObject.WriteLock(g_rtlock)) 
+                        //            {
+                        //            g_rtlist[rt] = type = pair.Value;
+                        //            }
+                        //        }
+                        //    }
                         }
                     }
                 if (type != null) {
@@ -179,8 +179,28 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
+        private class TypeComparer : IComparer<Type>
+            {
+            public static readonly IComparer<Type> Instance = new TypeComparer();
+
+            #region M:Compare(Type,Type):Int32
+            public Int32 Compare(Type x,Type y)
+                {
+                if (ReferenceEquals(x,y)) { return 0; }
+                if (ReferenceEquals(x,null)) { return -1; }
+                if (ReferenceEquals(y,null)) { return +1; }
+                return x.FullName.CompareTo(y.FullName);
+                }
+            #endregion
+            }
+
+        #if DEBUG
+        protected static readonly IDictionary<Type,Type>   g_rtlist = new SortedDictionary<Type,Type>(TypeComparer.Instance);
+        protected static readonly IDictionary<String,Type> g_splist = new SortedDictionary<String,Type>(StringComparer.OrdinalIgnoreCase);
+        #else
         protected static readonly IDictionary<Type,Type>   g_rtlist = new ConcurrentDictionary<Type,Type>();
         protected static readonly IDictionary<String,Type> g_splist = new ConcurrentDictionary<String,Type>();
+        #endif
         private static readonly ReaderWriterLockSlim g_rtlock = new ReaderWriterLockSlim();
         }
     }

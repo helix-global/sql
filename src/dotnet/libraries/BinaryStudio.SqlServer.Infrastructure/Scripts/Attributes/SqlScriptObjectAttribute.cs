@@ -2,6 +2,7 @@
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    [AttributeUsage(AttributeTargets.Class,AllowMultiple = true,Inherited = false)]
     internal class SqlScriptObjectAttribute : Attribute
         {
         public Type Type { get; }

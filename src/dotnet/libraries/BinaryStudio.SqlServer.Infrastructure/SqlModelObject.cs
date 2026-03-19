@@ -255,6 +255,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return SqlInt32Converter.ConvertFromObject(value);
             }
         #endregion
+        #region M:PropSI4(Object,Int32):Int32
+        protected static Int32 PropSI4(Object value,Int32 defaultvalue) {
+            return SqlInt32Converter.ConvertFromObject(value,defaultvalue);
+            }
+        #endregion
         #region M:PropSI4(Int16,Int16):Int32
         internal static Int32 PropSI4(Int16 hi,Int16 lo)
             {
@@ -443,6 +448,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
             where T:class
             {
             return (T)GetService(typeof(T));
+            }
+        #endregion
+        #region M:FormatLiteral(String):String
+        protected virtual String FormatLiteral(String value)
+            {
+            if (value == null) { return String.Empty; }
+            return value.Replace("'","''");
             }
         #endregion
 

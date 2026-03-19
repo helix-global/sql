@@ -45,11 +45,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             case SqlConstraintType.Identity: break;
                             case SqlConstraintType.Default:
                                 {
-                                if (ReferenceEquals(constraint.Name,null)) {
+                                if (constraint.Name != Null) {
                                     r.Append($" CONSTRAINT [{constraint.Name}]");
                                     }
                                 var expression = ((ISqlDefaultConstraint)constraint).Expression;
-                                if (IsMatch(expression, @"\d+")) { expression = $"(({expression}))"; }
+                                //if (IsMatch(expression, @"\d+")) { expression = $"(({expression}))"; }
                                 r.Append($" DEFAULT {expression}");
                                 }
                                 break;
@@ -62,7 +62,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (PropertyProvider != null) {
                     var prop = PropertyProvider.GetObject(new SqlExtendedPropertyIdentity(SqlObjectClass.Column,column.QualifiedName,"MS_Description"));
                     if (prop != null) {
-                        extpr.Add($"EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{ForSQL(prop)}', @level0type = N'SCHEMA', @level0name = N'{source.QualifiedName.SchemaName}', @level1type = N'TABLE', @level1name = N'{source.QualifiedName.ObjectName}', @level2type = N'COLUMN', @level2name = N'{column.Name}'");
+                        extpr.Add($"EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{FormatLiteral(prop)}', @level0type = N'SCHEMA', @level0name = N'{source.QualifiedName.SchemaName}', @level1type = N'TABLE', @level1name = N'{source.QualifiedName.ObjectName}', @level2type = N'COLUMN', @level2name = N'{column.Name}'");
                         }
                     }
 
@@ -86,7 +86,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (PropertyProvider != null) {
                 var prop = PropertyProvider.GetObject(new SqlExtendedPropertyIdentity(SqlObjectClass.Table,source.QualifiedName,"MS_Description"));
                 if (prop != null) {
-                    extpr.Add($"EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{ForSQL(prop)}', @level0type = N'SCHEMA', @level0name = N'{source.QualifiedName.SchemaName}', @level1type = N'TABLE', @level1name = N'{source.QualifiedName.ObjectName}'");
+                    extpr.Add($"EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{FormatLiteral(prop)}', @level0type = N'SCHEMA', @level0name = N'{source.QualifiedName.SchemaName}', @level1type = N'TABLE', @level1name = N'{source.QualifiedName.ObjectName}'");
                     }
                 }
 
@@ -234,12 +234,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private static Boolean IsClustered(SqlClusterOption value) {
             return (value == SqlClusterOption.Clustered)
                 || (value == SqlClusterOption.ClusteredColumnStore);
-            }
-        #endregion
-        #region M:ForSQL(String):String
-        private static String ForSQL(String value) {
-            if (value == null) { return String.Empty; }
-            return value.Replace("'","''");
             }
         #endregion
         }

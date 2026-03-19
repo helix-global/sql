@@ -4,25 +4,26 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
-    internal abstract class SqlScriptLiteralExpression : SqlScriptScalarExpression<SqlLiteralExpression>,ISqlLiteralExpression
+    [UsedImplicitly]
+    [SqlScriptObject("Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlLiteralExpression.IntegerLiteralExpression")]
+    internal sealed class SqlScriptIntegerLiteralExpression : SqlScriptLiteralExpression
         {
-        [UsedImplicitly][Field] public SqlLiteralValueType Type { get; }
-        public String Value { get { return Source.Value; }}
+        public new Int32 Value { get; }
 
         #region ctor{IServiceProvider,SqlLiteralExpression}
-        protected SqlScriptLiteralExpression(IServiceProvider context,SqlLiteralExpression source)
+        public SqlScriptIntegerLiteralExpression(IServiceProvider context,SqlLiteralExpression source)
             : base(context,source)
             {
+            Value = PropSI4(base.Value,0);
             }
         #endregion
 
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
-        public override String ToString() {
-            return Value;
+        public override String ToString()
+            {
+            return $"(({Value}))";
             }
         #endregion
         }

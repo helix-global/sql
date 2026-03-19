@@ -5,7 +5,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    [SqlScriptObject(typeof(SqlConstraint))]
+    [SqlScriptObject("Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlConstraint.TypeOnlyConstraint")]
     internal sealed class SqlScriptTypeOnlyConstraint : SqlScriptConstraint<SqlConstraint>
         {
         #region ctor{IServiceProvider,SqlConstraint}

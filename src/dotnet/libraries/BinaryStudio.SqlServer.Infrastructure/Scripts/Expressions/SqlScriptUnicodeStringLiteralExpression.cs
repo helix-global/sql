@@ -6,13 +6,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptLiteralExpression : SqlScriptScalarExpression<SqlLiteralExpression>,ISqlLiteralExpression
+    [SqlScriptObject("Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlLiteralExpression.UnicodeStringLiteralExpression")]
+    internal sealed class SqlScriptUnicodeStringLiteralExpression : SqlScriptLiteralExpression
         {
-        [UsedImplicitly][Field] public SqlLiteralValueType Type { get; }
-        public String Value { get { return Source.Value; }}
-
         #region ctor{IServiceProvider,SqlLiteralExpression}
-        protected SqlScriptLiteralExpression(IServiceProvider context,SqlLiteralExpression source)
+        public SqlScriptUnicodeStringLiteralExpression(IServiceProvider context,SqlLiteralExpression source)
             : base(context,source)
             {
             }
@@ -21,8 +19,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:ToString:String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
-        public override String ToString() {
-            return Value;
+        public override String ToString()
+            {
+            return base.ToString();
             }
         #endregion
         }

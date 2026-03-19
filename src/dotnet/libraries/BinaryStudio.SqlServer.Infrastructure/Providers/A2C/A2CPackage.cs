@@ -120,9 +120,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
             #endif
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
-            //UpdateColumnDescription("[dbo].[DEF_CUSTOM_VIEWS]","ITEMTYPEID","ID типа item'а для кастомных view когда он (view) сосздается с закладки с выбранным типом (KB2089)");
-            //UpdateTableDescription("[dbo].[EQ_OPERATION_PARAMS]","Operation Equipment Parameters");
-            foreach (var pair in m_tbN/*.Where(i => i.Key == "[dbo].[COM_CURRENCIES]")*/) {
+            foreach (var pair in m_tbN.Where(i => i.Key == "[dbo].[IT_TASKS_SEARCH]")) {
                 var ObjectName = pair.Key;
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
