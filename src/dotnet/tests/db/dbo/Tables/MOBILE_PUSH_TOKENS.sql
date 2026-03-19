@@ -20,29 +20,5 @@ CREATE NONCLUSTERED INDEX [IX_Table_DeviceID_UserName]
 
 
 GO
-GRANT UPDATE
-    ON OBJECT::[dbo].[MOBILE_PUSH_TOKENS] TO [EMEA\DEXHZ]
-    AS [dbo];
-
-
-GO
-GRANT SELECT
-    ON OBJECT::[dbo].[MOBILE_PUSH_TOKENS] TO [EMEA\DEXHZ]
-    AS [dbo];
-
-
-GO
-GRANT INSERT
-    ON OBJECT::[dbo].[MOBILE_PUSH_TOKENS] TO [EMEA\DEXHZ]
-    AS [dbo];
-
-
-GO
-GRANT DELETE
-    ON OBJECT::[dbo].[MOBILE_PUSH_TOKENS] TO [EMEA\DEXHZ]
-    AS [dbo];
-
-
-GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Search on Device ID and UserName', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'MOBILE_PUSH_TOKENS', @level2type = N'INDEX', @level2name = N'IX_Table_DeviceID_UserName';
 
