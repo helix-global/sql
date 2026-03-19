@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal abstract class SqlScriptCreateAlterTriggerStatementBase<T> : SqlScriptDdlStatement<T>,ISqlTrigger
+    internal abstract class SqlScriptCreateOrAlterTriggerStatement<T> : SqlScriptDdlStatement<T>,ISqlTrigger
         where T : SqlCreateAlterTriggerStatementBase
         {
         [UsedImplicitly][Field] public ISqlScriptTriggerDefinition Definition { get; }
@@ -14,7 +14,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public SqlObjectIdentifier TargetName { get { return Definition.TargetName; }}
 
         #region ctor{IServiceProvider,T}
-        protected SqlScriptCreateAlterTriggerStatementBase(IServiceProvider context,T source)
+        protected SqlScriptCreateOrAlterTriggerStatement(IServiceProvider context,T source)
             : base(context,source)
             {
             }

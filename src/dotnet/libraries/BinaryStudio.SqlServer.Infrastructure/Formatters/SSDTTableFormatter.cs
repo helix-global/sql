@@ -112,6 +112,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 colvl.Add(r.ToString());
                 }
             #endregion
+            #region CHECK CONSTRAINT
+            foreach (var constraint in source.Constraints.OfType<ISqlCheckConstraint>().Where(i=>i.Type == SqlConstraintType.Check)) {
+                var r = new StringBuilder();
+                if (constraint.Name != Null)
+                    {
+                    r.Append($"CONSTRAINT [{constraint.Name}] ");
+                    }
+                r.Append($"CHECK");
+                r.Append($" ({constraint.Expression})");
+                colvl.Add(r.ToString());
+                }
+            #endregion
             #region FOREIGN KEY
             foreach (var constraint in source.Constraints.OfType<ISqlForeignKeyConstraint>()) {
                 var r = new StringBuilder();
@@ -216,10 +228,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 target.WriteLine(";");
                 target.WriteLine();
+
+                if (PropertyProvider != null) {
+                    var prop = PropertyProvider.GetObject(new SqlExtendedPropertyIdentity(SqlObjectClass.Index,index.QualifiedName,"MS_Description"));
+                    if (prop != null) {
+                        extpr.Add($"EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'{FormatLiteral(prop)}', @level0type = N'SCHEMA', @level0name = N'{source.QualifiedName.SchemaName}', @level1type = N'TABLE', @level1name = N'{source.QualifiedName.ObjectName}', @level2type = N'INDEX', @level2name = N'{index.Name}'");
+                        }
+                    }
                 }
             #endregion
             #region CREATE TRIGGER
             foreach (var trigger in source.Triggers) {
+                target.WriteLine();
+                target.WriteLine("GO");
+                target.Write(((ISqlScriptCodeObject)trigger).Script);
                 }
             #endregion
 

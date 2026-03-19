@@ -12,11 +12,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    internal class SqlScriptCodeObject<T> : SqlScriptObject
+    internal class SqlScriptCodeObject<T> : SqlScriptObject,ISqlScriptCodeObject
         where T : SqlCodeObject
         {
         [UsedImplicitly][Field(Source="Sql")] protected String Script { get; }
         protected internal T Source { get; }
+        String ISqlScriptCodeObject.Script { get { return Script; }}
         #if DEBUG
         //protected IList<SqlScriptObject> Children { get; } = EmptyArray<SqlScriptObject>.List;
         #endif

@@ -6,7 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(SqlCreateTriggerStatement))]
-    internal sealed class SqlScriptCreateTriggerStatement : SqlScriptCreateAlterTriggerStatementBase<SqlCreateTriggerStatement>
+    internal sealed class SqlScriptCreateTriggerStatement : SqlScriptCreateOrAlterTriggerStatement<SqlCreateTriggerStatement>
         {
         #region ctor{IServiceProvider,SqlCreateTriggerStatement}
         public SqlScriptCreateTriggerStatement(IServiceProvider context,SqlCreateTriggerStatement source)
