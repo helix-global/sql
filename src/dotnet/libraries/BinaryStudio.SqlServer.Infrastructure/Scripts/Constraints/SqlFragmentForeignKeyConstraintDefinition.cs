@@ -8,7 +8,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(ForeignKeyConstraintDefinition))]
-    internal sealed class SqlFragmentForeignKeyConstraintDefinition : SqlFragmentConstraintDefinition<ForeignKeyConstraintDefinition>
+    internal sealed class SqlFragmentForeignKeyConstraintDefinition : SqlFragmentConstraintDefinition<ForeignKeyConstraintDefinition>,ISqlForeignKeyConstraint
         {
         [UsedImplicitly][Field] public IList<SqlIdentifier> Columns { get; }
         [UsedImplicitly][Field] public SqlForeignKeyAction DeleteAction { get; }

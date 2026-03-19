@@ -9,7 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     [SqlScriptObject(typeof(NullableConstraintDefinition))]
     internal sealed class SqlFragmentNullableConstraintDefinition : SqlFragmentConstraintDefinition<NullableConstraintDefinition>
         {
-        public override SqlConstraintType Type { get{ return SqlConstraintType.Null; }}
+        public override SqlConstraintType Type { get { return SqlConstraintType.Null; }}
 
         #region ctor{IServiceProvider,NullableConstraintDefinition}
         public SqlFragmentNullableConstraintDefinition(IServiceProvider context,NullableConstraintDefinition source)

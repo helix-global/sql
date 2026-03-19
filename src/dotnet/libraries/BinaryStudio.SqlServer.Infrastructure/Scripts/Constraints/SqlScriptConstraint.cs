@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         where T : SqlConstraint
         {
         [UsedImplicitly][Field] public SqlIdentifier Name { get; }
-        [UsedImplicitly][Field] public SqlConstraintType Type { get; }
+        [UsedImplicitly][Field] public virtual SqlConstraintType Type { get; }
 
         #region ctor{IServiceProvider,T}
         protected SqlScriptConstraint(IServiceProvider context,T source)

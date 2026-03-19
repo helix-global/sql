@@ -10,7 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     internal abstract class SqlScriptUniqueConstraint<T> : SqlScriptConstraint<T>,ISqlScriptUniqueConstraint
         where T : SqlUniqueConstraintBase
         {
-        [UsedImplicitly][Field] public SqlClusterOption ClusterOption { get; }
+        [UsedImplicitly][Field] public virtual SqlClusterOption ClusterOption { get; }
         [UsedImplicitly][Field] public IList<ISqlIndexedColumn> IndexedColumns { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<ISqlIndexOption> IndexOptions { get; }
 

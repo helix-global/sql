@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define TEST_CASE_1
+#define TEST_CASE_2
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -91,9 +93,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region PRIMARY KEY
             foreach (var constraint in source.Constraints.OfType<ISqlScriptUniqueConstraint>().Where(i=>i.Type == SqlConstraintType.PrimaryKey)) {
                 var r = new StringBuilder();
-                if ((m_PK.TryGetValue(source.QualifiedName.ToString(),out var name)) ||(constraint.Name != Null))
+                var ConstraintName = constraint.Name?.ToString();
+                if (ConstraintName != null) {
+                    if (ConstraintName.StartsWith(source.QualifiedName.ToString())) {
+                        ConstraintName = null;
+                        }
+                    else if (IsMatch(ConstraintName, "^PK__.+_[A-F0-9]+$"))
+                        {
+                        ConstraintName = null;
+                        }
+                    }
+                if ((m_PK.TryGetValue(source.QualifiedName.ToString(),out var name)) ||(!String.IsNullOrEmpty(ConstraintName)))
                     {
-                    r.Append($"CONSTRAINT [{constraint.Name?.ToString()??name}] ");
+                    r.Append($"CONSTRAINT [{ConstraintName??name}] ");
                     }
                 r.Append($"PRIMARY KEY");
                 r.Append(IsClustered(constraint.ClusterOption) ? " CLUSTERED" : " NONCLUSTERED");
@@ -275,6 +287,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {"[dbo].[TRB_REQUESTS_CHANGES].[CHANGEDDT]","DF_TRB_REQUESTS_CHANGES_CHANGEDDT" },
             };
         private readonly IDictionary<String,String> m_PK = new SortedDictionary<String,String> {
+            #if TEST_CASE_1
             {"[dbo].[COM_ADDED_WORKTIME_PLAN]","PK__COM_ADDE__3214EC274E3FF3C6" },
             {"[dbo].[COM_ADDED_WORKTIME_PLAN_T]","PK__COM_ADDE__3214EC275304A8E3" },
             {"[dbo].[COM_CALENDAR]","PK__COM_CALE__3214EC271ADEEA9C" },
@@ -339,6 +352,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {"[dbo].[SYNC2_MODELS_SETUP]","PK__SYNC2_MO__3214EC272F9ADBB7" },
             {"[dbo].[VR_ADDRESSES]","PK__VR_ADDRE__3214EC273837D926" },
             {"[dbo].[VR_REQUEST]","PK__VR_REQUE__3214EC271C342674" },
+            #endif
             };
         }
     }

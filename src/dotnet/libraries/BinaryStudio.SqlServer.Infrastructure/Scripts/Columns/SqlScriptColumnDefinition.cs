@@ -8,6 +8,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
+    using static SqlScriptTypeOnlyConstraint;
 
     internal abstract class SqlScriptColumnDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptColumnDefinition,ISqlColumn
         where T: SqlColumnDefinition
@@ -34,6 +35,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (TableName.SchemaName == SqlIdentifier.Null) { TableName = "dbo" + TableName; }
                 QualifiedName = TableName + Name;
                 }
+            var constraints = new List<ISqlScriptConstraint>(Constraints);
+            var IsNull    = constraints.Any(i => i.Type == SqlConstraintType.Null);
+            var IsNotNull = constraints.Any(i => i.Type == SqlConstraintType.NotNull);
+            if (!IsNotNull) {
+                if (!IsNull) {
+                    constraints.Insert(0,Null);
+                    }
+                }
+            Constraints = constraints.AsReadOnly();
+            return;
             }
         #endregion
 

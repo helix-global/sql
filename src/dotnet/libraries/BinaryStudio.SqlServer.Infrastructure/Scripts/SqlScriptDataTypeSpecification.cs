@@ -74,7 +74,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        private static readonly IDictionary<String,SqlDataType> BuiltInTypes = new Dictionary<String,SqlDataType>{
+        private static readonly IDictionary<String,SqlDataType> BuiltInTypes = new Dictionary<String,SqlDataType>(StringComparer.OrdinalIgnoreCase){
             {"bigint"          ,SqlDataType.BigInt          },
             {"binary"          ,SqlDataType.Binary          },
             {"bit"             ,SqlDataType.Bit             },
