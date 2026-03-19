@@ -5,27 +5,3 @@
     CONSTRAINT [PK_SL_LAST_TS] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
-
-GO
-GRANT UPDATE
-    ON OBJECT::[dbo].[SL_LAST_TS] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
-    AS [dbo];
-
-
-GO
-GRANT UPDATE
-    ON OBJECT::[dbo].[SL_LAST_TS] TO [EMEA\DEPCS]
-    AS [dbo];
-
-
-GO
-GRANT SELECT
-    ON OBJECT::[dbo].[SL_LAST_TS] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
-    AS [dbo];
-
-
-GO
-GRANT SELECT
-    ON OBJECT::[dbo].[SL_LAST_TS] TO [EMEA\DEPCS]
-    AS [dbo];
-

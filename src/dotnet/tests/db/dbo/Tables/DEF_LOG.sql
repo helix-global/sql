@@ -30,27 +30,3 @@ CREATE NONCLUSTERED INDEX [IX_DEF_LOG]
     ON [dbo].[DEF_LOG]([DD] ASC, [S_USERID] ASC)
     INCLUDE([LEV]);
 
-
-GO
-GRANT UPDATE
-    ON OBJECT::[dbo].[DEF_LOG] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
-    AS [dbo];
-
-
-GO
-GRANT UPDATE
-    ON OBJECT::[dbo].[DEF_LOG] TO [EMEA\DEPCS]
-    AS [dbo];
-
-
-GO
-GRANT SELECT
-    ON OBJECT::[dbo].[DEF_LOG] TO [IPG-DOMAIN\IPGL_Integr_MSCRM]
-    AS [dbo];
-
-
-GO
-GRANT SELECT
-    ON OBJECT::[dbo].[DEF_LOG] TO [EMEA\DEPCS]
-    AS [dbo];
-
