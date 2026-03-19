@@ -14,7 +14,7 @@
     [REQUESTID]   INT              NOT NULL,
     [S_S]         INT              NOT NULL,
     [REQUEST_CR]  INT              NULL,
-    CONSTRAINT [PK__SM_RMA_N__3214EC276CAED6EF] PRIMARY KEY CLUSTERED ([ID] ASC)
+    PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
 

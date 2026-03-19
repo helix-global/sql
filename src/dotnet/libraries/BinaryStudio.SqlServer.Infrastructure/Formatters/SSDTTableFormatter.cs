@@ -12,6 +12,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     public class SSDTTableFormatter : SqlObjectFormatter<ISqlTable>
         {
         public static readonly ISqlObjectFormatter<ISqlTable> Instance = new SSDTTableFormatter();
+        public Boolean IgnorePrimaryKeySystemNames { get;set; }
 
         #region M:WriteTo(IServiceProvider,T,TextWriter)
         public override void WriteTo(IServiceProvider provider,ISqlTable source,TextWriter target) {
@@ -94,18 +95,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
             foreach (var constraint in source.Constraints.OfType<ISqlScriptUniqueConstraint>().Where(i=>i.Type == SqlConstraintType.PrimaryKey)) {
                 var r = new StringBuilder();
                 var ConstraintName = constraint.Name?.ToString();
-                if (ConstraintName != null) {
-                    if (ConstraintName.StartsWith(source.QualifiedName.ToString())) {
-                        ConstraintName = null;
-                        }
-                    else if (IsMatch(ConstraintName, "^PK__.+_[A-F0-9]+$"))
-                        {
-                        ConstraintName = null;
+                if (!IgnorePrimaryKeySystemNames) {
+                    if (ConstraintName != null) {
+                        if (ConstraintName.StartsWith(source.QualifiedName.ToString())) {
+                            ConstraintName = null;
+                            }
+                        else if (IsMatch(ConstraintName, "^PK__.+_[A-F0-9]+$"))
+                            {
+                            ConstraintName = null;
+                            }
                         }
                     }
-                if ((m_PK.TryGetValue(source.QualifiedName.ToString(),out var name)) ||(!String.IsNullOrEmpty(ConstraintName)))
+                if (!String.IsNullOrEmpty(ConstraintName))
                     {
-                    r.Append($"CONSTRAINT [{ConstraintName??name}] ");
+                    r.Append($"CONSTRAINT [{ConstraintName}] ");
                     }
                 r.Append($"PRIMARY KEY");
                 r.Append(IsClustered(constraint.ClusterOption) ? " CLUSTERED" : " NONCLUSTERED");
