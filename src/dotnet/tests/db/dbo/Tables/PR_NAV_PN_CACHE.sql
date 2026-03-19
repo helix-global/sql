@@ -10,7 +10,7 @@
     [S_S]     INT              NOT NULL,
     [DESCSTR] NVARCHAR (300)   NULL,
     [MPICT]   IMAGE            NULL,
-    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90)
+    PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
 

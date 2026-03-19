@@ -126,7 +126,11 @@ namespace BinaryStudio.SqlServer.Infrastructure.A2C
                 var SchemaName = ObjectName.SchemaName.ToString();
                 var TargetObjectFolder = Path.Combine(TargetFolder,SchemaName,"Tables");
                 MakeFolderIfItNotExist(TargetObjectFolder);
-                (new SSDTTableFormatter()).WriteTo(this,pair.Value,out var script);
+                (new SSDTTableFormatter{
+                    IgnorePrimaryKeySystemName = true,
+                    IgnoreDefaultConstraintSystemName = true,
+                    IgnorePrimaryKeyOptions = true
+                    }).WriteTo(this,pair.Value,out var script);
                 File.WriteAllText(Path.Combine(TargetObjectFolder,$"{ObjectName.ObjectName}.sql"),script,Encoding.UTF8);
                 }
             return;

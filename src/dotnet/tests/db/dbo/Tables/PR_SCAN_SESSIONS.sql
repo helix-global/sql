@@ -4,6 +4,6 @@
     [USERID]      INT           NOT NULL,
     [DTBEGIN]     DATETIME      NOT NULL,
     [LANGUAGEID]  INT           NULL,
-    PRIMARY KEY CLUSTERED ([ID] ASC) WITH (FILLFACTOR = 90)
+    PRIMARY KEY CLUSTERED ([ID] ASC)
 );
 
