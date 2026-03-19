@@ -14,5 +14,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         IList<ISqlColumn> Columns { get; }
         IList<ISqlConstraint> Constraints { get; }
         IList<ISqlIndex> Indexes { get; }
+        IList<ISqlTrigger> Triggers { get; }
         }
     }

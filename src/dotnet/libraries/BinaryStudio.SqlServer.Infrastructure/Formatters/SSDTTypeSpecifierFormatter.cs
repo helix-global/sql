@@ -19,6 +19,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     case SqlDataType.Variant:
                         target.Write("SQL_VARIANT");
                         break;
+                    case SqlDataType.Timestamp:
+                        target.Write("ROWVERSION");
+                        break;
                     default:
                         target.Write(source.Type.ToString().ToUpperInvariant());
                         break;
