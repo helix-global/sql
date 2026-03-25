@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlEnumConverter<E> : TypeConverter,ISqlValueTypeConverter<E>
+    public class SqlEnumConverter<E> : TypeConverter,ISqlValueTypeConverter<E>
         where E : struct,Enum
         {
         public static readonly SqlEnumConverter<E> Default          = new SqlEnumConverter<E>(true);

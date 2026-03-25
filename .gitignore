@@ -5,6 +5,8 @@
 /.vs
 /src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/bin
 /src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/obj
+/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/obj
+/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/bin
 /src/dotnet/tests/dacpac/bin
 /src/dotnet/tests/dacpac/obj
 /src/dotnet/tests/dacpac/.vs/dacpac/v16
@@ -15,5 +17,3 @@
 *.user
 /src/dotnet/tests/db/db.dbmdl
 /src/dotnet/tests/db/db.jfm
-/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/obj
-/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/bin/Debug/net48

@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
+using BinaryStudio.SqlServer.Infrastructure;
 
-namespace BinaryStudio.SqlServer.Infrastructure.A2C
+namespace IPGPhotonics.PDB.Infrastructure
     {
     [TypeConverter(typeof(SqlEnumConverter<SqlAssemblyPermissionSet>))]
-    internal enum SqlObjectType
+    public enum SqlObjectType
         {
         None = 0,
         ScriptBefore         =   10,

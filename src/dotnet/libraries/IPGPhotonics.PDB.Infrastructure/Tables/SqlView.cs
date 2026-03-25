@@ -1,6 +1,7 @@
 ﻿using System;
+using BinaryStudio.SqlServer.Infrastructure;
 
-namespace BinaryStudio.SqlServer.Infrastructure.A2C
+namespace IPGPhotonics.PDB.Infrastructure
     {
     internal class SqlView
         {

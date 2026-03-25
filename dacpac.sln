@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryStudio.SqlServer.Infr
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "db", "src\dotnet\tests\db\db.sqlproj", "{3678BF84-9280-409F-BFCE-A15A0EA53794}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPGPhotonics.PDB.Infrastructure", "src\dotnet\libraries\IPGPhotonics.PDB.Infrastructure\IPGPhotonics.PDB.Infrastructure.csproj", "{90B74C17-3894-43A7-8024-5FB2389C1CA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{3678BF84-9280-409F-BFCE-A15A0EA53794}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3678BF84-9280-409F-BFCE-A15A0EA53794}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3678BF84-9280-409F-BFCE-A15A0EA53794}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{90B74C17-3894-43A7-8024-5FB2389C1CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B74C17-3894-43A7-8024-5FB2389C1CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B74C17-3894-43A7-8024-5FB2389C1CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B74C17-3894-43A7-8024-5FB2389C1CA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

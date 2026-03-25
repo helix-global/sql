@@ -3,6 +3,7 @@
     <File Path=".editorconfig" />
   </Folder>
   <Project Path="src/dotnet/libraries/BinaryStudio.SqlServer.Infrastructure/BinaryStudio.SqlServer.Infrastructure.csproj" Id="cc1ff3e7-0595-4c56-a60e-bb3312eb69e6" />
+  <Project Path="src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/IPGPhotonics.PDB.Infrastructure.csproj" />
   <Project Path="src/dotnet/tests/dacpac/dacpac.csproj" Id="ea3b3cd3-f284-4215-84b5-35d0655397b4" />
   <Project Path="src/dotnet/tests/db/db.sqlproj" Id="3678bf84-9280-409f-bfce-a15a0ea53794">
     <Build Solution="Release|*" />

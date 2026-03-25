@@ -15,8 +15,9 @@ using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
+using BinaryStudio.SqlServer.Infrastructure;
 
-namespace BinaryStudio.SqlServer.Infrastructure.A2C
+namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 

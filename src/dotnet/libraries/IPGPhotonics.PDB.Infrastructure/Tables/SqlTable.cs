@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BinaryStudio.SqlServer.Infrastructure;
 
-namespace BinaryStudio.SqlServer.Infrastructure.A2C
+namespace IPGPhotonics.PDB.Infrastructure
     {
     internal class SqlTable : ISqlTable,ISqlQualifiedObject
         {

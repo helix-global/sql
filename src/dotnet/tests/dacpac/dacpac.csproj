@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\libraries\IPGPhotonics.PDB.Infrastructure\IPGPhotonics.PDB.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="2022.07.05.0847.7z">

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BinaryStudio.SqlServer.Infrastructure.A2C
+namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class SqlObjectScriptDecoder
         {
