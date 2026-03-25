@@ -15,3 +15,5 @@
 *.user
 /src/dotnet/tests/db/db.dbmdl
 /src/dotnet/tests/db/db.jfm
+/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/obj
+/src/dotnet/libraries/IPGPhotonics.PDB.Infrastructure/bin/Debug/net48
