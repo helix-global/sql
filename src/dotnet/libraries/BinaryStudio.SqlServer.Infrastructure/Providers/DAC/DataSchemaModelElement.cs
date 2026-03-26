@@ -15,7 +15,7 @@ using System.Xml;
 namespace BinaryStudio.SqlServer.Infrastructure.DAC
     {
     [TypeConverter(typeof(DataSchemaModelConverter))]
-    public class DataSchemaModelElement : SqlModelObject
+    public class DataSchemaModelElement : SqlObject
         {
         public const String URI_DAC   = "http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02";
         public const String URI_XMLNS = "http://www.w3.org/2000/xmlns/";

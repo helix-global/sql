@@ -14,17 +14,17 @@ using System.Xml.Serialization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public abstract class SqlModelObject : IXmlSerializable,IServiceProvider
+    public abstract class SqlObject : IXmlSerializable,IServiceProvider
         {
         public IServiceProvider Context { get; }
 
         #region ctor
-        protected SqlModelObject()
+        protected SqlObject()
             {
             }
         #endregion
         #region ctor{IServiceProvider,Object}
-        protected SqlModelObject(IServiceProvider context,Object source) {
+        protected SqlObject(IServiceProvider context,Object source) {
             Context = context;
             if (source != null) {
                 ResolveFieldMappings(GetType(),out var mapping);
@@ -33,7 +33,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region ctor{IDictionary<String,Object>}
-        protected SqlModelObject(IDictionary<String,Object> source) {
+        protected SqlObject(IDictionary<String,Object> source) {
             if (source != null) {
                 ResolveFieldMappings(GetType(),out var mapping);
                 ApplyProperties(mapping,source);
@@ -41,7 +41,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region ctor{DataRow}
-        protected SqlModelObject(DataRow source) {
+        protected SqlObject(DataRow source) {
             if (source != null) {
                 ResolveFieldMappings(GetType(),out var mapping);
                 ApplyProperties(mapping,source);
@@ -49,7 +49,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region ctor{IDataRecord}
-        protected SqlModelObject(IDataRecord source) {
+        protected SqlObject(IDataRecord source) {
             if (source != null) {
                 ResolveFieldMappings(GetType(),out var mapping);
                 ApplyProperties(mapping,source);
@@ -214,7 +214,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:IXmlSerializable.WriteXml(XmlWriter)
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
-        void IXmlSerializable.WriteXml(XmlWriter writer)
+        public virtual void WriteXml(XmlWriter writer)
             {
             throw new NotImplementedException();
             }
@@ -630,7 +630,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public override void SetValue(Object component,Object value) {
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
                 value = CoerceValue(value);
-                Source.SetValue(component,(component is SqlModelObject target)
+                Source.SetValue(component,(component is SqlObject target)
                     ? target.CoerceValue(this,value)
                     : value);
                 }
@@ -667,7 +667,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 value = CoerceValue(value);
                 try
                     {
-                    Source.SetValue(component,(component is SqlModelObject target)
+                    Source.SetValue(component,(component is SqlObject target)
                         ? target.CoerceValue(this,value)
                         : value);
                     }

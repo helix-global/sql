@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace BinaryStudio.SqlServer.Infrastructure
     {
     [TypeConverter(typeof(SqlScriptObjectConverter))]
-    internal abstract class SqlScriptObject : SqlModelObject
+    internal abstract class SqlScriptObject : SqlObject
         {
         #region ctor{IServiceProvider,SqlCodeObject}
         protected SqlScriptObject(IServiceProvider context,Object source)

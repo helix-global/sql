@@ -18,11 +18,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (source != null) {
                 var rt = source.GetType();
                 Type type;
-                using (SqlModelObject.UpgradeableReadLock(g_rtlock)) {
+                using (SqlObject.UpgradeableReadLock(g_rtlock)) {
                     if (!g_rtlist.TryGetValue(rt, out type)) {
                         foreach (var pair in g_rtlist) {
                             if (pair.Key.IsAssignableFrom(rt)) {
-                                using (SqlModelObject.WriteLock(g_rtlock)) 
+                                using (SqlObject.WriteLock(g_rtlock)) 
                                     {
                                     g_rtlist[rt] = type = pair.Value;
                                     }
@@ -47,11 +47,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (source != null) {
                 var rt = source.GetType();
                 Type type;
-                using (SqlModelObject.UpgradeableReadLock(g_rtlock)) {
+                using (SqlObject.UpgradeableReadLock(g_rtlock)) {
                     if (!g_rtlist.TryGetValue(rt, out type)) {
                         //foreach (var pair in g_rtlist) {
                         //    if (pair.Key.IsAssignableFrom(rt)) {
-                        //        using (SqlModelObject.WriteLock(g_rtlock)) 
+                        //        using (SqlObject.WriteLock(g_rtlock)) 
                         //            {
                         //            g_rtlist[rt] = type = pair.Value;
                         //            }

@@ -1,4 +1,4 @@
-﻿//#define USE_ASYNC
+﻿#define USE_ASYNC
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using JetBrains.Annotations;
 using SharpCompress.Archives;
@@ -16,18 +17,28 @@ using SharpCompress.Archives.SevenZip;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 using BinaryStudio.SqlServer.Infrastructure;
+using IPGPhotonics.PDB.Infrastructure.Properties;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class A2CPackage: SqlModelObject,ISqlExtendedPropertyResolver
+    public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
+        ISqlObjectResolver<Int32?,User>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
+        public IList<Module> Modules { get;private set; }
 
+        #region ctor
+        private A2CPackage() {
+            Modules = EmptyArray<Module>.List;
+            LoadUsers(Resources.PredefinedUserRecords);
+            }
+        #endregion
         #region ctor{Int32,Int64}
         private A2CPackage(Int32 FileVersion,Int64 Length)
+            :this()
             {
             this.FileVersion = FileVersion;
             this.Length = Length;
@@ -35,6 +46,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         #endregion
         #region ctor
         private A2CPackage(Int64 Length)
+            :this()
             {
             this.FileVersion = 1;
             this.Length = Length;
@@ -119,6 +131,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 LoadTable(table);
                 }
             #endif
+            Modules = m_modI.Values.AsReadOnly();
+            return;
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
             //foreach (var pair in m_tbN.Where(i => i.Key == "[dbo].[COM_TURNS]")) {
@@ -150,6 +164,20 @@ namespace IPGPhotonics.PDB.Infrastructure
                     }
                     break;
                 #endregion
+                #region DEF_USERS
+                case "DEF_USERS":
+                    {
+                    await LoadUsers(cancellation,source);
+                    }
+                    break;
+                #endregion
+                #region DEF_MODULES
+                case "DEF_MODULES":
+                    {
+                    await LoadModules(cancellation,source);
+                    }
+                    break;
+                #endregion
                 }
             }
         #endregion
@@ -160,7 +188,14 @@ namespace IPGPhotonics.PDB.Infrastructure
                 #region DEF_META
                 case "DEF_META":
                     {
-                    LoadSqlObjects(source);
+                    //LoadSqlObjects(source);
+                    }
+                    break;
+                #endregion
+                #region DEF_MODULES
+                case "DEF_MODULES":
+                    {
+                    LoadModules(CancellationToken.None,source).Wait();
                     }
                     break;
                 #endregion
@@ -188,7 +223,23 @@ namespace IPGPhotonics.PDB.Infrastructure
             return BitConverter.ToUInt16(buffer,0);
             }
         #endregion
-        #region M:LoadSqlObjects(CancellationToken):Task
+        #region M:LoadModules(CancellationToken,DataTable)
+        private async Task LoadModules(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var row in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new Module(this,i)))
+                    {
+                    lock(m_modI)
+                        {
+                        m_modI[row.OID] = row;
+                        }
+                    }
+                });
+            }
+        #endregion
+        #region M:LoadSqlObjects(CancellationToken,DataTable):Task
         private async Task LoadSqlObjects(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
             foreach (var row in source.Rows
@@ -201,7 +252,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:LoadSqlObjects
+        #region M:LoadSqlObjects(DataTable)
         private void LoadSqlObjects(DataTable source) {
             foreach (var row in source.Rows
                 .OfType<DataRow>()
@@ -211,6 +262,42 @@ namespace IPGPhotonics.PDB.Infrastructure
                 {
                 Merge(row.Type,row.Script);
                 }
+            }
+        #endregion
+        #region M:LoadUsers(CancellationToken,DataTable):Task
+        private async Task LoadUsers(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var row in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new User(i)))
+                    {
+                    lock(m_usrI)
+                        {
+                        m_usrI[row.ID] = row;
+                        }
+                        }
+                e_usrI.Set();
+                });
+            }
+        #endregion
+        #region M:LoadUsers(Byte[])
+        private void LoadUsers(Byte[] source) {
+            lock(m_usrI) {
+                using (var memory = new MemoryStream(source)) {
+                    using (var reader = new GZipStream(memory,CompressionMode.Decompress)) {
+                        XDocument.Load(reader).Root
+                            .Elements("User")
+                            .Select(i => new User(i))
+                            .ForEach(i => {
+                                {
+                                m_usrI[i.ID] = i;
+                                }
+                            });
+                        }
+                    }
+                }
+            return;
             }
         #endregion
         #region M:Merge(SqlObjectType,String)
@@ -396,6 +483,15 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
+        #region M:ISqlObjectResolver<Int32?,User>.GetObject(Int32):User
+        User ISqlObjectResolver<Int32?,User>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            e_usrI.WaitOne();
+            return m_usrI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
         #region M:GetService(Type):Object
         /// <summary>Gets the service object of the specified type.</summary>
         /// <param name="service">An object that specifies the type of service object to get.</param>
@@ -408,7 +504,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        private class MetadataRecord : SqlModelObject,IComparable<MetadataRecord>
+        private class MetadataRecord : SqlObject,IComparable<MetadataRecord>
             {
             [UsedImplicitly][Field(Source = "NAME")]     public String Name { get; }
             [UsedImplicitly][Field(Source = "SQLTEXT")]  public String Script { get; }
@@ -689,5 +785,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<SqlObjectIdentifier,ISqlAssembly>  m_asN = new SortedDictionary<SqlObjectIdentifier,ISqlAssembly>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlAggregate>  m_agN = new SortedDictionary<SqlObjectIdentifier,ISqlAggregate>();
         private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
+        private readonly IDictionary<Int32,User>   m_usrI = new SortedDictionary<Int32,User>();
+        private readonly IDictionary<Int32,Module> m_modI = new SortedDictionary<Int32,Module>();
+        private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
         }
     }

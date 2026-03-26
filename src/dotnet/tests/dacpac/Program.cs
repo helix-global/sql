@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using Aspose.Zip.Saving;
+﻿using Aspose.Zip.Saving;
 using Aspose.Zip.SevenZip;
 using BinaryStudio.SqlServer.Infrastructure;
 using BinaryStudio.SqlServer.Infrastructure.DAC;
 using IPGPhotonics.PDB.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Reflection;
+using System.Xml;
 
 //using SharpCompress.Archives.SevenZip;
 using SharpSevenZipArchive=SharpCompress.Archives.SevenZip.SevenZipArchive;
@@ -16,6 +19,13 @@ namespace dacpac
     {
     internal class Program
         {
+        #region M:CreateFolderIfNotExists(String)
+        private static void CreateFolderIfNotExists(String path) {
+            if (!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
+                }
+            }
+        #endregion
         #region M:RebuildA2CX(String)
         private static void RebuildA2CX(String filename) {
             var ds = new DataSet();
@@ -59,10 +69,31 @@ namespace dacpac
             //    Debug.WriteLine(String.Format($"{{0,-{maxN}}} = 0x{{1:x4}},", i,(Int32)i));
             //    }
             //var r = DataSchemaModel.LoadFrom("dev.xml");
-            try
+            //using (Stream streamR = File.OpenRead("Users.xml"), streamW = File.OpenWrite("Users.xml.gz"))
+            //    {
+            //    using (var writer = new GZipStream(streamW,CompressionMode.Compress)) {
+            //        streamR.CopyTo(writer);
+            //        }
+            //    }
+
+                try
                 {
                 //RebuildA2CX("2022.07.05.0847.a2cx");
+                var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\..\..\..\.intermediate\pdb");
                 var r = A2CPackage.LoadFrom("2026.03.02.1553.7z");
+                if (r.Modules.Count > 0) {
+                    var ModuleFolder = Path.Combine(TargetFolder,"Modules");
+                    CreateFolderIfNotExists(ModuleFolder);
+                    foreach (var module in r.Modules) {
+                        using (var writer = new SqlXmlWriter(XmlWriter.Create(Path.Combine(ModuleFolder,module.Label+".xml"),
+                            new XmlWriterSettings {
+                                Indent = true
+                                }),false))
+                            {
+                            module.WriteXml(writer);
+                            }
+                        }
+                    }
                 }
             catch (Exception e)
                 {
