@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -38,15 +39,52 @@ namespace BinaryStudio.SqlServer.Infrastructure
             this.writer = new InternalXmlWriter(writer);
             }
         #endregion
+        #region ctor{String}
+        public SqlXmlWriter(String filename) {
+            writer = CreateWriter(filename);
+            }
+        #endregion
+
+        #region M:CreateWriter(String):XmlWriter
+        private XmlWriter CreateWriter(String filename) {
+            var stream = new FileStream(filename,FileMode.Create,FileAccess.Write,FileShare.Read,BUFSIZE);
+            try
+                {
+                return CreateWriter(stream);
+                }
+            catch
+                {
+                stream?.Close();
+                throw;
+                }
+            }
+        #endregion
+        #region M:CreateWriter(Stream):XmlWriter
+        protected virtual XmlWriter CreateWriter(Stream stream) {
+            var settings = new XmlWriterSettings {
+                Indent = true,
+                };
+            return new XmlWellFormedWriter(new XmlUtf8RawTextWriter(stream,settings),settings);
+            }
+        #endregion
 
         private class InternalXmlWriter : XmlWriter
             {
             public String LocalName { get;set; }
             public String NamespaceURI { get;set; }
             public String Prefix { get;set; }
-
-            private XmlWriter writer,InnerWriter;
-            private MethodInfo WriteIndentMethod;
+            public override WriteState WriteState { get{ return writer.WriteState; }}
+            #region P:IndentLevel:Int32
+            public Int32 IndentLevel {
+                get { return (m_i != null)? (Int32)m_i.GetValue(InnerWriter) : 0; }
+                set
+                    {
+                    if (m_i != null) {
+                        m_i.SetValue(InnerWriter,value);
+                        }
+                    }
+                }
+            #endregion
 
             private void Update() {
                 var typeN = writer.GetType();
@@ -59,6 +97,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         (typeI.Name == "XmlUtf8RawTextWriterIndent")))
                         {
                         WriteIndentMethod = typeI.GetMethod("WriteIndent",BindingFlags.Instance|BindingFlags.NonPublic);
+                        m_i = typeI.GetField("indentLevel",BindingFlags.Instance|BindingFlags.NonPublic);
                         }
                     }
                 }
@@ -185,7 +224,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
             public override void WriteEndElement()
                 {
+                IndentLevel--;
                 writer.WriteEndElement();
+                IndentLevel++;
                 }
             #endregion
             #region M:WriteFullEndElement
@@ -395,7 +436,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             #endregion
 
-            public override WriteState WriteState { get{ return writer.WriteState; }}
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)] private FieldInfo m_i;
+            private XmlWriter writer,InnerWriter;
+            private MethodInfo WriteIndentMethod;
             }
 
         #region M:Dispose(Boolean)
@@ -671,8 +714,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        private InternalXmlWriter writer;
+
+
+        private XmlWriter writer;
         private Boolean Disposed;
         private Boolean LeaveOpen;
+        private const Int32 BUFSIZE = 4096;
         }
     }

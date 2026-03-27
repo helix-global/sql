@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class User : SqlObject
+    public class PDBUser : PDBObject
         {
         [UsedImplicitly][Field(Source = "FULLNAME")] public String FullName { get; }
         [UsedImplicitly][Field(Source = "GID")]      public Guid UUID { get; }
@@ -17,13 +17,13 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "ISGROUP")]  public Boolean IsGroup { get; }
 
         #region ctor{DataRow}
-        public User(DataRow row)
+        public PDBUser(DataRow row)
             : base(row)
             {
             }
         #endregion
         #region ctor{XElement}
-        public User(XElement source)
+        public PDBUser(XElement source)
             {
             FullName = (String)source.Attribute("FullName");
             UUID = (Guid)source.Attribute("UUID");

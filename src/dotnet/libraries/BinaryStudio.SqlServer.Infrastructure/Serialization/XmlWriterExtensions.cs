@@ -12,7 +12,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ElementGroup({this}XmlWriter,String,String):IDisposable
-        public static IDisposable ElementGroup(this XmlWriter writer,String localName, String ns)
+        public static IDisposable ElementGroup(this XmlWriter writer,String localName,String ns)
             {
             return new ElementGroupScope(writer,localName,ns);
             }
@@ -45,8 +45,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         #region M:WriteCDATA({this}XmlWriter,String,CDATA)
         public static void WriteCDATA(this XmlWriter writer,String localName,CDATA value) {
-            if ((value == null) || (value is DBNull)) { return; }
+            if (value == null) { return; }
             using (writer.ElementGroup(localName)) {
+                writer.WriteCData(value.ToString());
+                }
+            }
+        #endregion
+        #region M:WriteCDATA({this}XmlWriter,String,String,CDATA)
+        public static void WriteCDATA(this XmlWriter writer,String localName,String ns,CDATA value) {
+            if (value == null) { return; }
+            using (writer.ElementGroup(localName,ns)) {
                 writer.WriteCData(value.ToString());
                 }
             }

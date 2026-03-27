@@ -85,12 +85,22 @@ namespace dacpac
                     var ModuleFolder = Path.Combine(TargetFolder,"Modules");
                     CreateFolderIfNotExists(ModuleFolder);
                     foreach (var module in r.Modules) {
-                        using (var writer = new SqlXmlWriter(XmlWriter.Create(Path.Combine(ModuleFolder,module.Label+".xml"),
+                        using (var writer = new SqlXmlWriter(Path.Combine(ModuleFolder,module.Label+".xml")))
+                            {
+                            module.WriteXml(writer);
+                            }
+                        }
+                    }
+                if (r.Enums.Count > 0) {
+                    var EnumFolder = Path.Combine(TargetFolder,"Enums");
+                    CreateFolderIfNotExists(EnumFolder);
+                    foreach (var @enum in r.Enums) {
+                        using (var writer = new SqlXmlWriter(XmlWriter.Create(Path.Combine(EnumFolder,@enum.Label+".xml"),
                             new XmlWriterSettings {
                                 Indent = true
                                 }),false))
                             {
-                            module.WriteXml(writer);
+                            @enum.WriteXml(writer);
                             }
                         }
                     }

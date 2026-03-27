@@ -16,6 +16,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     public abstract class SqlObject : IXmlSerializable,IServiceProvider
         {
+        public const String URI_XSINIL = "http://www.w3.org/2001/XMLSchema-instance";
         public IServiceProvider Context { get; }
 
         #region ctor

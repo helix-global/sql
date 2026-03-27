@@ -18,3 +18,4 @@
 /src/dotnet/tests/db/db.dbmdl
 /src/dotnet/tests/db/db.jfm
 /.intermediate/pdb/Modules
+/.intermediate/pdb/Enums

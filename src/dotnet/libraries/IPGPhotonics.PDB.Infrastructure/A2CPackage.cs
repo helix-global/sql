@@ -24,15 +24,17 @@ namespace IPGPhotonics.PDB.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
-        ISqlObjectResolver<Int32?,User>
+        ISqlObjectResolver<Int32?,PDBUser>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
-        public IList<Module> Modules { get;private set; }
+        public IList<PDBModule> Modules { get;private set; }
+        public IList<PDBEnum> Enums { get;private set; }
 
         #region ctor
         private A2CPackage() {
-            Modules = EmptyArray<Module>.List;
+            Modules = EmptyArray<PDBModule>.List;
+            Enums = EmptyArray<PDBEnum>.List;
             LoadUsers(Resources.PredefinedUserRecords);
             }
         #endregion
@@ -117,14 +119,22 @@ namespace IPGPhotonics.PDB.Infrastructure
             var tasks = new List<Task>();
             using (var cancellation = new CancellationTokenSource()) {
                 var token = cancellation.Token;
-                foreach (DataTable table in source.Tables) {
-                    var task = LoadTable(token,table);
-                    lock (tasks)
-                        {
-                        tasks.Add(task);
-                        }
-                    }
-                Task.WaitAll(tasks.ToArray());
+                Task.WaitAll(LoadUsers(token,source.Tables["DEF_USERS"]));
+                Task.WaitAll(LoadModules(token,source.Tables["DEF_MODULES"]));
+                Task.WaitAll(
+                    BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfi,"ENTITYOID"),
+                    BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuv,"ENUMOID")
+                    );
+                Task.WaitAll(LoadEnum(token,source.Tables["DEF_ENUMERATION"]));
+                //Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
+                //foreach (DataTable table in source.Tables) {
+                //    var task = LoadTable(token,table);
+                //    lock (tasks)
+                //        {
+                //        tasks.Add(task);
+                //        }
+                //    }
+                //Task.WaitAll(tasks.ToArray());
                 }
             #else
             foreach (DataTable table in source.Tables) {
@@ -132,6 +142,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             #endif
             Modules = m_modI.Values.AsReadOnly();
+            Enums   = m_enuI.Values.AsReadOnly();
             return;
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
@@ -223,20 +234,45 @@ namespace IPGPhotonics.PDB.Infrastructure
             return BitConverter.ToUInt16(buffer,0);
             }
         #endregion
+        #region M:LoadEnum(CancellationToken,DataTable):Task
+        private async Task LoadEnum(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBEnum(this,i,IXenuv)))
+                    {
+                    m_enuI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadEntities(CancellationToken,DataTable):Task
+        private async Task LoadEntities(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var row in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBModule(this,i)))
+                    {
+                    }
+                },cancellation);
+            }
+        #endregion
         #region M:LoadModules(CancellationToken,DataTable)
         private async Task LoadModules(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Module(this,i)))
+                    .Select(i => new PDBModule(this,i)))
                     {
                     lock(m_modI)
                         {
                         m_modI[row.OID] = row;
                         }
                     }
-                });
+                },cancellation);
             }
         #endregion
         #region M:LoadSqlObjects(CancellationToken,DataTable):Task
@@ -270,7 +306,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new User(i)))
+                    .Select(i => new PDBUser(i)))
                     {
                     lock(m_usrI)
                         {
@@ -288,7 +324,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                     using (var reader = new GZipStream(memory,CompressionMode.Decompress)) {
                         XDocument.Load(reader).Root
                             .Elements("User")
-                            .Select(i => new User(i))
+                            .Select(i => new PDBUser(i))
                             .ForEach(i => {
                                 {
                                 m_usrI[i.ID] = i;
@@ -484,7 +520,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
         #region M:ISqlObjectResolver<Int32?,User>.GetObject(Int32):User
-        User ISqlObjectResolver<Int32?,User>.GetObject(Int32? key) {
+        PDBUser ISqlObjectResolver<Int32?,PDBUser>.GetObject(Int32? key) {
             if (key == null) { return null; }
             e_usrI.WaitOne();
             return m_usrI.TryGetValue(key.Value,out var r)
@@ -501,6 +537,22 @@ namespace IPGPhotonics.PDB.Infrastructure
         protected override Object GetService(Type service) {
             if (service == typeof(ISqlExtendedPropertyResolver)) { return this; }
             return base.GetService(service);
+            }
+        #endregion
+        #region M:BuildIndex(CancellationToken,DataTable,IDictionary<Int32,IList<DataRow>>,String):Task
+        private async Task BuildIndex(CancellationToken cancellation,DataTable source,IDictionary<Int32,IList<DataRow>> target,String column) {
+            await Task.Delay(0,cancellation);
+            if (source != null) {
+                foreach (DataRow r in source.Rows) {
+                    var i = PropSI4(r[column],0);
+                    if (i != 0) {
+                        if (!target.TryGetValue(i, out var rows)) {
+                            target.Add(i,rows = new List<DataRow>());
+                            }
+                        rows.Add(r);
+                        }
+                    }
+                }
             }
         #endregion
 
@@ -785,8 +837,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<SqlObjectIdentifier,ISqlAssembly>  m_asN = new SortedDictionary<SqlObjectIdentifier,ISqlAssembly>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlAggregate>  m_agN = new SortedDictionary<SqlObjectIdentifier,ISqlAggregate>();
         private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
-        private readonly IDictionary<Int32,User>   m_usrI = new SortedDictionary<Int32,User>();
-        private readonly IDictionary<Int32,Module> m_modI = new SortedDictionary<Int32,Module>();
+        private readonly IDictionary<Int32,PDBUser>   m_usrI = new SortedDictionary<Int32,PDBUser>();
+        private readonly IDictionary<Int32,PDBModule> m_modI = new SortedDictionary<Int32,PDBModule>();
+        private readonly IDictionary<Int32,PDBEnum>   m_enuI = new SortedDictionary<Int32,PDBEnum>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfi = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuv = new Dictionary<Int32,IList<DataRow>>();
         }
     }
