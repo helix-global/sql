@@ -95,10 +95,7 @@ namespace dacpac
                     var EnumFolder = Path.Combine(TargetFolder,"Enums");
                     CreateFolderIfNotExists(EnumFolder);
                     foreach (var @enum in r.Enums) {
-                        using (var writer = new SqlXmlWriter(XmlWriter.Create(Path.Combine(EnumFolder,@enum.Label+".xml"),
-                            new XmlWriterSettings {
-                                Indent = true
-                                }),false))
+                        using (var writer = new SqlXmlWriter(Path.Combine(EnumFolder,@enum.Label+".xml")))
                             {
                             @enum.WriteXml(writer);
                             }

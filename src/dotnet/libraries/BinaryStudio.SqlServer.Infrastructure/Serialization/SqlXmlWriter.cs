@@ -64,7 +64,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             var settings = new XmlWriterSettings {
                 Indent = true,
                 };
-            return new XmlWellFormedWriter(new XmlUtf8RawTextWriter(stream,settings),settings);
+            return new XmlWellFormedWriter(new XmlUtf8RawTextWriterIndent(stream,settings), settings);
             }
         #endregion
 
@@ -713,8 +713,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
             writer.WriteAttribute(newline,localName,value);
             }
         #endregion
-
-
 
         private XmlWriter writer;
         private Boolean Disposed;

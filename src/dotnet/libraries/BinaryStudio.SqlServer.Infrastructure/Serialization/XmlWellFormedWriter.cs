@@ -23,39 +23,39 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         // namespace management
         Namespace[] nsStack;
-        int nsTop;
-        Dictionary<string, int> nsHashtable;
-        bool useNsHashtable;
+        Int32 nsTop;
+        Dictionary<String, Int32> nsHashtable;
+        Boolean useNsHashtable;
 
         // element scoping
         ElementScope[] elemScopeStack;
-        int elemTop;
+        Int32 elemTop;
 
         // attribute tracking
         AttrName[] attrStack;
-        int attrCount;
-        Dictionary<string, int> attrHashTable;
+        Int32 attrCount;
+        Dictionary<String, Int32> attrHashTable;
 
         // special attribute caching (xmlns, xml:space, xml:lang)
         SpecialAttribute specAttr = SpecialAttribute.No;
         AttributeValueCache attrValueCache;
-        string curDeclPrefix;
+        String curDeclPrefix;
 
         // state machine
         State[] stateTable;
         State currentState;
 
         // settings
-        bool checkCharacters;
-        bool omitDuplNamespaces;
-        bool writeEndDocumentOnClose;
+        Boolean checkCharacters;
+        Boolean omitDuplNamespaces;
+        Boolean writeEndDocumentOnClose;
 
         // actual conformance level
         ConformanceLevel conformanceLevel;
 
         // flags
-        bool dtdWritten;
-        bool xmlDeclFollows;
+        Boolean dtdWritten;
+        Boolean xmlDeclFollows;
 
         // char type tables
         XmlCharType xmlCharType = XmlCharType.Instance;
@@ -67,12 +67,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
         //
         // Constants
         //
-        const int ElementStackInitialSize = 8;
-        const int NamespaceStackInitialSize = 8;
-        const int AttributeArrayInitialSize = 8;
+        const Int32 ElementStackInitialSize = 8;
+        const Int32 NamespaceStackInitialSize = 8;
+        const Int32 AttributeArrayInitialSize = 8;
         #if DEBUG
-        const int MaxAttrDuplWalkCount = 2;
-        const int MaxNamespacesWalkCount = 3;
+        const Int32 MaxAttrDuplWalkCount = 2;
+        const Int32 MaxNamespacesWalkCount = 3;
         #else
         const int MaxAttrDuplWalkCount = 14;
         const int MaxNamespacesWalkCount = 16;
@@ -138,7 +138,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Whitespace,
             }
 
-        internal static readonly string[] stateName = {
+        internal static readonly String[] stateName = {
             "Start",                     // State.Start                             
             "TopLevel",                  // State.TopLevel       
             "Document",                  // State.Document       
@@ -158,7 +158,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             "Error",                     // State.Error
         };
 
-        internal static readonly string[] tokenName = {
+        internal static readonly String[] tokenName = {
             "StartDocument",            // Token.StartDocument
             "EndDocument",              // Token.EndDocument
             "PI",                       // Token.PI
@@ -234,9 +234,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     /* Token.Whitespace     */ State.TopLevel,       State.TopLevel,      State.Error,       State.StartContent,    State.Content,    State.PostB64Cont,    State.PostB64Attr,   State.AfterRootEle,   State.Attribute,      State.SpecialAttr,   State.Error,        State.RootLevelAttr,      State.RootLevelSpecAttr,  State.PostB64RootAttr,   State.AfterRootLevelAttr, State.Error, /* Token.Whitespace     */
         };
 
-        //
-        // Constructor & finalizer
-        //
+        #region ctor{XmlWriter,XmlWriterSettings}
         public XmlWellFormedWriter(XmlWriter writer,XmlWriterSettings settings)
             {
             Debug.Assert(writer != null);
@@ -266,17 +264,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
             nsStack[1].Set("xml", XmlReservedNs.NsXml, NamespaceKind.Special);
             if (predefinedNamespaces == null)
                 {
-                nsStack[2].Set(string.Empty, string.Empty, NamespaceKind.Implied);
+                nsStack[2].Set(String.Empty, String.Empty, NamespaceKind.Implied);
                 }
             else
                 {
-                string defaultNs = predefinedNamespaces.LookupNamespace(string.Empty);
-                nsStack[2].Set(string.Empty, (defaultNs == null ? string.Empty : defaultNs), NamespaceKind.Implied);
+                String defaultNs = predefinedNamespaces.LookupNamespace(String.Empty);
+                nsStack[2].Set(String.Empty, (defaultNs == null ? String.Empty : defaultNs), NamespaceKind.Implied);
                 }
             nsTop = 2;
 
             elemScopeStack = new ElementScope[ElementStackInitialSize];
-            elemScopeStack[0].Set(string.Empty, string.Empty, string.Empty, nsTop);
+            elemScopeStack[0].Set(String.Empty, String.Empty, String.Empty, nsTop);
             elemScopeStack[0].xmlSpace = XmlSpace.None;
             elemScopeStack[0].xmlLang = null;
             elemTop = 0;
@@ -285,17 +283,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             hasher = new SecureStringHasher();
             }
+        #endregion
 
-        //
-        // XmlWriter implementation
-        //
+        #region P:WriteState:WriteState
         public override WriteState WriteState
             {
             get
                 {
-                if ((int)currentState <= (int)State.Error)
+                if ((Int32)currentState <= (Int32)State.Error)
                     {
-                    return state2WriteState[(int)currentState];
+                    return state2WriteState[(Int32)currentState];
                     }
                 else
                     {
@@ -304,7 +301,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             }
-
+        #endregion
+        #region P:Settings:XmlWriterSettings
         public override XmlWriterSettings Settings
             {
             get
@@ -321,17 +319,102 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return settings;
                 }
             }
+        #endregion
+        #region P:IsClosedOrErrorState:Boolean
+        private Boolean IsClosedOrErrorState
+            {
+            get
+                {
+                return (Int32)currentState >= (Int32)State.Closed;
+                }
+            }
+        #endregion
+        #region P:XmlSpace:XmlSpace
+        public override XmlSpace XmlSpace
+            {
+            get
+                {
+                Int32 i;
+                for (i = elemTop; i >= 0 && elemScopeStack[i].xmlSpace == (System.Xml.XmlSpace)(int)-1; i--) ;
+                Debug.Assert(i >= 0);
+                return elemScopeStack[i].xmlSpace;
+                }
+            }
+        #endregion
+        #region P:XmlLang:String
+        public override String XmlLang
+            {
+            get
+                {
+                Int32 i;
+                for (i = elemTop; i > 0 && elemScopeStack[i].xmlLang == null; i--) ;
+                Debug.Assert(i >= 0);
+                return elemScopeStack[i].xmlLang;
+                }
+            }
+        #endregion
+        #if !SILVERLIGHT
+        #region P:InnerWriter:XmlWriter
+        internal XmlWriter InnerWriter
+            {
+            get
+                {
+                return this.writer;
+                }
+            }
+        #endregion
+        #region P:RawWriter:XmlRawWriter
+        internal XmlRawWriter RawWriter
+            {
+            get
+                {
+                return rawWriter;
+                }
+            }
+        #endregion
+        #endif
+        #region P:SaveAttrValue:Boolean
+        private Boolean SaveAttrValue
+            {
+            get
+                {
+                return specAttr != SpecialAttribute.No;
+                }
+            }
+        #endregion
+        #region P:InBase64:Boolean
+        private Boolean InBase64
+            {
+            get
+                {
+                return (currentState == State.B64Content || currentState == State.B64Attribute || currentState == State.RootLevelB64Attr);
+                }
+            }
+        #endregion
 
+        #region M:WriteStartDocument
+        /// <summary>Writes the XML declaration with the version "1.0".</summary>
+        /// <exception cref="T:System.InvalidOperationException">This is not the first write method called after the constructor.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteStartDocument()
             {
             WriteStartDocumentImpl(XmlStandalone.Omit);
             }
-
-        public override void WriteStartDocument(bool standalone)
+        #endregion
+        #region M:WriteStartDocument(Boolean)
+        /// <summary>When overridden in a derived class, writes the XML declaration with the version "1.0" and the standalone attribute.</summary>
+        /// <param name="standalone">If <see langword="true"/>, it writes "standalone=yes"; if <see langword="false"/>, it writes "standalone=no".</param>
+        /// <exception cref="T:System.InvalidOperationException">This is not the first write method called after the constructor.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteStartDocument(Boolean standalone)
             {
             WriteStartDocumentImpl(standalone ? XmlStandalone.Yes : XmlStandalone.No);
             }
-
+        #endregion
+        #region M:WriteEndDocument
+        /// <summary>When overridden in a derived class, closes any open elements or attributes and puts the writer back in the Start state.</summary>
+        /// <exception cref="T:System.ArgumentException">The XML document is invalid.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteEndDocument()
             {
             try
@@ -359,8 +442,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteDocType(string name, string pubid, string sysid, string subset)
+        #endregion
+        #region M:WriteDocType(String,String,String,String)
+        /// <summary>When overridden in a derived class, writes the DOCTYPE declaration with the specified name and optional attributes.</summary>
+        /// <param name="name">The name of the DOCTYPE. This must be non-empty.</param>
+        /// <param name="pubid">If non-null it also writes PUBLIC "pubid" "sysid" where <paramref name="pubid"/> and <paramref name="sysid"/> are replaced with the value of the given arguments.</param>
+        /// <param name="sysid">If <paramref name="pubid"/> is <see langword="null"/> and <paramref name="sysid"/> is non-null it writes SYSTEM "sysid" where <paramref name="sysid"/> is replaced with the value of this argument.</param>
+        /// <param name="subset">If non-null it writes [subset] where subset is replaced with the value of this argument.</param>
+        /// <exception cref="T:System.InvalidOperationException">This method was called outside the prolog (after the root element).</exception>
+        /// <exception cref="T:System.ArgumentException">The value for <paramref name="name"/> would result in invalid XML.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteDocType(String name,String pubid,String sysid,String subset)
             {
             try
                 {
@@ -388,7 +480,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     stateTable = StateTableDocument;
                     }
 
-                int i;
+                Int32 i;
 
                 // check characters
                 if (checkCharacters)
@@ -426,8 +518,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteStartElement(string prefix, string localName, string ns)
+        #endregion
+        #region M:WriteStartElement(String,String,String)
+        /// <summary>When overridden in a derived class, writes the specified start tag and associates it with the given namespace and prefix.</summary>
+        /// <param name="prefix">The namespace prefix of the element.</param>
+        /// <param name="localName">The local name of the element.</param>
+        /// <param name="ns">The namespace URI to associate with the element.</param>
+        /// <exception cref="T:System.InvalidOperationException">The writer is closed.</exception>
+        /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteStartElement(String prefix,String localName,String ns)
             {
             try
                 {
@@ -449,7 +549,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         }
                     if (prefix == null)
                         {
-                        prefix = string.Empty;
+                        prefix = String.Empty;
                         }
                     }
                 else if (prefix.Length > 0)
@@ -470,7 +570,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     if (ns == null)
                         {
                         Debug.Assert(prefix.Length == 0);
-                        ns = string.Empty;
+                        ns = String.Empty;
                         }
                     }
 
@@ -484,7 +584,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 writer.WriteStartElement(prefix, localName, ns);
 
                 // push element on stack and add/check namespace
-                int top = ++elemTop;
+                Int32 top = ++elemTop;
                 if (top == elemScopeStack.Length)
                     {
                     ElementScope[] newStack = new ElementScope[top * 2];
@@ -508,15 +608,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-
+        #endregion
+        #region M:WriteEndElement
+        /// <summary>When overridden in a derived class, closes one element and pops the corresponding namespace scope.</summary>
+        /// <exception cref="T:System.InvalidOperationException">This results in an invalid XML document.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteEndElement()
             {
             try
                 {
                 AdvanceState(Token.EndElement);
 
-                int top = elemTop;
+                Int32 top = elemTop;
                 if (top == 0)
                     {
                     throw new XmlException(Xml_NoStartTag);
@@ -533,7 +636,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
 
                 // pop namespaces
-                int prevNsTop = elemScopeStack[top].prevNSTop;
+                Int32 prevNsTop = elemScopeStack[top].prevNSTop;
                 if (useNsHashtable && prevNsTop < nsTop)
                     {
                     PopNamespaces(prevNsTop + 1, nsTop);
@@ -560,14 +663,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:WriteFullEndElement
+        /// <summary>When overridden in a derived class, closes one element and pops the corresponding namespace scope.</summary>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteFullEndElement()
             {
             try
                 {
                 AdvanceState(Token.EndElement);
 
-                int top = elemTop;
+                Int32 top = elemTop;
                 if (top == 0)
                     {
                     throw new XmlException(Xml_NoStartTag);
@@ -584,7 +690,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
 
                 // pop namespaces
-                int prevNsTop = elemScopeStack[top].prevNSTop;
+                Int32 prevNsTop = elemScopeStack[top].prevNSTop;
                 if (useNsHashtable && prevNsTop < nsTop)
                     {
                     PopNamespaces(prevNsTop + 1, nsTop);
@@ -611,8 +717,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteStartAttribute(string prefix, string localName, string namespaceName)
+        #endregion
+        #region M:WriteStartAttribute(String,String,String)
+        /// <summary>When overridden in a derived class, writes the start of an attribute with the specified prefix, local name, and namespace URI.</summary>
+        /// <param name="prefix">The namespace prefix of the attribute.</param>
+        /// <param name="localName">The local name of the attribute.</param>
+        /// <param name="namespaceName">The namespace URI for the attribute.</param>
+        /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException" /> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteStartAttribute(String prefix,String localName,String namespaceName)
             {
             try
                 {
@@ -622,7 +735,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     if (prefix == "xmlns")
                         {
                         localName = "xmlns";
-                        prefix = string.Empty;
+                        prefix = String.Empty;
                         }
                     else
                         {
@@ -644,7 +757,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         }
                     if (prefix == null)
                         {
-                        prefix = string.Empty;
+                        prefix = String.Empty;
                         }
                     }
                 if (namespaceName == null)
@@ -655,7 +768,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         }
                     if (namespaceName == null)
                         {
-                        namespaceName = string.Empty;
+                        namespaceName = String.Empty;
                         }
                     }
 
@@ -717,11 +830,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     if (namespaceName.Length == 0)
                         {
                         // attributes cannot have default namespace
-                        prefix = string.Empty;
+                        prefix = String.Empty;
                         }
                     else
                         {
-                        string definedNs = LookupLocalNamespace(prefix);
+                        String definedNs = LookupLocalNamespace(prefix);
                         if (definedNs != null && definedNs != namespaceName)
                             {
                             prefix = GeneratePrefix();
@@ -751,7 +864,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:WriteEndAttribute
+        /// <summary>When overridden in a derived class, closes the previous <see cref="M:System.Xml.XmlWriter.WriteStartAttribute(System.String,System.String)"/> call.</summary>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteEndAttribute()
             {
             try
@@ -760,30 +876,30 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
                 if (specAttr != SpecialAttribute.No)
                     {
-                    string value;
+                    String value;
 
                     switch (specAttr)
                         {
                         case SpecialAttribute.DefaultXmlns:
                             value = attrValueCache.StringValue;
-                            if (PushNamespaceExplicit(string.Empty, value))
+                            if (PushNamespaceExplicit(String.Empty, value))
                                 { // returns true if the namespace declaration should be written out
                                 if (rawWriter != null)
                                     {
                                     if (rawWriter.SupportsNamespaceDeclarationInChunks)
                                         {
-                                        rawWriter.WriteStartNamespaceDeclaration(string.Empty);
+                                        rawWriter.WriteStartNamespaceDeclaration(String.Empty);
                                         attrValueCache.Replay(rawWriter);
                                         rawWriter.WriteEndNamespaceDeclaration();
                                         }
                                     else
                                         {
-                                        rawWriter.WriteNamespaceDeclaration(string.Empty, value);
+                                        rawWriter.WriteNamespaceDeclaration(String.Empty, value);
                                         }
                                     }
                                 else
                                     {
-                                    writer.WriteStartAttribute(string.Empty, "xmlns", XmlReservedNs.NsXmlNs);
+                                    writer.WriteStartAttribute(String.Empty, "xmlns", XmlReservedNs.NsXmlNs);
                                     attrValueCache.Replay(writer);
                                     writer.WriteEndAttribute();
                                     }
@@ -866,14 +982,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteCData(string text)
+        #endregion
+        #region M:WriteCData(String)
+        /// <summary>When overridden in a derived class, writes out a &lt;![CDATA[...]]&gt; block containing the specified text.</summary>
+        /// <param name="text">The text to place inside the CDATA block.</param>
+        /// <exception cref="T:System.ArgumentException">The text would result in a non-well formed XML document.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteCData(String text)
             {
             try
                 {
                 if (text == null)
                     {
-                    text = string.Empty;
+                    text = String.Empty;
                     }
                 AdvanceState(Token.CData);
                 writer.WriteCData(text);
@@ -884,14 +1005,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteComment(string text)
+        #endregion
+        #region M:WriteComment(String)
+        /// <summary>When overridden in a derived class, writes out a comment &lt;!--...--&gt; containing the specified text.</summary>
+        /// <param name="text">Text to place inside the comment.</param>
+        /// <exception cref="T:System.ArgumentException">The text would result in a non-well-formed XML document.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteComment(String text)
             {
             try
                 {
                 if (text == null)
                     {
-                    text = string.Empty;
+                    text = String.Empty;
                     }
                 AdvanceState(Token.Comment);
                 writer.WriteComment(text);
@@ -902,8 +1028,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteProcessingInstruction(string name, string text)
+        #endregion
+        #region M:WriteProcessingInstruction(String,String)
+        /// <summary>When overridden in a derived class, writes out a processing instruction with a space between the name and text as follows: &lt;?name text?&gt;.</summary>
+        /// <param name="name">The name of the processing instruction.</param>
+        /// <param name="text">The text to include in the processing instruction.</param>
+        /// <exception cref="T:System.ArgumentException">The text would result in a non-well formed XML document. <paramref name="name"/> is either <see langword="null"/> or <see langword="String.Empty"/>.This method is being used to create an XML declaration after <see cref="M:System.Xml.XmlWriter.WriteStartDocument"/> has already been called.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteProcessingInstruction(String name,String text)
             {
             try
                 {
@@ -917,11 +1049,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 // check text
                 if (text == null)
                     {
-                    text = string.Empty;
+                    text = String.Empty;
                     }
 
                 // xml declaration is a special case (not a processing instruction, but we allow WriteProcessingInstruction as a convenience)
-                if (name.Length == 3 && string.Compare(name, "xml", StringComparison.OrdinalIgnoreCase) == 0)
+                if (name.Length == 3 && String.Compare(name, "xml", StringComparison.OrdinalIgnoreCase) == 0)
                     {
                     if (currentState != State.Start)
                         {
@@ -953,8 +1085,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteEntityRef(string name)
+        #endregion
+        #region M:WriteEntityRef(String)
+        /// <summary>When overridden in a derived class, writes out an entity reference as <see langword="&amp;name;" />.</summary>
+        /// <param name="name">The name of the entity reference.</param>
+        /// <exception cref="T:System.ArgumentException"><paramref name="name"/> is either <see langword="null"/> or <see langword="String.Empty"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteEntityRef(String name)
             {
             try
                 {
@@ -981,8 +1118,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteCharEntity(char ch)
+        #endregion
+        #region M:WriteCharEntity(Char)
+        /// <summary>When overridden in a derived class, forces the generation of a character entity for the specified Unicode character value.</summary>
+        /// <param name="ch">The Unicode character for which to generate a character entity.</param>
+        /// <exception cref="T:System.ArgumentException">The character is in the surrogate pair character range, <see langword="0xd800"/> - <see langword="0xdfff"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteCharEntity(Char ch)
             {
             try
                 {
@@ -1007,8 +1149,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteSurrogateCharEntity(char lowChar, char highChar)
+        #endregion
+        #region M:WriteSurrogateCharEntity(Char,Char)
+        /// <summary>When overridden in a derived class, generates and writes the surrogate character entity for the surrogate character pair.</summary>
+        /// <param name="lowChar">The low surrogate. This must be a value between 0xDC00 and 0xDFFF.</param>
+        /// <param name="highChar">The high surrogate. This must be a value between 0xD800 and 0xDBFF.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid surrogate character pair was passed.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteSurrogateCharEntity(Char lowChar,Char highChar)
             {
             try
                 {
@@ -1033,14 +1181,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteWhitespace(string ws)
+        #endregion
+        #region M:WriteWhitespace(String)
+        /// <summary>When overridden in a derived class, writes out the given white space.</summary>
+        /// <param name="ws">The string of white space characters.</param>
+        /// <exception cref="T:System.ArgumentException">The string contains non-white space characters.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteWhitespace(String ws)
             {
             try
                 {
                 if (ws == null)
                     {
-                    ws = string.Empty;
+                    ws = String.Empty;
                     }
                 if (!XmlCharType.Instance.IsOnlyWhitespace(ws))
                     {
@@ -1063,8 +1216,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteString(string text)
+        #endregion
+        #region M:WriteString(String)
+        /// <summary>When overridden in a derived class, writes the given text content.</summary>
+        /// <param name="text">The text to write.</param>
+        /// <exception cref="T:System.ArgumentException">The text string contains an invalid surrogate pair.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteString(String text)
             {
             try
                 {
@@ -1089,8 +1247,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteChars(char[] buffer, int index, int count)
+        #endregion
+        #region M:WriteChars(Char[],Int32,Int32)
+        /// <summary>When overridden in a derived class, writes text one buffer at a time.</summary>
+        /// <param name="buffer">Character array containing the text to write.</param>
+        /// <param name="index">The position in the buffer indicating the start of the text to write.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero.-or-The buffer length minus <paramref name="index" /> is less than <paramref name="count"/>; the call results in surrogate pair characters being split or an invalid surrogate pair being written.</exception>
+        /// <exception cref="T:System.ArgumentException">The <paramref name="buffer"/> parameter value is not valid.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteChars(Char[] buffer,Int32 index,Int32 count)
             {
             try
                 {
@@ -1127,8 +1294,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteRaw(char[] buffer, int index, int count)
+        #endregion
+        #region M:WriteRaw(Char[],Int32,Int32)
+        /// <summary>When overridden in a derived class, writes raw markup manually from a character buffer.</summary>
+        /// <param name="buffer">Character array containing the text to write.</param>
+        /// <param name="index">The position within the buffer indicating the start of the text to write.</param>
+        /// <param name="count">The number of characters to write.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteRaw(Char[] buffer,Int32 index,Int32 count)
             {
             try
                 {
@@ -1165,8 +1340,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteRaw(string data)
+        #endregion
+        #region M:WriteRaw(String)
+        /// <summary>When overridden in a derived class, writes raw markup manually from a string.</summary>
+        /// <param name="data">String containing the text to write.</param>
+        /// <exception cref="T:System.ArgumentException"><paramref name="data"/> is either <see langword="null"/> or <see langword="String.Empty"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteRaw(String data)
             {
             try
                 {
@@ -1191,8 +1371,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteBase64(byte[] buffer, int index, int count)
+        #endregion
+        #region M:WriteBase64(Byte[],Int32,Int32)
+        /// <summary>When overridden in a derived class, encodes the specified binary bytes as Base64 and writes out the resulting text.</summary>
+        /// <param name="buffer">Byte array to encode.</param>
+        /// <param name="index">The position in the buffer indicating the start of the bytes to write.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteBase64(Byte[] buffer,Int32 index,Int32 count)
             {
             try
                 {
@@ -1222,7 +1410,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:Close
+        /// <summary>When overridden in a derived class, closes this stream and the underlying stream.</summary>
+        /// <exception cref="T:System.InvalidOperationException">A call is made to write more output after <see langword="Close"/> has been called or the result of this call is an invalid XML document.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void Close()
             {
             if (currentState != State.Closed)
@@ -1280,7 +1472,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             }
-
+        #endregion
+        #region M:Flush
+        /// <summary>When overridden in a derived class, flushes whatever is in the buffer to the underlying streams and also flushes the underlying stream.</summary>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void Flush()
             {
             try
@@ -1293,8 +1488,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override string LookupPrefix(string ns)
+        #endregion
+        #region M:LookupPrefix(String):String
+        /// <summary>When overridden in a derived class, returns the closest prefix defined in the current namespace scope for the namespace URI.</summary>
+        /// <param name="ns">The namespace URI whose prefix you want to find.</param>
+        /// <returns>The matching prefix or <see langword="null"/> if no matching namespace URI is found in the current scope.</returns>
+        /// <exception cref="T:System.ArgumentException"><paramref name="ns"/> is either <see langword="null"/> or <see langword="String.Empty"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override String LookupPrefix(String ns)
             {
             try
                 {
@@ -1302,11 +1503,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     {
                     throw new ArgumentNullException("ns");
                     }
-                for (int i = nsTop; i >= 0; i--)
+                for (Int32 i = nsTop; i >= 0; i--)
                     {
                     if (nsStack[i].namespaceUri == ns)
                         {
-                        string prefix = nsStack[i].prefix;
+                        String prefix = nsStack[i].prefix;
                         for (i++; i <= nsTop; i++)
                             {
                             if (nsStack[i].prefix == prefix)
@@ -1325,30 +1526,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override XmlSpace XmlSpace
-            {
-            get
-                {
-                int i;
-                for (i = elemTop; i >= 0 && elemScopeStack[i].xmlSpace == (System.Xml.XmlSpace)(int)-1; i--) ;
-                Debug.Assert(i >= 0);
-                return elemScopeStack[i].xmlSpace;
-                }
-            }
-
-        public override string XmlLang
-            {
-            get
-                {
-                int i;
-                for (i = elemTop; i > 0 && elemScopeStack[i].xmlLang == null; i--) ;
-                Debug.Assert(i >= 0);
-                return elemScopeStack[i].xmlLang;
-                }
-            }
-
-        public override void WriteQualifiedName(string localName, string ns)
+        #endregion
+        #region M:WriteQualifiedName(String,String)
+        /// <summary>When overridden in a derived class, writes out the namespace-qualified name. This method looks up the prefix that is in scope for the given namespace.</summary>
+        /// <param name="localName">The local name to write.</param>
+        /// <param name="ns">The namespace URI for the name.</param>
+        /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is either <see langword="null"/> or <see langword="String.Empty"/>. <paramref name="localName"/> is not a valid name.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteQualifiedName(String localName,String ns)
             {
             try
                 {
@@ -1359,7 +1544,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 CheckNCName(localName);
 
                 AdvanceState(Token.Text);
-                string prefix = String.Empty;
+                String prefix = String.Empty;
                 if (ns != null && ns.Length != 0)
                     {
                     prefix = LookupPrefix(ns);
@@ -1395,8 +1580,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(bool value)
+        #endregion
+        #region M:WriteValue(Boolean)
+        /// <summary>Writes a <see cref="T:System.Boolean"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.Boolean"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Boolean value)
             {
             try
                 {
@@ -1409,7 +1599,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:WriteValue(DateTime)
+        /// <summary>Writes a <see cref="T:System.DateTime"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.DateTime"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteValue(DateTime value)
             {
             try
@@ -1423,7 +1618,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:WriteValue(DateTimeOffset)
+        /// <summary>Writes a <see cref="T:System.DateTimeOffset"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.DateTimeOffset"/> value to write.</param>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         public override void WriteValue(DateTimeOffset value)
             {
             try
@@ -1437,8 +1636,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(double value)
+        #endregion
+        #region M:WriteValue(Double)
+        /// <summary>Writes a <see cref="T:System.Double"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.Double"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Double value)
             {
             try
                 {
@@ -1451,8 +1655,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(float value)
+        #endregion
+        #region M:WriteValue(Single)
+        /// <summary>Writes a single-precision floating-point number.</summary>
+        /// <param name="value">The single-precision floating-point number to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Single value)
             {
             try
                 {
@@ -1465,8 +1674,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(decimal value)
+        #endregion
+        #region M:WriteValue(Decimal)
+        /// <summary>Writes a <see cref="T:System.Decimal"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.Decimal"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Decimal value)
             {
             try
                 {
@@ -1479,8 +1693,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(int value)
+        #endregion
+        #region M:WriteValue(Int32)
+        /// <summary>Writes a <see cref="T:System.Int32"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.Int32"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Int32 value)
             {
             try
                 {
@@ -1493,8 +1712,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(long value)
+        #endregion
+        #region M:WriteValue(Int64)
+        /// <summary>Writes a <see cref="T:System.Int64"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.Int64"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Int64 value)
             {
             try
                 {
@@ -1507,8 +1731,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(string value)
+        #endregion
+        #region M:WriteValue(String)
+        /// <summary>Writes a <see cref="T:System.String"/> value.</summary>
+        /// <param name="value">The <see cref="T:System.String"/> value to write.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(String value)
             {
             try
                 {
@@ -1533,15 +1762,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteValue(object value)
+        #endregion
+        #region M:WriteValue(Object)
+        /// <summary>Writes the object value.</summary>
+        /// <param name="value">The object value to write.
+        /// Note   With the release of the .NET Framework 3.5, this method accepts <see cref="T:System.DateTimeOffset" /> as a parameter.</param>
+        /// <exception cref="T:System.ArgumentException">An invalid value was specified.</exception>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="value"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">The writer is closed or in error state.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteValue(Object value)
             {
             try
                 {
-                if (SaveAttrValue && value is string)
+                if (SaveAttrValue && value is String)
                     {
                     AdvanceState(Token.Text);
-                    attrValueCache.WriteValue((string)value);
+                    attrValueCache.WriteValue((String)value);
                     }
                 else
                     {
@@ -1555,8 +1792,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        public override void WriteBinHex(byte[] buffer, int index, int count)
+        #endregion
+        #region M:WriteBinHex(Byte[],Int32,Int32)
+        /// <summary>When overridden in a derived class, encodes the specified binary bytes as <see langword="BinHex"/> and writes out the resulting text.</summary>
+        /// <param name="buffer">Byte array to encode.</param>
+        /// <param name="index">The position in the buffer indicating the start of the bytes to write.</param>
+        /// <param name="count">The number of bytes to write.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">The writer is closed or in error state.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        public override void WriteBinHex(Byte[] buffer,Int32 index,Int32 count)
             {
             if (IsClosedOrErrorState)
                 {
@@ -1573,47 +1819,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
-        //
-        // Internal methods
-        //
-#if !SILVERLIGHT
-        internal XmlWriter InnerWriter
-            {
-            get
-                {
-                return this.writer;
-                }
-            }
-
-        internal XmlRawWriter RawWriter
-            {
-            get
-                {
-                return rawWriter;
-                }
-            }
-#endif
-
-        //
-        // Private methods
-        //
-        private bool SaveAttrValue
-            {
-            get
-                {
-                return specAttr != SpecialAttribute.No;
-                }
-            }
-
-        private bool InBase64
-            {
-            get
-                {
-                return (currentState == State.B64Content || currentState == State.B64Attribute || currentState == State.RootLevelB64Attr);
-                }
-            }
-
+        #endregion
+        #region M:SetSpecialAttribute(SpecialAttribute)
         private void SetSpecialAttribute(SpecialAttribute special)
             {
             specAttr = special;
@@ -1629,7 +1836,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 attrValueCache = new AttributeValueCache();
                 }
             }
-
+        #endregion
+        #region M:WriteStartDocumentImpl(XmlStandalone)
         private void WriteStartDocumentImpl(XmlStandalone standalone)
             {
             try
@@ -1665,20 +1873,22 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 throw;
                 }
             }
-
+        #endregion
+        #region M:StartFragment
         private void StartFragment()
             {
             conformanceLevel = ConformanceLevel.Fragment;
             Debug.Assert(stateTable == StateTableAuto);
             }
-
+        #endregion
+        #region M:PushNamespaceImplicit(String,String)
         // PushNamespaceImplicit is called when a prefix/namespace pair is used in an element name, attribute name or some other qualified name.
-        private void PushNamespaceImplicit(string prefix, string ns)
+        private void PushNamespaceImplicit(String prefix,String ns)
             {
             NamespaceKind kind;
 
             // See if the prefix is already defined
-            int existingNsIndex = LookupNamespaceIndex(prefix);
+            Int32 existingNsIndex = LookupNamespaceIndex(prefix);
 
             // Prefix is already defined
             if (existingNsIndex != -1)
@@ -1737,7 +1947,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 // check if it can be found in the predefinedNamespaces (which are provided by the user)
                 if (predefinedNamespaces != null)
                     {
-                    string definedNs = predefinedNamespaces.LookupNamespace(prefix);
+                    String definedNs = predefinedNamespaces.LookupNamespace(prefix);
                     // compare the namespace Uri to decide if the prefix is redefined
                     kind = (definedNs == ns) ? NamespaceKind.Implied : NamespaceKind.NeedToWrite;
                     }
@@ -1750,15 +1960,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             AddNamespace(prefix, ns, kind);
             }
-
+        #endregion
+        #region M:PushNamespaceExplicit(String,String):Boolean
         // PushNamespaceExplicit is called when a namespace declaration is written out;
         // It returs true if the namespace declaration should we written out, false if it should be omited (if OmitDuplicateNamespaceDeclarations is true)
-        private bool PushNamespaceExplicit(string prefix, string ns)
+        private Boolean PushNamespaceExplicit(String prefix,String ns)
             {
-            bool writeItOut = true;
+            Boolean writeItOut = true;
 
             // See if the prefix is already defined
-            int existingNsIndex = LookupNamespaceIndex(prefix);
+            Int32 existingNsIndex = LookupNamespaceIndex(prefix);
 
             // Existing declaration in the current scope
             if (existingNsIndex != -1)
@@ -1775,7 +1986,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     NamespaceKind existingNsKind = nsStack[existingNsIndex].kind;
                     if (existingNsKind == NamespaceKind.Written)
                         {
-                        throw DupAttrException((prefix.Length == 0) ? string.Empty : "xmlns", (prefix.Length == 0) ? "xmlns" : prefix);
+                        throw DupAttrException((prefix.Length == 0) ? String.Empty : "xmlns", (prefix.Length == 0) ? "xmlns" : prefix);
                         }
                     // Check if it can be omitted
                     if (omitDuplNamespaces && existingNsKind != NamespaceKind.NeedToWrite)
@@ -1802,7 +2013,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 // check if it can be found in the predefinedNamespaces (which are provided by the user)
                 if (predefinedNamespaces != null)
                     {
-                    string definedNs = predefinedNamespaces.LookupNamespace(prefix);
+                    String definedNs = predefinedNamespaces.LookupNamespace(prefix);
                     // compare the namespace Uri to decide if the prefix is redefined
                     if (definedNs == ns && omitDuplNamespaces)
                         {
@@ -1836,10 +2047,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             return writeItOut;
             }
-
-        private void AddNamespace(string prefix, string ns, NamespaceKind kind)
+        #endregion
+        #region M:AddNamespace(String,String,NamespaceKind)
+        private void AddNamespace(String prefix,String ns,NamespaceKind kind)
             {
-            int top = ++nsTop;
+            Int32 top = ++nsTop;
             if (top == nsStack.Length)
                 {
                 Namespace[] newStack = new Namespace[top * 2];
@@ -1856,29 +2068,31 @@ namespace BinaryStudio.SqlServer.Infrastructure
             else if (nsTop == MaxNamespacesWalkCount)
                 {
                 // add all
-                nsHashtable = new Dictionary<string, int>(hasher);
-                for (int i = 0; i <= nsTop; i++)
+                nsHashtable = new Dictionary<String, Int32>(hasher);
+                for (Int32 i = 0; i <= nsTop; i++)
                     {
                     AddToNamespaceHashtable(i);
                     }
                 useNsHashtable = true;
                 }
             }
-
-        private void AddToNamespaceHashtable(int namespaceIndex)
+        #endregion
+        #region M:AddToNamespaceHashtable(Int32)
+        private void AddToNamespaceHashtable(Int32 namespaceIndex)
             {
-            string prefix = nsStack[namespaceIndex].prefix;
-            int existingNsIndex;
+            String prefix = nsStack[namespaceIndex].prefix;
+            Int32 existingNsIndex;
             if (nsHashtable.TryGetValue(prefix, out existingNsIndex))
                 {
                 nsStack[namespaceIndex].prevNsIndex = existingNsIndex;
                 }
             nsHashtable[prefix] = namespaceIndex;
             }
-
-        private int LookupNamespaceIndex(string prefix)
+        #endregion
+        #region M:LookupNamespaceIndex(String):Int32
+        private Int32 LookupNamespaceIndex(String prefix)
             {
-            int index;
+            Int32 index;
             if (useNsHashtable)
                 {
                 if (nsHashtable.TryGetValue(prefix, out index))
@@ -1888,7 +2102,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             else
                 {
-                for (int i = nsTop; i >= 0; i--)
+                for (Int32 i = nsTop; i >= 0; i--)
                     {
                     if (nsStack[i].prefix == prefix)
                         {
@@ -1898,12 +2112,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             return -1;
             }
-
-        private void PopNamespaces(int indexFrom, int indexTo)
+        #endregion
+        #region M:PopNamespaces(Int32,Int32)
+        private void PopNamespaces(Int32 indexFrom,Int32 indexTo)
             {
             Debug.Assert(useNsHashtable);
             Debug.Assert(indexFrom <= indexTo);
-            for (int i = indexTo; i >= indexFrom; i--)
+            for (Int32 i = indexTo; i >= indexFrom; i--)
                 {
                 Debug.Assert(nsHashtable.ContainsKey(nsStack[i].prefix));
                 if (nsStack[i].prevNsIndex == -1)
@@ -1916,8 +2131,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             }
-
-        static private XmlException DupAttrException(string prefix, string localName)
+        #endregion
+        #region M:DupAttrException(String,String):XmlException
+        static private XmlException DupAttrException(String prefix,String localName)
             {
             StringBuilder sb = new StringBuilder();
             if (prefix.Length > 0)
@@ -1928,11 +2144,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             sb.Append(localName);
             return new XmlException(String.Format(Xml_DupAttributeName,sb.ToString()));
             }
-
+        #endregion
+        #region M:AdvanceState(Token)
         // Advance the state machine
         private void AdvanceState(Token token)
             {
-            if ((int)currentState >= (int)State.Closed)
+            if ((Int32)currentState >= (Int32)State.Closed)
                 {
                 if (currentState == State.Closed || currentState == State.Error)
                     {
@@ -1940,15 +2157,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 else
                     {
-                    throw new InvalidOperationException(String.Format(Xml_WrongToken, tokenName[(int)token], GetStateName(currentState)));
+                    throw new InvalidOperationException(String.Format(Xml_WrongToken, tokenName[(Int32)token], GetStateName(currentState)));
                     }
                 }
 
         Advance:
-            State newState = stateTable[((int)token << 4) + (int)currentState];
+            State newState = stateTable[((Int32)token << 4) + (Int32)currentState];
             //                         [ (int)token * 16 + (int)currentState ];
 
-            if ((int)newState >= (int)State.Error)
+            if ((Int32)newState >= (Int32)State.Error)
                 {
                 switch (newState)
                     {
@@ -2056,12 +2273,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             currentState = newState;
             }
-
+        #endregion
+        #region M:StartElementContent
         private void StartElementContent()
             {
             // write namespace declarations
-            int start = elemScopeStack[elemTop].prevNSTop;
-            for (int i = nsTop; i > start; i--)
+            Int32 start = elemScopeStack[elemTop].prevNSTop;
+            for (Int32 i = nsTop; i > start; i--)
                 {
                 if (nsStack[i].kind == NamespaceKind.NeedToWrite)
                     {
@@ -2074,8 +2292,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 rawWriter.StartElementContent();
                 }
             }
-
-        private static string GetStateName(State state)
+        #endregion
+        #region M:GetStateName(State):String
+        private static String GetStateName(State state)
             {
             if (state >= State.Error)
                 {
@@ -2084,13 +2303,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             else
                 {
-                return stateName[(int)state];
+                return stateName[(Int32)state];
                 }
             }
-
-        internal string LookupNamespace(string prefix)
+        #endregion
+        #region M:LookupNamespace(String):String
+        internal String LookupNamespace(String prefix)
             {
-            for (int i = nsTop; i >= 0; i--)
+            for (Int32 i = nsTop; i >= 0; i--)
                 {
                 if (nsStack[i].prefix == prefix)
                     {
@@ -2099,10 +2319,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             return (predefinedNamespaces != null) ? predefinedNamespaces.LookupNamespace(prefix) : null;
             }
-
-        private string LookupLocalNamespace(string prefix)
+        #endregion
+        #region M:LookupLocalNamespace(String):String
+        private String LookupLocalNamespace(String prefix)
             {
-            for (int i = nsTop; i > elemScopeStack[elemTop].prevNSTop; i--)
+            for (Int32 i = nsTop; i > elemScopeStack[elemTop].prevNSTop; i--)
                 {
                 if (nsStack[i].prefix == prefix)
                     {
@@ -2111,45 +2332,48 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             return null;
             }
-
-        private string GeneratePrefix()
+        #endregion
+        #region M:GeneratePrefix:String
+        private String GeneratePrefix()
             {
-            string genPrefix = "p" + (nsTop - 2).ToString("d", CultureInfo.InvariantCulture);
+            String genPrefix = "p" + (nsTop - 2).ToString("d", CultureInfo.InvariantCulture);
             if (LookupNamespace(genPrefix) == null)
                 {
                 return genPrefix;
                 }
-            int i = 0;
+            Int32 i = 0;
 
-            string s;
+            String s;
             do
                 {
-                s = string.Concat(genPrefix, i.ToString(CultureInfo.InvariantCulture));
+                s = String.Concat(genPrefix, i.ToString(CultureInfo.InvariantCulture));
                 i++;
                 } while (LookupNamespace(s) != null);
-            return s;
+            return
+                s;
             }
-
-#if SILVERLIGHT && !SILVERLIGHT_DISABLE_SECURITY && XMLCHARTYPE_USE_RESOURCE
+        #endregion
+        #region M:CheckNCName(String)
+        #if SILVERLIGHT && !SILVERLIGHT_DISABLE_SECURITY && XMLCHARTYPE_USE_RESOURCE
         [System.Security.SecuritySafeCritical]
-#endif
-        private unsafe void CheckNCName(string ncname)
+        #endif
+        private unsafe void CheckNCName(String ncname)
             {
             Debug.Assert(ncname != null && ncname.Length > 0);
 
-            int i;
-            int endPos = ncname.Length;
+            Int32 i;
+            Int32 endPos = ncname.Length;
 
             // Check if first character is StartNCName (inc. surrogates)
             if ((xmlCharType.charProperties[ncname[0]] & XmlCharType.fNCStartNameSC) != 0)
                 { // if ( xmlCharType.IsStartNCNameChar( ncname[0] ) ) {
                 i = 1;
                 }
-#if XML10_FIFTH_EDITION
+            #if XML10_FIFTH_EDITION
             else if (xmlCharType.IsNCNameSurrogateChar(ncname, 0)) { // surrogate ranges are same for NCName and StartNCName
                 i = 2;
             }
-#endif
+            #endif
             else
                 {
                 throw InvalidCharsException(ncname, 0);
@@ -2162,19 +2386,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     { // if ( xmlCharType.IsNCNameChar( ncname[i] ) ) {
                     i++;
                     }
-#if XML10_FIFTH_EDITION
+                #if XML10_FIFTH_EDITION
                 else if (xmlCharType.IsNCNameSurrogateChar(ncname, i)) {
                     i += 2;
                 }
-#endif
+                #endif
                 else
                     {
                     throw InvalidCharsException(ncname, i);
                     }
                 }
             }
-
-        private static Exception InvalidCharsException(string name, int badCharIndex)
+        #endregion
+        #region M:InvalidCharsException(String,Int32):Exception
+        private static Exception InvalidCharsException(String name,Int32 badCharIndex)
             {
             Object[] badCharArgs = XmlExceptions.BuildCharExceptionArgs(name, badCharIndex);
             Object[] args = new Object[3];
@@ -2183,11 +2408,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             args[2] = badCharArgs[1];
             return new ArgumentException(String.Format(Xml_InvalidNameCharsDetail, args));
             }
-
+        #endregion
+        #region M:ThrowInvalidStateTransition(Token,State)
         // This method translates speficic state transition errors in more friendly error messages
-        private void ThrowInvalidStateTransition(Token token, State currentState)
+        private void ThrowInvalidStateTransition(Token token,State currentState)
             {
-            string wrongTokenMessage = String.Format(Xml_WrongToken, tokenName[(int)token], GetStateName(currentState));
+            String wrongTokenMessage = String.Format(Xml_WrongToken, tokenName[(Int32)token], GetStateName(currentState));
             switch (currentState)
                 {
                 case State.AfterRootEle:
@@ -2200,18 +2426,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             throw new InvalidOperationException(wrongTokenMessage);
             }
-
-        private bool IsClosedOrErrorState
+        #endregion
+        #region M:AddAttribute(String,String,String)
+        private void AddAttribute(String prefix,String localName,String namespaceName)
             {
-            get
-                {
-                return (int)currentState >= (int)State.Closed;
-                }
-            }
-
-        private void AddAttribute(string prefix, string localName, string namespaceName)
-            {
-            int top = attrCount++;
+            Int32 top = attrCount++;
             if (top == attrStack.Length)
                 {
                 AttrName[] newStack = new AttrName[top * 2];
@@ -2223,7 +2442,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (attrCount < MaxAttrDuplWalkCount)
                 {
                 // check for duplicates
-                for (int i = 0; i < top; i++)
+                for (Int32 i = 0; i < top; i++)
                     {
                     if (attrStack[i].IsDuplicate(prefix, localName, namespaceName))
                         {
@@ -2238,10 +2457,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     {
                     if (attrHashTable == null)
                         {
-                        attrHashTable = new Dictionary<string, int>(hasher);
+                        attrHashTable = new Dictionary<String, Int32>(hasher);
                         }
                     Debug.Assert(attrHashTable.Count == 0);
-                    for (int i = 0; i < top; i++)
+                    for (Int32 i = 0; i < top; i++)
                         {
                         AddToAttrHashTable(i);
                         }
@@ -2249,7 +2468,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
                 // add last attribute to hash table and check for duplicates
                 AddToAttrHashTable(top);
-                int prev = attrStack[top].prev;
+                Int32 prev = attrStack[top].prev;
                 while (prev > 0)
                     {
                     // indexes are stored incremented by 1, 0 means no entry
@@ -2262,18 +2481,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             }
-
-        private void AddToAttrHashTable(int attributeIndex)
+        #endregion
+        #region M:AddToAttrHashTable(Int32)
+        private void AddToAttrHashTable(Int32 attributeIndex)
             {
-            string localName = attrStack[attributeIndex].localName;
-            int count = attrHashTable.Count;
+            String localName = attrStack[attributeIndex].localName;
+            Int32 count = attrHashTable.Count;
             attrHashTable[localName] = 0; // overwrite on collision
             if (count != attrHashTable.Count)
                 {
                 return;
                 }
             // chain to previous attribute in stack with the same localName
-            int prev = attributeIndex - 1;
+            Int32 prev = attributeIndex - 1;
             while (prev >= 0)
                 {
                 if (attrStack[prev].localName == localName)
@@ -2285,6 +2505,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Debug.Assert(prev >= 0 && attrStack[prev].localName == localName);
             attrStack[attributeIndex].prev = prev + 1; // indexes are stored incremented by 1 
             }
+        #endregion
 
         private const String Xml_XmlnsPrefix = "Prefix \"xmlns\" is reserved for use by XML.";
         private const String Xml_NoRoot = "Document does not have a root element.";
