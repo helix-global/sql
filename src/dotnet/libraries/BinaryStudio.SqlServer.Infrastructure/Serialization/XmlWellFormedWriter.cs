@@ -7,8 +7,25 @@ using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal partial class XmlWellFormedWriter : XmlWriter
+    internal partial class XmlWellFormedWriter : SqlXmlCustomWriter
         {
+        #region P:NewLineOnAttributes:Boolean
+        protected internal override Boolean NewLineOnAttributes {
+            get
+                {
+                if (writer is SqlXmlCustomWriter o) { return o.NewLineOnAttributes; }
+                return base.NewLineOnAttributes;
+                }
+            set
+                {
+                if (writer is SqlXmlCustomWriter o) {
+                    o.NewLineOnAttributes = value;
+                    return;
+                    }
+                base.NewLineOnAttributes = value;
+                }
+            }
+        #endregion
         //
         // Private types used by the XmlWellFormedWriter are defined in XmlWellFormedWriterHelpers.cs
         //
@@ -992,10 +1009,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             try
                 {
-                if (text == null)
-                    {
-                    text = String.Empty;
-                    }
+                text = text ?? String.Empty;
                 AdvanceState(Token.CData);
                 writer.WriteCData(text);
                 }

@@ -3,14 +3,30 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public class SqlXmlWriter : XmlWriter,ISqlXmlWriter
+    public class SqlXmlWriter : SqlXmlCustomWriter
         {
         public override WriteState WriteState { get { return writer.WriteState; }}
+        #region P:NewLineOnAttributes:Boolean
+        protected internal override Boolean NewLineOnAttributes {
+            get
+                {
+                if (writer is SqlXmlCustomWriter o) { return o.NewLineOnAttributes; }
+                return base.NewLineOnAttributes;
+                }
+            set
+                {
+                if (writer is SqlXmlCustomWriter o) {
+                    o.NewLineOnAttributes = value;
+                    return;
+                    }
+                base.NewLineOnAttributes = value;
+                }
+            }
+        #endregion
 
         #region ctor{TextWriter}
         public SqlXmlWriter(TextWriter writer) {
@@ -396,12 +412,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             /// <param name="buffer">Byte array to encode.</param>
             /// <param name="index">The position in the buffer indicating the start of the bytes to write.</param>
             /// <param name="count">The number of bytes to write.</param>
-            /// <exception cref="T:System.ArgumentNullException">
-            /// <paramref name="buffer"/> is <see langword="null"/>.</exception>
-            /// <exception cref="T:System.ArgumentOutOfRangeException">
-            /// <paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
+            /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+            /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
             /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-            public override void WriteBase64(Byte[] buffer, Int32 index, Int32 count)
+            public override void WriteBase64(Byte[] buffer,Int32 index,Int32 count)
                 {
                 writer.WriteBase64(buffer,index,count);
                 }
@@ -706,11 +720,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override String LookupPrefix(String ns)
             {
             return writer.LookupPrefix(ns);
-            }
-        #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(Boolean,String,Object)
-        void ISqlXmlWriter.WriteAttribute(Boolean newline,String localName,Object value) {
-            writer.WriteAttribute(newline,localName,value);
             }
         #endregion
 

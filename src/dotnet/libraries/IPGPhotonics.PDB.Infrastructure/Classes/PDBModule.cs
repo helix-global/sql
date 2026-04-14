@@ -29,24 +29,24 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        #region M:WriteXml(XmlWriter)
+        #region M:WriteXml(ISqlXmlWriter)
         /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
-        public override void WriteXml(XmlWriter writer) {
+        /// <param name="writer">The <see cref="ISqlXmlWriter"/> stream to which the object is serialized.</param>
+        public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("Module",URI_META)) {
-                writer.WriteAttributeString("xmlns","xsi",null,URI_XSINIL);
-                writer.WriteAttributeString("xmlns","",null,URI_META);
-                writer.WriteAttribute(true,"Label",Label);
-                writer.WriteAttribute(true,"OID",OID);
+                writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
+                writer.WriteAttribute("xmlns","",null,URI_META);
+                //writer.WriteAttribute(true,"Label",Label);
+                //writer.WriteAttribute(true,"OID",OID);
                 writer.WriteAttribute("UUID",UUID);
-                writer.WriteAttribute(true,"CreatedDate",CreatedDate);
+                //writer.WriteAttribute(true,"CreatedDate",CreatedDate);
                 writer.WriteAttribute("ModifiedDate",ModifiedDate);
-                writer.WriteReference(true,"CreatedBy",CreatedBy);
-                writer.WriteReference(true,"ModifiedBy",ModifiedBy);
-                writer.WriteCDATA("Module.Name",URI_META,(CDATA)Name);
+                //writer.WriteReference(true,"CreatedBy",CreatedBy);
+                //writer.WriteReference(true,"ModifiedBy",ModifiedBy);
+                writer.WriteCData("Name",URI_META,Name);
                 if (!String.IsNullOrEmpty(Remark)) {
-                    writer.WriteCDATA("Module.Description",URI_META,(CDATA)Remark);
+                    writer.WriteCData("Description",URI_META,Remark);
                     }
                 }
             }

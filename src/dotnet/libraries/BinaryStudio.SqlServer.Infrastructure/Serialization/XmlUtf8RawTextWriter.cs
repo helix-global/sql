@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -20,6 +21,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return (Boolean)type.GetProperty("DontThrowOnInvalidSurrogatePairs").GetValue(null);
             }}
         #endregion
+
         //
         // Fields
         //
@@ -51,7 +53,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         // flags
         protected Boolean writeToNull;
         protected Boolean hadDoubleBracket;
-        protected Boolean inAttributeValue;
+        protected Boolean InAttributeValue;
+        protected Boolean InCDataSection;
 
         protected NewLineHandling NewLineHandling { get; }
         protected String NewLineChars { get; }
@@ -69,6 +72,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private const Int32 ASYNCBUFSIZE = 64 * 1024; // Set async buffer size to 64KB
         private const Int32 OVERFLOW = 32;            // Allow overflow in order to reduce checks when writing out constant size markup
         private const Int32 INIT_MARKS_COUNT = 64;
+
+        protected class NameScope
+            {
+            public String Prefix { get;set; }
+            public String LocalName { get;set; }
+            }
 
         #region ctor{XmlWriterSettings}
         // Construct and initialize an instance of this class.
@@ -273,6 +282,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             RawText(localName);
             attrEndPos = bufPos;
+            elementScopeStack.Push(new NameScope { Prefix = prefix, LocalName = localName });
             }
         #endregion
         #region M:StartElementContent
@@ -315,10 +325,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 {
                 // Use shortcut syntax; overwrite the already output '>' character
                 bufPos--;
-                bufBytes[bufPos++] = (Byte)' ';
                 bufBytes[bufPos++] = (Byte)'/';
                 bufBytes[bufPos++] = (Byte)'>';
                 }
+            elementScopeStack.Pop();
             }
         #endregion
         #region M:WriteFullEndElement(String,String,String)
@@ -348,7 +358,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <param name="localName">The local name of the attribute.</param>
         /// <param name="ns">The namespace URI for the attribute.</param>
         /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
-        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter" /> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         /// <remarks>Serialize an attribute tag using double quotes around the attribute value: 'prefix:localName="'</remarks>
         public override void WriteStartAttribute(String prefix, String localName, String ns)
             {
@@ -368,7 +378,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             bufBytes[bufPos++] = (Byte)'=';
             bufBytes[bufPos++] = (Byte)'"';
 
-            inAttributeValue = true;
+            InAttributeValue = true;
             }
         #endregion
         #region M:WriteEndAttribute
@@ -378,7 +388,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override void WriteEndAttribute()
             {
             bufBytes[bufPos++] = (Byte)'"';
-            inAttributeValue = false;
+            InAttributeValue = false;
             attrEndPos = bufPos;
             }
         #endregion
@@ -393,6 +403,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:WriteStartNamespaceDeclaration(String)
+        /// <summary>Begins writing a namespace declaration with the specified prefix.</summary>
+        /// <param name="prefix">The prefix to associate with the namespace declaration. Cannot be null.</param>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         internal override void WriteStartNamespaceDeclaration(String prefix) {
             Debug.Assert(prefix != null);
             // VSTFDEVDIV bug #583965: Inconsistency between Silverlight 2 and Dev10 in the way a single xmlns attribute is serialized    
@@ -408,13 +421,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 bufBytes[bufPos++] = (Byte)'=';
                 bufBytes[bufPos++] = (Byte)'"';
                 }
-            inAttributeValue = true;
+            InAttributeValue = true;
             }
         #endregion
         #region M:WriteEndNamespaceDeclaration
         internal override void WriteEndNamespaceDeclaration()
             {
-            inAttributeValue = false;
+            InAttributeValue = false;
             bufBytes[bufPos++] = (Byte)'"';
             attrEndPos = bufPos;
             }
@@ -554,7 +567,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Debug.Assert(ws != null);
             fixed (Char* pSrc = ws) {
                 var pSrcEnd = pSrc + ws.Length;
-                if (inAttributeValue)
+                if (InAttributeValue)
                     {
                     WriteAttributeTextBlock(pSrc, pSrcEnd);
                     }
@@ -575,7 +588,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Debug.Assert(text != null);
             fixed (Char* pSrc = text) {
                 var pSrcEnd = pSrc + text.Length;
-                if (inAttributeValue)
+                if (InAttributeValue)
                     {
                     WriteAttributeTextBlock(pSrc, pSrcEnd);
                     }
@@ -622,7 +635,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Debug.Assert(count >= 0 && index + count <= buffer.Length);
 
             fixed (Char* pSrcBegin = &buffer[index]) {
-                if (inAttributeValue)
+                if (InAttributeValue)
                     {
                     WriteAttributeTextBlock(pSrcBegin, pSrcBegin + count);
                     }
@@ -1251,7 +1264,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:WriteCDataSection(String)
-        protected unsafe void WriteCDataSection(String text) {
+        /// <summary>Writes a CDATA section containing the specified text to the output.</summary>
+        /// <param name="text">The text to include within the CDATA section. May be an empty string to write an empty CDATA section.</param>
+        /// <remarks>
+        /// If the text contains the sequence ']]>', it will be split into multiple CDATA sections
+        /// to ensure well-formed XML. Derived classes can override this method to customize how
+        /// CDATA sections are written.
+        /// </remarks>
+        protected virtual unsafe void WriteCDataSection(String text) {
             if (text.Length == 0) {
                 if (bufPos >= bufLen) {
                     FlushBuffer();
@@ -1259,115 +1279,120 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return;
                 }
 
-            // write text
+            try
+                {
+                InCDataSection = true;
+                fixed (Char* SrcBegin = text)
+                fixed (Byte* DstBegin = bufBytes) {
+                    var Src = SrcBegin;
+                    var SrcEnd = SrcBegin + text.Length;
+                    var target = DstBegin + bufPos;
 
-            fixed (Char* pSrcBegin = text)
-            fixed (Byte* pDstBegin = bufBytes) {
-                var pSrc = pSrcBegin;
-                var pSrcEnd = pSrcBegin + text.Length;
-                var target = pDstBegin + bufPos;
+                    var c = 0;
+                    for (;;) {
+                        var DstEnd = target + (SrcEnd - Src);
+                        if (DstEnd > DstBegin + bufLen)
+                            {
+                            DstEnd = DstBegin + bufLen;
+                            }
 
-                var c = 0;
-                for (;;) {
-                    var pDstEnd = target + (pSrcEnd - pSrc);
-                    if (pDstEnd > pDstBegin + bufLen)
-                        {
-                        pDstEnd = pDstBegin + bufLen;
-                        }
-
-                    while (target < pDstEnd &&
-                        (((xmlCharType.charProperties[(c = *pSrc)] & XmlCharType.fAttrValue) != 0) && c != ']' && c <= 0x7F))
-                        {
-                        *target = (Byte)c;
-                        target++;
-                        pSrc++;
-                        }
-
-                    Debug.Assert(pSrc <= pSrcEnd);
-
-                    // end of value
-                    if (pSrc >= pSrcEnd)
-                        {
-                        break;
-                        }
-
-                    // end of buffer
-                    if (target >= pDstEnd) {
-                        bufPos = (Int32)(target - pDstBegin);
-                        FlushBuffer();
-                        target = pDstBegin + 1;
-                        continue;
-                        }
-
-                    // handle special characters
-                    switch (c) {
-                        case '>':
-                            if (hadDoubleBracket && target[-1] == (Byte)']') {
-                                // pDst[-1] will always correct - there is a padding character at _BUFFER[0]
-                                // The characters "]]>" were found within the CData text
-                                target = RawEndCData(target);
-                                target = RawStartCData(target);
-                                }
-                            *target = (Byte)'>';
-                            target++;
-                            break;
-                        case ']':
-                            if (target[-1] == (Byte)']')
-                                {
-                                // pDst[-1] will always correct - there is a padding character at _BUFFER[0]
-                                hadDoubleBracket = true;
-                                }
-                            else
-                                {
-                                hadDoubleBracket = false;
-                                }
-                            *target = (Byte)']';
-                            target++;
-                            break;
-                        case '\r':
-                            if (NewLineHandling == NewLineHandling.Replace) {
-                                // Normalize "\r\n", or "\r" to NewLineChars
-                                if (pSrc[1] == '\n')
-                                    {
-                                    pSrc++;
-                                    }
-
-                                target = WriteNewLine(target);
-                                }
-                            else
-                                {
-                                *target = (Byte)c;
-                                target++;
-                                }
-                            break;
-                        case '\n':
-                            if (NewLineHandling == NewLineHandling.Replace)
-                                {
-                                target = WriteNewLine(target);
-                                }
-                            else
-                                {
-                                *target = (Byte)c;
-                                target++;
-                                }
-                            break;
-                        case '&':
-                        case '<':
-                        case '"':
-                        case '\'':
-                        case '\t':
+                        while (target < DstEnd &&
+                            (((xmlCharType.charProperties[(c = *Src)] & XmlCharType.fAttrValue) != 0) && c != ']' && c <= 0x7F))
+                            {
                             *target = (Byte)c;
                             target++;
+                            Src++;
+                            }
+
+                        Debug.Assert(Src <= SrcEnd);
+
+                        // end of value
+                        if (Src >= SrcEnd)
+                            {
                             break;
-                        default:
-                                 if (XmlCharType.IsSurrogate(c)) { target = EncodeSurrogate(pSrc, pSrcEnd, target); pSrc += 2; }
-                            else if (c <= 0x7F || c >= 0xFFFE) { target = InvalidXmlChar(c, target, false); pSrc++; }
-                            else { target = EncodeMultibyteUTF8(c, target); pSrc++; }
+                            }
+
+                        // end of buffer
+                        if (target >= DstEnd) {
+                            bufPos = (Int32)(target - DstBegin);
+                            FlushBuffer();
+                            target = DstBegin + 1;
                             continue;
+                            }
+
+                        // handle special characters
+                        switch (c) {
+                            case '>':
+                                if (hadDoubleBracket && target[-1] == (Byte)']') {
+                                    // pDst[-1] will always correct - there is a padding character at _BUFFER[0]
+                                    // The characters "]]>" were found within the CData text
+                                    target = RawEndCData(target);
+                                    target = RawStartCData(target);
+                                    }
+                                *target = (Byte)'>';
+                                target++;
+                                break;
+                            case ']':
+                                if (target[-1] == (Byte)']')
+                                    {
+                                    // pDst[-1] will always correct - there is a padding character at _BUFFER[0]
+                                    hadDoubleBracket = true;
+                                    }
+                                else
+                                    {
+                                    hadDoubleBracket = false;
+                                    }
+                                *target = (Byte)']';
+                                target++;
+                                break;
+                            case '\r':
+                                if (NewLineHandling == NewLineHandling.Replace) {
+                                    // Normalize "\r\n", or "\r" to NewLineChars
+                                    if (Src[1] == '\n')
+                                        {
+                                        Src++;
+                                        }
+                                    target = WriteNewLine(target);
+                                    }
+                                else
+                                    {
+                                    *target = (Byte)c;
+                                    target++;
+                                    }
+                                break;
+                            case '\n':
+                                if (NewLineHandling == NewLineHandling.Replace)
+                                    {
+                                    target = WriteNewLine(target);
+                                    }
+                                else
+                                    {
+                                    *target = (Byte)c;
+                                    target++;
+                                    }
+                                break;
+                            case '&':
+                            case '<':
+                            case '"':
+                            case '\'':
+                            case '\t':
+                                *target = (Byte)c;
+                                target++;
+                                break;
+                            default:
+                                     if (XmlCharType.IsSurrogate(c)) { target = EncodeSurrogate(Src, SrcEnd, target); Src += 2; }
+                                else if (c <= 0x7F || c >= 0xFFFE) { target = InvalidXmlChar(c, target, false); Src++; }
+                                else { target = EncodeMultibyteUTF8(c, target); Src++; }
+                                continue;
+                            }
+                        Src++;
                         }
-                    pSrc++;
+                    bufPos = (Int32)(target - DstBegin);
                     }
-                bufPos = (Int32)(target - pDstBegin);
+                }
+            finally
+                {
+                InCDataSection = false;
                 }
             }
         #endregion
@@ -1504,13 +1529,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:WriteNewLine(Byte*):Byte*
-        // Write NewLineChars to the specified buffer position and return an updated position.
-        protected unsafe Byte* WriteNewLine(Byte* pDst) {
-            fixed (Byte* pDstBegin = bufBytes) {
-                bufPos = (Int32)(pDst - pDstBegin);
+        /// <summary>Writes the configured new line character sequence to the output buffer at the specified destination pointer.</summary>
+        /// <param name="target">A pointer to the current position in the output buffer where the new line sequence should be written.</param>
+        /// <returns>A pointer to the position in the output buffer immediately after the written new line sequence.</returns>
+        protected virtual unsafe Byte* WriteNewLine(Byte* target) {
+            fixed (Byte* r = bufBytes) {
+                bufPos = (Int32)(target - r);
                 // Let RawText do the real work
                 RawText(NewLineChars);
-                return pDstBegin + bufPos;
+                return r + bufPos;
                 }
             }
         #endregion
@@ -1700,5 +1727,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+
+        protected readonly Stack<NameScope> elementScopeStack = new Stack<NameScope>();
         }
     }

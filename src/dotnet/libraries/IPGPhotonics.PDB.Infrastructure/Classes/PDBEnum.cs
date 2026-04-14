@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Xml;
-using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -21,13 +20,15 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
+        public PDBModule Module { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,DataRow}
-        internal PDBEnum(ISqlObjectResolver<Int32?,PDBUser> users,DataRow source,IDictionary<Int32,IList<DataRow>> values)
+        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,DataRow}
+        internal PDBEnum(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,DataRow source,IDictionary<Int32,IList<DataRow>> values)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
+            Module = modules.GetObject(ModuleOID);
 
             Values = new List<PDBEnumValue>();
             try
@@ -46,25 +47,40 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        #region M:WriteXml(XmlWriter)
+        #region M:WriteXml(ISqlXmlWriter)
         /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
-        public override void WriteXml(XmlWriter writer) {
+        /// <param name="writer">The <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> stream to which the object is serialized.</param>
+        public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("Enum",URI_META)) {
-                writer.WriteAttributeString("xmlns","xsi",null,URI_XSINIL);
-                writer.WriteAttributeString("xmlns","",null,URI_META);
-                writer.WriteAttribute(true,"Label",Label);
-                writer.WriteAttribute(true,"OID",OID);
+                writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
+                writer.WriteAttribute("xmlns","",null,URI_META);
+                writer.WriteAttribute("xmlns","x",null,URI_CTRL);
+                using (writer.NewLineOnAttribute())
+                    {
+                    writer.WriteAttribute("Label",Label);
+                    writer.WriteAttribute("OID",OID);
+                    }
                 writer.WriteAttribute("UUID",UUID);
-                writer.WriteAttribute(true,"CreatedDate",CreatedDate);
+                using (writer.NewLineOnAttribute())
+                    {
+                    writer.WriteAttribute("CreatedDate",CreatedDate);
+                    }
                 writer.WriteAttribute("ModifiedDate",ModifiedDate);
-                writer.WriteReference(true,"CreatedBy",CreatedBy);
-                writer.WriteReference(true,"ModifiedBy",ModifiedBy);
-                writer.WriteCDATA("Enum.Name",URI_META,(CDATA)Name);
-                //if (!String.IsNullOrEmpty(Remark)) {
-                //    writer.WriteCDATA("Module.Description",URI_META,(CDATA)Remark);
-                //    }
+                using (writer.NewLineOnAttribute())
+                    {
+                    writer.WriteReference("CreatedBy",CreatedBy);
+                    writer.WriteReference("ModifiedBy",ModifiedBy);
+                    writer.WriteReference("Module",Module);
+                    }
+                writer.WriteCData("Name",URI_META,Name);
+                if (Values.Count > 0) {
+                    using (writer.ElementGroup("Values",URI_META)) {
+                        foreach (var o in Values) {
+                            o.WriteXml(writer);
+                            }
+                        }
+                    }
                 }
             }
         #endregion

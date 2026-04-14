@@ -37,7 +37,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         partial struct ElementScope
             {
-
             internal int prevNSTop;
             internal string prefix;
             internal string localName;
@@ -76,7 +75,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         partial struct Namespace
             {
-
             internal string prefix;
             internal string namespaceUri;
             internal NamespaceKind kind;
@@ -146,7 +144,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
         partial class AttributeValueCache
             {
-
             enum ItemType
                 {
                 EntityRef,
@@ -521,7 +518,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 items[newItemIndex].Set(type, data);
                 lastItem = newItemIndex;
                 }
-
             }
         }
     }

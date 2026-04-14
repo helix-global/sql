@@ -24,7 +24,8 @@ namespace IPGPhotonics.PDB.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
-        ISqlObjectResolver<Int32?,PDBUser>
+        ISqlObjectResolver<Int32?,PDBUser>,
+        ISqlObjectResolver<Int32?,PDBModule>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
@@ -240,7 +241,8 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBEnum(this,i,IXenuv)))
+                    //.Where(i => i["LABEL"].ToString()=="def_log_level")
+                    .Select(i => new PDBEnum(this,this,i,IXenuv)))
                     {
                     m_enuI[o.OID] = o;
                     }
@@ -524,6 +526,14 @@ namespace IPGPhotonics.PDB.Infrastructure
             if (key == null) { return null; }
             e_usrI.WaitOne();
             return m_usrI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,Module>.GetObject(Int32):Module
+        PDBModule ISqlObjectResolver<Int32?,PDBModule>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_modI.TryGetValue(key.Value,out var r)
                 ? r
                 : null;
             }

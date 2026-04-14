@@ -7,8 +7,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     internal class XmlUtf8RawTextWriterIndent : XmlUtf8RawTextWriter
         {
+        #region P:NewLineOnAttributes:Boolean
+        protected internal override Boolean NewLineOnAttributes {
+            get
+                {
+                if (_newLineOnAttributesA) { return true; }
+                return _newLineOnAttributesB;
+                }
+            set
+                {
+                if (!_newLineOnAttributesA) {
+                    _newLineOnAttributesB = value;
+                    }
+                }
+            }
+        #endregion
+
         protected Int32 indentLevel;
-        protected Boolean newLineOnAttributes;
         protected String indentChars;
 
         protected Boolean mixedContent;
@@ -30,7 +45,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             settings.ReadOnly(false);
             settings.Indent = true;
             settings.IndentChars = indentChars;
-            settings.NewLineOnAttributes = newLineOnAttributes;
+            settings.NewLineOnAttributes = _newLineOnAttributesA;
             settings.ReadOnly(true);
             return settings;
             }}
@@ -72,7 +87,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             indentLevel++;
             mixedContentStack.PushBit(mixedContent);
-
             base.WriteStartElement(prefix, localName, ns);
             }
         #endregion
@@ -131,14 +145,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter" /> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         /// <remarks>Serialize an attribute tag using double quotes around the attribute value: 'prefix:localName="'</remarks>
-        public override void WriteStartAttribute(String prefix, String localName, String ns)
-            {
+        public override void WriteStartAttribute(String prefix,String localName,String ns) {
             // Add indentation
-            if (newLineOnAttributes)
-                {
+            if (NewLineOnAttributes) {
                 WriteIndent();
+                var nameScope = elementScopeStack.Peek();
+                WriteWhitespace(new String(' ',nameScope.LocalName.Length));
                 }
-
             base.WriteStartAttribute(prefix, localName, ns);
             }
         #endregion
@@ -148,10 +161,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.ArgumentException">The text would result in a non-well formed XML document.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         /// <remarks>Serialize a CData section. If the "]]&gt;" pattern is found within the text, replace it with "]]&gt;&lt;![CDATA[&gt;".</remarks>
-        public override void WriteCData(String text)
-            {
+        public override void WriteCData(String text) {
             mixedContent = true;
-            base.WriteCData(text);
+            WriteIndent();
+            try
+                {
+                indentLevel++;
+                base.WriteCData(text);
+                }
+            finally
+                {
+                indentLevel--;
+                }
+            WriteIndent(indentLevel-1);
             }
         #endregion
         #region M:WriteComment(String)
@@ -291,10 +313,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than zero. -or-The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        public override void WriteBase64(Byte[] buffer,Int32 index,Int32 count)
-            {
+        public override void WriteBase64(Byte[] buffer,Int32 index,Int32 count) {
             mixedContent = true;
-            base.WriteBase64(buffer,index,count);
+            var values = Convert.ToBase64String(buffer,index,count,Base64FormattingOptions.InsertLineBreaks).Split(new String[] {"\n","\r\n" },StringSplitOptions.RemoveEmptyEntries);
+            if (values.Length == 0) { return; }
+            if (values.Length == 1) { WriteRaw(values[1].Trim()); }
+            else
+                {
+                for (var i = 0; i < values.Length; i++) {
+                    WriteIndent();
+                    WriteRaw(values[i].Trim());
+                    }
+                WriteIndent(indentLevel-1);
+                }
             }
         #endregion
         #region M:StartElementContent
@@ -333,37 +364,85 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             indentLevel = 0;
             indentChars = settings.IndentChars;
-            newLineOnAttributes = settings.NewLineOnAttributes;
+            _newLineOnAttributesA = settings.NewLineOnAttributes;
             mixedContentStack = new BitStack();
 
             // check indent characters that they are valid XML characters
-            if (base.CheckCharacters)
-                {
-                if (newLineOnAttributes)
+            if (CheckCharacters) {
+                if (NewLineOnAttributes)
                     {
-                    base.ValidateContentChars(indentChars, "IndentChars", true);
-                    base.ValidateContentChars(NewLineChars, "NewLineChars", true);
+                    ValidateContentChars(indentChars, "IndentChars", true);
+                    ValidateContentChars(NewLineChars, "NewLineChars", true);
                     }
                 else
                     {
-                    base.ValidateContentChars(indentChars, "IndentChars", false);
-                    if (base.NewLineHandling != NewLineHandling.Replace)
+                    ValidateContentChars(indentChars, "IndentChars", false);
+                    if (NewLineHandling != NewLineHandling.Replace)
                         {
-                        base.ValidateContentChars(NewLineChars, "NewLineChars", false);
+                        ValidateContentChars(NewLineChars, "NewLineChars", false);
                         }
                     }
                 }
             }
         #endregion
         #region M:WriteIndent
-        // Add indentation to output.  Write newline and then repeat IndentChars for each indent level.
+        /// <summary>
+        /// Writes the current indentation to the output based on the configured indentation level.
+        /// </summary>
         private void WriteIndent() {
-            RawText(base.NewLineChars);
-            for (var i = indentLevel; i > 0; i--)
+            WriteIndent(indentLevel);
+            }
+        #endregion
+        #region M:WriteIndent(Int32)
+        /// <summary>Writes a newline followed by the specified indentation <paramref name="level"/> to the output.</summary>
+        /// <param name="level">The number of indentation levels to write. Must be zero or greater.</param>
+        private void WriteIndent(Int32 level) {
+            RawText(NewLineChars);
+            WriteIndentChars(level);
+            }
+        #endregion
+        #region M:WriteIndentChars(Int32)
+        /// <summary>Writes the indentation characters the specified number of times to the output.</summary>
+        /// <param name="level">The number of indentation levels to write. Must be zero or greater.</param>
+        private void WriteIndentChars(Int32 level) {
+            for (var i = level; i > 0; i--)
                 {
                 RawText(indentChars);
                 }
             }
         #endregion
+        #region M:WriteNewLine(Byte*):Byte*
+        /// <summary>Writes the configured new line character sequence to the output buffer at the specified destination pointer.</summary>
+        /// <param name="target">A pointer to the current position in the output buffer where the new line sequence should be written.</param>
+        /// <returns>A pointer to the position in the output buffer immediately after the written new line sequence.</returns>
+        protected override unsafe Byte* WriteNewLine(Byte* target) {
+            fixed (Byte* r = bufBytes) {
+                bufPos = (Int32)(target - r);
+                RawText(NewLineChars);
+                if (InCDataSection) {
+                    WriteIndentChars(indentLevel);
+                    }
+                return r + bufPos;
+                }
+            }
+        #endregion
+        #region M:WriteCDataSection(String)
+        /// <summary>Writes a CDATA section containing the specified text to the output.</summary>
+        /// <param name="text">The text to include within the CDATA section. May be an empty string to write an empty CDATA section.</param>
+        protected override unsafe void WriteCDataSection(String text) {
+            if (text.Length == 0) {
+                if (bufPos >= bufLen) {
+                    FlushBuffer();
+                    }
+                return;
+                }
+            WriteIndent();
+            base.WriteCDataSection(text);
+            WriteIndent(indentLevel);
+            }
+        #endregion
+
+        private Boolean _newLineOnAttributesA;
+        private Boolean _newLineOnAttributesB;
         }
     }

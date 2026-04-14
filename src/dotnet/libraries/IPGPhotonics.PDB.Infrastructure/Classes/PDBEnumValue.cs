@@ -1,7 +1,9 @@
-﻿using System;
-using System.Data;
+﻿using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
-using BinaryStudio.SqlServer.Infrastructure;
+using System;
+using System.ComponentModel;
+using System.Data;
+using System.Reflection;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -12,8 +14,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("CODE")] public Int32 Code { get; }
         [UsedImplicitly][Field("NAME")] public String Name { get; }
         [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("ENUMPICT")][TypeConverter(typeof(SqlBase64ArrayConverter))] public Byte[] Picture { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
 
@@ -26,6 +30,30 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
+        #region M:WriteXml(ISqlXmlWriter)
+        /// <summary>Converts an object into its XML representation.</summary>
+        /// <param name="writer">The <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> stream to which the object is serialized.</param>
+        public override void WriteXml(ISqlXmlWriter writer) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            using (writer.ElementGroup("EnumValue",URI_META)) {
+                writer.WriteAttribute("OID",OID);
+                writer.WriteAttribute("Code",Code);
+                writer.WriteAttribute("UUID",UUID);
+                using (writer.NewLineOnAttribute())
+                    {
+                    writer.WriteAttribute("CreatedDate",CreatedDate);
+                    }
+                writer.WriteAttribute("ModifiedDate",ModifiedDate);
+                using (writer.NewLineOnAttribute())
+                    {
+                    writer.WriteReference("CreatedBy",CreatedBy);
+                    writer.WriteReference("ModifiedBy",ModifiedBy);
+                    }
+                writer.WriteCData("Name",URI_META,Name);
+                writer.WriteBase64("Picture",URI_META,Picture);
+                }
+            }
+        #endregion
         #region M:ToString():String
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>

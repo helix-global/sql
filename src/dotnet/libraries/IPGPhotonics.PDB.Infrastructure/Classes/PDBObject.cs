@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure
     public class PDBObject : SqlObject
         {
         public const String URI_META  = "urn:schemas.ipg.corp:pdb:metadata";
-        public const String URI_CTRL  = "urn:schemas.ipg.corp:pdb:control";
+        public const String URI_CTRL  = SqlXmlCustomWriter.URI_CTRL;
 
         #region ctor
         public PDBObject()

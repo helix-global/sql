@@ -30,7 +30,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     ///  8. The well-formed writer keeps track of xml:space and xml:lang.
     ///  9. The well-formed writer verifies NmToken, Name, and QName values and calls WriteString().
     /// </summary>
-    internal abstract class XmlRawWriter : XmlWriter
+    internal abstract class XmlRawWriter : SqlXmlCustomWriter
         {
         //
         // Fields
@@ -442,6 +442,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
         internal abstract void WriteNamespaceDeclaration(String prefix,String ns);
 
         #region M:WriteStartNamespaceDeclaration(String)
+        /// <summary>Begins writing a namespace declaration with the specified prefix.</summary>
+        /// <param name="prefix">The prefix to associate with the namespace declaration. Cannot be null.</param>
+        /// <exception cref="T:System.NotSupportedException">Always thrown by the base implementation. Derived classes must override this method to provide support.</exception>
         internal virtual void WriteStartNamespaceDeclaration(String prefix)
             {
             throw new NotSupportedException();
@@ -458,7 +461,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         internal virtual void WriteEndBase64()
             {
             // The Flush will call WriteRaw to write out the rest of the encoded characters
-            base64Encoder.Flush();
+            base64Encoder?.Flush();
             }
         #endregion
         #region M:Close(WriteState)

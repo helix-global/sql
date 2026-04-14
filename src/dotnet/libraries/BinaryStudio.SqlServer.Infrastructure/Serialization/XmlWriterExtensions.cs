@@ -31,11 +31,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:WriteAttribute({this}XmlWriter,Boolean,String,Object)
         public static void WriteAttribute(this XmlWriter writer,Boolean NewLine,String localName,Object value) {
             if ((value == null) || (value is DBNull)) { return; }
-            if (writer is ISqlXmlWriter o)
-                {
-                o.WriteAttribute(NewLine,localName,value);
-                }
-            else
+            //if (writer is ISqlXmlWriter o)
+            //    {
+            //    o.WriteAttribute(NewLine,localName,value);
+            //    }
+            //else
                 {
                      if (value is DateTime DT) { value = DT.ToString("s");   }
                 else if (value is Guid GUID)   { value = GUID.ToString("B"); }

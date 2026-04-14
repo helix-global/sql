@@ -32,10 +32,10 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        #region M:WriteXml(XmlWriter)
+        #region M:WriteXml(ISqlXmlWriter)
         /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
-        public override void WriteXml(XmlWriter writer) {
+        /// <param name="writer">The <see cref="ISqlXmlWriter"/> stream to which the object is serialized.</param>
+        public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("User")) {
                 writer.WriteAttribute("FullName",FullName);
