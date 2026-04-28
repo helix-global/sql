@@ -26,8 +26,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:CanConvertFrom(ITypeDescriptorContext,Type):Boolean
         /// <summary>Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
-        /// <param name="sourceType">A <see cref="T:System.Type" /> that represents the type you want to convert from.</param>
-        /// <returns><see langword="true" />if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
+        /// <param name="sourceType">A <see cref="T:System.Type"/> that represents the type you want to convert from.</param>
+        /// <returns><see langword="true"/>if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
         public override Boolean CanConvertFrom(ITypeDescriptorContext context,Type sourceType) {
             if ((sourceType == typeof(String)) ||
                 (sourceType == typeof(Int32))  ||
@@ -60,6 +60,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ConvertFromObject(Object):Int16?
+        /// <summary>Converts the specified object to a nullable 16-bit signed integer.</summary>
+        /// <param name="value">The object to convert. Can be a numeric type, a <see cref="T:System.Boolean"/>, an <see cref="T:System.Enum"/>, or a string representation of a number. Can also be <see langword="null"/> or <see cref="T:System.DBNull"/>.</param>
+        /// <returns>A 16-bit signed integer value equivalent to the input object, or <see langword="null"/> if the conversion is not possible or the input is <see langword="null"/>, <see cref="T:System.DBNull"/>, or an empty string.</returns>
         public static Int16? ConvertFromObject(Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
             if (value is Boolean B)  { return (Int16)(B ? 1 : 0); }
@@ -76,8 +79,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
-            Int16 r;
-            if (!Int16.TryParse(S,out r))
+            if (!Int16.TryParse(S,out var r))
                 {
                 return null;
                 }
@@ -85,6 +87,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ConvertFromObject(Object,Int16):Int16
+        /// <summary>Converts the specified object to a 16-bit signed integer, or returns a default value if the conversion is not possible.</summary>
+        /// <param name="value">The object to convert to a 16-bit signed integer. Can be <see langword="null"/> or any type that can be converted to <see cref="T:System.Int16"/>.</param>
+        /// <param name="defaultValue">The value to return if the conversion is not successful.</param>
+        /// <returns>A 16-bit signed integer representing the converted value, or the specified default value if the conversion fails.</returns>
         public static Int16 ConvertFromObject(Object value,Int16 defaultValue)
             {
             return ConvertFromObject(value).GetValueOrDefault(defaultValue);

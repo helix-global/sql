@@ -25,17 +25,22 @@ namespace IPGPhotonics.PDB.Infrastructure
 
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
         ISqlObjectResolver<Int32?,PDBUser>,
-        ISqlObjectResolver<Int32?,PDBModule>
+        ISqlObjectResolver<Int32?,PDBModule>,
+        ISqlObjectResolver<Int32?,PDBDataUnit>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
         public IList<PDBModule> Modules { get;private set; }
         public IList<PDBEnum> Enums { get;private set; }
+        public IList<PDBEntity> Entities { get;private set; }
+        public IList<PDBDataUnit> DataUnits { get;private set; }
 
         #region ctor
         private A2CPackage() {
             Modules = EmptyArray<PDBModule>.List;
             Enums = EmptyArray<PDBEnum>.List;
+            Entities = EmptyArray<PDBEntity>.List;
+            DataUnits = EmptyArray<PDBDataUnit>.List;
             LoadUsers(Resources.PredefinedUserRecords);
             }
         #endregion
@@ -124,10 +129,11 @@ namespace IPGPhotonics.PDB.Infrastructure
                 Task.WaitAll(LoadModules(token,source.Tables["DEF_MODULES"]));
                 Task.WaitAll(
                     BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfi,"ENTITYOID"),
-                    BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuv,"ENUMOID")
+                    BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuv,"ENUMOID"),
+                    LoadDataUnits(token,source.Tables["DEF_UNIT"])
                     );
                 Task.WaitAll(LoadEnum(token,source.Tables["DEF_ENUMERATION"]));
-                //Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
+                Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
                 //foreach (DataTable table in source.Tables) {
                 //    var task = LoadTable(token,table);
                 //    lock (tasks)
@@ -142,8 +148,10 @@ namespace IPGPhotonics.PDB.Infrastructure
                 LoadTable(table);
                 }
             #endif
-            Modules = m_modI.Values.AsReadOnly();
-            Enums   = m_enuI.Values.AsReadOnly();
+            Modules   = m_modI.Values.AsReadOnly();
+            Enums     = m_enuI.Values.AsReadOnly();
+            Entities  = m_entI.Values.AsReadOnly();
+            DataUnits = m_DuniI.Values.AsReadOnly();
             return;
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
@@ -253,10 +261,24 @@ namespace IPGPhotonics.PDB.Infrastructure
         private async Task LoadEntities(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
             await Task.Run(() => {
-                foreach (var row in source.Rows
+                foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBModule(this,i)))
+                    .Select(i => new PDBEntity(this,i)))
                     {
+                    m_entI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadDataUnits(CancellationToken,DataTable):Task
+        private async Task LoadDataUnits(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBDataUnit(i,this,this)))
+                    {
+                    m_DuniI[o.OID] = o;
                     }
                 },cancellation);
             }
@@ -538,6 +560,14 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
+        #region M:ISqlObjectResolver<Int32?,PDBDataUnit>.GetObject(Int32):PDBDataUnit
+        PDBDataUnit ISqlObjectResolver<Int32?,PDBDataUnit>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_DuniI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
         #region M:GetService(Type):Object
         /// <summary>Gets the service object of the specified type.</summary>
         /// <param name="service">An object that specifies the type of service object to get.</param>
@@ -546,6 +576,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
         protected override Object GetService(Type service) {
             if (service == typeof(ISqlExtendedPropertyResolver)) { return this; }
+            if (service == typeof(ISqlObjectResolver<Int32?,PDBUser>))     { return this; }
+            if (service == typeof(ISqlObjectResolver<Int32?,PDBModule>))   { return this; }
+            if (service == typeof(ISqlObjectResolver<Int32?,PDBDataUnit>)) { return this; }
             return base.GetService(service);
             }
         #endregion
@@ -850,6 +883,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<Int32,PDBUser>   m_usrI = new SortedDictionary<Int32,PDBUser>();
         private readonly IDictionary<Int32,PDBModule> m_modI = new SortedDictionary<Int32,PDBModule>();
         private readonly IDictionary<Int32,PDBEnum>   m_enuI = new SortedDictionary<Int32,PDBEnum>();
+        private readonly IDictionary<Int32,PDBEntity> m_entI = new SortedDictionary<Int32,PDBEntity>();
+        private readonly IDictionary<Int32,PDBDataUnit> m_DuniI = new SortedDictionary<Int32,PDBDataUnit>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfi = new Dictionary<Int32,IList<DataRow>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuv = new Dictionary<Int32,IList<DataRow>>();

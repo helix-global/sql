@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using System;
+﻿using System;
 using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -75,6 +74,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         void ISqlXmlWriter.WriteAttribute(String prefix,String localName,String ns,Object value) {
             if ((value == null) || (value is DBNull)) { return; }
+            if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(prefix,localName,ns,ConvertToString(value));
             }
         #endregion
@@ -88,6 +88,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         void ISqlXmlWriter.WriteAttribute(String localName,String ns,Object value) {
             if ((value == null) || (value is DBNull)) { return; }
+            if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(localName,ns,ConvertToString(value));
             }
         #endregion
@@ -100,6 +101,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         void ISqlXmlWriter.WriteAttribute(String localName,Object value) {
             if ((value == null) || (value is DBNull)) { return; }
+            if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(localName,ConvertToString(value));
             }
         #endregion

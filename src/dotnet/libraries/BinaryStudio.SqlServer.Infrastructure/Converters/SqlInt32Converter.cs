@@ -60,6 +60,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ConvertFromObject(Object):Int32?
+        /// <summary>Converts the specified object to a nullable 32-bit signed integer.</summary>
+        /// <param name="value">The object to convert. Can be a numeric type, a <see cref="T:System.Boolean"/>, an <see cref="T:System.Enum"/>, or a string representation of a number. Can also be <see langword="null"/> or <see cref="T:System.DBNull"/>.</param>
+        /// <returns>A 32-bit signed integer value equivalent to the input object, or <see langword="null"/> if the conversion is not possible or the input is <see langword="null"/>, <see cref="T:System.DBNull"/>, or an empty string.</returns>
         public static Int32? ConvertFromObject(Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
             if (value is Boolean B)  { return B ? 1 : 0;  }
@@ -85,6 +88,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:ConvertFromObject(Object,Int32):Int32
+        /// <summary>Converts the specified object to a 32-bit signed integer, or returns a default value if the conversion is not possible.</summary>
+        /// <param name="value">The object to convert to a 32-bit signed integer. Can be <see langword="null"/> or any type that can be converted to <see cref="T:System.Int32"/>.</param>
+        /// <param name="defaultValue">The value to return if the conversion is not successful.</param>
+        /// <returns>A 32-bit signed integer representing the converted value, or the specified default value if the conversion fails.</returns>
         public static Int32 ConvertFromObject(Object value,Int32 defaultValue)
             {
             return ConvertFromObject(value).GetValueOrDefault(defaultValue);

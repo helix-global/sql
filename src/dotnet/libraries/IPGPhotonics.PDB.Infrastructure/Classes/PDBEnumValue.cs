@@ -1,9 +1,8 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Data;
-using System.Reflection;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -12,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure
     public class PDBEnumValue : PDBObject
         {
         [UsedImplicitly][Field("CODE")] public Int32 Code { get; }
-        [UsedImplicitly][Field("NAME")] public String Name { get; }
+        [UsedImplicitly][Field("NAME")] public String Value { get; }
         [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
         [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
@@ -49,7 +48,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                     writer.WriteReference("CreatedBy",CreatedBy);
                     writer.WriteReference("ModifiedBy",ModifiedBy);
                     }
-                writer.WriteCData("Name",URI_META,Name);
+                writer.WriteCData("Value",URI_META,Value);
                 writer.WriteBase64("Picture",URI_META,Picture);
                 }
             }
@@ -59,7 +58,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return $"{Name}";
+            return $"{Value}";
             }
         #endregion
         }

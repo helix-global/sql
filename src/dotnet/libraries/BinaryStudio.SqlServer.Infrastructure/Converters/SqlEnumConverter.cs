@@ -5,6 +5,19 @@ using System.Reflection;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    /// <summary>
+    /// Provides a type converter that supports conversion between SQL-compatible values and enum types. Enables
+    /// conversion of various object types, such as strings and numeric values, to and from the specified enum type for
+    /// use with SQL data sources.
+    /// </summary>
+    /// <typeparam name="E">The enum type to convert to and from SQL-compatible values. Must be a value type that derives from <see cref="T:System.Enum"/>.</typeparam>
+    /// <remarks>
+    /// Use <see cref="SqlEnumConverter{E}"/> to facilitate mapping between database values and
+    /// strongly typed enums in .NET applications. The <see cref="AllowNull"/> property determines
+    /// whether <see langword="null"/> values are permitted during conversion. This converter is
+    /// useful when reading or writing enum values to SQL databases where the underlying storage
+    /// may be a string, integer, or <see langword="null"/>.
+    /// </remarks>
     public class SqlEnumConverter<E> : TypeConverter,ISqlValueTypeConverter<E>
         where E : struct,Enum
         {

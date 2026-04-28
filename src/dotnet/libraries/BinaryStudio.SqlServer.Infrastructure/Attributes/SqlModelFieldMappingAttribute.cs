@@ -6,6 +6,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         {
         public String Source { get;set; }
         public Boolean EmptyIfNull { get;set; }
+        public Boolean Trim { get;set; }
 
         #region ctor
         public SqlModelFieldMappingAttribute()

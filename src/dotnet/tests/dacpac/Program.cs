@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 
 //using SharpCompress.Archives.SevenZip;
@@ -59,6 +60,27 @@ namespace dacpac
             return;
             }
         #endregion
+        #region M:EncodeString(String):String
+        protected static String EncodeString(String value) {
+            var r = new StringBuilder();
+            foreach (var c in value) {
+                if (Char.IsLetterOrDigit(c) || (c == '_')) {
+                    r.Append(c);
+                    }
+                else
+                    {
+                    if (c <= 0xFF) {
+                        r.AppendFormat("%{0:x2}",(Int32)c);
+                        }
+                    else
+                        {
+                        r.AppendFormat("%{0:x4}",(Int32)c);
+                        }
+                    }
+                }
+            return r.ToString();
+            }
+        #endregion
 
         private static void Main(String[] args) {
             //var maxN = 0;
@@ -82,22 +104,42 @@ namespace dacpac
                 var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\..\..\..\.intermediate\pdb");
                 var r = A2CPackage.LoadFrom("2026.03.02.1553.7z");
                 if (r.Modules.Count > 0) {
-                    var ModuleFolder = Path.Combine(TargetFolder,"Modules");
-                    CreateFolderIfNotExists(ModuleFolder);
-                    foreach (var module in r.Modules) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(ModuleFolder,module.Label+".xml")))
+                    var ObjectFolder = Path.Combine(TargetFolder,"Modules");
+                    CreateFolderIfNotExists(ObjectFolder);
+                    foreach (var o in r.Modules) {
+                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
                             {
-                            module.WriteXml(writer);
+                            o.WriteXml(writer);
                             }
                         }
                     }
                 if (r.Enums.Count > 0) {
-                    var EnumFolder = Path.Combine(TargetFolder,"Enums");
-                    CreateFolderIfNotExists(EnumFolder);
-                    foreach (var @enum in r.Enums) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(EnumFolder,@enum.Label+".xml")))
+                    var ObjectFolder = Path.Combine(TargetFolder,"Enums");
+                    CreateFolderIfNotExists(ObjectFolder);
+                    foreach (var o in r.Enums) {
+                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
                             {
-                            @enum.WriteXml(writer);
+                            o.WriteXml(writer);
+                            }
+                        }
+                    }
+                if (r.Entities.Count > 0) {
+                    var ObjectFolder = Path.Combine(TargetFolder,"Entities");
+                    CreateFolderIfNotExists(ObjectFolder);
+                    foreach (var o in r.Entities) {
+                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
+                            {
+                            o.WriteXml(writer);
+                            }
+                        }
+                    }
+                if (r.DataUnits.Count > 0) {
+                    var ObjectFolder = Path.Combine(TargetFolder,"DataUnits");
+                    CreateFolderIfNotExists(ObjectFolder);
+                    foreach (var o in r.DataUnits) {
+                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,EncodeString(o.Label)+".xml")))
+                            {
+                            o.WriteXml(writer);
                             }
                         }
                     }
