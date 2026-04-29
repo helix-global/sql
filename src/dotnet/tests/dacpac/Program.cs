@@ -82,6 +82,21 @@ namespace dacpac
             }
         #endregion
 
+        private static void FillFolder<T>(String TargetFolder,IList<T> Items,String Folder,Func<T,String> Label)
+            where T:PDBObject
+            {
+            if (Items.Count > 0) {
+                var ObjectFolder = Path.Combine(TargetFolder,Folder);
+                CreateFolderIfNotExists(ObjectFolder);
+                foreach (var o in Items) {
+                    using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,EncodeString(Label(o))+".xml")))
+                        {
+                        o.WriteXml(writer);
+                        }
+                    }
+                }
+            }
+
         private static void Main(String[] args) {
             //var maxN = 0;
             //foreach (SqlPermission i in Enum.GetValues(typeof(SqlPermission))) {
@@ -103,46 +118,13 @@ namespace dacpac
                 //RebuildA2CX("2022.07.05.0847.a2cx");
                 var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\..\..\..\.intermediate\pdb");
                 var r = A2CPackage.LoadFrom("2026.03.02.1553.7z");
-                if (r.Modules.Count > 0) {
-                    var ObjectFolder = Path.Combine(TargetFolder,"Modules");
-                    CreateFolderIfNotExists(ObjectFolder);
-                    foreach (var o in r.Modules) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
-                            {
-                            o.WriteXml(writer);
-                            }
-                        }
-                    }
-                if (r.Enums.Count > 0) {
-                    var ObjectFolder = Path.Combine(TargetFolder,"Enums");
-                    CreateFolderIfNotExists(ObjectFolder);
-                    foreach (var o in r.Enums) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
-                            {
-                            o.WriteXml(writer);
-                            }
-                        }
-                    }
-                if (r.Entities.Count > 0) {
-                    var ObjectFolder = Path.Combine(TargetFolder,"Entities");
-                    CreateFolderIfNotExists(ObjectFolder);
-                    foreach (var o in r.Entities) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,o.Label+".xml")))
-                            {
-                            o.WriteXml(writer);
-                            }
-                        }
-                    }
-                if (r.DataUnits.Count > 0) {
-                    var ObjectFolder = Path.Combine(TargetFolder,"DataUnits");
-                    CreateFolderIfNotExists(ObjectFolder);
-                    foreach (var o in r.DataUnits) {
-                        using (var writer = new SqlXmlWriter(Path.Combine(ObjectFolder,EncodeString(o.Label)+".xml")))
-                            {
-                            o.WriteXml(writer);
-                            }
-                        }
-                    }
+                FillFolder(TargetFolder,r.Modules,"Modules",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Enums,"Enums",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Entities,"Entities",(o)=>o.Label);
+                FillFolder(TargetFolder,r.DataUnits,"DataUnits",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Queries,"Queries",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Stages,"Stages",(o)=>$"{o.Label}_{o.OID}");
+                FillFolder(TargetFolder,r.Classes,"Classes",(o)=>o.Label);
                 }
             catch (Exception e)
                 {

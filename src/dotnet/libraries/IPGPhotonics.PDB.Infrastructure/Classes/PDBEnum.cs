@@ -69,9 +69,9 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("ModifiedDate",ModifiedDate);
                 using (writer.NewLineOnAttribute())
                     {
-                    writer.WriteReference("CreatedBy",CreatedBy);
-                    writer.WriteReference("ModifiedBy",ModifiedBy);
-                    writer.WriteReference("Module",Module);
+                    writer.WriteReferenceIfNotNull("CreatedBy",CreatedBy);
+                    writer.WriteReferenceIfNotNull("ModifiedBy",ModifiedBy);
+                    writer.WriteReferenceIfNotNull("Module",Module);
                     }
                 writer.WriteCData("Name",URI_META,Name);
                 if (Values.Count > 0) {

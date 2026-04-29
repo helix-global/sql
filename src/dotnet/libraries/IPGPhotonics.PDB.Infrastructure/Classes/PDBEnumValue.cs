@@ -45,8 +45,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("ModifiedDate",ModifiedDate);
                 using (writer.NewLineOnAttribute())
                     {
-                    writer.WriteReference("CreatedBy",CreatedBy);
-                    writer.WriteReference("ModifiedBy",ModifiedBy);
+                    writer.WriteReferenceIfNotNull("CreatedBy",CreatedBy);
+                    writer.WriteReferenceIfNotNull("ModifiedBy",ModifiedBy);
                     }
                 writer.WriteCData("Value",URI_META,Value);
                 writer.WriteBase64("Picture",URI_META,Picture);

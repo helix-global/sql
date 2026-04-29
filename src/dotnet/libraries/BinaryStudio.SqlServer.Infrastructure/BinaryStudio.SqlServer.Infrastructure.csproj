@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="DAC\**" />

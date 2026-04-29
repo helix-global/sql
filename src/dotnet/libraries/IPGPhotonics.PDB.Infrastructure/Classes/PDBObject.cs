@@ -42,5 +42,14 @@ namespace IPGPhotonics.PDB.Infrastructure
             return r.ToString();
             }
         #endregion
+        #region M:DecodeLanguageString(String):String
+        protected static String DecodeLanguageString(String value) {
+            if (String.IsNullOrWhiteSpace(value)) { return value; }
+            if (IsMatch(value, @"^(.+?)[\[]\w+[=]",out var match)) {
+                return match.Groups[1].Value;
+                }
+            return value;
+            }
+        #endregion
         }
     }

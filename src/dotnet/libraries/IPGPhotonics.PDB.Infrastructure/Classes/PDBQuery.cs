@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -8,37 +7,29 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class PDBEntity : PDBObject
+    public class PDBQuery : PDBObject
         {
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("S_CDT")]     public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]     public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
-        [UsedImplicitly][Field("MAINTABLE")] public String MainTable { get; }
-        [UsedImplicitly][Field("IDFIELDNAME")] public String IdentityFieldName { get; }
         [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field("DATAUNITOID")] private Int32? DataUnitOID { get; }
-        [UsedImplicitly][Field("REMARKS")]     public String Description { get; }
-        [UsedImplicitly][Field("STATESCOUNT")] public EntityStateKind EntityStates { get; }
-        [UsedImplicitly][Field("SQLFILTER")]   public String FilterExpression { get; }
+        [UsedImplicitly][Field(Source = "DESCRIPTION")] public String Description { get; }
+        [UsedImplicitly][Field(Source = "OPTIONS")] public String Options { get; }
+        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field(Source = "SQLTEXT")] public String Body { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
         public PDBModule Module { get; }
-        public PDBDataUnit DataUnit { get; }
 
-        #region ctor{IServiceProvider,DataRow}
-        internal PDBEntity(IServiceProvider provider,DataRow source)
+        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,DataRow}
+        internal PDBQuery(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,DataRow source)
             :base(source)
             {
-            var users     = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules   = (ISqlObjectResolver<Int32?,PDBModule>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBModule>));
-            var DataUnits = (ISqlObjectResolver<Int32?,PDBDataUnit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBDataUnit>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
-            DataUnit = DataUnits.GetObject(DataUnitOID);
             }
         #endregion
 
@@ -47,7 +38,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <param name="writer">The <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> stream to which the object is serialized.</param>
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            using (writer.ElementGroup("Entity",URI_META)) {
+            using (writer.ElementGroup("Query",URI_META)) {
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
                 writer.WriteAttribute("xmlns","x",null,URI_CTRL);
@@ -62,19 +53,25 @@ namespace IPGPhotonics.PDB.Infrastructure
                     writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
                     }
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute()) {
+                using (writer.NewLineOnAttribute())
+                    {
                     writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
                     writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
                     writer.WriteReferenceIfNotNull(nameof(Module),Module);
-                    writer.WriteReferenceIfNotNull(nameof(DataUnit),DataUnit);
                     }
-                writer.WriteAttribute(nameof(IdentityFieldName),IdentityFieldName);
-                writer.WriteAttribute(nameof(EntityStates),EntityStates);
                 writer.WriteCData(nameof(Name),URI_META,Name);
-                writer.WriteCData(nameof(MainTable),URI_META,MainTable);
-                writer.WriteCData(nameof(FilterExpression),URI_META,FilterExpression);
+                writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);
+                writer.WriteCData(nameof(Body),URI_META,Body);
                 }
+            }
+        #endregion
+        #region M:ToString():String
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override String ToString()
+            {
+            return $"{Label}";
             }
         #endregion
         }

@@ -26,7 +26,9 @@ namespace IPGPhotonics.PDB.Infrastructure
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
         ISqlObjectResolver<Int32?,PDBUser>,
         ISqlObjectResolver<Int32?,PDBModule>,
-        ISqlObjectResolver<Int32?,PDBDataUnit>
+        ISqlObjectResolver<Int32?,PDBEntity>,
+        ISqlObjectResolver<Int32?,PDBDataUnit>,
+        ISqlObjectResolver<Int32?,PDBClass>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
@@ -34,6 +36,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         public IList<PDBEnum> Enums { get;private set; }
         public IList<PDBEntity> Entities { get;private set; }
         public IList<PDBDataUnit> DataUnits { get;private set; }
+        public IList<PDBQuery> Queries { get;private set; }
+        public IList<PDBStage> Stages { get;private set; }
+        public IList<PDBClass> Classes { get;private set; }
 
         #region ctor
         private A2CPackage() {
@@ -41,6 +46,9 @@ namespace IPGPhotonics.PDB.Infrastructure
             Enums = EmptyArray<PDBEnum>.List;
             Entities = EmptyArray<PDBEntity>.List;
             DataUnits = EmptyArray<PDBDataUnit>.List;
+            Queries = EmptyArray<PDBQuery>.List;
+            Stages = EmptyArray<PDBStage>.List;
+            Classes = EmptyArray<PDBClass>.List;
             LoadUsers(Resources.PredefinedUserRecords);
             }
         #endregion
@@ -128,12 +136,17 @@ namespace IPGPhotonics.PDB.Infrastructure
                 Task.WaitAll(LoadUsers(token,source.Tables["DEF_USERS"]));
                 Task.WaitAll(LoadModules(token,source.Tables["DEF_MODULES"]));
                 Task.WaitAll(
-                    BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfi,"ENTITYOID"),
-                    BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuv,"ENUMOID"),
+                    BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfI,"ENTITYOID"),
+                    BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuV,"ENUMOID"),
+                    BuildIndex(token,source.Tables["DEF_CLASS_STATES"], IXclsS,"CLASSOID"),
                     LoadDataUnits(token,source.Tables["DEF_UNIT"])
                     );
-                Task.WaitAll(LoadEnum(token,source.Tables["DEF_ENUMERATION"]));
+                Task.WaitAll(
+                    LoadEnum(token,source.Tables["DEF_ENUMERATION"]),
+                    LoadQueries(token,source.Tables["DEF_SQL"]));
                 Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
+                Task.WaitAll(LoadClasses(token,source.Tables["DEF_CLASSES"]));
+                Task.WaitAll(LoadStages(token,source.Tables["DEF_STAGES"]));
                 //foreach (DataTable table in source.Tables) {
                 //    var task = LoadTable(token,table);
                 //    lock (tasks)
@@ -152,6 +165,9 @@ namespace IPGPhotonics.PDB.Infrastructure
             Enums     = m_enuI.Values.AsReadOnly();
             Entities  = m_entI.Values.AsReadOnly();
             DataUnits = m_DuniI.Values.AsReadOnly();
+            Queries   = m_querI.Values.AsReadOnly();
+            Stages    = m_stagI.Values.AsReadOnly();
+            Classes   = m_clasI.Values.AsReadOnly();
             return;
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
@@ -243,6 +259,19 @@ namespace IPGPhotonics.PDB.Infrastructure
             return BitConverter.ToUInt16(buffer,0);
             }
         #endregion
+        #region M:LoadClasses(CancellationToken,DataTable):Task
+        private async Task LoadClasses(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBClass(i,this,this,this,IXclsS)))
+                    {
+                    m_clasI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
         #region M:LoadEnum(CancellationToken,DataTable):Task
         private async Task LoadEnum(CancellationToken cancellation,DataTable source) {
             await Task.Delay(0,cancellation);
@@ -250,7 +279,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
                     //.Where(i => i["LABEL"].ToString()=="def_log_level")
-                    .Select(i => new PDBEnum(this,this,i,IXenuv)))
+                    .Select(i => new PDBEnum(this,this,i,IXenuV)))
                     {
                     m_enuI[o.OID] = o;
                     }
@@ -295,6 +324,32 @@ namespace IPGPhotonics.PDB.Infrastructure
                         {
                         m_modI[row.OID] = row;
                         }
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadQueries(CancellationToken,DataTable):Task
+        private async Task LoadQueries(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBQuery(this,this,i)))
+                    {
+                    m_querI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadStages(CancellationToken,DataTable):Task
+        private async Task LoadStages(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new PDBStage(this,this,i)))
+                    {
+                    m_stagI[o.OID] = o;
                     }
                 },cancellation);
             }
@@ -564,6 +619,22 @@ namespace IPGPhotonics.PDB.Infrastructure
         PDBDataUnit ISqlObjectResolver<Int32?,PDBDataUnit>.GetObject(Int32? key) {
             if (key == null) { return null; }
             return m_DuniI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,PDBEntity>.GetObject(Int32):PDBEntity
+        PDBEntity ISqlObjectResolver<Int32?,PDBEntity>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_entI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,Class>.GetObject(Int32):Class
+        PDBClass ISqlObjectResolver<Int32?,PDBClass>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_clasI.TryGetValue(key.Value,out var r)
                 ? r
                 : null;
             }
@@ -885,8 +956,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<Int32,PDBEnum>   m_enuI = new SortedDictionary<Int32,PDBEnum>();
         private readonly IDictionary<Int32,PDBEntity> m_entI = new SortedDictionary<Int32,PDBEntity>();
         private readonly IDictionary<Int32,PDBDataUnit> m_DuniI = new SortedDictionary<Int32,PDBDataUnit>();
+        private readonly IDictionary<Int32,PDBQuery>    m_querI = new SortedDictionary<Int32,PDBQuery>();
+        private readonly IDictionary<Int32,PDBStage>    m_stagI = new SortedDictionary<Int32,PDBStage>();
+        private readonly IDictionary<Int32,PDBClass>    m_clasI = new SortedDictionary<Int32,PDBClass>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfi = new Dictionary<Int32,IList<DataRow>>();
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuv = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfI = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuV = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXclsS = new Dictionary<Int32,IList<DataRow>>();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -105,6 +106,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
             WriteAttributeString(localName,ConvertToString(value));
             }
         #endregion
+        #region M:ISqlXmlWriter.WriteAttribute(String,Object,TypeConverter)
+        /// <summary>Writes out the attribute with the specified local name and value using specified converter.</summary>
+        /// <param name="localName">The local name of the attribute.</param>
+        /// <param name="value">The value of the attribute.</param>
+        /// <param name="converter">The value converter.</param>
+        /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
+        /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void ISqlXmlWriter.WriteAttribute(String localName,Object value,TypeConverter converter) {
+            if ((value == null) || (value is DBNull)) { return; }
+            if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
+            WriteAttributeString(localName,ConvertToString(value,converter));
+            }
+        #endregion
         #region M:ISqlXmlWriter.WriteCData(String,String,String,String)
         /// <summary>Writes an element with the specified prefix, local name, namespace URI, and CDATA block.</summary>
         /// <param name="prefix">The prefix of the element.</param>
@@ -204,10 +219,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>An <see cref="T:System.Object" /> that represents the converted value.</returns>
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         protected virtual String ConvertToString(Object value) {
+            return ConvertToString(value,null);
+            }
+        #endregion
+        #region M:ConvertToString(Object,TypeConverter):String
+        /// <summary>Converts the specified value to a string representation.</summary>
+        /// <param name="value">The <see cref="T:System.Object" /> to convert.</param>
+        /// <param name="converter">The value converter.</param>
+        /// <returns>An <see cref="T:System.Object" /> that represents the converted value.</returns>
+        /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+        protected virtual String ConvertToString(Object value,TypeConverter converter) {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is DateTime DT) { return DT.ToString("s");   }
-            if (value is Guid   GUID) { return GUID.ToString("B"); }
-            return value.ToString();
+            if (converter == null) {
+                if (value is DateTime DT) { return DT.ToString("s");   }
+                if (value is Guid   GUID) { return GUID.ToString("B"); }
+                return value.ToString();
+                }
+            return converter.ConvertToInvariantString(value);
             }
         #endregion
 
