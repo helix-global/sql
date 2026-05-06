@@ -117,7 +117,7 @@ namespace dacpac
                 {
                 //RebuildA2CX("2022.07.05.0847.a2cx");
                 var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\..\..\..\.intermediate\pdb");
-                var r = A2CPackage.LoadFrom("2026.03.02.1553.7z");
+                var r = A2CPackage.LoadFrom("2026.05.05.1219.7z");
                 FillFolder(TargetFolder,r.Modules,"Modules",(o)=>o.Label);
                 FillFolder(TargetFolder,r.Enums,"Enums",(o)=>o.Label);
                 FillFolder(TargetFolder,r.Entities,"Entities",(o)=>o.Label);

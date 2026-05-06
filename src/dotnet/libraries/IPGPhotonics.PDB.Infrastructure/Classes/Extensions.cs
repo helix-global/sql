@@ -67,13 +67,27 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
         #region M:WriteReference({this}ISqlXmlWriter,String,Class)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBClass reference) {
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Class reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Class,'{reference.Label}',{reference.OID.ToString()}}}");
                 }
             else
                 {
                 writer.WriteAttribute(localName,$"{{x:Null}}");
+                }
+            }
+        #endregion
+        #region M:WriteReference({this}ISqlXmlWriter,String,PDBDataUnit)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBDataUnit reference) {
+            if (reference != null) {
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Unit,'{reference.Label}',{reference.OID}}}");
+                }
+            }
+        #endregion
+        #region M:WriteReference({this}ISqlXmlWriter,String,Query)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Query reference) {
+            if (reference != null) {
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Query,'{reference.Label}',{reference.OID}}}");
                 }
             }
         #endregion

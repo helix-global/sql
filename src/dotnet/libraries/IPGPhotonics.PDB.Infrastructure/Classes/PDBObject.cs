@@ -51,5 +51,13 @@ namespace IPGPhotonics.PDB.Infrastructure
             return value;
             }
         #endregion
+        protected static Boolean IsNotDefault<T>(T value)
+            {
+            return !Equals(value,default);
+            }
+        protected static Boolean IsNotDefault(Boolean value)
+            {
+            return value;
+            }
         }
     }

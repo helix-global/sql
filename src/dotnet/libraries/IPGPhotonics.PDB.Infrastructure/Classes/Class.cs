@@ -8,33 +8,58 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class PDBClass : PDBObject
+    public class Class : PDBObject
         {
         public IDictionary<Int32,ClassState> States { get; }
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
         [UsedImplicitly][Field("REMARK")] public String Description { get; }
         [UsedImplicitly][Field("DOPTION")] public String Options { get; }
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         [UsedImplicitly][Field("SPELLCHECKER")] public Boolean SpellCheckingDisabled { get; }
-        [UsedImplicitly][Field("ENTITYOID")] private Int32? EntityOID { get; }
+        [UsedImplicitly][Field("SQLFILTER")]  public String SqlFilterClauseExpression { get; }
+        [UsedImplicitly][Field("FACCESS")]    public String SqlFineAccessExpression { get; }
+        [UsedImplicitly][Field("FACCESSNEW")] public String SqlFineAccessExpressionForNewDocument { get; }
+        [UsedImplicitly][Field("RENTITYSQLFILTER")] public String SqlEntityFilterClauseExpressionOverride { get; }
+        [UsedImplicitly][Field("DEFAULTPERIOD")] public DatePeriodType? DefaultListPeriod { get; }
+        [UsedImplicitly][Field("DEFAULTPERIODCUSTOM")] public Int32? CustomListPeriodDays { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
         public PDBModule Module { get; }
         public PDBEntity Entity { get; }
+        public PDBDataUnit LiveUnit { get; }
+        public PDBDataUnit ListUnit { get; }
+        public PDBDataUnit OpenUnit { get; }
+        public Query FineAccessQuery { get; }
+        public Query FoldersQuery { get; }
+        public Boolean DisableDirectAdd { get; }
+        public Boolean DisableDirectDelete { get; }
+        public Boolean DisableCopy { get; }
+        public Boolean AlwaysReadOnly { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,ISqlObjectResolver<Int32?,PDBModule>,IDictionary<Int32,IList<DataRow>>}
-        internal PDBClass(DataRow source,ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,ISqlObjectResolver<Int32?,PDBEntity> entities,IDictionary<Int32,IList<DataRow>> states)
+        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,ISqlObjectResolver<Int32?,PDBEntity>,ISqlObjectResolver<Int32?,PDBDataUnit>,ISqlObjectResolver<Int32?,Query>,IDictionary<Int32,IList<DataRow>>}
+        internal Class(DataRow source,ISqlObjectResolver<Int32?,PDBUser> users,
+            ISqlObjectResolver<Int32?,PDBModule> modules,ISqlObjectResolver<Int32?,PDBEntity> entities,
+            ISqlObjectResolver<Int32?,PDBDataUnit> units,ISqlObjectResolver<Int32?,Query> queries,
+            IDictionary<Int32,IList<DataRow>> states)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             Entity = entities.GetObject(EntityOID);
+            LiveUnit = units.GetObject(LiveUnitOID);
+            ListUnit = units.GetObject(ListUnitOID);
+            OpenUnit = units.GetObject(OpenUnitOID);
+            FineAccessQuery = queries.GetObject(FineAccessQueryOID);
+            FoldersQuery    = queries.GetObject(FoldersQueryOID);
+            DisableDirectAdd    = PropB(source["NOLISTADD"],false);
+            DisableDirectDelete = PropB(source["NOLISTDEL"],false);
+            DisableCopy         = PropB(source["NOCOPY"],false);
+            AlwaysReadOnly      = PropB(source["NOEDITABLE"],false);
             States = new Dictionary<Int32,ClassState>();
             try
                 {
@@ -78,15 +103,29 @@ namespace IPGPhotonics.PDB.Infrastructure
                     writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
                     writer.WriteReference(nameof(Module),Module);
                     writer.WriteReference(nameof(Entity),Entity);
+                    writer.WriteReference(nameof(LiveUnit),LiveUnit);
+                    writer.WriteReference(nameof(ListUnit),ListUnit);
+                    writer.WriteReference(nameof(OpenUnit),OpenUnit);
+                    writer.WriteReference(nameof(FineAccessQuery),FineAccessQuery);
+                    writer.WriteReference(nameof(FoldersQuery),FoldersQuery);
                     }
-                if (SpellCheckingDisabled) { writer.WriteAttribute(nameof(SpellCheckingDisabled),SpellCheckingDisabled); }
                 using (writer.NewLineOnAttribute())
                     {
-                    
+                    writer.WriteAttribute(nameof(DefaultListPeriod),DefaultListPeriod);
+                    writer.WriteAttribute(nameof(DisableDirectAdd),DisableDirectAdd,IsNotDefault);
+                    writer.WriteAttribute(nameof(DisableDirectDelete),DisableDirectDelete,IsNotDefault);
+                    writer.WriteAttribute(nameof(DisableCopy),DisableCopy,IsNotDefault);
+                    writer.WriteAttribute(nameof(AlwaysReadOnly),AlwaysReadOnly,IsNotDefault);
+                    writer.WriteAttribute(nameof(CustomListPeriodDays),CustomListPeriodDays);
                     }
+                if (SpellCheckingDisabled) { writer.WriteAttribute(nameof(SpellCheckingDisabled),SpellCheckingDisabled); }
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);
+                writer.WriteCData(nameof(SqlFilterClauseExpression),URI_META,SqlFilterClauseExpression);
+                writer.WriteCData(nameof(SqlFineAccessExpression),URI_META,SqlFineAccessExpression);
+                writer.WriteCData(nameof(SqlFineAccessExpressionForNewDocument),URI_META,SqlFineAccessExpressionForNewDocument);
+                writer.WriteCData(nameof(SqlEntityFilterClauseExpressionOverride),URI_META,SqlEntityFilterClauseExpressionOverride);
                 if (States.Count > 0) {
                     using (writer.ElementGroup("States",URI_META)) {
                         foreach (var o in States.Values) {
@@ -105,5 +144,13 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
+
+        [UsedImplicitly][Field("ENTITYOID")]   private Int32? EntityOID { get; }
+        [UsedImplicitly][Field("LIVEUNIT")]    private Int32? LiveUnitOID { get; }
+        [UsedImplicitly][Field("FAQUERY")]     private Int32? FineAccessQueryOID { get; }
+        [UsedImplicitly][Field("FOLDERSQOID")] private Int32? FoldersQueryOID { get; }
+        [UsedImplicitly][Field("OPENUNITOID")] private Int32? OpenUnitOID { get; }
+        [UsedImplicitly][Field("LISTUNIT")]    private Int32? ListUnitOID { get; }
+        [UsedImplicitly][Field("MODULEOID")]   private Int32 ModuleOID { get; }
         }
     }

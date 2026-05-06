@@ -28,7 +28,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         ISqlObjectResolver<Int32?,PDBModule>,
         ISqlObjectResolver<Int32?,PDBEntity>,
         ISqlObjectResolver<Int32?,PDBDataUnit>,
-        ISqlObjectResolver<Int32?,PDBClass>
+        ISqlObjectResolver<Int32?,Class>,
+        ISqlObjectResolver<Int32?,Query>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
@@ -36,9 +37,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         public IList<PDBEnum> Enums { get;private set; }
         public IList<PDBEntity> Entities { get;private set; }
         public IList<PDBDataUnit> DataUnits { get;private set; }
-        public IList<PDBQuery> Queries { get;private set; }
+        public IList<Query> Queries { get;private set; }
         public IList<PDBStage> Stages { get;private set; }
-        public IList<PDBClass> Classes { get;private set; }
+        public IList<Class> Classes { get;private set; }
 
         #region ctor
         private A2CPackage() {
@@ -46,9 +47,9 @@ namespace IPGPhotonics.PDB.Infrastructure
             Enums = EmptyArray<PDBEnum>.List;
             Entities = EmptyArray<PDBEntity>.List;
             DataUnits = EmptyArray<PDBDataUnit>.List;
-            Queries = EmptyArray<PDBQuery>.List;
+            Queries = EmptyArray<Query>.List;
             Stages = EmptyArray<PDBStage>.List;
-            Classes = EmptyArray<PDBClass>.List;
+            Classes = EmptyArray<Class>.List;
             LoadUsers(Resources.PredefinedUserRecords);
             }
         #endregion
@@ -265,7 +266,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBClass(i,this,this,this,IXclsS)))
+                    .Select(i => new Class(i,this,this,this,this,this,IXclsS)))
                     {
                     m_clasI[o.OID] = o;
                     }
@@ -334,7 +335,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBQuery(this,this,i)))
+                    .Select(i => new Query(this,this,i)))
                     {
                     m_querI[o.OID] = o;
                     }
@@ -632,9 +633,17 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
         #region M:ISqlObjectResolver<Int32?,Class>.GetObject(Int32):Class
-        PDBClass ISqlObjectResolver<Int32?,PDBClass>.GetObject(Int32? key) {
+        Class ISqlObjectResolver<Int32?,Class>.GetObject(Int32? key) {
             if (key == null) { return null; }
             return m_clasI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,Query>.GetObject(Int32):Query
+        Query ISqlObjectResolver<Int32?,Query>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_querI.TryGetValue(key.Value,out var r)
                 ? r
                 : null;
             }
@@ -956,9 +965,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<Int32,PDBEnum>   m_enuI = new SortedDictionary<Int32,PDBEnum>();
         private readonly IDictionary<Int32,PDBEntity> m_entI = new SortedDictionary<Int32,PDBEntity>();
         private readonly IDictionary<Int32,PDBDataUnit> m_DuniI = new SortedDictionary<Int32,PDBDataUnit>();
-        private readonly IDictionary<Int32,PDBQuery>    m_querI = new SortedDictionary<Int32,PDBQuery>();
+        private readonly IDictionary<Int32,Query>    m_querI = new SortedDictionary<Int32,Query>();
         private readonly IDictionary<Int32,PDBStage>    m_stagI = new SortedDictionary<Int32,PDBStage>();
-        private readonly IDictionary<Int32,PDBClass>    m_clasI = new SortedDictionary<Int32,PDBClass>();
+        private readonly IDictionary<Int32,Class>    m_clasI = new SortedDictionary<Int32,Class>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfI = new Dictionary<Int32,IList<DataRow>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuV = new Dictionary<Int32,IList<DataRow>>();

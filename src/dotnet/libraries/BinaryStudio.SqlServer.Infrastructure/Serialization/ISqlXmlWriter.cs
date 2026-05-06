@@ -89,6 +89,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         void WriteAttribute(String localName,Object value,TypeConverter converter);
         #endregion
+        #region M:WriteAttribute<T>(String,T,Func<T,Boolean>)
+        /// <summary>When overridden in a derived class, writes out the attribute with the specified local name and value.</summary>
+        /// <param name="localName">The local name of the attribute.</param>
+        /// <param name="value">The value of the attribute.</param>
+        /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
+        /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void WriteAttribute<T>(String localName,T value,Func<T,Boolean> condition);
+        #endregion
         #region M:WriteCData(String,String,String,String)
         /// <summary>Writes an element with the specified prefix, local name, namespace URI, and CDATA block.</summary>
         /// <param name="prefix">The prefix of the element.</param>

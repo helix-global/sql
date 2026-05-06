@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class PDBQuery : PDBObject
+    public class Query : PDBObject
         {
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
@@ -24,7 +24,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBModule Module { get; }
 
         #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,DataRow}
-        internal PDBQuery(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,DataRow source)
+        internal Query(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,DataRow source)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));

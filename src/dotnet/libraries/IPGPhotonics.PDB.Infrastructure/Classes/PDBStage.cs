@@ -26,11 +26,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("STATEOID")] private Int32? StateOID { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
-        public PDBClass Class { get; }
+        public Class Class { get; }
         public ClassState State { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBClass>,DataRow}
-        internal PDBStage(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBClass> classes,DataRow source)
+        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,Class>,DataRow}
+        internal PDBStage(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Class> classes,DataRow source)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
