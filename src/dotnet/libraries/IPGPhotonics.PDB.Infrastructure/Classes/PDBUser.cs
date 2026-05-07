@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Data;
-using System.Xml;
 using System.Xml.Linq;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
+using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {

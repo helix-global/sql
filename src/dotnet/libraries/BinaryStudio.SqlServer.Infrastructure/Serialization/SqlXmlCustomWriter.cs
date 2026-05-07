@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public abstract class SqlXmlCustomWriter : XmlWriter,ISqlXmlWriter
+    public abstract class SqlXmlCustomWriter : XmlWriter,ISqlXmlWriter,IServiceProvider
         {
         public const String URI_CTRL  = "urn:schemas.helix.global:control";
         protected internal virtual Boolean NewLineOnAttributes { get { return false; } set { }}
@@ -51,19 +51,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return new ElementGroupScope(this,localName);
             }
         #endregion
-        #region M:NewLineOnAttribute:IDisposable
-        /// <summary>Returns an IDisposable that, when disposed, will reset the writer's state to write a new line before the next attribute.</summary>
-        /// <returns>An IDisposable that, when disposed, will reset the writer's state to write a new line before the next attribute.</returns>
-        /// <remarks>
-        /// Use this method within a using statement to ensure that the writer's state is properly
-        /// reset, even if an exception occurs.
-        /// </remarks>
-        public IDisposable NewLineOnAttribute()
-            {
-            return new NewLineOnAttributeScope(this);
-            }
-        #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(String,String,String,Object)
+        #region M:ISqlXmlWriter.WriteAttribute<T>(String,String,String,T)
         /// <summary>When overridden in a derived class, writes out the attribute with the specified prefix, local name, namespace URI, and value.</summary>
         /// <param name="prefix">The namespace prefix of the attribute.</param>
         /// <param name="localName">The local name of the attribute.</param>
@@ -73,13 +61,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
         /// <exception cref="T:System.Xml.XmlException">The <paramref name="localName"/> or <paramref name="ns"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        void ISqlXmlWriter.WriteAttribute(String prefix,String localName,String ns,Object value) {
+        void ISqlXmlWriter.WriteAttribute<T>(String prefix,String localName,String ns,T value) {
             if ((value == null) || (value is DBNull)) { return; }
             if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(prefix,localName,ns,ConvertToString(value));
             }
         #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(String,String,Object)
+        #region M:ISqlXmlWriter.WriteAttribute<T>(String,String,T)
         /// <summary>When overridden in a derived class, writes an attribute with the specified local name, namespace URI, and value.</summary>
         /// <param name="localName">The local name of the attribute.</param>
         /// <param name="ns">The namespace URI to associate with the attribute.</param>
@@ -87,26 +75,26 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
         /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        void ISqlXmlWriter.WriteAttribute(String localName,String ns,Object value) {
+        void ISqlXmlWriter.WriteAttribute<T>(String localName,String ns,T value) {
             if ((value == null) || (value is DBNull)) { return; }
             if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(localName,ns,ConvertToString(value));
             }
         #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(String,Object)
+        #region M:ISqlXmlWriter.WriteAttribute<T>(String,T)
         /// <summary>When overridden in a derived class, writes out the attribute with the specified local name and value.</summary>
         /// <param name="localName">The local name of the attribute.</param>
         /// <param name="value">The value of the attribute.</param>
         /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
         /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        void ISqlXmlWriter.WriteAttribute(String localName,Object value) {
+        void ISqlXmlWriter.WriteAttribute<T>(String localName,T value) {
             if ((value == null) || (value is DBNull)) { return; }
             if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(localName,ConvertToString(value));
             }
         #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(String,Object,TypeConverter)
+        #region M:ISqlXmlWriter.WriteAttribute<T>(String,T,TypeConverter)
         /// <summary>Writes out the attribute with the specified local name and value using specified converter.</summary>
         /// <param name="localName">The local name of the attribute.</param>
         /// <param name="value">The value of the attribute.</param>
@@ -114,27 +102,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
         /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        void ISqlXmlWriter.WriteAttribute(String localName,Object value,TypeConverter converter) {
+        void ISqlXmlWriter.WriteAttribute<T>(String localName,T value,TypeConverter converter) {
             if ((value == null) || (value is DBNull)) { return; }
             if (String.IsNullOrWhiteSpace(value.ToString())) { return; }
             WriteAttributeString(localName,ConvertToString(value,converter));
-            }
-        #endregion
-        #region M:ISqlXmlWriter.WriteAttribute(String,T,Func<T,Boolean>)
-        /// <summary>When overridden in a derived class, writes out the attribute with the specified local name and value.</summary>
-        /// <param name="localName">The local name of the attribute.</param>
-        /// <param name="value">The value of the attribute.</param>
-        /// <exception cref="T:System.InvalidOperationException">The state of writer is not <see langword="WriteState.Element"/> or writer is closed.</exception>
-        /// <exception cref="T:System.ArgumentException">The <see langword="xml:space"/> or <see langword="xml:lang"/> attribute value is invalid.</exception>
-        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
-        void ISqlXmlWriter.WriteAttribute<T>(String localName,T value,Func<T,Boolean> condition) {
-            if (condition != null) {
-                if (condition(value)) {
-                    WriteAttributeString(localName,ConvertToString(value));
-                    }
-                return;
-                }
-            WriteAttributeString(localName,ConvertToString(value));
             }
         #endregion
         #region M:ISqlXmlWriter.WriteCData(String,String,String,String)
@@ -230,6 +201,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:ISqlXmlWriter.ScheduleNewLineForNextAttribute:ISqlXmlWriter
+        ISqlXmlWriter ISqlXmlWriter.ScheduleNewLineForNextAttribute()
+            {
+            ScheduleNewLineForNextAttribute();
+            return this;
+            }
+        protected internal virtual void ScheduleNewLineForNextAttribute(){
+            }
+        #endregion
         #region M:ConvertToString(Object):String
         /// <summary>Converts the specified value to a string representation.</summary>
         /// <param name="value">The <see cref="T:System.Object" /> to convert.</param>
@@ -253,6 +233,27 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return value.ToString();
                 }
             return converter.ConvertToInvariantString(value);
+            }
+        #endregion
+        #region M:IServiceProvider.GetService(Type):Object
+        /// <summary>Gets the service object of the specified type.</summary>
+        /// <param name="service">An object that specifies the type of service object to get.</param>
+        /// <returns>A service object of type <paramref name="service"/>.
+        /// -or-
+        /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
+        Object IServiceProvider.GetService(Type service)
+            {
+            return GetService(service);
+            }
+        #endregion
+        #region M:GetService(Type):Object
+        /// <summary>Returns an object that represents a service provided by the <see cref="T:System.ComponentModel.Component"/> or by its <see cref="T:System.ComponentModel.Container"/>.</summary>
+        /// <param name="service">A service provided by the <see cref="T:System.ComponentModel.Component"/>.</param>
+        /// <returns>An <see cref="T:System.Object"/> that represents a service provided by the <see cref="T:System.ComponentModel.Component"/>, or <see langword="null"/> if the <see cref="T:System.ComponentModel.Component"/> does not provide the specified service.</returns>
+        protected virtual Object GetService(Type service) {
+            if (service == null) { return null; }
+            if (service.IsAssignableFrom(GetType())) { return this; }
+            return null;
             }
         #endregion
 
@@ -290,24 +291,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             public void Dispose() {
                 writer.WriteEndElement();
-                writer = null;
-                }
-            }
-
-        private class NewLineOnAttributeScope: IDisposable
-            {
-            private SqlXmlCustomWriter writer;
-            #region ctor{SqlXmlCustomWriter}
-            public NewLineOnAttributeScope(SqlXmlCustomWriter writer)
-                {
-                this.writer = writer;
-                writer.NewLineOnAttributes = true;
-                }
-            #endregion
-
-             public void Dispose()
-                {
-                writer.NewLineOnAttributes = false;
                 writer = null;
                 }
             }

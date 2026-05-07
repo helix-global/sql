@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -23,16 +24,21 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("SQLFILTER")]  public String SqlFilterClauseExpression { get; }
         [UsedImplicitly][Field("FACCESS")]    public String SqlFineAccessExpression { get; }
         [UsedImplicitly][Field("FACCESSNEW")] public String SqlFineAccessExpressionForNewDocument { get; }
+        [UsedImplicitly][Field("SQLCLAUSEOPTION")] public String SqlOptionClauseExpression { get; }
         [UsedImplicitly][Field("RENTITYSQLFILTER")] public String SqlEntityFilterClauseExpressionOverride { get; }
+        [UsedImplicitly][Field("SQLPROLOG")] public String SqlProlog { get; }
+        [UsedImplicitly][Field("ACCESSLEVEL")] public String AccessLevel { get; }
+        [UsedImplicitly][Field("NEWNAME")] public String NewNameCaption { get; }
+        [UsedImplicitly][Field("NAMEMASK")] public String NameMask { get; }
         [UsedImplicitly][Field("DEFAULTPERIOD")] public DatePeriodType? DefaultListPeriod { get; }
-        [UsedImplicitly][Field("DEFAULTPERIODCUSTOM")] public Int32? CustomListPeriodDays { get; }
+        [UsedImplicitly][Field("DEFAULTPERIODCUSTOM")] public Int32? DefaultListPeriodCustom { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
-        public PDBModule Module { get; }
-        public PDBEntity Entity { get; }
-        public PDBDataUnit LiveUnit { get; }
-        public PDBDataUnit ListUnit { get; }
-        public PDBDataUnit OpenUnit { get; }
+        public Module Module { get; }
+        public Entity Entity { get; }
+        public Unit LiveUnit { get; }
+        public Unit ListUnit { get; }
+        public Unit OpenUnit { get; }
         public Query FineAccessQuery { get; }
         public Query FoldersQuery { get; }
         public Boolean DisableDirectAdd { get; }
@@ -40,10 +46,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Boolean DisableCopy { get; }
         public Boolean AlwaysReadOnly { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,ISqlObjectResolver<Int32?,PDBEntity>,ISqlObjectResolver<Int32?,PDBDataUnit>,ISqlObjectResolver<Int32?,Query>,IDictionary<Int32,IList<DataRow>>}
+        #region ctor{DataRow,ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Module>,ISqlObjectResolver<Int32?,Entity>,ISqlObjectResolver<Int32?,Unit>,ISqlObjectResolver<Int32?,Query>,IDictionary<Int32,IList<DataRow>>}
         internal Class(DataRow source,ISqlObjectResolver<Int32?,PDBUser> users,
-            ISqlObjectResolver<Int32?,PDBModule> modules,ISqlObjectResolver<Int32?,PDBEntity> entities,
-            ISqlObjectResolver<Int32?,PDBDataUnit> units,ISqlObjectResolver<Int32?,Query> queries,
+            ISqlObjectResolver<Int32?,Module> modules,ISqlObjectResolver<Int32?,Entity> entities,
+            ISqlObjectResolver<Int32?,Unit> units,ISqlObjectResolver<Int32?,Query> queries,
             IDictionary<Int32,IList<DataRow>> states)
             :base(source)
             {
@@ -86,46 +92,43 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
                 writer.WriteAttribute("xmlns","x",null,URI_CTRL);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(Label),Label);
-                    writer.WriteAttribute(nameof(OID),OID);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
+                writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
-                    writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
-                    writer.WriteReference(nameof(Module),Module);
-                    writer.WriteReference(nameof(Entity),Entity);
-                    writer.WriteReference(nameof(LiveUnit),LiveUnit);
-                    writer.WriteReference(nameof(ListUnit),ListUnit);
-                    writer.WriteReference(nameof(OpenUnit),OpenUnit);
-                    writer.WriteReference(nameof(FineAccessQuery),FineAccessQuery);
-                    writer.WriteReference(nameof(FoldersQuery),FoldersQuery);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Entity),Entity,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(LiveUnit),LiveUnit,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ListUnit),ListUnit,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(OpenUnit),OpenUnit,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FineAccessQuery),FineAccessQuery,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FoldersQuery),FoldersQuery,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(DefaultListPeriod),DefaultListPeriod);
+                writer.WriteAttribute(nameof(DefaultListPeriodCustom),DefaultListPeriodCustom);
+                if (DisableDirectAdd || DisableDirectDelete || DisableCopy) {
+                    writer.ScheduleNewLineForNextAttribute();
+                    writer.WriteAttribute(nameof(DisableDirectAdd),DisableDirectAdd);
+                    writer.WriteAttribute(nameof(DisableDirectDelete),DisableDirectDelete);
+                    writer.WriteAttribute(nameof(DisableCopy),DisableCopy);
                     }
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(DefaultListPeriod),DefaultListPeriod);
-                    writer.WriteAttribute(nameof(DisableDirectAdd),DisableDirectAdd,IsNotDefault);
-                    writer.WriteAttribute(nameof(DisableDirectDelete),DisableDirectDelete,IsNotDefault);
-                    writer.WriteAttribute(nameof(DisableCopy),DisableCopy,IsNotDefault);
-                    writer.WriteAttribute(nameof(AlwaysReadOnly),AlwaysReadOnly,IsNotDefault);
-                    writer.WriteAttribute(nameof(CustomListPeriodDays),CustomListPeriodDays);
-                    }
-                if (SpellCheckingDisabled) { writer.WriteAttribute(nameof(SpellCheckingDisabled),SpellCheckingDisabled); }
+                writer.ScheduleNewLineForNextAttribute();
+                writer.WriteAttribute(nameof(AccessLevel),AccessLevel);
+                writer.WriteAttribute(nameof(AlwaysReadOnly),AlwaysReadOnly);
+                writer.WriteAttribute(nameof(SpellCheckingDisabled),SpellCheckingDisabled);
                 writer.WriteCData(nameof(Name),URI_META,Name);
+                writer.WriteCData(nameof(NameMask),URI_META,NameMask);
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);
                 writer.WriteCData(nameof(SqlFilterClauseExpression),URI_META,SqlFilterClauseExpression);
                 writer.WriteCData(nameof(SqlFineAccessExpression),URI_META,SqlFineAccessExpression);
                 writer.WriteCData(nameof(SqlFineAccessExpressionForNewDocument),URI_META,SqlFineAccessExpressionForNewDocument);
                 writer.WriteCData(nameof(SqlEntityFilterClauseExpressionOverride),URI_META,SqlEntityFilterClauseExpressionOverride);
+                writer.WriteCData(nameof(SqlOptionClauseExpression),URI_META,SqlOptionClauseExpression);
+                writer.WriteCData(nameof(SqlProlog),URI_META,SqlProlog);
+                writer.WriteCData(nameof(NewNameCaption),URI_META,NewNameCaption);
                 if (States.Count > 0) {
                     using (writer.ElementGroup("States",URI_META)) {
                         foreach (var o in States.Values) {

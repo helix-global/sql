@@ -2520,6 +2520,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             attrStack[attributeIndex].prev = prev + 1; // indexes are stored incremented by 1 
             }
         #endregion
+        #region M:ScheduleNewLineForNextAttribute
+        protected internal override void ScheduleNewLineForNextAttribute() {
+            if (writer is SqlXmlCustomWriter o) {
+                o.ScheduleNewLineForNextAttribute();
+                return;
+                }
+            base.ScheduleNewLineForNextAttribute();
+            }
+        #endregion
 
         private const String Xml_XmlnsPrefix = "Prefix \"xmlns\" is reserved for use by XML.";
         private const String Xml_NoRoot = "Document does not have a root element.";

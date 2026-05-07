@@ -125,6 +125,7 @@ namespace dacpac
                 FillFolder(TargetFolder,r.Queries,"Queries",(o)=>o.Label);
                 FillFolder(TargetFolder,r.Stages,"Stages",(o)=>$"{o.Label}_{o.OID}");
                 FillFolder(TargetFolder,r.Classes,"Classes",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Forms,"Forms",(o)=>o.Label);
                 }
             catch (Exception e)
                 {

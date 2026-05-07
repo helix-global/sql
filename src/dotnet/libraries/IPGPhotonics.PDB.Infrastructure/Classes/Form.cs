@@ -7,29 +7,30 @@ using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
-
-    public class Query : PDBObject
+    public class Form : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("NAME")]      public String Name { get; }
-        [UsedImplicitly][Field("LABEL")]     public String Label { get; }
+        [UsedImplicitly][Field("LABEL")] public String Label { get; }
+        [UsedImplicitly][Field("NAME")]  public String Name { get; }
         [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field(Source = "DESCRIPTION")] public String Description { get; }
-        [UsedImplicitly][Field(Source = "OPTIONS")] public String Options { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field(Source = "SQLTEXT")] public String Body { get; }
+        [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
+        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        public String Description { get; }
+        [UsedImplicitly][Field(Source = "NATIVECLASS")] public String NativeClassName { get; }
+        [UsedImplicitly][Field(Source = "PLUGINASSEMBLY")] public String PluginAssembly { get; }
+        [UsedImplicitly][Field(Source = "TEXT")] public String Body { get; }
+        [UsedImplicitly][Field(Source = "FORMTEXT")] public String Xml { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Module>,DataRow}
-        internal Query(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Module> modules,DataRow source)
-            :base(source)
+        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>}
+        internal Form(DataRow row,ISqlObjectResolver<Int32?,PDBUser> Users,ISqlObjectResolver<Int32?,Module> modules)
+            :base(row)
             {
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
+            CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
+            ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             }
         #endregion
@@ -39,10 +40,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <param name="writer">The <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> stream to which the object is serialized.</param>
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            using (writer.ElementGroup("Query",URI_META)) {
+            using (writer.ElementGroup("Form",URI_META)) {
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
-                writer.WriteAttribute("xmlns","x",null,URI_CTRL);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
                 writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
@@ -50,11 +50,12 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,None);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(NativeClassName),NativeClassName);
+                writer.WriteAttribute(nameof(PluginAssembly),PluginAssembly);
                 writer.WriteCData(nameof(Name),URI_META,Name);
-                writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);
                 writer.WriteCData(nameof(Body),URI_META,Body);
+                writer.WriteCData(nameof(Xml),URI_META,Xml);
                 }
             }
         #endregion

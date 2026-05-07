@@ -80,7 +80,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             var settings = new XmlWriterSettings {
                 Indent = true,
                 };
-            return new XmlWellFormedWriter(new XmlUtf8RawTextWriterIndent(stream,settings), settings);
+            return new XmlWellFormedWriter(new XmlUtf8RawTextWriterIndent(this,stream,settings),settings);
             }
         #endregion
 
@@ -720,6 +720,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override String LookupPrefix(String ns)
             {
             return writer.LookupPrefix(ns);
+            }
+        #endregion
+        #region M:ScheduleNewLineForNextAttribute
+        protected internal override void ScheduleNewLineForNextAttribute() {
+            if (writer is SqlXmlCustomWriter o) {
+                o.ScheduleNewLineForNextAttribute();
+                return;
+                }
+            base.ScheduleNewLineForNextAttribute();
             }
         #endregion
 

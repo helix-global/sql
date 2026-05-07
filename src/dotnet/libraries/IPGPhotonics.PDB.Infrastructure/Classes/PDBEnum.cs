@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -20,10 +21,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
-        public PDBModule Module { get; }
+        public Module Module { get; }
 
         #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,DataRow}
-        internal PDBEnum(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,PDBModule> modules,DataRow source,IDictionary<Int32,IList<DataRow>> values)
+        internal PDBEnum(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Module> modules,DataRow source,IDictionary<Int32,IList<DataRow>> values)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
@@ -56,24 +57,15 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
                 writer.WriteAttribute("xmlns","x",null,URI_CTRL);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute("Label",Label);
-                    writer.WriteAttribute("OID",OID);
-                    }
-                writer.WriteAttribute("UUID",UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute("CreatedDate",CreatedDate);
-                    }
-                writer.WriteAttribute("ModifiedDate",ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull("CreatedBy",CreatedBy);
-                    writer.WriteReferenceIfNotNull("ModifiedBy",ModifiedBy);
-                    writer.WriteReferenceIfNotNull("Module",Module);
-                    }
-                writer.WriteCData("Name",URI_META,Name);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
+                writer.WriteAttribute(nameof(OID),OID);
+                writer.WriteAttribute(nameof(UUID),UUID);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
+                writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,None);
+                writer.WriteCData(nameof(Name),URI_META,Name);
                 if (Values.Count > 0) {
                     using (writer.ElementGroup("Values",URI_META)) {
                         foreach (var o in Values) {

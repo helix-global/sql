@@ -2,12 +2,13 @@
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class PDBStage : PDBObject
+    public class Stage : PDBObject
         {
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
@@ -29,8 +30,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Class Class { get; }
         public ClassState State { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,Class>,DataRow}
-        internal PDBStage(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Class> classes,DataRow source)
+        #region ctor{ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Class>,DataRow}
+        internal Stage(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Class> classes,DataRow source)
             :base(source)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
@@ -53,31 +54,20 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
                 writer.WriteAttribute("xmlns","x",null,URI_CTRL);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(Label),Label);
-                    writer.WriteAttribute(nameof(OID),OID);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
+                writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(Order),Order);
-                    }
+                writer.ScheduleNewLineForNextAttribute();
+                writer.WriteAttribute(nameof(Order),Order);
                 writer.WriteAttribute(nameof(StageType),StageType);
-                if (Disabled==true)  { writer.WriteAttribute(nameof(Disabled),Disabled);   }
-                if (IsLongRunning==true) { writer.WriteAttribute(nameof(IsLongRunning),IsLongRunning); }
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
-                    }
+                writer.WriteAttribute(nameof(Disabled),Disabled);
+                writer.WriteAttribute(nameof(IsLongRunning),IsLongRunning);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
-                    writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
-                    writer.WriteReference(nameof(Class),Class);
-                    writer.WriteReference(nameof(State),State);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Class),Class,None|ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(State),State,None|ForceNewLine);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);

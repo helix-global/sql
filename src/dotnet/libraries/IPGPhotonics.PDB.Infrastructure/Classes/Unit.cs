@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
-    public class PDBDataUnit : PDBObject
+    public class Unit : PDBObject
         {
         [UsedImplicitly][Field("LABEL")] public String Label { get; }
         [UsedImplicitly][Field("NAME")]  public String Name { get; }
@@ -20,10 +20,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "TEXT")] public String Body { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
-        public PDBModule Module { get; }
+        public Module Module { get; }
 
         #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>}
-        internal PDBDataUnit(DataRow row,ISqlObjectResolver<Int32?,PDBUser> Users,ISqlObjectResolver<Int32?,PDBModule> modules)
+        internal Unit(DataRow row,ISqlObjectResolver<Int32?,PDBUser> Users,ISqlObjectResolver<Int32?,Module> modules)
             :base(row)
             {
             CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
@@ -37,26 +37,17 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <param name="writer">The <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> stream to which the object is serialized.</param>
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            using (writer.ElementGroup("DataUnit",URI_META)) {
+            using (writer.ElementGroup("Unit",URI_META)) {
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(Label),Label);
-                    writer.WriteAttribute(nameof(OID),OID);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
+                writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
-                    writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
-                    writer.WriteAttribute(nameof(NativeClassName),NativeClassName);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(NativeClassName),NativeClassName);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Description),URI_META,Description);
                 writer.WriteCData(nameof(Body),URI_META,Body);

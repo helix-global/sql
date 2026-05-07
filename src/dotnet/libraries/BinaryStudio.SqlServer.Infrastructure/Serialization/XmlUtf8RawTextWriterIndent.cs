@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using SharpCompress.Compressors.PPMd;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -30,11 +31,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private BitStack mixedContentStack;
 
         protected ConformanceLevel conformanceLevel = ConformanceLevel.Auto;
+        private readonly IServiceProvider service;
 
-        #region ctor{Stream,XmlWriterSettings}
-        public XmlUtf8RawTextWriterIndent(Stream stream,XmlWriterSettings settings)
-            : base(stream, settings)
+        #region ctor{IServiceProvider,Stream,XmlWriterSettings}
+        public XmlUtf8RawTextWriterIndent(IServiceProvider service,Stream stream,XmlWriterSettings settings)
+            : base(stream,settings)
             {
+            this.service = service;
             Init(settings);
             }
         #endregion
@@ -147,12 +150,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <remarks>Serialize an attribute tag using double quotes around the attribute value: 'prefix:localName="'</remarks>
         public override void WriteStartAttribute(String prefix,String localName,String ns) {
             // Add indentation
-            if (NewLineOnAttributes) {
-                WriteIndent();
-                var nameScope = elementScopeStack.Peek();
-                WriteWhitespace(new String(' ',nameScope.LocalName.Length));
+            try
+                {
+                if (_newLineOnAttributesA || scheduleNewLineForNextAttribute) {
+                    WriteIndent();
+                    var nameScope = elementScopeStack.Peek();
+                    WriteWhitespace(new String(' ',nameScope.LocalName.Length));
+                    }
+                base.WriteStartAttribute(prefix, localName, ns);
                 }
-            base.WriteStartAttribute(prefix, localName, ns);
+            finally
+                {
+                scheduleNewLineForNextAttribute = false;
+                }
             }
         #endregion
         #region M:WriteCData(String)
@@ -369,7 +379,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
 
             // check indent characters that they are valid XML characters
             if (CheckCharacters) {
-                if (NewLineOnAttributes)
+                if (_newLineOnAttributesA)
                     {
                     ValidateContentChars(indentChars, "IndentChars", true);
                     ValidateContentChars(NewLineChars, "NewLineChars", true);
@@ -441,8 +451,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             WriteIndent(indentLevel);
             }
         #endregion
+        #region M:ScheduleNewLineForNextAttribute
+        protected internal override void ScheduleNewLineForNextAttribute()
+            {
+            scheduleNewLineForNextAttribute = true;
+            }
+        #endregion
 
         private Boolean _newLineOnAttributesA;
         private Boolean _newLineOnAttributesB;
+        private Boolean scheduleNewLineForNextAttribute;
         }
     }

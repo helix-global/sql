@@ -42,22 +42,14 @@ namespace IPGPhotonics.PDB.Infrastructure
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("State",URI_META)) {
-                writer.WriteAttribute(nameof(OID),OID);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
-                    writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
-                    }
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(ReadOnlyState),ReadOnlyState);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute();
+                writer.WriteAttribute(nameof(ReadOnlyState),ReadOnlyState);
                 writer.WriteAttribute(nameof(Color),Color,colors);
                 writer.WriteAttribute(nameof(EnableDeleting),EnableDeleting);
                 writer.WriteCData(nameof(Name),URI_META,Name);

@@ -35,21 +35,15 @@ namespace IPGPhotonics.PDB.Infrastructure
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("EnumValue",URI_META)) {
-                writer.WriteAttribute("OID",OID);
-                writer.WriteAttribute("Code",Code);
-                writer.WriteAttribute("UUID",UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute("CreatedDate",CreatedDate);
-                    }
-                writer.WriteAttribute("ModifiedDate",ModifiedDate);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteReferenceIfNotNull("CreatedBy",CreatedBy);
-                    writer.WriteReferenceIfNotNull("ModifiedBy",ModifiedBy);
-                    }
-                writer.WriteCData("Value",URI_META,Value);
-                writer.WriteBase64("Picture",URI_META,Picture);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(OID),OID);
+                writer.WriteAttribute(nameof(Code),Code);
+                writer.WriteAttribute(nameof(UUID),UUID);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
+                writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.WriteCData(nameof(Value),URI_META,Value);
+                writer.WriteBase64(nameof(Picture),URI_META,Picture);
                 }
             }
         #endregion

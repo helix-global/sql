@@ -6,23 +6,16 @@ namespace IPGPhotonics.PDB.Infrastructure
     internal static class Extensions
         {
         #region M:WriteReference({this}ISqlXmlWriter,String,PDBUser)
-        public static void WriteReferenceIfNotNull(this ISqlXmlWriter writer,String localName,PDBUser reference) {
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBUser reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=User,'{reference.FullName}',{reference.UUID.ToString("B")}}}");
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBModule)
-        public static void WriteReferenceIfNotNull(this ISqlXmlWriter writer,String localName,PDBModule reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,PDBModule,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Module reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Module,'{reference.Label}',{reference.OID.ToString()}}}");
-                }
-            }
-        #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBModule)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBModule reference) {
-            if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Module,'{reference.Label}',{reference.OID.ToString()}}}");
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Module,'{reference.Label}',{reference.OID}}}");
                 }
             else
                 {
@@ -30,24 +23,17 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBDataUnit)
-        public static void WriteReferenceIfNotNull(this ISqlXmlWriter writer,String localName,PDBDataUnit reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Unit,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Unit reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=DataUnit,'{reference.Label}',{reference.OID.ToString()}}}");
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Unit,'{reference.Label}',{reference.OID}}}");
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBEntity)
-        public static void WriteReferenceIfNotNull(this ISqlXmlWriter writer,String localName,PDBEntity reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,PDBEntity,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Entity reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Entity,'{reference.Label}',{reference.OID.ToString()}}}");
-                }
-            }
-        #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBEntity)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBEntity reference) {
-            if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Entity,'{reference.Label}',{reference.OID.ToString()}}}");
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Entity,'{reference.Label}',{reference.OID}}}");
                 }
             else
                 {
@@ -55,8 +41,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,ClassState)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,ClassState reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,ClassState,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,ClassState reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=State,'{reference.Label}',{reference.OID.ToString()}}}");
                 }
@@ -66,8 +52,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,Class)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Class reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Class,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Class reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Class,'{reference.Label}',{reference.OID.ToString()}}}");
                 }
@@ -77,15 +63,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBDataUnit)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBDataUnit reference) {
-            if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Unit,'{reference.Label}',{reference.OID}}}");
-                }
-            }
-        #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,Query)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Query reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Query,SqlXmlWriterAttributeOptions)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Query reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Query,'{reference.Label}',{reference.OID}}}");
                 }

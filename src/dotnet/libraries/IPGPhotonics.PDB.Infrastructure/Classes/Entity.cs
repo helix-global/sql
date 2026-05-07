@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
-    public class PDBEntity : PDBObject
+    public class Entity : PDBObject
         {
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
@@ -25,16 +25,16 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("SQLFILTER")]   public String FilterExpression { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
-        public PDBModule Module { get; }
-        public PDBDataUnit DataUnit { get; }
+        public Module Module { get; }
+        public Unit DataUnit { get; }
 
         #region ctor{IServiceProvider,DataRow}
-        internal PDBEntity(IServiceProvider provider,DataRow source)
+        internal Entity(IServiceProvider provider,DataRow source)
             :base(source)
             {
             var users     = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules   = (ISqlObjectResolver<Int32?,PDBModule>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBModule>));
-            var DataUnits = (ISqlObjectResolver<Int32?,PDBDataUnit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBDataUnit>));
+            var modules   = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var DataUnits = (ISqlObjectResolver<Int32?,Unit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -51,24 +51,16 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute("xmlns","xsi",null,URI_XSINIL);
                 writer.WriteAttribute("xmlns","",null,URI_META);
                 writer.WriteAttribute("xmlns","x",null,URI_CTRL);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(Label),Label);
-                    writer.WriteAttribute(nameof(OID),OID);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(Label),Label);
+                writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(UUID),UUID);
-                using (writer.NewLineOnAttribute())
-                    {
-                    writer.WriteAttribute(nameof(CreatedDate),CreatedDate);
-                    }
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
-                using (writer.NewLineOnAttribute()) {
-                    writer.WriteReferenceIfNotNull(nameof(CreatedBy),CreatedBy);
-                    writer.WriteReferenceIfNotNull(nameof(ModifiedBy),ModifiedBy);
-                    writer.WriteReferenceIfNotNull(nameof(Module),Module);
-                    writer.WriteReferenceIfNotNull(nameof(DataUnit),DataUnit);
-                    }
-                writer.WriteAttribute(nameof(IdentityFieldName),IdentityFieldName);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,None);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(DataUnit),DataUnit,None);
+                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(IdentityFieldName),IdentityFieldName);
                 writer.WriteAttribute(nameof(EntityStates),EntityStates);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(MainTable),URI_META,MainTable);
