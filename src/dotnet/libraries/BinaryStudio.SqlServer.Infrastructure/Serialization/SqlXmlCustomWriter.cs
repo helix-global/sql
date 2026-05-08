@@ -210,6 +210,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
         protected internal virtual void ScheduleNewLineForNextAttribute(){
             }
         #endregion
+        #region M:ISqlXmlWriter.StopScheduleNewLineForNextAttribute:ISqlXmlWriter
+        ISqlXmlWriter ISqlXmlWriter.StopScheduleNewLineForNextAttribute()
+            {
+            StopScheduleNewLineForNextAttribute();
+            return this;
+            }
+        protected internal virtual void StopScheduleNewLineForNextAttribute(){
+            }
+        #endregion
         #region M:ConvertToString(Object):String
         /// <summary>Converts the specified value to a string representation.</summary>
         /// <param name="value">The <see cref="T:System.Object" /> to convert.</param>

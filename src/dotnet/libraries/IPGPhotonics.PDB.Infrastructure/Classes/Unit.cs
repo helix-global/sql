@@ -22,12 +22,14 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>}
-        internal Unit(DataRow row,ISqlObjectResolver<Int32?,PDBUser> Users,ISqlObjectResolver<Int32?,Module> modules)
+        #region ctor{DataRow,IServiceProvider}
+        internal Unit(DataRow row,IServiceProvider provider)
             :base(row)
             {
-            CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
-            ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            CreatedBy  = users.GetObject(PropSI4(row["S_CR"]));
+            ModifiedBy = users.GetObject(PropSI4(row["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             }
         #endregion
@@ -47,6 +49,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(NativeClassName),NativeClassName);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Description),URI_META,Description);

@@ -2,7 +2,6 @@
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
-using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -11,7 +10,6 @@ namespace IPGPhotonics.PDB.Infrastructure
         {
         [UsedImplicitly][Field("LABEL")] public String Label { get; }
         [UsedImplicitly][Field("NAME")]  public String Name { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
         [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
         [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
@@ -25,12 +23,14 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>}
-        internal Form(DataRow row,ISqlObjectResolver<Int32?,PDBUser> Users,ISqlObjectResolver<Int32?,Module> modules)
+        #region ctor{DataRow,IServiceProvider}
+        internal Form(DataRow row,IServiceProvider provider)
             :base(row)
             {
-            CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
-            ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            CreatedBy  = users.GetObject(PropSI4(row["S_CR"]));
+            ModifiedBy = users.GetObject(PropSI4(row["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             }
         #endregion
@@ -50,6 +50,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(NativeClassName),NativeClassName);
                 writer.WriteAttribute(nameof(PluginAssembly),PluginAssembly);
                 writer.WriteCData(nameof(Name),URI_META,Name);
@@ -67,5 +68,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
+        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
         }
     }

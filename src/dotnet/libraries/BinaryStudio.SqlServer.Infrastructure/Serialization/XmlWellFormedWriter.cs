@@ -2529,6 +2529,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             base.ScheduleNewLineForNextAttribute();
             }
         #endregion
+        #region M:StopScheduleNewLineForNextAttribute
+        protected internal override void StopScheduleNewLineForNextAttribute() {
+            if (writer is SqlXmlCustomWriter o) {
+                o.StopScheduleNewLineForNextAttribute();
+                return;
+                }
+            base.StopScheduleNewLineForNextAttribute();
+            }
+        #endregion
 
         private const String Xml_XmlnsPrefix = "Prefix \"xmlns\" is reserved for use by XML.";
         private const String Xml_NoRoot = "Document does not have a root element.";

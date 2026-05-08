@@ -141,5 +141,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         void WriteBase64(String localName,Byte[] buffer);
         #endregion
         ISqlXmlWriter ScheduleNewLineForNextAttribute();
+        ISqlXmlWriter StopScheduleNewLineForNextAttribute();
         }
     }

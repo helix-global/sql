@@ -2,7 +2,6 @@
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
-using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -24,10 +23,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Module>,DataRow}
-        internal Query(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Module> modules,DataRow source)
+        #region ctor{DataRow,IServiceProvider}
+        internal Query(DataRow source,IServiceProvider provider)
             :base(source)
             {
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -50,7 +51,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,None);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);

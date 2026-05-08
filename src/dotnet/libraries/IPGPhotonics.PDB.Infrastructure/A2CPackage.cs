@@ -29,7 +29,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         ISqlObjectResolver<Int32?,Entity>,
         ISqlObjectResolver<Int32?,Unit>,
         ISqlObjectResolver<Int32?,Class>,
-        ISqlObjectResolver<Int32?,Query>
+        ISqlObjectResolver<Int32?,Query>,
+        ISqlObjectResolver<Int32?,Interface>,
+        ISqlObjectResolver<Int32?,Report>,
+        ISqlObjectResolver<Int32?,View>,
+        ISqlObjectResolver<Int32?,Operation>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
@@ -41,6 +45,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         public IList<Stage> Stages { get;private set; }
         public IList<Class> Classes { get;private set; }
         public IList<Form> Forms { get;private set; }
+        public IList<Interface> Interfaces { get;private set; }
+        public IList<Report> Reports { get;private set; }
+        public IList<View> Views { get;private set; }
+        public IList<Operation> Operations { get;private set; }
 
         #region ctor
         private A2CPackage() {
@@ -52,6 +60,10 @@ namespace IPGPhotonics.PDB.Infrastructure
             Stages = EmptyArray<Stage>.List;
             Classes = EmptyArray<Class>.List;
             Forms = EmptyArray<Form>.List;
+            Interfaces = EmptyArray<Interface>.List;
+            Reports = EmptyArray<Report>.List;
+            Views = EmptyArray<View>.List;
+            Operations = EmptyArray<Operation>.List;
             LoadUsers(Resources.PredefinedUserRecords);
             }
         #endregion
@@ -142,15 +154,21 @@ namespace IPGPhotonics.PDB.Infrastructure
                     BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfI,"ENTITYOID"),
                     BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuV,"ENUMOID"),
                     BuildIndex(token,source.Tables["DEF_CLASS_STATES"], IXclsS,"CLASSOID"),
+                    BuildIndex(token,source.Tables["DEF_INTERFACE_T"], IXintfI,"INTERFACEOID"),
                     LoadUnits(token,source.Tables["DEF_UNIT"]),
-                    LoadForms(token,source.Tables["DEF_FORM"])
+                    LoadForms(token,source.Tables["DEF_FORM"]),
+                    LoadReports(token,source.Tables["DEF_REPORTS"])
                     );
                 Task.WaitAll(
                     LoadEnum(token,source.Tables["DEF_ENUMERATION"]),
                     LoadQueries(token,source.Tables["DEF_SQL"]));
                 Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
                 Task.WaitAll(LoadClasses(token,source.Tables["DEF_CLASSES"]));
-                Task.WaitAll(LoadStages(token,source.Tables["DEF_STAGES"]));
+                Task.WaitAll(LoadViews(token,source.Tables["DEF_VIEWS"]));
+                Task.WaitAll(
+                    LoadStages(token,source.Tables["DEF_STAGES"]),
+                    LoadInterfaces(token,source.Tables["DEF_INTERFACE"]),
+                    LoadOperations(token,source.Tables["DEF_OPERATION"]));
                 //foreach (DataTable table in source.Tables) {
                 //    var task = LoadTable(token,table);
                 //    lock (tasks)
@@ -173,6 +191,10 @@ namespace IPGPhotonics.PDB.Infrastructure
             Stages    = m_stagI.Values.AsReadOnly();
             Classes   = m_clasI.Values.AsReadOnly();
             Forms     = m_formI.Values.AsReadOnly();
+            Interfaces = m_intfI.Values.AsReadOnly();
+            Reports = m_repoI.Values.AsReadOnly();
+            Views = m_viewI.Values.AsReadOnly();
+            Operations = m_operI.Values.AsReadOnly();
             return;
             var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\db");
             MakeFolderIfItNotExist(TargetFolder);
@@ -270,7 +292,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Class(i,this,this,this,this,this,IXclsS)))
+                    .Select(i => new Class(i,this,IXclsS)))
                     {
                     m_clasI[o.OID] = o;
                     }
@@ -284,7 +306,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
                     //.Where(i => i["LABEL"].ToString()=="def_log_level")
-                    .Select(i => new PDBEnum(this,this,i,IXenuV)))
+                    .Select(i => new PDBEnum(i,this,IXenuV)))
                     {
                     m_enuI[o.OID] = o;
                     }
@@ -297,9 +319,61 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Entity(this,i)))
+                    .Select(i => new Entity(i,this)))
                     {
                     m_entI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadInterfaces(CancellationToken,DataTable):Task
+        private async Task LoadInterfaces(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new Interface(i,this,IXintfI)))
+                    {
+                    m_intfI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadReports(CancellationToken,DataTable):Task
+        private async Task LoadReports(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new Report(i,this)))
+                    {
+                    m_repoI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadOperations(CancellationToken,DataTable):Task
+        private async Task LoadOperations(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new Operation(i,this)))
+                    {
+                    m_operI[o.OID] = o;
+                    }
+                },cancellation);
+            }
+        #endregion
+        #region M:LoadViews(CancellationToken,DataTable):Task
+        private async Task LoadViews(CancellationToken cancellation,DataTable source) {
+            await Task.Delay(0,cancellation);
+            await Task.Run(() => {
+                foreach (var o in source.Rows
+                    .OfType<DataRow>()
+                    .Select(i => new View(i,this)))
+                    {
+                    m_viewI[o.OID] = o;
                     }
                 },cancellation);
             }
@@ -310,7 +384,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Unit(i,this,this)))
+                    .Select(i => new Unit(i,this)))
                     {
                     m_DuniI[o.OID] = o;
                     }
@@ -323,7 +397,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Form(i,this,this)))
+                    .Select(i => new Form(i,this)))
                     {
                     m_formI[o.OID] = o;
                     }
@@ -352,7 +426,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Query(this,this,i)))
+                    .Select(i => new Query(i,this)))
                     {
                     m_querI[o.OID] = o;
                     }
@@ -365,7 +439,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Stage(this,this,i)))
+                    .Select(i => new Stage(i,this)))
                     {
                     m_stagI[o.OID] = o;
                     }
@@ -633,7 +707,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
-        #region M:ISqlObjectResolver<Int32?,PDBDataUnit>.GetObject(Int32):PDBDataUnit
+        #region M:ISqlObjectResolver<Int32?,Unit>.GetObject(Int32):Unit
         Unit ISqlObjectResolver<Int32?,Unit>.GetObject(Int32? key) {
             if (key == null) { return null; }
             return m_DuniI.TryGetValue(key.Value,out var r)
@@ -641,7 +715,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
-        #region M:ISqlObjectResolver<Int32?,PDBEntity>.GetObject(Int32):PDBEntity
+        #region M:ISqlObjectResolver<Int32?,Entity>.GetObject(Int32):Entity
         Entity ISqlObjectResolver<Int32?,Entity>.GetObject(Int32? key) {
             if (key == null) { return null; }
             return m_entI.TryGetValue(key.Value,out var r)
@@ -665,6 +739,38 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
+        #region M:ISqlObjectResolver<Int32?,Interface>.GetObject(Int32):Interface
+        Interface ISqlObjectResolver<Int32?,Interface>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_intfI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,Report>.GetObject(Int32):Report
+        Report ISqlObjectResolver<Int32?,Report>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_repoI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,View>.GetObject(Int32):View
+        View ISqlObjectResolver<Int32?,View>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_viewI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
+        #region M:ISqlObjectResolver<Int32?,Operation>.GetObject(Int32):Operation
+        Operation ISqlObjectResolver<Int32?,Operation>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_operI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
         #region M:GetService(Type):Object
         /// <summary>Gets the service object of the specified type.</summary>
         /// <param name="service">An object that specifies the type of service object to get.</param>
@@ -673,9 +779,15 @@ namespace IPGPhotonics.PDB.Infrastructure
         /// <see langword="null"/> if there is no service object of type <paramref name="service"/>.</returns>
         protected override Object GetService(Type service) {
             if (service == typeof(ISqlExtendedPropertyResolver)) { return this; }
-            if (service == typeof(ISqlObjectResolver<Int32?,PDBUser>))     { return this; }
-            if (service == typeof(ISqlObjectResolver<Int32?,Module>))   { return this; }
-            if (service == typeof(ISqlObjectResolver<Int32?,Unit>)) { return this; }
+            if (service.IsAssignableFrom(GetType())) { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,PDBUser>)) { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Module>))  { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Unit>))    { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Entity>))  { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Query>))   { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Class>))   { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,Report>))  { return this; }
+            //if (service == typeof(ISqlObjectResolver<Int32?,View>))    { return this; }
             return base.GetService(service);
             }
         #endregion
@@ -726,6 +838,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             #endregion
 
+            #region values
             private static readonly IDictionary<Int32,Int32> values = new Dictionary<Int32,Int32> {
                 /* None:ScriptBefore                      */ { 0x0000000a,-1},
                 /* None:Table                             */ { 0x00000014,-1},
@@ -968,6 +1081,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 /* ScriptAfter:PartitionFunction          */ { 0x03e800dc,-1},
                 /* ScriptAfter:PartitionScheme            */ { 0x03e800e6,-1},
                 };
+            #endregion
             }
 
         private readonly IDictionary<SqlObjectIdentifier,SqlTable> m_tbN = new SortedDictionary<SqlObjectIdentifier,SqlTable>();
@@ -986,9 +1100,14 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<Int32,Query>    m_querI = new SortedDictionary<Int32,Query>();
         private readonly IDictionary<Int32,Stage>    m_stagI = new SortedDictionary<Int32,Stage>();
         private readonly IDictionary<Int32,Class>    m_clasI = new SortedDictionary<Int32,Class>();
+        private readonly IDictionary<Int32,Interface> m_intfI = new SortedDictionary<Int32,Interface>();
+        private readonly IDictionary<Int32,Report> m_repoI = new SortedDictionary<Int32,Report>();
+        private readonly IDictionary<Int32,View> m_viewI = new SortedDictionary<Int32,View>();
+        private readonly IDictionary<Int32,Operation> m_operI = new SortedDictionary<Int32,Operation>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfI = new Dictionary<Int32,IList<DataRow>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuV = new Dictionary<Int32,IList<DataRow>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXclsS = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private readonly IDictionary<Int32,IList<DataRow>> IXintfI = new Dictionary<Int32,IList<DataRow>>();
         }
     }

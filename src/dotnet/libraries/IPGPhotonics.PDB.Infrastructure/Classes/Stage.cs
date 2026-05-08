@@ -30,10 +30,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Class Class { get; }
         public ClassState State { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Class>,DataRow}
-        internal Stage(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Class> classes,DataRow source)
+        #region ctor{DataRow,IServiceProvider}
+        internal Stage(DataRow source,IServiceProvider provider)
             :base(source)
             {
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var classes = (ISqlObjectResolver<Int32?,Class>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Class = classes.GetObject(ClassOID);
@@ -66,7 +68,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Class),Class,None|ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Class),Class);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(State),State,None|ForceNewLine);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Options),URI_META,Options);

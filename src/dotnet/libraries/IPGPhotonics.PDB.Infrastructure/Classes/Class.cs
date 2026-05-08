@@ -46,13 +46,16 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Boolean DisableCopy { get; }
         public Boolean AlwaysReadOnly { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,User>,ISqlObjectResolver<Int32?,Module>,ISqlObjectResolver<Int32?,Entity>,ISqlObjectResolver<Int32?,Unit>,ISqlObjectResolver<Int32?,Query>,IDictionary<Int32,IList<DataRow>>}
-        internal Class(DataRow source,ISqlObjectResolver<Int32?,PDBUser> users,
-            ISqlObjectResolver<Int32?,Module> modules,ISqlObjectResolver<Int32?,Entity> entities,
-            ISqlObjectResolver<Int32?,Unit> units,ISqlObjectResolver<Int32?,Query> queries,
+        #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
+        internal Class(DataRow source,IServiceProvider provider,
             IDictionary<Int32,IList<DataRow>> states)
             :base(source)
             {
+            var users     = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules   = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var entities  = (ISqlObjectResolver<Int32?,Entity>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Entity>));
+            var units     = (ISqlObjectResolver<Int32?,Unit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
+            var queries   = (ISqlObjectResolver<Int32?,Query>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -99,13 +102,13 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Entity),Entity,ForceNewLine);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(LiveUnit),LiveUnit,ForceNewLine);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ListUnit),ListUnit,ForceNewLine);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(OpenUnit),OpenUnit,ForceNewLine);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FineAccessQuery),FineAccessQuery,ForceNewLine);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FoldersQuery),FoldersQuery,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FineAccessQuery),FineAccessQuery);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FoldersQuery),FoldersQuery);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(DefaultListPeriod),DefaultListPeriod);
                 writer.WriteAttribute(nameof(DefaultListPeriodCustom),DefaultListPeriodCustom);
                 if (DisableDirectAdd || DisableDirectDelete || DisableCopy) {

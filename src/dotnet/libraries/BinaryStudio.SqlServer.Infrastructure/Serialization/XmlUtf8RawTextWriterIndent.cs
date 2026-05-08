@@ -457,6 +457,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             scheduleNewLineForNextAttribute = true;
             }
         #endregion
+        #region M:StopScheduleNewLineForNextAttribute
+        protected internal override void StopScheduleNewLineForNextAttribute()
+            {
+            scheduleNewLineForNextAttribute = false;
+            }
+        #endregion
 
         private Boolean _newLineOnAttributesA;
         private Boolean _newLineOnAttributesB;

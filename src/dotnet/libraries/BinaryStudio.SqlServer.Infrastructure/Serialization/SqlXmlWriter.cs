@@ -731,6 +731,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             base.ScheduleNewLineForNextAttribute();
             }
         #endregion
+        #region M:StopScheduleNewLineForNextAttribute
+        protected internal override void StopScheduleNewLineForNextAttribute() {
+            if (writer is SqlXmlCustomWriter o) {
+                o.StopScheduleNewLineForNextAttribute();
+                return;
+                }
+            base.StopScheduleNewLineForNextAttribute();
+            }
+        #endregion
 
         private XmlWriter writer;
         private Boolean Disposed;

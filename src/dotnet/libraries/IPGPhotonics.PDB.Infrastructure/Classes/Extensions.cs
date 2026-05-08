@@ -12,8 +12,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBModule,SqlXmlWriterAttributeOptions)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Module reference,SqlXmlWriterAttributeOptions options) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Module)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Module reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Module,'{reference.Label}',{reference.OID}}}");
                 }
@@ -52,10 +52,10 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,Class,SqlXmlWriterAttributeOptions)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Class reference,SqlXmlWriterAttributeOptions options) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Class)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Class reference) {
             if (reference != null) {
-                writer.WriteAttribute(localName,$"{{x:Reference Source=Class,'{reference.Label}',{reference.OID.ToString()}}}");
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Class,'{reference.Label}',{reference.OID}}}");
                 }
             else
                 {
@@ -63,8 +63,41 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,Query,SqlXmlWriterAttributeOptions)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Query reference,SqlXmlWriterAttributeOptions options) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Report)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Report reference) {
+            if (reference != null) {
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Report,'{reference.Label}',{reference.OID}}}");
+                }
+            else
+                {
+                writer.WriteAttribute(localName,$"{{x:Null}}");
+                }
+            }
+        #endregion
+        #region M:WriteReference({this}ISqlXmlWriter,String,View)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,View reference) {
+            if (reference != null) {
+                writer.WriteAttribute(localName,$"{{x:Reference Source=View,'{reference.Label}',{reference.OID}}}");
+                }
+            else
+                {
+                writer.WriteAttribute(localName,$"{{x:Null}}");
+                }
+            }
+        #endregion
+        #region M:WriteReference({this}ISqlXmlWriter,String,Operation)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Operation reference) {
+            if (reference != null) {
+                writer.WriteAttribute(localName,$"{{x:Reference Source=Operation,'{reference.Label}',{reference.OID}}}");
+                }
+            else
+                {
+                writer.WriteAttribute(localName,$"{{x:Null}}");
+                }
+            }
+        #endregion
+        #region M:WriteReference({this}ISqlXmlWriter,String,Query)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Query reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Query,'{reference.Label}',{reference.OID}}}");
                 }

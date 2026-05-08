@@ -126,6 +126,10 @@ namespace dacpac
                 FillFolder(TargetFolder,r.Stages,"Stages",(o)=>$"{o.Label}_{o.OID}");
                 FillFolder(TargetFolder,r.Classes,"Classes",(o)=>o.Label);
                 FillFolder(TargetFolder,r.Forms,"Forms",(o)=>o.Label);
+                FillFolder(TargetFolder,r.Interfaces,"Interfaces",(o)=>$"{o.OID}_{o.Label}");
+                FillFolder(TargetFolder,r.Reports,"Reports",(o)=>$"{o.Label}");
+                FillFolder(TargetFolder,r.Views,"Views",(o)=>$"{o.Label}");
+                FillFolder(TargetFolder,r.Operations,nameof(r.Operations),(o)=>$"{o.Label}");
                 }
             catch (Exception e)
                 {

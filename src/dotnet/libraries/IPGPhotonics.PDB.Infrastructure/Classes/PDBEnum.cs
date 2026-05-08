@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
-using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -23,10 +22,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,PDBUser>,ISqlObjectResolver<Int32?,PDBModule>,DataRow}
-        internal PDBEnum(ISqlObjectResolver<Int32?,PDBUser> users,ISqlObjectResolver<Int32?,Module> modules,DataRow source,IDictionary<Int32,IList<DataRow>> values)
+        #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
+        internal PDBEnum(DataRow source,IServiceProvider provider,IDictionary<Int32,IList<DataRow>> values)
             :base(source)
             {
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -64,7 +65,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.WriteReference(nameof(ModifiedBy),ModifiedBy);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module,None);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 if (Values.Count > 0) {
                     using (writer.ElementGroup("Values",URI_META)) {
