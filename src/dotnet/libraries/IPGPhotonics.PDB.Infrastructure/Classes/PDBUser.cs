@@ -1,14 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Xml.Linq;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
-using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(UserReferenceConverter))]
     public class PDBUser : PDBObject
         {
         [UsedImplicitly][Field(Source = "FULLNAME")] public String FullName { get; }
@@ -16,9 +17,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "ID")]       public Int32 ID { get; }
         [UsedImplicitly][Field(Source = "ISGROUP")]  public Boolean IsGroup { get; }
 
-        #region ctor{DataRow}
-        public PDBUser(DataRow row)
-            : base(row)
+        #region ctor{DataRow,IServiceProvider}
+        public PDBUser(DataRow row,IServiceProvider service)
+            : base(row,service)
             {
             }
         #endregion

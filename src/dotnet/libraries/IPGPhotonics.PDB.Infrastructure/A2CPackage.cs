@@ -410,7 +410,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Module(this,i)))
+                    .Select(i => new Module(i,this,this)))
                     {
                     lock(m_modI)
                         {
@@ -477,7 +477,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBUser(i)))
+                    .Select(i => new PDBUser(i,this)))
                     {
                     lock(m_usrI)
                         {
@@ -818,7 +818,7 @@ namespace IPGPhotonics.PDB.Infrastructure
 
             #region ctor{DataRow}
             public MetadataRecord(DataRow row)
-                : base(row)
+                : base(null,row)
                 {
                 return;
                 }

@@ -23,8 +23,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,Unit,SqlXmlWriterAttributeOptions)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,Unit reference,SqlXmlWriterAttributeOptions options) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,Unit)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,Unit reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Unit,'{reference.Label}',{reference.OID}}}");
                 }

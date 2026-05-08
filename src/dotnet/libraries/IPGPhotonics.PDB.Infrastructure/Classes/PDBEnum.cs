@@ -23,11 +23,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
-        internal PDBEnum(DataRow source,IServiceProvider provider,IDictionary<Int32,IList<DataRow>> values)
-            :base(source)
+        internal PDBEnum(DataRow source,IServiceProvider service,IDictionary<Int32,IList<DataRow>> values)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -37,7 +37,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 {
                 if (values.TryGetValue(OID,out var rows)) {
                     foreach (var row in rows) {
-                        var o = new PDBEnumValue(users,row);
+                        var o = new PDBEnumValue(row,service,users);
                         Values.Add(o);
                         }
                     }

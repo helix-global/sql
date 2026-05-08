@@ -33,15 +33,15 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Operation Operation { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal InterfaceItem(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal InterfaceItem(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var queries = (ISqlObjectResolver<Int32?,Query>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
-            var classes = (ISqlObjectResolver<Int32?,Class>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
-            var reports = (ISqlObjectResolver<Int32?,Report>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Report>));
-            var views   = (ISqlObjectResolver<Int32?,View>)provider.GetService(typeof(ISqlObjectResolver<Int32?,View>));
-            var opers   = (ISqlObjectResolver<Int32?,Operation>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Operation>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var queries = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
+            var classes = (ISqlObjectResolver<Int32?,Class>)service.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
+            var reports = (ISqlObjectResolver<Int32?,Report>)service.GetService(typeof(ISqlObjectResolver<Int32?,Report>));
+            var views   = (ISqlObjectResolver<Int32?,View>)service.GetService(typeof(ISqlObjectResolver<Int32?,View>));
+            var opers   = (ISqlObjectResolver<Int32?,Operation>)service.GetService(typeof(ISqlObjectResolver<Int32?,Operation>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Class = classes.GetObject(PropSI4(source["CLASSOID"]));

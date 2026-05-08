@@ -24,11 +24,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal Query(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal Query(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);

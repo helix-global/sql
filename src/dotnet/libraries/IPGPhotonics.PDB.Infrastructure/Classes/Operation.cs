@@ -13,22 +13,25 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
         [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
-        public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
+        public Unit Unit { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal Operation(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal Operation(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var units   = (ISqlObjectResolver<Int32?,Unit>)service.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
+            //CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
+            Unit   = units.GetObject(PropSI4(source["UNITOID"]));
             }
         #endregion
 
@@ -49,6 +52,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Unit),Unit);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 }
             }

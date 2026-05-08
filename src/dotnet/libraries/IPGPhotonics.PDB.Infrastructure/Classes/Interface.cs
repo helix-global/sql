@@ -29,12 +29,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         public IList<InterfaceItem> Items { get; } = EmptyArray<InterfaceItem>.List;
 
         #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
-        internal Interface(DataRow source,IServiceProvider provider,IDictionary<Int32,IList<DataRow>> items)
-            :base(source)
+        internal Interface(DataRow source,IServiceProvider service,IDictionary<Int32,IList<DataRow>> items)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            var queries   = (ISqlObjectResolver<Int32?,Query>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var queries   = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
             OnlyIfQuery = queries.GetObject(PropSI4("ONLYFIFQUERY"));
             HideIfQuery = queries.GetObject(PropSI4("HIDEIFQUERY"));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
@@ -48,7 +48,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 var intfI = new Dictionary<Int32,InterfaceItem>();
                 if (items.TryGetValue(OID,out var rows)) {
                     foreach (var row in rows) {
-                        var o = new InterfaceItem(row,provider);
+                        var o = new InterfaceItem(row,service);
                         intfI[o.OID] = o;
                         }
                     }

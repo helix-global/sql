@@ -23,9 +23,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         public String Label { get; }
         public Color? Color { get; }
 
-        #region ctor{DataRow,ISqlObjectResolver<Int32?,PDBUser>}
-        internal ClassState(DataRow source,ISqlObjectResolver<Int32?,PDBUser> users)
-            :base(source)
+        #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,PDBUser>}
+        internal ClassState(DataRow source,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> users)
+            :base(source,service)
             {
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));

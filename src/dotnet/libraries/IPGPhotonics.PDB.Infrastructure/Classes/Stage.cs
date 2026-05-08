@@ -31,11 +31,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         public ClassState State { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal Stage(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal Stage(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var classes = (ISqlObjectResolver<Int32?,Class>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var classes = (ISqlObjectResolver<Int32?,Class>)service.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Class = classes.GetObject(ClassOID);

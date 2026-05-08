@@ -13,19 +13,19 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
         [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal View(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal View(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);

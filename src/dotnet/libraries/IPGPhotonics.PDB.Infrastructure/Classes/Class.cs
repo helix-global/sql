@@ -47,15 +47,15 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Boolean AlwaysReadOnly { get; }
 
         #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
-        internal Class(DataRow source,IServiceProvider provider,
+        internal Class(DataRow source,IServiceProvider service,
             IDictionary<Int32,IList<DataRow>> states)
-            :base(source)
+            :base(source,service)
             {
-            var users     = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules   = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            var entities  = (ISqlObjectResolver<Int32?,Entity>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Entity>));
-            var units     = (ISqlObjectResolver<Int32?,Unit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
-            var queries   = (ISqlObjectResolver<Int32?,Query>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
+            var users     = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules   = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var entities  = (ISqlObjectResolver<Int32?,Entity>)service.GetService(typeof(ISqlObjectResolver<Int32?,Entity>));
+            var units     = (ISqlObjectResolver<Int32?,Unit>)service.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
+            var queries   = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -74,7 +74,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 {
                 if (states.TryGetValue(OID,out var rows)) {
                     foreach (var row in rows) {
-                        var o = new ClassState(row,users);
+                        var o = new ClassState(row,service,users);
                         States.Add(o.OID,o);
                         }
                     }
@@ -104,9 +104,9 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Entity),Entity,ForceNewLine);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(LiveUnit),LiveUnit,ForceNewLine);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ListUnit),ListUnit,ForceNewLine);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(OpenUnit),OpenUnit,ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(LiveUnit),LiveUnit);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ListUnit),ListUnit);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(OpenUnit),OpenUnit);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FineAccessQuery),FineAccessQuery);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(FoldersQuery),FoldersQuery);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(DefaultListPeriod),DefaultListPeriod);

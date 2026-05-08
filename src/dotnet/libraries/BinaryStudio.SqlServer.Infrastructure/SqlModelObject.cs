@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -41,7 +42,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region ctor{DataRow}
-        protected SqlObject(DataRow source) {
+        protected SqlObject(IServiceProvider context,DataRow source) {
+            Context = context;
             if (source != null) {
                 ResolveFieldMappings(GetType(),out var mapping);
                 ApplyProperties(mapping,source);
@@ -329,7 +331,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 return null;
                                 }
                             }
-                        return converter.ConvertFrom(value) ?? value;
+                        return converter.ConvertFrom(new SqlObjectTypeDescriptorContext(this,Context),CultureInfo.CurrentCulture,value) ?? value;
                         }
                     catch (Exception e)
                         {
@@ -346,13 +348,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         #region M:CoerceValue(PropertyDescriptor,Object):Object
         protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value) {
+            var converter = descriptor.Converter;
             try
                 {
-                return CoerceValue(descriptor.PropertyType,descriptor.Converter,value);
+                return CoerceValue(descriptor.PropertyType,converter,value);
                 }
             catch (Exception e)
                 {
-                throw new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".",e);
+                throw (new Exception($@"Error converting value for property ""{descriptor.ComponentType.Name}.{descriptor.Name}"".",e)).Add("Converter",converter?.GetType()?.Name);
                 }
             }
         #endregion
@@ -668,6 +671,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 value = CoerceValue(value);
                 try
                     {
+                    var FieldName = Source.Name;
                     Source.SetValue(component,(component is SqlObject target)
                         ? target.CoerceValue(this,value)
                         : value);
@@ -680,6 +684,44 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 }
             #endregion
+            }
+
+        private class SqlObjectTypeDescriptorContext : ITypeDescriptorContext
+            {
+            public IServiceProvider Service { get; }
+            public IContainer Container
+                {
+                get
+                    {
+                    return null;
+                    }
+                }
+
+            public Object Instance { get; }
+
+            public PropertyDescriptor PropertyDescriptor
+                {
+                get
+                    {
+                    return null;
+                    }
+                }
+
+            public SqlObjectTypeDescriptorContext(Object Instance,IServiceProvider Service)
+                {
+                this.Instance = Instance;
+                this.Service = Service;
+                }
+            public void OnComponentChanged()
+                {
+                }
+            public bool OnComponentChanging()
+                {
+                return true;
+                }
+            public Object GetService(Type serviceType) {
+                return Service?.GetService(serviceType);
+                }
             }
 
         private static readonly IDictionary<Type,IDictionary<String,PropertyDescriptor>> PropertyMapping = new Dictionary<Type,IDictionary<String,PropertyDescriptor>>();

@@ -16,8 +16,8 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
         #region ctor{DataRow}
-        public PDBObject(DataRow row)
-            : base(row)
+        public PDBObject(DataRow row,IServiceProvider service)
+            : base(service,row)
             {
             }
         #endregion

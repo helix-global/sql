@@ -2,7 +2,6 @@
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
-using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -29,12 +28,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Unit DataUnit { get; }
 
         #region ctor{DataRow,IServiceProvider}
-        internal Entity(DataRow source,IServiceProvider provider)
-            :base(source)
+        internal Entity(DataRow source,IServiceProvider service)
+            :base(source,service)
             {
-            var users     = (ISqlObjectResolver<Int32?,PDBUser>)provider.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules   = (ISqlObjectResolver<Int32?,Module>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            var units     = (ISqlObjectResolver<Int32?,Unit>)provider.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
+            var users     = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
+            var modules   = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
+            var units     = (ISqlObjectResolver<Int32?,Unit>)service.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
             CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
             ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
@@ -59,7 +58,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(DataUnit),DataUnit,None);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(DataUnit),DataUnit);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(IdentityFieldName),IdentityFieldName);
                 writer.WriteAttribute(nameof(EntityStates),EntityStates);
                 writer.WriteCData(nameof(Name),URI_META,Name);

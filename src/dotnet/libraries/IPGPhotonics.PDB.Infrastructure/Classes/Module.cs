@@ -19,9 +19,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         public PDBUser CreatedBy  { get; }
         public PDBUser ModifiedBy { get; }
 
-        #region ctor{ISqlObjectResolver<Int32?,User>,DataRow}
-        public Module(ISqlObjectResolver<Int32?,PDBUser> Users,DataRow row)
-            : base(row)
+        #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,User>}
+        public Module(DataRow row,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> Users)
+            : base(row,service)
             {
             CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
             ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
