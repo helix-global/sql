@@ -20,3 +20,5 @@
 /.intermediate/pdb/Modules
 /.intermediate/pdb/Enums
 /.intermediate/pdb
+/src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.SqlServer.Infrastructure/bin/Debug/net48
+/src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.SqlServer.Infrastructure/obj
