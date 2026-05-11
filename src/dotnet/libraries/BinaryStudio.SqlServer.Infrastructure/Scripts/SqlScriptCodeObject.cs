@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
@@ -49,16 +50,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        #region M:CoerceValue(Type,TypeConverter,Object):Object
-        protected override Object CoerceValue(Type targetType,TypeConverter converter,Object value) {
+        #region M:CoerceValue(TypeConverter,ITypeDescriptorContext,CultureInfo,Object,Type):Object
+        protected override Object CoerceValue(TypeConverter converter,ITypeDescriptorContext context,CultureInfo culture,Object value,Type targetType) {
             if (converter == null) { converter = TypeDescriptor.GetConverter(targetType); }
             if (value is SqlCodeDomMultipartIdentifier CodeDomMultipartIdentifier) {
                 var r = SqlObjectIdentifier.Create(CodeDomMultipartIdentifier.Select(i => new SqlIdentifier(i.Value)));
-                return base.CoerceValue(targetType,converter,r);
+                return base.CoerceValue(converter,context,culture,r,targetType);
                 }
             if (value is SqlCodeObject SqlCodeObject) {
                 var r = SqlScriptObjectConverter.CreateFrom(Context,SqlCodeObject);
-                return base.CoerceValue(targetType,converter,r);
+                return base.CoerceValue(converter,context,culture,r,targetType);
                 }
             if (value != null) {
                 CheckConstructedGenericCollectionType(value.GetType(),out var typeGS,out var typeTS);
@@ -67,12 +68,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTP));
                     var source = (IEnumerable)value;
                     foreach (SqlCodeObject i in source) {
-                        target.Add(CoerceValue(typeTP,null,SqlScriptObjectConverter.CreateFrom(Context,i)));
+                        target.Add(CoerceValue(null,context,culture,SqlScriptObjectConverter.CreateFrom(Context,i),typeTP));
                         }
                     return (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(typeTP),target);
                     }
                 }
-            return base.CoerceValue(targetType,converter,value);
+            return base.CoerceValue(converter,context,culture,value,targetType);
             }
         #endregion
         #region M:ToString:String

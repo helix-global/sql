@@ -17,7 +17,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
         public Module Module { get; }
         public Unit Unit { get; }
 
@@ -28,8 +28,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
             var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
             var units   = (ISqlObjectResolver<Int32?,Unit>)service.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
-            //CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             Unit   = units.GetObject(PropSI4(source["UNITOID"]));
             }

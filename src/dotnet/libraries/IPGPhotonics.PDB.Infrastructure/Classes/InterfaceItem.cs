@@ -22,8 +22,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("WORKSPACEGROUP")]  public String WorkspaceGroup { get; }
         [UsedImplicitly][Field("SHORTCUT")]  public String ShortCut { get; }
         public IList<InterfaceItem> Children { get; } = new List<InterfaceItem>();
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
         public Query OnlyIfQuery { get; }
         public PDBUser OnlyIfGroup { get; }
         public Query WorkspaceCounterQuery { get; }
@@ -42,8 +42,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             var reports = (ISqlObjectResolver<Int32?,Report>)service.GetService(typeof(ISqlObjectResolver<Int32?,Report>));
             var views   = (ISqlObjectResolver<Int32?,View>)service.GetService(typeof(ISqlObjectResolver<Int32?,View>));
             var opers   = (ISqlObjectResolver<Int32?,Operation>)service.GetService(typeof(ISqlObjectResolver<Int32?,Operation>));
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Class = classes.GetObject(PropSI4(source["CLASSOID"]));
             Report = reports.GetObject(PropSI4(source["REPORTOID"]));
             View = views.GetObject(PropSI4(source["VIEWOID"]));

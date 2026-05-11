@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -298,8 +299,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             throw new InvalidOperationException($"Unsupported member type: {member.GetType().FullName}");
             }
         #endregion
-        #region M:CoerceValue(Type,TypeConverter,Object)
-        protected virtual Object CoerceValue(Type typeT,TypeConverter converter,Object value) {
+        #region M:CoerceValue(TypeConverter,ITypeDescriptorContext,CultureInfo,Object,Type)
+        protected virtual Object CoerceValue(TypeConverter converter,ITypeDescriptorContext context,CultureInfo culture,Object value,Type typeT) {
             var typeS = value?.GetType();
             if (value != null) {
                 if (typeof(IEnumerable).IsAssignableFrom(typeS) &&
@@ -312,7 +313,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         if (typeTG == typeof(IList<>)) {
                             var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(typeTE));
                             foreach (var i in (IEnumerable)value) {
-                                target.Add(CoerceValue(typeTE,null,i));
+                                target.Add(CoerceValue(null,context,culture,i,typeTE));
                                 }
                             return target;
                             }
@@ -331,7 +332,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 return null;
                                 }
                             }
-                        return converter.ConvertFrom(new SqlObjectTypeDescriptorContext(this,Context),CultureInfo.CurrentCulture,value) ?? value;
+                        return converter.ConvertTo(context,culture,value,typeT)
+                            ?? value;
                         }
                     catch (Exception e)
                         {
@@ -347,11 +349,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
         #region M:CoerceValue(PropertyDescriptor,Object):Object
+        /// <summary>Attempts to convert the specified value to the type defined by the given property descriptor, using the associated type converter.</summary>
+        /// <param name="descriptor">The property descriptor that defines the target property and provides the type converter to use. Cannot be <see langword="null"/>.</param>
+        /// <param name="value">The value to be coerced to the type specified by the property descriptor.</param>
+        /// <returns>An object representing the value converted to the type specified by the property descriptor. If conversion is not possible, an exception is thrown.</returns>
+        /// <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="descriptor"/> is <see langword="null"/>.</exception>
         protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value) {
+            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
             var converter = descriptor.Converter;
             try
                 {
-                return CoerceValue(descriptor.PropertyType,converter,value);
+                return CoerceValue(converter,
+                    new SqlObjectTypeDescriptorContext(this,Context),
+                    CultureInfo.CurrentCulture,value,descriptor.PropertyType);
                 }
             catch (Exception e)
                 {
@@ -527,6 +537,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (type == typeof(Int32?))   { return SqlInt32Converter.Default;            }
                 if (type == typeof(Int64))    { return SqlInt64Converter.DoesNotAllowNull;   }
                 if (type == typeof(Int64?))   { return SqlInt64Converter.Default;            }
+                if (type == typeof(Guid))     { return SqlGuidConverter.DoesNotAllowNull;    }
+                if (type == typeof(Guid?))    { return SqlGuidConverter.Default;             }
+                if (type == typeof(DateTime)) { return SqlDateTimeConverter.DoesNotAllowNull;}
+                if (type == typeof(DateTime?)){ return SqlDateTimeConverter.Default;         }
+                if (type.IsGenericType) {
+                    var typeG = type.GetGenericTypeDefinition();
+                    if (typeG == typeof(Nullable<>)) {
+                        return new SqlNullableConverter(type);
+                        }
+                    }
                 var r = base.Converter;
                 return r;
                 }}
@@ -672,6 +692,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 try
                     {
                     var FieldName = Source.Name;
+                    if (FieldName == "<DefaultListPeriod>k__BackingField")
+                        {
+                        //Debugger.Break();
+                        }
                     Source.SetValue(component,(component is SqlObject target)
                         ? target.CoerceValue(this,value)
                         : value);

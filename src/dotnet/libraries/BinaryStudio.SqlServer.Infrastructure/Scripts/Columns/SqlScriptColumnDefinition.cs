@@ -31,7 +31,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             QualifiedName = SqlObjectIdentifier.Create(new []{ Name });
             if (source.Parent.Parent is SqlCreateTableStatement statement) {
-                var TableName = (SqlObjectIdentifier)CoerceValue(typeof(SqlObjectIdentifier),null,statement.Name);
+                var TableName = (SqlObjectIdentifier)CoerceValue(null,null,null,statement.Name,typeof(SqlObjectIdentifier));
                 if (TableName.SchemaName == SqlIdentifier.Null) { TableName = "dbo" + TableName; }
                 QualifiedName = TableName + Name;
                 }

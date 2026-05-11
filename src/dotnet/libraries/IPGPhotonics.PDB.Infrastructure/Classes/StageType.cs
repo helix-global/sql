@@ -1,5 +1,9 @@
-﻿namespace IPGPhotonics.PDB.Infrastructure
+﻿using System.ComponentModel;
+using BinaryStudio.SqlServer.Infrastructure;
+
+namespace IPGPhotonics.PDB.Infrastructure
     {
+    [TypeConverter(typeof(SqlEnumConverter<StageType>))]
     public enum StageType
         {
         AfterSave = 1,

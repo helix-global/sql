@@ -17,15 +17,13 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("ENUMPICT")][TypeConverter(typeof(SqlBase64ArrayConverter))] public Byte[] Picture { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
 
         #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,PDBUser>}
         internal PDBEnumValue(DataRow row,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> Users)
             :base(row,service)
             {
-            CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
-            ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
             }
         #endregion
 

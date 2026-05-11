@@ -21,8 +21,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("POSORDER")]     public Int32? PositionOrder { get; }
         [UsedImplicitly][Field("ADMAUTOLOAD")]  public Boolean? LoadOnAdminAccount { get; }
         public Module Module { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
         public Query OnlyIfQuery { get; }
         public Query HideIfQuery { get; }
         public Color? Color { get; }
@@ -37,8 +37,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             var queries   = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
             OnlyIfQuery = queries.GetObject(PropSI4("ONLYFIFQUERY"));
             HideIfQuery = queries.GetObject(PropSI4("HIDEIFQUERY"));
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             Color = (Color?)colors.ConvertTo(source["WSBCOLOR"],typeof(Color));
 

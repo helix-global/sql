@@ -18,8 +18,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "DESCRIPTION")] public String Description { get; }
         [UsedImplicitly][Field(Source = "NATIVECLASS")] public String NativeClassName { get; }
         [UsedImplicitly][Field(Source = "TEXT")] public String Body { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
         public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
@@ -28,8 +28,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             {
             var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
             var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            CreatedBy  = users.GetObject(PropSI4(row["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(row["S_MR"]));
             Module = modules.GetObject(ModuleOID);
             }
         #endregion

@@ -25,8 +25,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field(Source = "SQLTEXT")] public String Body { get; }
         [UsedImplicitly][Field("CLASSOID")] private Int32? ClassOID { get; }
         [UsedImplicitly][Field("STATEOID")] private Int32? StateOID { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
         public Class Class { get; }
         public ClassState State { get; }
 
@@ -36,8 +36,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             {
             var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
             var classes = (ISqlObjectResolver<Int32?,Class>)service.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             Class = classes.GetObject(ClassOID);
             if ((Class != null) && (StateOID != null)) {
                 State = Class.States.TryGetValue(StateOID.Value, out var state)

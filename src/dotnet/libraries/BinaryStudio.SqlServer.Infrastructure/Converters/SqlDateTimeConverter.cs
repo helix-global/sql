@@ -4,20 +4,20 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlInt32Converter : TypeConverter,ISqlValueTypeConverter<Int32>
+    public class SqlDateTimeConverter : TypeConverter,ISqlValueTypeConverter<DateTime>
         {
-        public static readonly SqlInt32Converter Default          = new SqlInt32Converter(true);
-        public static readonly SqlInt32Converter DoesNotAllowNull = new SqlInt32Converter(false);
+        public static readonly SqlDateTimeConverter Default          = new SqlDateTimeConverter(true);
+        public static readonly SqlDateTimeConverter DoesNotAllowNull = new SqlDateTimeConverter(false);
 
         public Boolean AllowNull { get; }
 
         #region ctor{Boolean}
-        public SqlInt32Converter(Boolean AllowNull) {
+        public SqlDateTimeConverter(Boolean AllowNull) {
             this.AllowNull = AllowNull;
             }
         #endregion
         #region ctor
-        public SqlInt32Converter()
+        public SqlDateTimeConverter()
             :this(true)
             {
             }
@@ -26,18 +26,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #region M:CanConvertFrom(ITypeDescriptorContext,Type):Boolean
         /// <summary>Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
-        /// <param name="sourceType">A <see cref="T:System.Type" /> that represents the type you want to convert from.</param>
-        /// <returns><see langword="true" />if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
+        /// <param name="sourceType">A <see cref="T:System.Type"/> that represents the type you want to convert from.</param>
+        /// <returns><see langword="true"/>if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
         public override Boolean CanConvertFrom(ITypeDescriptorContext context,Type sourceType) {
             if ((sourceType == typeof(String)) ||
-                (sourceType == typeof(Int32))  ||
-                (sourceType == typeof(Int16))  ||
-                (sourceType == typeof(Int64))  ||
-                (sourceType == typeof(UInt32)) ||
-                (sourceType == typeof(UInt16)) ||
-                (sourceType == typeof(UInt64)) ||
-                (sourceType == typeof(SByte))  ||
-                (sourceType == typeof(Byte)))
+                (sourceType == typeof(DateTime)))
                 {
                 return true;
                 }
@@ -70,62 +63,73 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-            if (destinationType == typeof(Int32)) {
+            if (destinationType == typeof(DateTime)) {
                 var r = ConvertFromObject(value);
                 if ((r == null) && (AllowNull == false)) {
                     throw new InvalidCastException();
                     }
                 return r;
                 }
-            if (destinationType == typeof(Int32?)) { return ConvertFromObject(value); }
+            if (destinationType == typeof(DateTime?)) { return ConvertFromObject(value); }
             return base.ConvertTo(context,culture,value,destinationType);
             }
         #endregion
-        #region M:ConvertFromObject(Object):Int32?
-        /// <summary>Converts the specified object to a nullable 32-bit signed integer.</summary>
-        /// <param name="value">The object to convert. Can be a numeric type, a <see cref="T:System.Boolean"/>, an <see cref="T:System.Enum"/>, or a string representation of a number. Can also be <see langword="null"/> or <see cref="T:System.DBNull"/>.</param>
-        /// <returns>A 32-bit signed integer value equivalent to the input object, or <see langword="null"/> if the conversion is not possible or the input is <see langword="null"/>, <see cref="T:System.DBNull"/>, or an empty string.</returns>
-        public static Int32? ConvertFromObject(Object value) {
+        #region M:ConvertFromObject(Object,String[]):DateTime?
+        /// <summary>Converts the specified object to a nullable <see cref="T:System.DateTime"/> value using the provided date and time formats.</summary>
+        /// <param name="value">The object to convert. Can be a <see cref="T:System.DateTime"/> instance or a string representation of a date and time.</param>
+        /// <param name="formats">An array of allowable date and time format strings used to parse the value.</param>
+        /// <returns>A <see cref="T:System.DateTime"/> value if the conversion is successful; otherwise, <see langword="null"/>.</returns>
+        public static DateTime? ConvertFromObject(Object value,String[] formats) {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is Boolean B)  { return B ? 1 : 0;  }
-            if (value is Int32  SI4) { return (Int32)SI4; }
-            if (value is Int64  SI8) { return (Int32)SI8; }
-            if (value is SByte  SI1) { return (Int32)SI1; }
-            if (value is Int16  SI2) { return (Int32)SI2; }
-            if (value is Byte   UI1) { return (Int32)UI1; }
-            if (value is UInt16 UI2) { return (Int32)UI2; }
-            if (value is UInt32 UI4) { return (Int32)UI4; }
-            if (value is UInt64 UI8) { return (Int32)UI8; }
-            if (value is Enum E) {
-                return Convert.ToInt32(E);
-                }
+            if (value is DateTime DT)  { return DT; }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
-            Int32 r;
-            if (!Int32.TryParse(S,out r))
-                {
+            if (!DateTime.TryParseExact(S,formats,CultureInfo.CurrentUICulture,DateTimeStyles.None, out var r)) {
+                foreach (var culture in cultures) {
+                    if (DateTime.TryParseExact(S,formats,culture,DateTimeStyles.None, out r)) {
+                        return r;
+                        }
+                    var dateTimeFormatInfo = (DateTimeFormatInfo)culture.GetFormat(typeof(DateTimeFormatInfo));
+                    if (dateTimeFormatInfo != null) {
+                        if (DateTime.TryParse(S,dateTimeFormatInfo,DateTimeStyles.None,out r)) {
+                            return r;
+                            }
+                        }
+                    }
                 return null;
                 }
             return r;
             }
         #endregion
-        #region M:ConvertFromObject(Object,Int32):Int32
-        /// <summary>Converts the specified object to a 32-bit signed integer, or returns a default value if the conversion is not possible.</summary>
-        /// <param name="value">The object to convert to a 32-bit signed integer. Can be <see langword="null"/> or any type that can be converted to <see cref="T:System.Int32"/>.</param>
+        #region M:ConvertFromObject(Object):DateTime?
+        /// <summary>Converts the specified object to a nullable <see cref="T:System.DateTime"/> value, if possible.</summary>
+        /// <param name="value">The object to convert. This can be a <see cref="T:System.DateTime"/> instance, a string representation of a date and time, or <see langword="null"/>.</param>
+        /// <returns>A <see cref="T:System.DateTime"/> value if the conversion is successful; otherwise, <see langword="null"/>.</returns>
+        public static DateTime? ConvertFromObject(Object value) {
+            return ConvertFromObject(value,new String[] {
+                "s","o",
+                "yyyy-MM-dd HH:mm:ss.fff",
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-dd"});
+            }
+        #endregion
+        #region M:ConvertFromObject(Object,DateTime):DateTime
+        /// <summary>Converts the specified object to a date-time, or returns a default value if the conversion is not possible.</summary>
+        /// <param name="value">The object to convert to a date-time. Can be <see langword="null"/> or any type that can be converted to <see cref="T:System.DateTime"/>.</param>
         /// <param name="defaultValue">The value to return if the conversion is not successful.</param>
-        /// <returns>A 32-bit signed integer representing the converted value, or the specified default value if the conversion fails.</returns>
-        public static Int32 ConvertFromObject(Object value,Int32 defaultValue)
+        /// <returns>A date-time representing the converted value, or the specified default value if the conversion fails.</returns>
+        public static DateTime ConvertFromObject(Object value,DateTime defaultValue)
             {
             return ConvertFromObject(value).GetValueOrDefault(defaultValue);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int32>.ConvertFromObject(Object):Int32?
-        Int32? ISqlValueTypeConverter<Int32>.ConvertFromObject(Object value) {
+        #region M:ISqlValueTypeConverter<DateTime>.ConvertFromObject(Object):DateTime?
+        DateTime? ISqlValueTypeConverter<DateTime>.ConvertFromObject(Object value) {
             return ConvertFromObject(value);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int32>.ConvertFromObject(Object,Int32):Int32
-        Int32 ISqlValueTypeConverter<Int32>.ConvertFromObject(Object value,Int32 defaultValue)
+        #region M:ISqlValueTypeConverter<DateTime>.ConvertFromObject(Object,DateTime):DateTime
+        DateTime ISqlValueTypeConverter<DateTime>.ConvertFromObject(Object value,DateTime defaultValue)
             {
             return ConvertFromObject(value,defaultValue);
             }
@@ -135,8 +139,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return $"Int32Converter{{AllowNull={AllowNull}}}";
+            return $"DateTimeConverter{{AllowNull={AllowNull}}}";
             }
         #endregion
+
+        private static readonly CultureInfo en = new CultureInfo("en-US");
+        private static readonly CultureInfo ru = new CultureInfo("ru-RU");
+        private static readonly CultureInfo de = new CultureInfo("de-DE");
+        private static readonly CultureInfo[] cultures = {en,ru,de };
         }
     }
+

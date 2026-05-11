@@ -1,7 +1,10 @@
-﻿using System;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Text;
-using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -51,6 +54,13 @@ namespace IPGPhotonics.PDB.Infrastructure
             return value;
             }
         #endregion
+        #region M:CoerceValue(TypeConverter,ITypeDescriptorContext,CultureInfo,Object,Type)
+        protected override Object CoerceValue(TypeConverter converter,ITypeDescriptorContext context,CultureInfo culture,Object value,Type targetType) {
+            if (targetType == typeof(String)) { return DecodeLanguageString((String)converter.ConvertFrom(value)); }
+            if (converters.TryGetValue(targetType,out var c)) { return c.ConvertFrom(context,culture,value); }
+            return base.CoerceValue(converter,context,culture,value,targetType);
+            }
+        #endregion
         protected static Boolean IsNotDefault<T>(T value)
             {
             return !Equals(value,default);
@@ -59,5 +69,9 @@ namespace IPGPhotonics.PDB.Infrastructure
             {
             return value;
             }
+
+        private static readonly IDictionary<Type,TypeConverter> converters = new Dictionary<Type,TypeConverter>() {
+            { typeof(PDBUser), new UserReferenceConverter() }
+            };
         }
     }

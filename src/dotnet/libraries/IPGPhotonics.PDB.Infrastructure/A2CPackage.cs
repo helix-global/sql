@@ -159,16 +159,17 @@ namespace IPGPhotonics.PDB.Infrastructure
                     LoadForms(token,source.Tables["DEF_FORM"]),
                     LoadReports(token,source.Tables["DEF_REPORTS"])
                     );
-                Task.WaitAll(
-                    LoadEnum(token,source.Tables["DEF_ENUMERATION"]),
-                    LoadQueries(token,source.Tables["DEF_SQL"]));
+                Task.WaitAll(LoadUnits(token,source.Tables["DEF_UNIT"]));
+                Task.WaitAll(LoadForms(token,source.Tables["DEF_FORM"]));
+                Task.WaitAll(LoadReports(token,source.Tables["DEF_REPORTS"]));
+                Task.WaitAll(LoadEnum(token,source.Tables["DEF_ENUMERATION"]));
+                Task.WaitAll(LoadQueries(token,source.Tables["DEF_SQL"]));
                 Task.WaitAll(LoadEntities(token,source.Tables["DEF_ENTITY"]));
                 Task.WaitAll(LoadClasses(token,source.Tables["DEF_CLASSES"]));
                 Task.WaitAll(LoadViews(token,source.Tables["DEF_VIEWS"]));
-                Task.WaitAll(
-                    LoadStages(token,source.Tables["DEF_STAGES"]),
-                    LoadInterfaces(token,source.Tables["DEF_INTERFACE"]),
-                    LoadOperations(token,source.Tables["DEF_OPERATION"]));
+                Task.WaitAll(LoadStages(token,source.Tables["DEF_STAGES"]));
+                Task.WaitAll(LoadInterfaces(token,source.Tables["DEF_INTERFACE"]));
+                Task.WaitAll(LoadOperations(token,source.Tables["DEF_OPERATION"]));
                 //foreach (DataTable table in source.Tables) {
                 //    var task = LoadTable(token,table);
                 //    lock (tasks)

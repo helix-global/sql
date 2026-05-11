@@ -1,23 +1,24 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Design.Serialization;
 using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlInt32Converter : TypeConverter,ISqlValueTypeConverter<Int32>
+    public class SqlGuidConverter: TypeConverter,ISqlValueTypeConverter<Guid>
         {
-        public static readonly SqlInt32Converter Default          = new SqlInt32Converter(true);
-        public static readonly SqlInt32Converter DoesNotAllowNull = new SqlInt32Converter(false);
+        public static readonly SqlGuidConverter Default          = new SqlGuidConverter(true);
+        public static readonly SqlGuidConverter DoesNotAllowNull = new SqlGuidConverter(false);
 
         public Boolean AllowNull { get; }
 
         #region ctor{Boolean}
-        public SqlInt32Converter(Boolean AllowNull) {
+        public SqlGuidConverter(Boolean AllowNull) {
             this.AllowNull = AllowNull;
             }
         #endregion
         #region ctor
-        public SqlInt32Converter()
+        public SqlGuidConverter()
             :this(true)
             {
             }
@@ -30,18 +31,24 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns><see langword="true" />if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
         public override Boolean CanConvertFrom(ITypeDescriptorContext context,Type sourceType) {
             if ((sourceType == typeof(String)) ||
-                (sourceType == typeof(Int32))  ||
-                (sourceType == typeof(Int16))  ||
-                (sourceType == typeof(Int64))  ||
-                (sourceType == typeof(UInt32)) ||
-                (sourceType == typeof(UInt16)) ||
-                (sourceType == typeof(UInt64)) ||
-                (sourceType == typeof(SByte))  ||
-                (sourceType == typeof(Byte)))
+                (sourceType == typeof(Guid)))
                 {
                 return true;
                 }
             return base.CanConvertFrom(context, sourceType);
+            }
+        #endregion
+        #region M:CanConvertTo(ITypeDescriptorContext,Type):Boolean
+        /// <summary>Gets a value indicating whether this converter can convert an object to the given destination type using the context.</summary>
+        /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
+        /// <param name="destinationType">A <see cref="T:System.Type"/> that represents the type you wish to convert to.</param>
+        /// <returns><see langword="true"/> if this converter can perform the conversion; otherwise, <see langword="false"/>.</returns>
+        public override Boolean CanConvertTo(ITypeDescriptorContext context,Type destinationType) {
+            if (destinationType == typeof(InstanceDescriptor))
+                {
+                return true;
+                }
+            return base.CanConvertTo(context, destinationType);
             }
         #endregion
         #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
@@ -70,62 +77,46 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-            if (destinationType == typeof(Int32)) {
+            if (destinationType == typeof(Guid)) {
                 var r = ConvertFromObject(value);
                 if ((r == null) && (AllowNull == false)) {
                     throw new InvalidCastException();
                     }
                 return r;
                 }
-            if (destinationType == typeof(Int32?)) { return ConvertFromObject(value); }
             return base.ConvertTo(context,culture,value,destinationType);
             }
         #endregion
-        #region M:ConvertFromObject(Object):Int32?
-        /// <summary>Converts the specified object to a nullable 32-bit signed integer.</summary>
-        /// <param name="value">The object to convert. Can be a numeric type, a <see cref="T:System.Boolean"/>, an <see cref="T:System.Enum"/>, or a string representation of a number. Can also be <see langword="null"/> or <see cref="T:System.DBNull"/>.</param>
-        /// <returns>A 32-bit signed integer value equivalent to the input object, or <see langword="null"/> if the conversion is not possible or the input is <see langword="null"/>, <see cref="T:System.DBNull"/>, or an empty string.</returns>
-        public static Int32? ConvertFromObject(Object value) {
+        #region M:ConvertFromObject(Object):Guid?
+        /// <summary>Converts the specified object to a nullable GUID value, if possible.</summary>
+        /// <param name="value">The object to convert. Can be a <see cref="T:System.Guid"/>, a string representation of a GUID, or another object whose string representation is a valid GUID. Can be <see langword="null"/>.</param>
+        /// <returns>A <see cref="T:System.Guid"/> value if the conversion is successful; otherwise, <see langword="null"/>.</returns>
+        public static Guid? ConvertFromObject(Object value) {
             if ((value == null) || (value is DBNull)) { return null; }
-            if (value is Boolean B)  { return B ? 1 : 0;  }
-            if (value is Int32  SI4) { return (Int32)SI4; }
-            if (value is Int64  SI8) { return (Int32)SI8; }
-            if (value is SByte  SI1) { return (Int32)SI1; }
-            if (value is Int16  SI2) { return (Int32)SI2; }
-            if (value is Byte   UI1) { return (Int32)UI1; }
-            if (value is UInt16 UI2) { return (Int32)UI2; }
-            if (value is UInt32 UI4) { return (Int32)UI4; }
-            if (value is UInt64 UI8) { return (Int32)UI8; }
-            if (value is Enum E) {
-                return Convert.ToInt32(E);
-                }
+            if (value is Guid G)  { return G;  }
             var S = (value.ToString()).Trim();
             if (String.IsNullOrEmpty(S)) { return null; }
-            Int32 r;
-            if (!Int32.TryParse(S,out r))
-                {
-                return null;
-                }
-            return r;
+            if (Guid.TryParse(S,out G))  { return G;    }
+            return null;
             }
         #endregion
-        #region M:ConvertFromObject(Object,Int32):Int32
-        /// <summary>Converts the specified object to a 32-bit signed integer, or returns a default value if the conversion is not possible.</summary>
-        /// <param name="value">The object to convert to a 32-bit signed integer. Can be <see langword="null"/> or any type that can be converted to <see cref="T:System.Int32"/>.</param>
-        /// <param name="defaultValue">The value to return if the conversion is not successful.</param>
-        /// <returns>A 32-bit signed integer representing the converted value, or the specified default value if the conversion fails.</returns>
-        public static Int32 ConvertFromObject(Object value,Int32 defaultValue)
+        #region M:ConvertFromObject(Object,Guid):Guid
+        /// <summary>Converts the specified object to a GUID value, or returns the specified default value if the conversion is not possible.</summary>
+        /// <param name="value">The object to convert to a GUID. Can be <see langword="null"/> or any object that represents a GUID value.</param>
+        /// <param name="defaultValue">The GUID value to return if the conversion of the object is not successful.</param>
+        /// <returns>A GUID that represents the converted value of the object, or the specified default value if the conversion fails.</returns>
+        public static Guid ConvertFromObject(Object value,Guid defaultValue)
             {
             return ConvertFromObject(value).GetValueOrDefault(defaultValue);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int32>.ConvertFromObject(Object):Int32?
-        Int32? ISqlValueTypeConverter<Int32>.ConvertFromObject(Object value) {
+        #region M:ISqlValueTypeConverter<Guid>.ConvertFromObject(Object):Guid?
+        Guid? ISqlValueTypeConverter<Guid>.ConvertFromObject(Object value) {
             return ConvertFromObject(value);
             }
         #endregion
-        #region M:ISqlValueTypeConverter<Int32>.ConvertFromObject(Object,Int32):Int32
-        Int32 ISqlValueTypeConverter<Int32>.ConvertFromObject(Object value,Int32 defaultValue)
+        #region M:ISqlValueTypeConverter<Guid>.ConvertFromObject(Object,Guid):Guid
+        Guid ISqlValueTypeConverter<Guid>.ConvertFromObject(Object value,Guid defaultValue)
             {
             return ConvertFromObject(value,defaultValue);
             }
@@ -135,7 +126,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>A string that represents the current object.</returns>
         public override String ToString()
             {
-            return $"Int32Converter{{AllowNull={AllowNull}}}";
+            return $"GuidConverter{{AllowNull={AllowNull}}}";
             }
         #endregion
         }
