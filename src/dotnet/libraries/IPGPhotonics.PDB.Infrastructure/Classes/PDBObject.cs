@@ -1,10 +1,10 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using System.Text;
+using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -71,7 +71,16 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
 
         private static readonly IDictionary<Type,TypeConverter> converters = new Dictionary<Type,TypeConverter>() {
-            { typeof(PDBUser), new UserReferenceConverter() }
+            { typeof(PDBUser),   new UserReferenceConverter()     },
+            { typeof(Module),    new ObjectConverter<Module>()    },
+            { typeof(Unit),      new ObjectConverter<Unit>()      },
+            { typeof(Class),     new ObjectConverter<Class>()     },
+            { typeof(Entity),    new ObjectConverter<Entity>()    },
+            { typeof(Form),      new ObjectConverter<Form>()      },
+            { typeof(Query),     new ObjectConverter<Query>()     },
+            { typeof(Report),    new ObjectConverter<Report>()    },
+            { typeof(View),      new ObjectConverter<View>()      },
+            { typeof(Operation), new ObjectConverter<Operation>() },
             };
         }
     }

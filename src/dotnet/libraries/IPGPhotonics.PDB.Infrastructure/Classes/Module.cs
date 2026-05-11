@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -7,24 +8,23 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<Module>))]
     public class Module : PDBObject
         {
-        [UsedImplicitly][Field(Source = "NAME")]   public String Name { get; }
-        [UsedImplicitly][Field(Source = "LABEL")]  public String Label { get; }
-        [UsedImplicitly][Field(Source = "REMARK")] public String Description { get; }
-        [UsedImplicitly][Field(Source = "OID")]    public Int32 OID { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("NAME")]   public String Name { get; }
+        [UsedImplicitly][Field("LABEL")]  public String Label { get; }
+        [UsedImplicitly][Field("REMARK")] public String Description { get; }
+        [UsedImplicitly][Field("OID")]    public Int32 OID { get; }
+        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
 
-        #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,User>}
-        public Module(DataRow row,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> Users)
+        #region ctor{DataRow,IServiceProvider}
+        public Module(DataRow row,IServiceProvider service)
             : base(row,service)
             {
-            CreatedBy  = Users.GetObject(PropSI4(row["S_CR"]));
-            ModifiedBy = Users.GetObject(PropSI4(row["S_MR"]));
             }
         #endregion
 

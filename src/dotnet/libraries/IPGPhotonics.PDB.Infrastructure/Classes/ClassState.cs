@@ -10,25 +10,23 @@ namespace IPGPhotonics.PDB.Infrastructure
 
     public class ClassState : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("NAME")]      public String Name { get; }
+        [UsedImplicitly][Field("OID")]         public Int32 OID { get; }
+        [UsedImplicitly][Field("NAME")]        public String Name { get; }
         [UsedImplicitly][Field("DESCRIPTION")] public String Description { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]       public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]       public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
         public ReadOnlyState ReadOnlyState { get; }
         public DeletionStateMode? EnableDeleting { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
         public String Label { get; }
         public Color? Color { get; }
 
-        #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,PDBUser>}
-        internal ClassState(DataRow source,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> users)
+        #region ctor{DataRow,IServiceProvider}
+        internal ClassState(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
             ReadOnlyState  = PropE(source["READONLYSTATE"],ReadOnlyState.Editable);
             EnableDeleting = PropE<DeletionStateMode>(source["YESDEL"]);
             Label = DecodeLanguageString(Name);

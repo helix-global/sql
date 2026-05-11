@@ -10,45 +10,32 @@ namespace IPGPhotonics.PDB.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
     public class InterfaceItem : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
-        [UsedImplicitly][Field("PARENTOID")] public Int32? ParentOID { get; }
-        [UsedImplicitly][Field("CAPTION")]   public String Caption { get; }
-        [UsedImplicitly][Field("POSORDER")]  public Int32? PositionOrder { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("OPTIONS")]  public String Options { get; }
-        [UsedImplicitly][Field("COMMAND")]  public String Command { get; }
-        [UsedImplicitly][Field("WORKSPACEGROUP")]  public String WorkspaceGroup { get; }
-        [UsedImplicitly][Field("SHORTCUT")]  public String ShortCut { get; }
+        [UsedImplicitly][Field("OID")]            public Int32 OID { get; }
+        [UsedImplicitly][Field("GID")]            public Guid UUID { get; }
+        [UsedImplicitly][Field("PARENTOID")]      public Int32? ParentOID { get; }
+        [UsedImplicitly][Field("CAPTION")]        public String Caption { get; }
+        [UsedImplicitly][Field("POSORDER")]       public Int32? PositionOrder { get; }
+        [UsedImplicitly][Field("S_CDT")]          public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]          public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("OPTIONS")]        public String Options { get; }
+        [UsedImplicitly][Field("COMMAND")]        public String Command { get; }
+        [UsedImplicitly][Field("WORKSPACEGROUP")] public String WorkspaceGroup { get; }
+        [UsedImplicitly][Field("SHORTCUT")]       public String ShortCut { get; }
+        [UsedImplicitly][Field("S_CR")]           public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]           public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("ONLYIFQUERY")]    public Query OnlyIfQuery { get; }
+        [UsedImplicitly][Field("ONLY4GROUP")]     public PDBUser OnlyIfGroup { get; }
+        [UsedImplicitly][Field("WORKSPACECOUNT")] public Query WorkspaceCounterQuery { get; }
+        [UsedImplicitly][Field("CLASSOID")]       public Class Class { get; }
+        [UsedImplicitly][Field("REPORTOID")]      public Report Report { get; }
+        [UsedImplicitly][Field("VIEWOID")]        public View View { get; }
+        [UsedImplicitly][Field("OPEROID")]        public Operation Operation { get; }
         public IList<InterfaceItem> Children { get; } = new List<InterfaceItem>();
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Query OnlyIfQuery { get; }
-        public PDBUser OnlyIfGroup { get; }
-        public Query WorkspaceCounterQuery { get; }
-        public Class Class { get; }
-        public Report Report { get; }
-        public View View { get; }
-        public Operation Operation { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal InterfaceItem(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var queries = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
-            var classes = (ISqlObjectResolver<Int32?,Class>)service.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
-            var reports = (ISqlObjectResolver<Int32?,Report>)service.GetService(typeof(ISqlObjectResolver<Int32?,Report>));
-            var views   = (ISqlObjectResolver<Int32?,View>)service.GetService(typeof(ISqlObjectResolver<Int32?,View>));
-            var opers   = (ISqlObjectResolver<Int32?,Operation>)service.GetService(typeof(ISqlObjectResolver<Int32?,Operation>));
-            Class = classes.GetObject(PropSI4(source["CLASSOID"]));
-            Report = reports.GetObject(PropSI4(source["REPORTOID"]));
-            View = views.GetObject(PropSI4(source["VIEWOID"]));
-            Operation = opers.GetObject(PropSI4(source["OPEROID"]));
-            OnlyIfGroup = users.GetObject(PropSI4(source["ONLY4GROUP"]));
-            OnlyIfQuery = queries.GetObject(PropSI4(source["ONLYIFQUERY"]));
-            WorkspaceCounterQuery = queries.GetObject(PropSI4(source["WORKSPACECOUNT"]));
             }
         #endregion
         #region M:WriteXml(ISqlXmlWriter)

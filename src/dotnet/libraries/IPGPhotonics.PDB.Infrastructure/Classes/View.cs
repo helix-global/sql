@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -7,25 +8,23 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<View>))]
     public class View : PDBObject
         {
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Module Module { get; }
+        [UsedImplicitly][Field("S_CDT")]     public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]     public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CR")]      public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]      public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("MODULEOID")] public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal View(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            Module = modules.GetObject(ModuleOID);
             }
         #endregion
 

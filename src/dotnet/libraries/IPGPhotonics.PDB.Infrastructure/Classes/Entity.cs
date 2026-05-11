@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -7,37 +8,29 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<Entity>))]
     public class Entity : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("NAME")]      public String Name { get; }
-        [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("S_CDT")]     public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]     public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
-        [UsedImplicitly][Field("MAINTABLE")] public String MainTable { get; }
+        [UsedImplicitly][Field("OID")]         public Int32 OID { get; }
+        [UsedImplicitly][Field("NAME")]        public String Name { get; }
+        [UsedImplicitly][Field("LABEL")]       public String Label { get; }
+        [UsedImplicitly][Field("S_CDT")]       public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]       public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
+        [UsedImplicitly][Field("MAINTABLE")]   public String MainTable { get; }
         [UsedImplicitly][Field("IDFIELDNAME")] public String IdentityFieldName { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field("DATAUNITOID")] private Int32? DataUnitOID { get; }
         [UsedImplicitly][Field("REMARKS")]     public String Description { get; }
         [UsedImplicitly][Field("STATESCOUNT")] public EntityStateKind EntityStates { get; }
         [UsedImplicitly][Field("SQLFILTER")]   public String FilterExpression { get; }
-        public PDBUser CreatedBy  { get; }
-        public PDBUser ModifiedBy { get; }
-        public Module Module { get; }
-        public Unit DataUnit { get; }
+        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("MODULEOID")]   public Module Module { get; }
+        [UsedImplicitly][Field("DATAUNITOID")] public Unit DataUnit { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Entity(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            var users     = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules   = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            var units     = (ISqlObjectResolver<Int32?,Unit>)service.GetService(typeof(ISqlObjectResolver<Int32?,Unit>));
-            CreatedBy  = users.GetObject(PropSI4(source["S_CR"]));
-            ModifiedBy = users.GetObject(PropSI4(source["S_MR"]));
-            Module = modules.GetObject(ModuleOID);
-            DataUnit = units.GetObject(DataUnitOID);
             }
         #endregion
 

@@ -11,33 +11,27 @@ namespace IPGPhotonics.PDB.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
     public class Interface : PDBObject
         {
-        [UsedImplicitly][Field("LABEL")] public String Label { get; }
-        [UsedImplicitly][Field("NAME")]  public String Name { get; }
-        [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
-        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("REMARK")]     public String Description { get; }
+        public IList<InterfaceItem> Items { get; } = EmptyArray<InterfaceItem>.List;
+        [UsedImplicitly][Field("LABEL")]        public String Label { get; }
+        [UsedImplicitly][Field("NAME")]         public String Name { get; }
+        [UsedImplicitly][Field("OID")]          public Int32 OID { get; }
+        [UsedImplicitly][Field("GID")]          public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]        public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]        public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("REMARK")]       public String Description { get; }
         [UsedImplicitly][Field("POSORDER")]     public Int32? PositionOrder { get; }
         [UsedImplicitly][Field("ADMAUTOLOAD")]  public Boolean? LoadOnAdminAccount { get; }
-        public Module Module { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Query OnlyIfQuery { get; }
-        public Query HideIfQuery { get; }
+        [UsedImplicitly][Field("MODULEOID")]    public Module Module { get; }
+        [UsedImplicitly][Field("S_CR")]         public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]         public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("ONLYFIFQUERY")] public Query OnlyIfQuery { get; }
+        [UsedImplicitly][Field("HIDEIFQUERY")]  public Query HideIfQuery { get; }
         public Color? Color { get; }
-        public IList<InterfaceItem> Items { get; } = EmptyArray<InterfaceItem>.List;
 
         #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
         internal Interface(DataRow source,IServiceProvider service,IDictionary<Int32,IList<DataRow>> items)
             :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            var queries   = (ISqlObjectResolver<Int32?,Query>)service.GetService(typeof(ISqlObjectResolver<Int32?,Query>));
-            OnlyIfQuery = queries.GetObject(PropSI4("ONLYFIFQUERY"));
-            HideIfQuery = queries.GetObject(PropSI4("HIDEIFQUERY"));
-            Module = modules.GetObject(ModuleOID);
             Color = (Color?)colors.ConvertTo(source["WSBCOLOR"],typeof(Color));
 
             var intfP = new List<InterfaceItem>();
@@ -113,7 +107,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
         private static readonly SqlColorConverter colors = new SqlColorConverter();
         }
     }

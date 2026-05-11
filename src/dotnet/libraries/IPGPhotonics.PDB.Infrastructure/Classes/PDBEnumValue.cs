@@ -20,8 +20,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
         [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
 
-        #region ctor{DataRow,IServiceProvider,ISqlObjectResolver<Int32?,PDBUser>}
-        internal PDBEnumValue(DataRow row,IServiceProvider service,ISqlObjectResolver<Int32?,PDBUser> Users)
+        #region ctor{DataRow,IServiceProvider}
+        internal PDBEnumValue(DataRow row,IServiceProvider service)
             :base(row,service)
             {
             }
@@ -33,13 +33,14 @@ namespace IPGPhotonics.PDB.Infrastructure
         public override void WriteXml(ISqlXmlWriter writer) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             using (writer.ElementGroup("EnumValue",URI_META)) {
-                writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(OID),OID);
+                writer.WriteAttribute(nameof(OID),OID);
                 writer.WriteAttribute(nameof(Code),Code);
                 writer.WriteAttribute(nameof(UUID),UUID);
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.StopScheduleNewLineForNextAttribute();
                 writer.WriteCData(nameof(Value),URI_META,Value);
                 writer.WriteBase64(nameof(Picture),URI_META,Picture);
                 }

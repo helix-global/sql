@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -8,34 +9,30 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<PDBEnum>))]
     public class PDBEnum : PDBObject
         {
         public IList<PDBEnumValue> Values { get; }
         [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
         [UsedImplicitly][Field("NAME")]      public String Name { get; }
         [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Module Module { get; }
+        [UsedImplicitly][Field("S_CDT")]     public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]     public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CR")]      public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]      public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("MODULEOID")] public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
         internal PDBEnum(DataRow source,IServiceProvider service,IDictionary<Int32,IList<DataRow>> values)
             :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            Module = modules.GetObject(ModuleOID);
-
             Values = new List<PDBEnumValue>();
             try
                 {
                 if (values.TryGetValue(OID,out var rows)) {
                     foreach (var row in rows) {
-                        var o = new PDBEnumValue(row,service,users);
+                        var o = new PDBEnumValue(row,service);
                         Values.Add(o);
                         }
                     }
@@ -62,8 +59,9 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteAttribute(nameof(CreatedDate),CreatedDate);
                 writer.WriteAttribute(nameof(ModifiedDate),ModifiedDate);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
-                writer.WriteReference(nameof(ModifiedBy),ModifiedBy);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
+                writer.StopScheduleNewLineForNextAttribute();
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 if (Values.Count > 0) {
                     using (writer.ElementGroup("Values",URI_META)) {

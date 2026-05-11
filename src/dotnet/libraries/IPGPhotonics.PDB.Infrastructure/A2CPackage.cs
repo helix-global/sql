@@ -411,7 +411,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new Module(i,this,this)))
+                    .Select(i => new Module(i,this)))
                     {
                     lock(m_modI)
                         {

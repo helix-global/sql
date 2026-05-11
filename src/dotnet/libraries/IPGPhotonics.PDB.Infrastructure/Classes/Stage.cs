@@ -10,35 +10,31 @@ namespace IPGPhotonics.PDB.Infrastructure
 
     public class Stage : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("NAME")]      public String Name { get; }
-        [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("DISABLE")] public Boolean? Disabled { get; }
-        [UsedImplicitly][Field("SORTORDER")] public Int32 Order { get; }
-        [UsedImplicitly][Field("LONGSTAGE")] public Boolean? IsLongRunning { get; }
-        [UsedImplicitly][Field("STAGETYPE")] public StageType StageType { get; }
-        [UsedImplicitly][Field(Source = "DESCRIPTION")] public String Description { get; }
-        [UsedImplicitly][Field(Source = "OPTIONS")] public String Options { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field(Source = "SQLTEXT")] public String Body { get; }
-        [UsedImplicitly][Field("CLASSOID")] private Int32? ClassOID { get; }
-        [UsedImplicitly][Field("STATEOID")] private Int32? StateOID { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Class Class { get; }
+        [UsedImplicitly][Field("OID")]         public Int32 OID { get; }
+        [UsedImplicitly][Field("NAME")]        public String Name { get; }
+        [UsedImplicitly][Field("LABEL")]       public String Label { get; }
+        [UsedImplicitly][Field("DISABLE")]     public Boolean? Disabled { get; }
+        [UsedImplicitly][Field("SORTORDER")]   public Int32 Order { get; }
+        [UsedImplicitly][Field("LONGSTAGE")]   public Boolean? IsLongRunning { get; }
+        [UsedImplicitly][Field("STAGETYPE")]   public StageType StageType { get; }
+        [UsedImplicitly][Field("DESCRIPTION")] public String Description { get; }
+        [UsedImplicitly][Field("OPTIONS")]     public String Options { get; }
+        [UsedImplicitly][Field("S_CDT")]       public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]       public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
+        [UsedImplicitly][Field("SQLTEXT")]     public String Body { get; }
+        [UsedImplicitly][Field("CLASSOID")]    public Class Class { get; }
+        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("STATEOID")]    private Int32? StateOID { get; }
         public ClassState State { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Stage(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var classes = (ISqlObjectResolver<Int32?,Class>)service.GetService(typeof(ISqlObjectResolver<Int32?,Class>));
-            Class = classes.GetObject(ClassOID);
             if ((Class != null) && (StateOID != null)) {
-                State = Class.States.TryGetValue(StateOID.Value, out var state)
+                State = Class.States.TryGetValue(StateOID.Value,out var state)
                     ? state
                     : null;
                 }

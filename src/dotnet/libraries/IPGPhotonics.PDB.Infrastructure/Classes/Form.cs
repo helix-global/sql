@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -6,30 +7,29 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
+
+    [TypeConverter(typeof(ObjectConverter<Form>))]
     public class Form : PDBObject
         {
-        [UsedImplicitly][Field("LABEL")] public String Label { get; }
-        [UsedImplicitly][Field("NAME")]  public String Name { get; }
-        [UsedImplicitly][Field("OID")]  public Int32 OID { get; }
-        [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("LABEL")]          public String Label { get; }
+        [UsedImplicitly][Field("NAME")]           public String Name { get; }
+        [UsedImplicitly][Field("OID")]            public Int32 OID { get; }
+        [UsedImplicitly][Field("GID")]            public Guid UUID { get; }
+        [UsedImplicitly][Field("S_CDT")]          public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]          public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("NATIVECLASS")]    public String NativeClassName { get; }
+        [UsedImplicitly][Field("PLUGINASSEMBLY")] public String PluginAssembly { get; }
+        [UsedImplicitly][Field("TEXT")]           public String Body { get; }
+        [UsedImplicitly][Field("FORMTEXT")]       public String Xml { get; }
+        [UsedImplicitly][Field("S_CR")]           public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]           public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("MODULEOID")]      public Module Module { get; }
         public String Description { get; }
-        [UsedImplicitly][Field(Source = "NATIVECLASS")] public String NativeClassName { get; }
-        [UsedImplicitly][Field(Source = "PLUGINASSEMBLY")] public String PluginAssembly { get; }
-        [UsedImplicitly][Field(Source = "TEXT")] public String Body { get; }
-        [UsedImplicitly][Field(Source = "FORMTEXT")] public String Xml { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Form(DataRow row,IServiceProvider service)
             :base(row,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            Module = modules.GetObject(ModuleOID);
             }
         #endregion
 
@@ -66,6 +66,5 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -7,29 +8,26 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<Query>))]
     public class Query : PDBObject
         {
-        [UsedImplicitly][Field("OID")]       public Int32 OID { get; }
-        [UsedImplicitly][Field("NAME")]      public String Name { get; }
-        [UsedImplicitly][Field("LABEL")]     public String Label { get; }
-        [UsedImplicitly][Field("MODULEOID")] private Int32 ModuleOID { get; }
-        [UsedImplicitly][Field(Source = "DESCRIPTION")] public String Description { get; }
-        [UsedImplicitly][Field(Source = "OPTIONS")] public String Options { get; }
-        [UsedImplicitly][Field(Source = "S_CDT")]  public DateTime? CreatedDate  { get; }
-        [UsedImplicitly][Field(Source = "S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field(Source = "GID")]    public Guid UUID { get; }
-        [UsedImplicitly][Field(Source = "SQLTEXT")] public String Body { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
-        public Module Module { get; }
+        [UsedImplicitly][Field("OID")]         public Int32 OID { get; }
+        [UsedImplicitly][Field("NAME")]        public String Name { get; }
+        [UsedImplicitly][Field("LABEL")]       public String Label { get; }
+        [UsedImplicitly][Field("DESCRIPTION")] public String Description { get; }
+        [UsedImplicitly][Field("OPTIONS")]     public String Options { get; }
+        [UsedImplicitly][Field("S_CDT")]       public DateTime? CreatedDate  { get; }
+        [UsedImplicitly][Field("S_MDT")]       public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
+        [UsedImplicitly][Field("SQLTEXT")]     public String Body { get; }
+        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("MODULEOID")]   public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Query(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            var users   = (ISqlObjectResolver<Int32?,PDBUser>)service.GetService(typeof(ISqlObjectResolver<Int32?,PDBUser>));
-            var modules = (ISqlObjectResolver<Int32?,Module>)service.GetService(typeof(ISqlObjectResolver<Int32?,Module>));
-            Module = modules.GetObject(ModuleOID);
             }
         #endregion
 
