@@ -21,10 +21,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("COMMAND")]        public String Command { get; }
         [UsedImplicitly][Field("WORKSPACEGROUP")] public String WorkspaceGroup { get; }
         [UsedImplicitly][Field("SHORTCUT")]       public String ShortCut { get; }
-        [UsedImplicitly][Field("S_CR")]           public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]           public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]           public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]           public User ModifiedBy { get; }
         [UsedImplicitly][Field("ONLYIFQUERY")]    public Query OnlyIfQuery { get; }
-        [UsedImplicitly][Field("ONLY4GROUP")]     public PDBUser OnlyIfGroup { get; }
+        [UsedImplicitly][Field("ONLY4GROUP")]     public User OnlyIfGroup { get; }
         [UsedImplicitly][Field("WORKSPACECOUNT")] public Query WorkspaceCounterQuery { get; }
         [UsedImplicitly][Field("CLASSOID")]       public Class Class { get; }
         [UsedImplicitly][Field("REPORTOID")]      public Report Report { get; }

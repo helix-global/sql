@@ -17,14 +17,23 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_CDT")]     public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]     public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("GID")]       public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CR")]      public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]      public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]      public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]      public User ModifiedBy { get; }
         [UsedImplicitly][Field("MODULEOID")] public Module Module { get; }
+        [UsedImplicitly][Field("S_S")]       public ClassState State { get; }
+        [UsedImplicitly][Field("REMARK")]    public String Description { get; }
+        [UsedImplicitly][Field("ISOCODE")]   public String ISO { get; }
+        [UsedImplicitly][Field("OPTIONS")]   public String Options { get; }
+        public FastReport Body { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Report(DataRow source,IServiceProvider service)
             :base(source,service)
             {
+            //var body = (Byte[])source["REPORT"];
+            //if (body != null) {
+            //    Body = FastReport.LoadFrom(body);
+            //    }
             }
         #endregion
 
@@ -45,7 +54,11 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Module),Module);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(State),State);
+                writer.WriteAttribute(nameof(ISO),ISO);
                 writer.WriteCData(nameof(Name),URI_META,Name);
+                writer.WriteCData(nameof(Description),URI_META,Description);
+                writer.WriteCData(nameof(Options),URI_META,Options);
                 }
             }
         #endregion
@@ -57,5 +70,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
+
+        [UsedImplicitly][Field("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] m_body;
         }
     }

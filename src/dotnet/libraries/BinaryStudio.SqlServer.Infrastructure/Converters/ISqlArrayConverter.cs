@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class UserReferenceConverter : ObjectConverter<User>
+    public interface ISqlArrayConverter
         {
+        Boolean TryConvertFrom(Object value,out Byte[] result);
         }
     }

@@ -24,7 +24,7 @@ namespace IPGPhotonics.PDB.Infrastructure
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
-        ISqlObjectResolver<Int32?,PDBUser>,
+        ISqlObjectResolver<Int32?,User>,
         ISqlObjectResolver<Int32?,Module>,
         ISqlObjectResolver<Int32?,Entity>,
         ISqlObjectResolver<Int32?,Unit>,
@@ -33,21 +33,22 @@ namespace IPGPhotonics.PDB.Infrastructure
         ISqlObjectResolver<Int32?,Interface>,
         ISqlObjectResolver<Int32?,Report>,
         ISqlObjectResolver<Int32?,View>,
-        ISqlObjectResolver<Int32?,Operation>
+        ISqlObjectResolver<Int32?,Operation>,
+        ISqlObjectResolver<Int32?,ClassState>
         {
         public Int32 FileVersion { get; }
         public Int64 Length { get; }
-        public IList<Module> Modules { get;private set; }
-        public IList<PDBEnum> Enums { get;private set; }
-        public IList<Entity> Entities { get;private set; }
-        public IList<Unit> DataUnits { get;private set; }
-        public IList<Query> Queries { get;private set; }
-        public IList<Stage> Stages { get;private set; }
-        public IList<Class> Classes { get;private set; }
-        public IList<Form> Forms { get;private set; }
+        public IList<Module>    Modules { get;private set; }
+        public IList<PDBEnum>   Enums { get;private set; }
+        public IList<Entity>    Entities { get;private set; }
+        public IList<Unit>      DataUnits { get;private set; }
+        public IList<Query>     Queries { get;private set; }
+        public IList<Stage>     Stages { get;private set; }
+        public IList<Class>     Classes { get;private set; }
+        public IList<Form>      Forms { get;private set; }
         public IList<Interface> Interfaces { get;private set; }
-        public IList<Report> Reports { get;private set; }
-        public IList<View> Views { get;private set; }
+        public IList<Report>    Reports { get;private set; }
+        public IList<View>      Views { get;private set; }
         public IList<Operation> Operations { get;private set; }
 
         #region ctor
@@ -153,7 +154,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 Task.WaitAll(
                     BuildIndex(token,source.Tables["DEF_ENTITY_FIELDS"],IXenfI,"ENTITYOID"),
                     BuildIndex(token,source.Tables["DEF_ENUMERATION_T"],IXenuV,"ENUMOID"),
-                    BuildIndex(token,source.Tables["DEF_CLASS_STATES"], IXclsS,"CLASSOID"),
+                    BuildIndex(token,source.Tables["DEF_CLASS_STATES"], IXclsS,"CLASSOID",LoadClassState),
                     BuildIndex(token,source.Tables["DEF_INTERFACE_T"], IXintfI,"INTERFACEOID"),
                     LoadUnits(token,source.Tables["DEF_UNIT"]),
                     LoadForms(token,source.Tables["DEF_FORM"]),
@@ -478,7 +479,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var row in source.Rows
                     .OfType<DataRow>()
-                    .Select(i => new PDBUser(i,this)))
+                    .Select(i => new User(i,this)))
                     {
                     lock(m_usrI)
                         {
@@ -496,7 +497,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                     using (var reader = new GZipStream(memory,CompressionMode.Decompress)) {
                         XDocument.Load(reader).Root
                             .Elements("User")
-                            .Select(i => new PDBUser(i))
+                            .Select(i => new User(i))
                             .ForEach(i => {
                                 {
                                 m_usrI[i.ID] = i;
@@ -692,7 +693,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
         #region M:ISqlObjectResolver<Int32?,User>.GetObject(Int32):User
-        PDBUser ISqlObjectResolver<Int32?,PDBUser>.GetObject(Int32? key) {
+        User ISqlObjectResolver<Int32?,User>.GetObject(Int32? key) {
             if (key == null) { return null; }
             e_usrI.WaitOne();
             return m_usrI.TryGetValue(key.Value,out var r)
@@ -772,6 +773,14 @@ namespace IPGPhotonics.PDB.Infrastructure
                 : null;
             }
         #endregion
+        #region M:ISqlObjectResolver<Int32?,ClassState>.GetObject(Int32):ClassState
+        ClassState ISqlObjectResolver<Int32?,ClassState>.GetObject(Int32? key) {
+            if (key == null) { return null; }
+            return m_clssI.TryGetValue(key.Value,out var r)
+                ? r
+                : null;
+            }
+        #endregion
         #region M:GetService(Type):Object
         /// <summary>Gets the service object of the specified type.</summary>
         /// <param name="service">An object that specifies the type of service object to get.</param>
@@ -806,6 +815,31 @@ namespace IPGPhotonics.PDB.Infrastructure
                         }
                     }
                 }
+            }
+        #endregion
+        #region M:BuildIndex(CancellationToken,DataTable,IDictionary<Int32,IList<DataRow>>,String,Func<DataRow,T>):Task
+        private async Task BuildIndex<T>(CancellationToken cancellation,DataTable source,IDictionary<Int32,IList<T>> target,String column,Func<DataRow,T> predicate) {
+            if (predicate == null) { throw new ArgumentNullException(nameof(predicate)); }
+            await Task.Delay(0,cancellation);
+            if (source != null) {
+                foreach (DataRow r in source.Rows) {
+                    var i = PropSI4(r[column],0);
+                    if (i != 0) {
+                        if (!target.TryGetValue(i, out var rows)) {
+                            target.Add(i,rows = new List<T>());
+                            }
+                        var o = predicate(r);
+                        rows.Add(o);
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:LoadClassState(DataRow):ClassState
+        private ClassState LoadClassState(DataRow source) {
+            var r = new ClassState(source,this);
+            m_clssI.Add(r.OID,r);
+            return r;
             }
         #endregion
 
@@ -1092,7 +1126,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<SqlObjectIdentifier,ISqlAssembly>  m_asN = new SortedDictionary<SqlObjectIdentifier,ISqlAssembly>();
         private readonly IDictionary<SqlObjectIdentifier,ISqlAggregate>  m_agN = new SortedDictionary<SqlObjectIdentifier,ISqlAggregate>();
         private readonly IDictionary<SqlExtendedPropertyIdentity,String> m_properties = new SortedDictionary<SqlExtendedPropertyIdentity,String>();
-        private readonly IDictionary<Int32,PDBUser>   m_usrI = new SortedDictionary<Int32,PDBUser>();
+        private readonly IDictionary<Int32,User>   m_usrI = new SortedDictionary<Int32,User>();
         private readonly IDictionary<Int32,Module> m_modI = new SortedDictionary<Int32,Module>();
         private readonly IDictionary<Int32,PDBEnum>   m_enuI = new SortedDictionary<Int32,PDBEnum>();
         private readonly IDictionary<Int32,Entity> m_entI = new SortedDictionary<Int32,Entity>();
@@ -1105,10 +1139,11 @@ namespace IPGPhotonics.PDB.Infrastructure
         private readonly IDictionary<Int32,Report> m_repoI = new SortedDictionary<Int32,Report>();
         private readonly IDictionary<Int32,View> m_viewI = new SortedDictionary<Int32,View>();
         private readonly IDictionary<Int32,Operation> m_operI = new SortedDictionary<Int32,Operation>();
+        private readonly IDictionary<Int32,ClassState> m_clssI = new SortedDictionary<Int32,ClassState>();
         private readonly ManualResetEvent e_usrI = new ManualResetEvent(false);
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenfI = new Dictionary<Int32,IList<DataRow>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXenuV = new Dictionary<Int32,IList<DataRow>>();
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<DataRow>> IXclsS = new Dictionary<Int32,IList<DataRow>>();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] internal readonly IDictionary<Int32,IList<ClassState>> IXclsS = new Dictionary<Int32,IList<ClassState>>();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private readonly IDictionary<Int32,IList<DataRow>> IXintfI = new Dictionary<Int32,IList<DataRow>>();
         }
     }

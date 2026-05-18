@@ -1,13 +1,15 @@
-﻿using System;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
+using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows.Media;
-using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlModelFieldMappingAttribute;
 
+    [TypeConverter(typeof(ObjectConverter<ClassState>))]
     public class ClassState : PDBObject
         {
         [UsedImplicitly][Field("OID")]         public Int32 OID { get; }
@@ -16,8 +18,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_CDT")]       public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]       public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
-        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]        public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public User ModifiedBy { get; }
         public ReadOnlyState ReadOnlyState { get; }
         public DeletionStateMode? EnableDeleting { get; }
         public String Label { get; }

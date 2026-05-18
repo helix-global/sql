@@ -71,16 +71,17 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
 
         private static readonly IDictionary<Type,TypeConverter> converters = new Dictionary<Type,TypeConverter>() {
-            { typeof(PDBUser),   new UserReferenceConverter()     },
-            { typeof(Module),    new ObjectConverter<Module>()    },
-            { typeof(Unit),      new ObjectConverter<Unit>()      },
-            { typeof(Class),     new ObjectConverter<Class>()     },
-            { typeof(Entity),    new ObjectConverter<Entity>()    },
-            { typeof(Form),      new ObjectConverter<Form>()      },
-            { typeof(Query),     new ObjectConverter<Query>()     },
-            { typeof(Report),    new ObjectConverter<Report>()    },
-            { typeof(View),      new ObjectConverter<View>()      },
-            { typeof(Operation), new ObjectConverter<Operation>() },
+            { typeof(User),       new UserReferenceConverter()      },
+            { typeof(Module),     new ObjectConverter<Module>()     },
+            { typeof(Unit),       new ObjectConverter<Unit>()       },
+            { typeof(Class),      new ObjectConverter<Class>()      },
+            { typeof(Entity),     new ObjectConverter<Entity>()     },
+            { typeof(Form),       new ObjectConverter<Form>()       },
+            { typeof(Query),      new ObjectConverter<Query>()      },
+            { typeof(Report),     new ObjectConverter<Report>()     },
+            { typeof(View),       new ObjectConverter<View>()       },
+            { typeof(Operation),  new ObjectConverter<Operation>()  },
+            { typeof(ClassState), new ObjectConverter<ClassState>() },
             };
         }
     }

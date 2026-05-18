@@ -34,8 +34,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("NAMEMASK")]            public String NameMask { get; }
         [UsedImplicitly][Field("DEFAULTPERIOD")]       public DatePeriodType? DefaultListPeriod { get; }
         [UsedImplicitly][Field("DEFAULTPERIODCUSTOM")] public Int32? DefaultListPeriodCustom { get; }
-        [UsedImplicitly][Field("S_CR")]                public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]                public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]                public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]                public User ModifiedBy { get; }
         [UsedImplicitly][Field("MODULEOID")]           public Module Module { get; }
         [UsedImplicitly][Field("ENTITYOID")]           public Entity Entity { get; }
         [UsedImplicitly][Field("LIVEUNIT")]            public Unit LiveUnit { get; }
@@ -48,9 +48,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         public Boolean DisableCopy { get; }
         public Boolean AlwaysReadOnly { get; }
 
-        #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<DataRow>>}
+        #region ctor{DataRow,IServiceProvider,IDictionary<Int32,IList<ClassState>>}
         internal Class(DataRow source,IServiceProvider service,
-            IDictionary<Int32,IList<DataRow>> states)
+            IDictionary<Int32,IList<ClassState>> states)
             :base(source,service)
             {
             DisableDirectAdd    = PropB(source["NOLISTADD"],false);
@@ -61,9 +61,8 @@ namespace IPGPhotonics.PDB.Infrastructure
             try
                 {
                 if (states.TryGetValue(OID,out var rows)) {
-                    foreach (var row in rows) {
-                        var o = new ClassState(row,service);
-                        States.Add(o.OID,o);
+                    foreach (var state in rows) {
+                        States.Add(state.OID,state);
                         }
                     }
                 }

@@ -4,8 +4,10 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlBase64ArrayConverter : TypeConverter
+    internal class SqlBase64ArrayConverter : TypeConverter,ISqlArrayConverter
         {
+        public static readonly SqlBase64ArrayConverter Default = new SqlBase64ArrayConverter();
+
         #region M:CanConvertFrom(ITypeDescriptorContext,Type):Boolean
         /// <summary>Returns whether this converter can convert an object of the given type to the type of this converter, using the specified context.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -55,6 +57,24 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private Byte[] ConvertFrom(String value) {
             if (String.IsNullOrEmpty(value)) { return null; }
             return Convert.FromBase64String(value);
+            }
+        #endregion
+        #region M:TryConvertFrom(Object,out Byte[]):Boolean
+        public Boolean TryConvertFrom(Object value,out Byte[] result) {
+            result = null;
+            if ((value == null) || (value is DBNull)) { return false; }
+            if (value is Byte[] A) { result = A; return true; }
+            var s = value.ToString().Trim();
+            if (String.IsNullOrEmpty(s)) { return false; }
+            try
+                {
+                result = Convert.FromBase64String(s);
+                return true;
+                }
+            catch (FormatException)
+                {
+                return false;
+                }
             }
         #endregion
         }

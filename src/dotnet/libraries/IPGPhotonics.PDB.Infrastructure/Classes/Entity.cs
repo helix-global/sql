@@ -22,8 +22,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("REMARKS")]     public String Description { get; }
         [UsedImplicitly][Field("STATESCOUNT")] public EntityStateKind EntityStates { get; }
         [UsedImplicitly][Field("SQLFILTER")]   public String FilterExpression { get; }
-        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]        public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public User ModifiedBy { get; }
         [UsedImplicitly][Field("MODULEOID")]   public Module Module { get; }
         [UsedImplicitly][Field("DATAUNITOID")] public Unit DataUnit { get; }
 

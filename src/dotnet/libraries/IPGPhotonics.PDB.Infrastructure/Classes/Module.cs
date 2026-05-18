@@ -18,8 +18,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("GID")]    public Guid UUID { get; }
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public User ModifiedBy { get; }
 
         #region ctor{DataRow,IServiceProvider}
         public Module(DataRow row,IServiceProvider service)

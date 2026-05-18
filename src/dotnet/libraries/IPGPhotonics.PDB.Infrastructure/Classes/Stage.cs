@@ -24,8 +24,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("GID")]         public Guid UUID { get; }
         [UsedImplicitly][Field("SQLTEXT")]     public String Body { get; }
         [UsedImplicitly][Field("CLASSOID")]    public Class Class { get; }
-        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]        public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public User ModifiedBy { get; }
         [UsedImplicitly][Field("STATEOID")]    private Int32? StateOID { get; }
         public ClassState State { get; }
 
@@ -63,7 +63,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(CreatedBy),CreatedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(ModifiedBy),ModifiedBy);
                 writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(Class),Class);
-                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(State),State,None|ForceNewLine);
+                writer.ScheduleNewLineForNextAttribute().WriteReference(nameof(State),State);
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 writer.WriteCData(nameof(Description),URI_META,Description);

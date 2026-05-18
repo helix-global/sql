@@ -22,8 +22,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("POSORDER")]     public Int32? PositionOrder { get; }
         [UsedImplicitly][Field("ADMAUTOLOAD")]  public Boolean? LoadOnAdminAccount { get; }
         [UsedImplicitly][Field("MODULEOID")]    public Module Module { get; }
-        [UsedImplicitly][Field("S_CR")]         public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]         public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]         public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]         public User ModifiedBy { get; }
         [UsedImplicitly][Field("ONLYFIFQUERY")] public Query OnlyIfQuery { get; }
         [UsedImplicitly][Field("HIDEIFQUERY")]  public Query HideIfQuery { get; }
         public Color? Color { get; }

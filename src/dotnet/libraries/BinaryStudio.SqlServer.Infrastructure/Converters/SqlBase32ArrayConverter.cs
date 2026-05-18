@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlBase32ArrayConverter : TypeConverter
+    internal class SqlBase32ArrayConverter : TypeConverter,ISqlArrayConverter
         {
         public static readonly SqlBase32ArrayConverter Default = new SqlBase32ArrayConverter();
 
@@ -91,6 +91,29 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 r[i] = Byte.Parse(value.Substring(i * 2, 2),NumberStyles.HexNumber,CultureInfo.InvariantCulture);
                 }
             return r;
+            }
+        #endregion
+        #region M:TryConvertFrom(Object,out Byte[]):Boolean
+        public Boolean TryConvertFrom(Object value,out Byte[] result) {
+            result = null;
+            if ((value == null) || (value is DBNull)) { return false; }
+            if (value is Byte[] A) { result = A; return true; }
+            var s = value.ToString().Trim();
+            if (String.IsNullOrEmpty(s)) { return false; }
+            if (s.StartsWith("0x",StringComparison.OrdinalIgnoreCase)) {
+                s = s.Substring(2);
+                }
+            var c = s.Length;
+            if (c % 2 != 0) {
+                return false;
+                }
+            c = (c / 2);
+            var r = new Byte[c];
+            for (var i = 0; i < c; i++) {
+                r[i] = Byte.Parse(s.Substring(i * 2, 2),NumberStyles.HexNumber,CultureInfo.InvariantCulture);
+                }
+            result = r;
+            return true;
             }
         #endregion
         #region M:ToString:String

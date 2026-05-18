@@ -21,8 +21,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("PLUGINASSEMBLY")] public String PluginAssembly { get; }
         [UsedImplicitly][Field("TEXT")]           public String Body { get; }
         [UsedImplicitly][Field("FORMTEXT")]       public String Xml { get; }
-        [UsedImplicitly][Field("S_CR")]           public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]           public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]           public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]           public User ModifiedBy { get; }
         [UsedImplicitly][Field("MODULEOID")]      public Module Module { get; }
         public String Description { get; }
 

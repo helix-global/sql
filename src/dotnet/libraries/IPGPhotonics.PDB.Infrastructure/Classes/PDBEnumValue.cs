@@ -17,8 +17,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("S_CDT")]  public DateTime? CreatedDate  { get; }
         [UsedImplicitly][Field("S_MDT")]  public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("ENUMPICT")][TypeConverter(typeof(SqlBase64ArrayConverter))] public Byte[] Picture { get; }
-        [UsedImplicitly][Field("S_CR")]   public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]   public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]   public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]   public User ModifiedBy { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal PDBEnumValue(DataRow row,IServiceProvider service)

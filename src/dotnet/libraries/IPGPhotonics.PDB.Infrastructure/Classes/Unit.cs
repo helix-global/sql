@@ -20,8 +20,8 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("DESCRIPTION")] public String Description { get; }
         [UsedImplicitly][Field("NATIVECLASS")] public String NativeClassName { get; }
         [UsedImplicitly][Field("TEXT")]        public String Body { get; }
-        [UsedImplicitly][Field("S_CR")]        public PDBUser CreatedBy  { get; }
-        [UsedImplicitly][Field("S_MR")]        public PDBUser ModifiedBy { get; }
+        [UsedImplicitly][Field("S_CR")]        public User CreatedBy  { get; }
+        [UsedImplicitly][Field("S_MR")]        public User ModifiedBy { get; }
         [UsedImplicitly][Field("MODULEOID")]   public Module Module { get; }
 
         #region ctor{DataRow,IServiceProvider}

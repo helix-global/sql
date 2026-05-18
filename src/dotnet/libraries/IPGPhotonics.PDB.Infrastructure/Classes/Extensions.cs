@@ -5,8 +5,8 @@ namespace IPGPhotonics.PDB.Infrastructure
     {
     internal static class Extensions
         {
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBUser)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,PDBUser reference) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,User)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,User reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=User,'{reference.FullName}',{reference.UUID.ToString("B")}}}");
                 }
@@ -30,7 +30,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,PDBEntity,SqlXmlWriterAttributeOptions)
+        #region M:WriteReference({this}ISqlXmlWriter,String,Entity,SqlXmlWriterAttributeOptions)
         public static void WriteReference(this ISqlXmlWriter writer,String localName,Entity reference,SqlXmlWriterAttributeOptions options) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=Entity,'{reference.Label}',{reference.OID}}}");
@@ -41,8 +41,8 @@ namespace IPGPhotonics.PDB.Infrastructure
                 }
             }
         #endregion
-        #region M:WriteReference({this}ISqlXmlWriter,String,ClassState,SqlXmlWriterAttributeOptions)
-        public static void WriteReference(this ISqlXmlWriter writer,String localName,ClassState reference,SqlXmlWriterAttributeOptions options) {
+        #region M:WriteReference({this}ISqlXmlWriter,String,ClassState)
+        public static void WriteReference(this ISqlXmlWriter writer,String localName,ClassState reference) {
             if (reference != null) {
                 writer.WriteAttribute(localName,$"{{x:Reference Source=State,'{reference.Label}',{reference.OID.ToString()}}}");
                 }
