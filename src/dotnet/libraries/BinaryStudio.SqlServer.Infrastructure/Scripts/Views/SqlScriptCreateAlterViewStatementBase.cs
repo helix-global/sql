@@ -4,8 +4,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlScriptCreateAlterViewStatementBase<T>: SqlScriptDdlStatement<T>
         where T : SqlCreateAlterViewStatementBase
         {

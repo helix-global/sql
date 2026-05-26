@@ -21,8 +21,7 @@ using IPGPhotonics.PDB.Infrastructure.Properties;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     public class A2CPackage: SqlObject,ISqlExtendedPropertyResolver,
         ISqlObjectResolver<Int32?,User>,
         ISqlObjectResolver<Int32?,Module>,
@@ -845,11 +844,11 @@ namespace IPGPhotonics.PDB.Infrastructure
 
         private class MetadataRecord : SqlObject,IComparable<MetadataRecord>
             {
-            [UsedImplicitly][Field(Source = "NAME")]     public String Name { get; }
-            [UsedImplicitly][Field(Source = "SQLTEXT")]  public String Script { get; }
-            [UsedImplicitly][Field(Source = "OID")]      public Int32 OID { get; }
-            [UsedImplicitly][Field(Source = "MTYPE")]    public SqlObjectType Type { get; }
-            [UsedImplicitly][Field(Source = "DISABLED")] public Boolean IsDisabled { get; }
+            [UsedImplicitly][SqlObjectFieldMapping(Source = "NAME")]     public String Name { get; }
+            [UsedImplicitly][SqlObjectFieldMapping(Source = "SQLTEXT")]  public String Script { get; }
+            [UsedImplicitly][SqlObjectFieldMapping(Source = "OID")]      public Int32 OID { get; }
+            [UsedImplicitly][SqlObjectFieldMapping(Source = "MTYPE")]    public SqlObjectType Type { get; }
+            [UsedImplicitly][SqlObjectFieldMapping(Source = "DISABLED")] public Boolean IsDisabled { get; }
 
             #region ctor{DataRow}
             public MetadataRecord(DataRow row)

@@ -4,8 +4,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     internal abstract class SqlFragmentIndexOption<T> : SqlFragmentObject<T>,ISqlIndexOption
         where T: IndexOption
         {

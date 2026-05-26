@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     internal abstract class SqlFragmentPrimaryExpression<T> : SqlFragmentScalarExpression<T>
         where T: PrimaryExpression
         {

@@ -4,8 +4,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlFragmentConstraintDefinition<T> : SqlFragmentObject<T>,ISqlScriptConstraint
         where T : ConstraintDefinition
         {

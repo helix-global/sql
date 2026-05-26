@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(PartitionFunctionCall))]
     internal sealed class SqlFragmentPartitionFunctionCall : SqlFragmentPrimaryExpression<PartitionFunctionCall>
         {

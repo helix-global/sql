@@ -6,8 +6,7 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     public class PDBEnumValue : PDBObject
         {
         [UsedImplicitly][Field("CODE")] public Int32 Code { get; }

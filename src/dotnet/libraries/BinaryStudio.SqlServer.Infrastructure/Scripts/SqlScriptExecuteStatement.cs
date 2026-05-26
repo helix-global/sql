@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     internal abstract class SqlScriptExecuteStatement<T> : SqlScriptStatement<T>
         where T: SqlExecuteStatement
         {

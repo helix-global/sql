@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     internal abstract class SqlScriptUdtInstanceMemberExpression<T> : SqlScriptUdtMemberExpression<T>
         where T : SqlUdtInstanceMemberExpression
         {

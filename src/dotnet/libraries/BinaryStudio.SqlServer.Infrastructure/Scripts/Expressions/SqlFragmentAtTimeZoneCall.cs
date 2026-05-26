@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(AtTimeZoneCall))]
     internal sealed class SqlFragmentAtTimeZoneCall : SqlFragmentPrimaryExpression<AtTimeZoneCall>
         {

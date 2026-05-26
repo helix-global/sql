@@ -7,8 +7,7 @@ using System.Windows.Media;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(ObjectConverter<ClassState>))]
     public class ClassState : PDBObject
         {

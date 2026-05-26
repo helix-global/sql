@@ -5,8 +5,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [SqlScriptObject(typeof(ForeignKeyConstraintDefinition))]
     internal sealed class SqlFragmentForeignKeyConstraintDefinition : SqlFragmentConstraintDefinition<ForeignKeyConstraintDefinition>,ISqlForeignKeyConstraint
         {

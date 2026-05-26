@@ -4,8 +4,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [SqlScriptObject(typeof(CreateAssemblyStatement))]
     internal class SqlFragmentCreateAssemblyStatement : SqlFragmentAssemblyStatement<CreateAssemblyStatement>
         {

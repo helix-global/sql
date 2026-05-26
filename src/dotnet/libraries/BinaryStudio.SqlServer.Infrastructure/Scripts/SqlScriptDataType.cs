@@ -3,8 +3,8 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     using DataType=Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlDataType;
-    using FieldAttribute=SqlModelFieldMappingAttribute;
 
     [SqlScriptObject(typeof(DataType))]
     internal sealed class SqlScriptDataType : SqlScriptCodeObject<DataType>,ISqlScriptDataType

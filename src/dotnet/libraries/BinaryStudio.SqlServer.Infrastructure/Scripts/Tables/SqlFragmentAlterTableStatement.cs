@@ -4,8 +4,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlFragmentAlterTableStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement
         where T : AlterTableStatement
         {

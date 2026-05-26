@@ -3,8 +3,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(AlterTableAlterColumnStatement))]
     internal sealed class SqlFragmentAlterTableAlterColumnStatement : SqlFragmentAlterTableStatement<AlterTableAlterColumnStatement>
         {

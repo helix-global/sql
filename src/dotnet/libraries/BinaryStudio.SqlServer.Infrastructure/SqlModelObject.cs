@@ -110,7 +110,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (!PropertyMapping.TryGetValue(Type, out mapping)) {
                     using (WriteLock(rwl)) {
                         PropertyMapping.Add(Type,mapping = new Dictionary<String,PropertyDescriptor>());
-                        foreach (var i in ResolveAttributeMappings<SqlModelFieldMappingAttribute>(Type)) {
+                        foreach (var i in ResolveAttributeMappings<SqlObjectFieldMappingAttribute>(Type)) {
                             mapping[i.Key] = i.Value;
                             }
                         }
@@ -202,12 +202,43 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
 
         #region M:ReadXmlA(XmlReader)
+        /// <summary>Reads object data from the specified XML reader and attribute section. Intended to be overridden in a derived class to implement custom XML deserialization logic.</summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> to read the object's data from. Cannot be <see langword="null"/>.</param>
+        /// <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <remarks>
+        /// This method provides a base implementation for reading object data
+        /// from XML (attribute section). Override this method in a derived
+        /// class to deserialize the object's state from the provided XML reader.
+        /// </remarks>
         protected virtual void ReadXmlA(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            throw new NotImplementedException();
+            while (reader.MoveToNextAttribute()) {
+                switch (reader.LocalName) {
+                    default:
+                        ResolveFieldMappings(GetType(),out var mapping);
+                        if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
+                            throw new NotSupportedException(
+                                (reader is IXmlLineInfo LineInfo)
+                                ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                );
+                            }
+                        SetValue(mi,reader.Value);
+                        break;
+                    }
+                }
             }
         #endregion
         #region M:ReadXmlE(XmlReader)
+        /// <summary>Reads object data from the specified XML reader (nested elements). Intended to be overridden in a derived class to implement custom XML deserialization logic.</summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> to read the object's data from. Cannot be <see langword="null"/>.</param>
+        /// <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="reader"/> is <see langword="null"/>.</exception>
+        /// <exception cref="T:System.NotImplementedException">Thrown in the base implementation. Derived classes should override this method to provide the deserialization logic.</exception>
+        /// <remarks>
+        /// This method provides a base implementation for reading object data
+        /// from XML (nested elements). Override this method in a derived
+        /// class to deserialize the object's state from the provided XML reader.
+        /// </remarks>
         protected virtual void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             throw new NotImplementedException();
@@ -305,7 +336,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (value != null) {
                 if (typeof(IEnumerable).IsAssignableFrom(typeS) &&
                     typeof(IEnumerable).IsAssignableFrom(typeT) &&
-                    (typeT != typeof(Byte[])))
+                    (typeT != typeof(Byte[])) &&
+                    (typeS != typeof(String)))
                     {
                     if (IsGenericCollection(typeS,out var typeSG,out var typeSE) &&
                         IsGenericCollection(typeT,out var typeTG,out var typeTE))
@@ -471,6 +503,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return value.Replace("'","''");
             }
         #endregion
+        #region M:ForEachE(XmlReader)
+        protected static void ForEachE(XmlReader reader,Action<XmlReader> action) {
+            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
+            if (action == null) { throw new ArgumentNullException(nameof(action)); }
+            while (reader.Read()) {
+                switch (reader.NodeType) {
+                    case XmlNodeType.Element:
+                        action(reader);
+                        break;
+                    }
+                }
+            }
+        #endregion
 
         protected internal static IDisposable ReadLock(ReaderWriterLockSlim o)            { return new ReadLockScope(o);            }
         protected internal static IDisposable WriteLock(ReaderWriterLockSlim o)           { return new WriteLockScope(o);           }
@@ -579,7 +624,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:CoerceValue(Object):Object
             protected Object CoerceValue(Object value) {
                 if (value == null) {
-                    var attribute = (SqlModelFieldMappingAttribute)Attributes[typeof(SqlModelFieldMappingAttribute)];
+                    var attribute = (SqlObjectFieldMappingAttribute)Attributes[typeof(SqlObjectFieldMappingAttribute)];
                     if ((attribute != null) && (attribute.EmptyIfNull)) {
                         if (PropertyType.IsConstructedGenericType) {
                             var typeG = PropertyType.GetGenericTypeDefinition();
@@ -692,9 +737,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 try
                     {
                     var FieldName = Source.Name;
-                    if (FieldName == "<DefaultListPeriod>k__BackingField")
+                    if (FieldName == "Guides")
                         {
-                        //Debugger.Break();
+                        Debugger.Break();
                         }
                     Source.SetValue(component,(component is SqlObject target)
                         ? target.CoerceValue(this,value)

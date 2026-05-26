@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     public class Interface : PDBObject
         {
         public IList<InterfaceItem> Items { get; } = EmptyArray<InterfaceItem>.List;

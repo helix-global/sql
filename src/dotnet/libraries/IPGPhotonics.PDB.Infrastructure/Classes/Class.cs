@@ -8,8 +8,7 @@ using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(ObjectConverter<Class>))]
     public class Class : PDBObject
         {

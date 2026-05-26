@@ -7,7 +7,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     using static SqlScriptTypeOnlyConstraint;
 
     internal abstract class SqlScriptColumnDefinition<T> : SqlScriptCodeObject<T>,ISqlScriptColumnDefinition,ISqlColumn

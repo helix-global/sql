@@ -6,8 +6,7 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(ObjectConverter<Operation>))]
     public class Operation : PDBObject
         {

@@ -6,8 +6,7 @@ using static BinaryStudio.SqlServer.Infrastructure.SqlXmlWriterAttributeOptions;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     public class Stage : PDBObject
         {
         [UsedImplicitly][Field("OID")]         public Int32 OID { get; }

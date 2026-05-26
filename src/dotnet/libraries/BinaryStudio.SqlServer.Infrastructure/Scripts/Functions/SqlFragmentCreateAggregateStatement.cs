@@ -5,8 +5,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     /// <summary>
     /// Represents CREATE AGGREGATE statement.
     /// </summary>

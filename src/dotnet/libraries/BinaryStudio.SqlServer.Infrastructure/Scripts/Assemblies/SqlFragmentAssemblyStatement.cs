@@ -4,8 +4,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlFragmentAssemblyStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement,ISqlAssembly
         where T: AssemblyStatement
         {

@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(NullLiteral))]
     internal sealed class SqlFragmentNullLiteral : SqlFragmentLiteral<NullLiteral>
         {

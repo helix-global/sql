@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
-using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using BinaryStudio.SqlServer.Infrastructure;
+using IPGPhotonics.PDB.Infrastructure.Reports;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(ObjectConverter<Report>))]
     public class Report : PDBObject
         {
@@ -30,10 +30,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         internal Report(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            //var body = (Byte[])source["REPORT"];
-            //if (body != null) {
-            //    Body = FastReport.LoadFrom(body);
-            //    }
+            Body = (m_body != null)
+                ? FastReport.LoadFrom(m_body)
+                : null;
             }
         #endregion
 
@@ -71,6 +70,6 @@ namespace IPGPhotonics.PDB.Infrastructure
             }
         #endregion
 
-        [UsedImplicitly][Field("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] m_body;
+        [UsedImplicitly][SqlObjectFieldMapping("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] m_body;
         }
     }

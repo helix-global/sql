@@ -4,8 +4,7 @@ using SqlCodeDomObjectReference=Microsoft.SqlServer.Management.SqlParser.SqlCode
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [SqlScriptObject(typeof(SqlCodeDomObjectReference))]
     internal sealed class SqlScriptObjectReference : SqlScriptCodeObject<SqlCodeDomObjectReference>
         {

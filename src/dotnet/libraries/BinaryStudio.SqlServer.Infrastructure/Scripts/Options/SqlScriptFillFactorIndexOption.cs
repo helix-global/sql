@@ -4,8 +4,7 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [SqlScriptObject(typeof(SqlFillFactorIndexOption))]
     internal sealed class SqlScriptFillFactorIndexOption : SqlScriptIndexOption<SqlFillFactorIndexOption>,ISqlFillFactorIndexOption
         {

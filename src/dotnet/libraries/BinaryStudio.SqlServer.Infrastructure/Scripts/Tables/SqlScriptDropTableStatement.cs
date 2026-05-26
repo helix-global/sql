@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(SqlDropTableStatement))]
     internal sealed class SqlScriptDropTableStatement : SqlScriptDropStatement<SqlDropTableStatement>
         {

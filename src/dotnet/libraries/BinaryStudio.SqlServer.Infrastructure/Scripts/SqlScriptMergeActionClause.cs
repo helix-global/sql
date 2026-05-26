@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(SqlMergeActionClause))]
     internal sealed class SqlScriptMergeActionClause : SqlScriptCodeObject<SqlMergeActionClause>
         {

@@ -4,8 +4,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlFragmentSetOnOffStatement<T> : SqlFragmentObject<T>,ISqlScriptStatement
         where T: SetOnOffStatement
         {

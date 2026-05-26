@@ -4,8 +4,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject("Microsoft.SqlServer.Management.SqlParser.SqlCodeDom.SqlLiteralExpression.DefaultLiteralExpression")]
     internal sealed class SqlScriptDefaultLiteralExpression : SqlScriptLiteralExpression
         {

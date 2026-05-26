@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(IdentityFunctionCall))]
     internal sealed class SqlFragmentIdentityFunctionCall : SqlFragmentScalarExpression<IdentityFunctionCall>
         {

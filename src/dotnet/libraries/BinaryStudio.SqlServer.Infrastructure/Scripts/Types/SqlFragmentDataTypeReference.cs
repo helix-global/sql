@@ -6,8 +6,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class SqlFragmentDataTypeReference<T> : SqlFragmentObject<T>,ISqlFragmentDataTypeReference
         where T : DataTypeReference
         {

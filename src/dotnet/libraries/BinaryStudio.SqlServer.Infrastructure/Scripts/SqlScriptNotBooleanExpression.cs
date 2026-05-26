@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(SqlNotBooleanExpression))]
     internal sealed class SqlScriptNotBooleanExpression : SqlScriptBooleanExpression<SqlNotBooleanExpression>
         {

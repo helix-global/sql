@@ -4,8 +4,7 @@ using JetBrains.Annotations;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [UsedImplicitly]
     [SqlScriptObject(typeof(CheckConstraintDefinition))]
     internal sealed class SqlFragmentCheckConstraintDefinition : SqlFragmentConstraintDefinition<CheckConstraintDefinition>,ISqlCheckConstraint

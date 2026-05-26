@@ -7,8 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(UserReferenceConverter))]
     public class User : PDBObject
         {

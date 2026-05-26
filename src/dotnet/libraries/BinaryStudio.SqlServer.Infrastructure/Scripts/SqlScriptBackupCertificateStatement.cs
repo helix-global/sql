@@ -3,8 +3,6 @@ using Microsoft.SqlServer.Management.SqlParser.SqlCodeDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
     [SqlScriptObject(typeof(SqlBackupCertificateStatement))]
     internal sealed class SqlScriptBackupCertificateStatement : SqlScriptStatement<SqlBackupCertificateStatement>
         {

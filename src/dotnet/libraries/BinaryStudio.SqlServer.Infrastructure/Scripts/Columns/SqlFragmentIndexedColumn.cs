@@ -5,8 +5,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [SqlScriptObject(typeof(ColumnWithSortOrder))]
     internal class SqlFragmentIndexedColumn : SqlFragmentObject<ColumnWithSortOrder>, ISqlIndexedColumn
         {

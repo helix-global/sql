@@ -11,8 +11,7 @@ using SqlCodeDomMultipartIdentifier=Microsoft.SqlServer.Management.SqlParser.Sql
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
-
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal class SqlScriptCodeObject<T> : SqlScriptObject,ISqlScriptCodeObject
         where T : SqlCodeObject
         {

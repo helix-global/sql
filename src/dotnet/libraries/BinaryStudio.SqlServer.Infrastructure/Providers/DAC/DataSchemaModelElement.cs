@@ -26,7 +26,7 @@ namespace BinaryStudio.SqlServer.Infrastructure.DAC
         protected internal virtual IList<SqlObjectReference> References { get; } = new List<SqlObjectReference>();
         protected internal virtual IDictionary<String,DataSchemaModelRelationship> Relationships { get; } = new SortedDictionary<String,DataSchemaModelRelationship>();
         protected virtual DataSchemaModel Scope { get; }
-        [SqlModelFieldMapping] public Int32? Disambiguator { get; }
+        [SqlObjectFieldMapping] public Int32? Disambiguator { get; }
         protected IList<String> MappedElementType { get; }
         //[DebuggerBrowsable(DebuggerBrowsableState.Never)] protected ISet<String> SupportedRelationships { get; } = new HashSet<String>();
         protected internal Int32? LineNumber { get;internal set; }

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
-    using FieldAttribute=SqlModelFieldMappingAttribute;
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     public class InterfaceItem : PDBObject
         {
         [UsedImplicitly][Field("OID")]            public Int32 OID { get; }
