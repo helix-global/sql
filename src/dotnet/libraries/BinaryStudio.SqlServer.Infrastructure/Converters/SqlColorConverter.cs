@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -149,6 +151,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             var G = Byte.Parse(S.Substring(5,2),NumberStyles.HexNumber);
                             var B = Byte.Parse(S.Substring(7,2),NumberStyles.HexNumber);
                             return DColor.FromArgb(A,R,G,B);
+                            }
+                        }
+                    var c = culture.TextInfo.ListSeparator[0];
+                    if (S.IndexOf(c) != -1) {
+                        var values = S.Split(c).Select(i=>(Int32)SqlInt32Converter.DoesNotAllowNull.ConvertFromString(i)).ToArray();
+                        switch (values.Length) {
+                            case 1: return DColor.FromArgb(values[0]);
+                            case 3: return DColor.FromArgb(values[0],values[1],values[2]);
+                            case 4: return DColor.FromArgb(values[0],values[1],values[2],values[3]);
                             }
                         }
                     }

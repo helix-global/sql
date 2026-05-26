@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -7,7 +8,6 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    using Color=System.Windows.Media.Color;
 
     public class DialogControl : DialogComponentBase
         {

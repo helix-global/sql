@@ -11,5 +11,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field] public String Name { get; }
         [UsedImplicitly][Field] public Int32 ZOrder { get; }
+        [UsedImplicitly][Field] public Restrictions Restrictions { get; }
         }
     }

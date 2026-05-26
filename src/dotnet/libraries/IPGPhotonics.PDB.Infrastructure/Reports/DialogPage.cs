@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -27,8 +27,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String ResizeEvent { get; }
         [UsedImplicitly][Field] public String ShownEvent { get; }
         [UsedImplicitly][Field] public String Text { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlColorConverter))] public Color BackColor { get; }
-        [UsedImplicitly][Field] public FormBorderStyle FormBorderStyle { get; }
-        [UsedImplicitly][Field] public RightToLeft RightToLeft { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<FormBorderStyle>))] public FormBorderStyle FormBorderStyle { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<RightToLeft>))] public RightToLeft RightToLeft { get; }
         }
     }

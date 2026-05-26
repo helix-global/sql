@@ -18,6 +18,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String Filter { get; }
         [UsedImplicitly][Field] public String IdColumn { get; }
         [UsedImplicitly][Field] public String ParentIdColumn { get; }
+        [UsedImplicitly][Field] public String Relation { get; }
         [UsedImplicitly][Field] public Int32 RowCount { get; } = 1;
         [UsedImplicitly][Field] public Int32 MaxRows { get; }
         [UsedImplicitly][Field] public Single Indent { get; } = 37.8f;

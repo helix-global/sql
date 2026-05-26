@@ -7,6 +7,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     public abstract class DataSourceBase : Column
         {
-        [UsedImplicitly][Field] public String DataType { get; }
+        [UsedImplicitly][Field] public Boolean ForceLoadData { get; }
         }
     }

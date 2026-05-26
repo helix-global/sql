@@ -10,6 +10,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal class LabelControl : DialogControl
         {
         [UsedImplicitly][Field] public Boolean AutoSize { get; } = true;
-        [UsedImplicitly][Field] public ContentAlignment TextAlign { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment TextAlign { get; }
         }
     }
