@@ -3,9 +3,8 @@ using System.ComponentModel;
 using System.Windows.Media;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
-using IPGPhotonics.PDB.Infrastructure.Reports;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     using StringTrimming=System.Drawing.StringTrimming;
@@ -34,6 +33,6 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field] public Boolean Underlines { get; }
         [UsedImplicitly][Field] public Boolean WordWrap { get; } = true;
         [UsedImplicitly][Field] public Boolean Wysiwyg { get; } = true;
-        [UsedImplicitly][Field] public StringTrimming Trimming { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
         }
     }

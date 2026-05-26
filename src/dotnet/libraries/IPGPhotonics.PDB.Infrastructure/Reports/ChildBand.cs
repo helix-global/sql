@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("ChildBand")]
-    internal class ChildBand : BandBase
+    internal sealed class ChildBand : BandBase
         {
+        [UsedImplicitly][Field] public Int32 CompleteToNRows { get; }
+        [UsedImplicitly][Field] public Boolean FillUnusedSpace { get; }
+        [UsedImplicitly][Field] public Boolean PrintIfDatabandEmpty { get; }
         }
     }

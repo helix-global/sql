@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Windows;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
-using IPGPhotonics.PDB.Infrastructure.Reports.Formats;
 using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure

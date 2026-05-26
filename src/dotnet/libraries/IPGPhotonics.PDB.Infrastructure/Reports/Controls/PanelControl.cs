@@ -1,7 +1,13 @@
-﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
+﻿using System.Windows.Forms;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
+
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("PanelControl")]
-    public class PanelControl : ParentControl
+    internal sealed class PanelControl : ParentControl
         {
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<BorderStyle>))] public BorderStyle BorderStyle { get; }
         }
     }

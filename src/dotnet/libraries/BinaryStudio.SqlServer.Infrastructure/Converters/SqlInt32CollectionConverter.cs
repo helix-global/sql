@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlSingleCollectionConverter : TypeConverter
+    internal class SqlInt32CollectionConverter : TypeConverter
         {
         #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
         /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
@@ -21,11 +21,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
             if (CheckConstructedGenericCollectionType(destinationType,out var TypeG,out var TypeT)) {
-                if ((TypeG == typeof(IList<>)) && (TypeT == typeof(Single))) {
+                if ((TypeG == typeof(IList<>)) && (TypeT == typeof(Int32))) {
                     var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(TypeT));
                     if (value is String S) {
                         foreach (var i in S.Split(new[] {','})) {
-                            target.Add((Single)SqlSingleConverter.ConvertFromObject(en,i.Trim()));
+                            target.Add((Int32)SqlInt32Converter.ConvertFromObject(i.Trim()));
                             }
                         }
                     return (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(TypeT),target);
@@ -51,7 +51,5 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return false;
             }
         #endregion
-
-        private static readonly CultureInfo en = new CultureInfo("en-US");
         }
     }

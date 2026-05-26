@@ -7,10 +7,12 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class ButtonBaseControl : DataFilterBaseControl
+    public abstract class ButtonBaseControl : DataFilterBaseControl
         {
+        [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }
         [UsedImplicitly][Field] public Boolean AutoSize { get; }
-        [UsedImplicitly][Field] public ContentAlignment TextAlign { get; }
-        [UsedImplicitly][Field] public TextImageRelation TextImageRelation { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment TextAlign { get; } = ContentAlignment.MiddleLeft;
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<TextImageRelation>))] public TextImageRelation TextImageRelation { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment ImageAlign { get; } = ContentAlignment.MiddleCenter;
         }
     }

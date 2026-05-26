@@ -14,6 +14,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("Border.Lines")] public BorderLines BorderLines { get; }
         [UsedImplicitly][Field("Border.Color")][TypeConverter(typeof(SqlColorConverter))] public Color BorderColor { get; }
         [UsedImplicitly][Field][TypeConverter(typeof(SqlColorConverter))] public Color FillColor { get; }
+        [UsedImplicitly][Field] public StylePriority EvenStylePriority { get; }
         [UsedImplicitly][Field] public String AfterDataEvent { get; }
         [UsedImplicitly][Field] public String AfterPrintEvent { get; }
         [UsedImplicitly][Field] public String BeforePrintEvent { get; }

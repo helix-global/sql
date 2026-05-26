@@ -573,8 +573,31 @@ namespace BinaryStudio.SqlServer.Infrastructure
             where T: MemberInfo
             {
             protected T Source { get; }
+            public CultureInfo ConverterCulture { get; } = CultureInfo.CurrentCulture;
+            public SqlStringOptionCollection ConverterParameter { get; } = SqlStringOptionCollection.Empty;
             public override Type ComponentType { get{ return Source.DeclaringType; }}
             public override TypeConverter Converter { get {
+                if (m_cI != null) { return m_cI; }
+                if (m_cT != null) {
+                    var target = Activator.CreateInstance(m_cT);
+                    if (target != null) {
+                        var properties = TypeDescriptor.GetProperties(target).OfType<PropertyDescriptor>().ToDictionary(i=>i.Name,i=>i);
+                        foreach (var option in ConverterParameter) {
+                            if (properties.TryGetValue(option.Key,out var descriptor)) {
+                                try
+                                    {
+                                    var value  = descriptor.Converter.ConvertTo(null,ConverterCulture,option.Value,descriptor.PropertyType);
+                                    descriptor.SetValue(target,value);
+                                    }
+                                catch (Exception e)
+                                    {
+                                    throw (new Exception($@"Error setting converter option ""{option.Key}"" on converter ""{target.GetType().FullName}"".",e)).Add("Converter",target.GetType().FullName).Add("OptionKey",option.Key).Add("OptionValue",option.Value);
+                                    }
+                                }
+                            }
+                        return m_cI=(TypeConverter)target;
+                        }
+                    }
                 var type = PropertyType;
                 if (type == typeof(Boolean )) { return SqlBooleanConverter.DoesNotAllowNull; }
                 if (type == typeof(Boolean?)) { return SqlBooleanConverter.Default;          }
@@ -609,6 +632,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (member == null) { throw new ArgumentNullException(nameof(member)); }
                 if (name == null)   { throw new ArgumentNullException(nameof(name));   }
                 Source = member;
+                var attribute = (SqlObjectFieldMappingAttribute)Attributes[typeof(SqlObjectFieldMappingAttribute)];
+                if (attribute != null) {
+                    var FieldName = member.Name;
+                    if (FieldName == "<ParentColumns>k__BackingField")
+                        {
+                        //Debugger.Break();
+                        }
+                    m_cT = attribute.Converter;
+                    if (attribute.ConverterCulture != null) {
+                        ConverterCulture = CultureInfo.GetCultureInfo(attribute.ConverterCulture ?? CultureInfo.CurrentCulture.Name);
+                        }
+                    ConverterParameter = new SqlStringOptionCollection(attribute.ConverterParameter);
+                    }
                 }
             #endregion
 
@@ -669,6 +705,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return Name;
                 }
             #endregion
+
+            private Type m_cT;
+            private TypeConverter m_cI;
             }
 
         private class PropertyDescriptorP : PropertyDescriptor<PropertyInfo>
@@ -737,9 +776,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 try
                     {
                     var FieldName = Source.Name;
-                    if (FieldName == "Guides")
+                    if (FieldName == "<ParentColumns>k__BackingField")
                         {
-                        Debugger.Break();
+                        //Debugger.Break();
                         }
                     Source.SetValue(component,(component is SqlObject target)
                         ? target.CoerceValue(this,value)

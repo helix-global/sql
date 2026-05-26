@@ -12,5 +12,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field] public String Name { get; }
         [UsedImplicitly][Field] public String DataType { get; }
+        [UsedImplicitly][Field] public String Description { get; }
+        [UsedImplicitly][Field] public String Expression { get; }
+        [UsedImplicitly][Field] public String Value { get; }
         }
     }

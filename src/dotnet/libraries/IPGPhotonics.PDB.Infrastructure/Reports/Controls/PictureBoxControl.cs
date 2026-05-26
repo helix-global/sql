@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Windows.Forms;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("PictureBoxControl")]
-    internal class PictureBoxControl : DialogControl
+    internal sealed class PictureBoxControl : DialogControl
         {
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<BorderStyle>))] public BorderStyle BorderStyle { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<PictureBoxSizeMode>))] public PictureBoxSizeMode SizeMode { get; } = PictureBoxSizeMode.Normal;
         }
     }

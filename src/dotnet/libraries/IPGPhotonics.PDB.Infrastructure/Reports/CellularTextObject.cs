@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal class CellularTextObject : TextObject
         {

@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("CheckedTreeViewControl")]
-    internal class CheckedTreeViewControl : BindableDialogControl
+    internal sealed class CheckedTreeViewControl : BindableDialogControl
         {
+        [UsedImplicitly][Field] public Boolean CheckOnClick { get; }
+        [UsedImplicitly][Field] public String ItemCheckEvent { get; }
         }
     }

@@ -16,6 +16,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field] public String ChildDataSource { get; }
         [UsedImplicitly][Field] public String ParentDataSource { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlStringConverter))] public IList<String> ParentColumns { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ParentColumns { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ChildColumns { get; }
         }
     }

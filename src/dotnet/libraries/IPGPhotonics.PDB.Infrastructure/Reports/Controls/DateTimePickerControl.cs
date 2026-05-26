@@ -15,8 +15,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean ShowUpDown { get; }
         [UsedImplicitly][Field] public String CustomFormat { get; }
         [UsedImplicitly][Field] public String ValueChangedEvent { get; }
-        [UsedImplicitly][Field] public LeftRightAlignment DropDownAlign { get; }
-        [UsedImplicitly][Field] public DateTimePickerFormat Format { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<LeftRightAlignment>))] public LeftRightAlignment DropDownAlign { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DateTimePickerFormat>))] public DateTimePickerFormat Format { get; }
         [UsedImplicitly][Field] public DateTime MaxDate { get; }
         [UsedImplicitly][Field] public DateTime MinDate { get; }
         }

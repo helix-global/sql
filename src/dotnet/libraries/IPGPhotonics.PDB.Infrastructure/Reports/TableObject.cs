@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("TableObject")]
-    public class TableObject : TableBase
+    internal sealed class TableObject : TableBase
         {
+        [UsedImplicitly][Field] public Boolean ManualBuildAutoSpans { get; } = true;
+        [UsedImplicitly][Field] public String ManualBuildEvent { get; }
         }
     }

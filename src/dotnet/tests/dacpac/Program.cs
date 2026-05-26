@@ -98,6 +98,7 @@ namespace dacpac
             }
 
         private static void Main(String[] args) {
+            Debug.Print($"{Char.IsLetterOrDigit(unchecked((Char)(-1)))}");
             //var maxN = 0;
             //foreach (SqlPermission i in Enum.GetValues(typeof(SqlPermission))) {
             //    maxN = Math.Max(maxN,i.ToString().Length);
@@ -113,7 +114,7 @@ namespace dacpac
             //        }
             //    }
 
-                try
+            try
                 {
                 //RebuildA2CX("2022.07.05.0847.a2cx");
                 var TargetFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),@"..\..\..\..\..\..\..\.intermediate\pdb");
