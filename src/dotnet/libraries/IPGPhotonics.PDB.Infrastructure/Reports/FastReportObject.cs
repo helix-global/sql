@@ -76,9 +76,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:CreateE(XmlReader)
         protected virtual void CreateE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
+            var o = CreateObject(reader.Name);
+            if (o != null) {
                 using (var r = reader.ReadSubtree()) {
-                    var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
                     o.ReadXml(r);
                     reader.Skip();
                     }
@@ -89,6 +89,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
                 : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
                 );
+            }
+        #endregion
+        #region M:CreateObject(String):FastReportObject
+        protected virtual FastReportObject CreateObject(String typeName) {
+            if (RegisteredTypes.TryGetValue(typeName,out var type)) {
+                return (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
+                }
+            return null;
             }
         #endregion
 

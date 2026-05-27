@@ -40,5 +40,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 ColumnHeadersHeight { get; } = 18;
         [UsedImplicitly][Field] public Int32 RowHeadersWidth { get; } = 41;
         [UsedImplicitly][Field] public String DataSource { get; }
+
+        #region M:CreateObject(String):FastReportObject
+        protected override FastReportObject CreateObject(String typeName) {
+            switch (typeName) {
+                case "Column" : return new GridControlColumn();
+                }
+            return base.CreateObject(typeName);
+            }
+        #endregion
         }
     }
