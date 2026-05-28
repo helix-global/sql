@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("FRCompanyLogoControl")]
-    internal class FastReportCompanyLogoControl : PictureObject
+    internal sealed class FastReportCompanyLogoControl : PictureObject
         {
         }
     }

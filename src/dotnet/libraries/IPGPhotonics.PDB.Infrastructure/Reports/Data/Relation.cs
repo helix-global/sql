@@ -12,7 +12,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("Relation")]
-    public class Relation : DataComponentBase
+    internal class Relation : DataComponentBase
         {
         [UsedImplicitly][Field] public String ChildDataSource { get; }
         [UsedImplicitly][Field] public String ParentDataSource { get; }

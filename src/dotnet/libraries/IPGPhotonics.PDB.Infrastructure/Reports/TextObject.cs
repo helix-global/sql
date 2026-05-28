@@ -15,8 +15,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public HorzAlign HorzAlign { get; }
         [UsedImplicitly][Field] public VertAlign VertAlign { get; }
         [UsedImplicitly][Field] public String Font { get; }
-        [UsedImplicitly][Field("TextFill.Color")][TypeConverter(typeof(SqlColorConverter))] public Color TextFillColor { get; }
-        [UsedImplicitly][TypeConverter(typeof(SqlColorConverter))] public Color TextColor { get; }
+        //[UsedImplicitly][Field("TextFill.Color")][TypeConverter(typeof(SqlColorConverter))] public Color TextFillColor { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color TextColor { get; }
         [UsedImplicitly][Field] public Int32 Angle { get; }
         [UsedImplicitly][Field] public AutoShrinkMode AutoShrink { get; }
         [UsedImplicitly][Field] public Single AutoShrinkMinSize { get; }

@@ -12,7 +12,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("GridControl")]
-    internal class GridControl : DialogControl
+    internal sealed class GridControl : DialogControl
         {
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<GridControlColumn> Columns { get; }
         [UsedImplicitly][Field] public Boolean AllowUserToAddRows { get; }

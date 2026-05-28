@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -8,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("Header")]
-    public sealed class MatrixHeaderDescriptor : MatrixDescriptor
+    internal sealed class MatrixHeaderDescriptor : MatrixDescriptor
         {
         [UsedImplicitly][Field] public Boolean PageBreak { get; }
         [UsedImplicitly][Field] public Boolean SuppressTotals { get; }

@@ -13,7 +13,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field] public Boolean KeepChild { get; }
         [UsedImplicitly][Field] public Boolean PrintOnBottom { get; }
         [UsedImplicitly][Field] public Boolean StartNewPage { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlSingleCollectionConverter))] public IList<Single> Guides { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlSingleCollectionConverter))] public IList<Single> Guides { get; }
         [UsedImplicitly][Field] public String OutlineExpression { get; }
         [UsedImplicitly][Field] public String AfterLayoutEvent { get; }
         [UsedImplicitly][Field] public String BeforeLayoutEvent { get; }

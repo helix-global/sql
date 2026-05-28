@@ -15,7 +15,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using RightToLeft=System.Windows.Forms.RightToLeft;
 
     [FastReportClass("DialogPage")]
-    internal class DialogPage : PageBase
+    internal sealed class DialogPage : PageBase
         {
         [UsedImplicitly][Field] public String AcceptButton { get; }
         [UsedImplicitly][Field] public String CancelButton { get; }

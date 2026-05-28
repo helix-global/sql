@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -8,9 +7,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("ReportPage")]
-    public class ReportPage : PageBase
+    internal sealed class ReportPage : PageBase
         {
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlSingleCollectionConverter))] public IList<Single> Guides { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlSingleCollectionConverter))] public IList<Single> Guides { get; }
         [UsedImplicitly][Field] public Boolean BackPage { get; }
         [UsedImplicitly][Field] public Boolean Landscape { get; }
         [UsedImplicitly][Field] public Boolean MirrorMargins { get; }
@@ -31,9 +30,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 FirstPageSource { get; } = 7;
         [UsedImplicitly][Field] public Int32 OtherPagesSource { get; } = 7;
         [UsedImplicitly][Field] public Int32 RawPaperSize { get; }
-
-        internal ReportPage()
-            {
-            }
         }
     }

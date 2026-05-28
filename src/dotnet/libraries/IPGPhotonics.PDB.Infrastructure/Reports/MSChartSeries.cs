@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Windows.Media;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;

@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("FRPickControl")]
-    internal class FRPickControl : BindableDialogControl
+    internal sealed class FRPickControl : BindableDialogControl
         {
         [UsedImplicitly][Field] public String ClassOIDLabel { get; }
         [UsedImplicitly][Field] public String Filter { get; }

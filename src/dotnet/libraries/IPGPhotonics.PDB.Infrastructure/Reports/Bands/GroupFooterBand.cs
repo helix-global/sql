@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("GroupFooterBand")]
-    internal class GroupFooterBand : HeaderFooterBandBase
+    internal sealed class GroupFooterBand : HeaderFooterBandBase
         {
         }
     }

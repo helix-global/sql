@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class ViewDataSource : DataSourceBase
+    internal class ViewDataSource : DataSourceBase
         {
         }
     }

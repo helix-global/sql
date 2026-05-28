@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("DateTimePickerControl")]
-    public class DateTimePickerControl : DataFilterBaseControl
+    internal sealed class DateTimePickerControl : DataFilterBaseControl
         {
         [UsedImplicitly][Field] public DateTime Value { get; }
         [UsedImplicitly][Field] public Boolean Checked { get; }

@@ -17,6 +17,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Indexes\" />
+    <Folder Include="Reports\Data\" />
+    <Folder Include="Reports\Bands\" />
+    <Folder Include="Reports\Matrix\" />
+    <Folder Include="Reports\Pages\" />
+    <Folder Include="Reports\Variables\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

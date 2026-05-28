@@ -7,8 +7,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("ButtonControl")]
-    public class ButtonControl : ButtonBaseControl
+    internal sealed class ButtonControl : ButtonBaseControl
         {
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlEnumConverter<DialogResult>))] public DialogResult DialogResult { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DialogResult>))] public DialogResult DialogResult { get; }
         }
     }

@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("PageFooterBand")]
-    public class PageFooterBand : BandBase
+    internal sealed class PageFooterBand : BandBase
         {
         }
     }

@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class GridControlColumn : Base
+    internal sealed class GridControlColumn : Base
         {
         [UsedImplicitly][Field] public String DataColumn { get; }
         [UsedImplicitly][Field] public String HeaderText { get; }

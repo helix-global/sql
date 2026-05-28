@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("CheckBoxControl")]
-    public class CheckBoxControl : ButtonBaseControl
+    internal sealed class CheckBoxControl : ButtonBaseControl
         {
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<Appearance>))] public Appearance Appearance { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment CheckAlign { get; } = ContentAlignment.MiddleLeft;

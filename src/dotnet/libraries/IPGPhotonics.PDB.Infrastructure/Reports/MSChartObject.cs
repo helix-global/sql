@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using static System.Resources.ResXFileRef;
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("MSChartObject")]
@@ -20,6 +16,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String DataSource { get; }
         [UsedImplicitly][Field] public String Filter { get; }
         [UsedImplicitly][Field] public SortOrder AutoSeriesSortOrder { get; } = SortOrder.None;
-        [UsedImplicitly][Field("ChartData")][TypeConverter(typeof(SqlArrayConverter))] public Byte[] Chart { get; }
+        [UsedImplicitly][Field("ChartData",Converter=typeof(SqlArrayConverter))] public Byte[] Chart { get; }
         }
     }

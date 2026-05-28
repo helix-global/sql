@@ -1,7 +1,7 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("GroupBoxControl")]
-    public class GroupBoxControl : ParentControl
+    internal sealed class GroupBoxControl : ParentControl
         {
         }
     }

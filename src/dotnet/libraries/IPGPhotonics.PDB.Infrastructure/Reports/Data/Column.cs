@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("Column")]
-    public class Column : DataComponentBase
+    internal class Column : DataComponentBase
         {
         [UsedImplicitly][Field] public Boolean Calculated { get; }
         [UsedImplicitly][Field] public String DataType { get; }

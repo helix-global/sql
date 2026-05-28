@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("LabelControl")]
-    internal class LabelControl : DialogControl
+    internal sealed class LabelControl : DialogControl
         {
         [UsedImplicitly][Field] public Boolean AutoSize { get; } = true;
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment TextAlign { get; }

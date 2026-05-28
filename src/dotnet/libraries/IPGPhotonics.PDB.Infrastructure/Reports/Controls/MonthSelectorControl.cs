@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("MonthSelectorControl")]
-    internal class MonthSelectorControl : BindableDialogControl
+    internal sealed class MonthSelectorControl : BindableDialogControl
         {
         }
     }

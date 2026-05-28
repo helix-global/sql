@@ -9,14 +9,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("ComboBoxControl")]
-    public class ComboBoxControl : DataFilterBaseControl
+    internal sealed class ComboBoxControl : DataFilterBaseControl
         {
         [UsedImplicitly][Field] public String DrawItemEvent { get; }
         [UsedImplicitly][Field] public String MeasureItemEvent { get; }
         [UsedImplicitly][Field] public String SelectedIndexChangedEvent { get; }
         [UsedImplicitly][Field] public String ItemsText { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlEnumConverter<DrawMode>))] public DrawMode DrawMode { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlEnumConverter<ComboBoxStyle>))] public ComboBoxStyle DropDownStyle { get; } = ComboBoxStyle.DropDown;
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DrawMode>))] public DrawMode DrawMode { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ComboBoxStyle>))] public ComboBoxStyle DropDownStyle { get; } = ComboBoxStyle.DropDown;
         [UsedImplicitly][Field] public Int32 DropDownHeight { get; }
         [UsedImplicitly][Field] public Int32 DropDownWidth { get; }
         [UsedImplicitly][Field] public Int32 ItemHeight { get; }

@@ -15,7 +15,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field] public String Brackets { get; }
         [UsedImplicitly][Field] public String HideValue { get; }
         [UsedImplicitly][Field] public String NullValue { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlThicknessConverter))] public Thickness Padding { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
         [UsedImplicitly][Field] public Boolean AllowExpressions { get; } = true;
         [UsedImplicitly][Field] public Boolean HideZeros { get; }
         [UsedImplicitly][Field] public Duplicates Duplicates { get; }

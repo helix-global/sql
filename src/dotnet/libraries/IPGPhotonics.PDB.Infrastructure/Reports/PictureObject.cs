@@ -12,7 +12,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("PictureObject")]
     public class PictureObject : ReportComponentBase
         {
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlThicknessConverter))] public Thickness Padding { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<PictureBoxSizeMode>))] public PictureBoxSizeMode SizeMode { get; } = PictureBoxSizeMode.Zoom;
         [UsedImplicitly][Field] public Int32 Angle { get; }
@@ -23,6 +23,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean ShowErrorImage { get; }
         [UsedImplicitly][Field] public Boolean Tile { get; }
         [UsedImplicitly][Field] public Single Transparency { get; }
-        [UsedImplicitly][Field][TypeConverter(typeof(SqlColorConverter))] public Color TransparentColor { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color TransparentColor { get; }
         }
     }
