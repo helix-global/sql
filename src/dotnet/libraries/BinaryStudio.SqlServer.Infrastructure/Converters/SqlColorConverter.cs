@@ -162,6 +162,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             case 4: return DColor.FromArgb(values[0],values[1],values[2],values[3]);
                             }
                         }
+                    if (String.IsNullOrWhiteSpace(S)) { return DColor.Black; }
                     }
                 return base.ConvertTo(context,culture,value,destinationType);
                 }

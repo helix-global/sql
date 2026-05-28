@@ -20,11 +20,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean ColumnHeadersVisible { get; } = true;
         [UsedImplicitly][Field] public Boolean MultiSelect { get; } = true;
         [UsedImplicitly][Field] public Boolean RowHeadersVisible { get; } = true;
-        [UsedImplicitly][Field] public DataGridViewCellStyle AlternatingRowsDefaultCellStyle { get; }
-        [UsedImplicitly][Field] public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; }
-        [UsedImplicitly][Field] public DataGridViewCellStyle DefaultCellStyle { get; }
-        [UsedImplicitly][Field] public DataGridViewCellStyle RowHeadersDefaultCellStyle { get; }
-        [UsedImplicitly][Field] public DataGridViewCellStyle RowsDefaultCellStyle { get; }
+        [UsedImplicitly][Field] public DataGridViewCellStyle AlternatingRowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field] public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field] public DataGridViewCellStyle DefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field] public DataGridViewCellStyle RowHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field] public DataGridViewCellStyle RowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeColumnsMode>))] public DataGridViewAutoSizeColumnsMode AutoSizeColumnsMode { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeRowsMode>))] public DataGridViewAutoSizeRowsMode AutoSizeRowsMode { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color BackgroundColor { get; }
