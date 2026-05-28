@@ -22,5 +22,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 RowCount { get; } = 1;
         [UsedImplicitly][Field] public Int32 MaxRows { get; }
         [UsedImplicitly][Field] public Single Indent { get; } = 37.8f;
+        [UsedImplicitly][Field] public BandColumns Columns { get; } = new BandColumns();
         }
     }

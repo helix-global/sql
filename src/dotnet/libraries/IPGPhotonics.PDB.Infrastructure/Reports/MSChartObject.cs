@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    using static System.Resources.ResXFileRef;
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("MSChartObject")]

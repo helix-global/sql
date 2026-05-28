@@ -21,5 +21,6 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field] public Duplicates Duplicates { get; }
         [UsedImplicitly][Field] public ProcessAt ProcessAt { get; }
         [UsedImplicitly][Field(EmptyIfNull = true)] public IList<FormatBase> Formats { get; }
+        [UsedImplicitly][Field] public FormatBase Format { get; } = new GeneralFormat();
         }
     }

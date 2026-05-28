@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Printing;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -10,6 +12,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class ReportPage : PageBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlSingleCollectionConverter))] public IList<Single> Guides { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<Duplex>))] public Duplex Duplex { get; }
+        [UsedImplicitly][Field] public Boolean ExtraDesignWidth { get; }
         [UsedImplicitly][Field] public Boolean BackPage { get; }
         [UsedImplicitly][Field] public Boolean Landscape { get; }
         [UsedImplicitly][Field] public Boolean MirrorMargins { get; }
@@ -30,5 +34,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 FirstPageSource { get; } = 7;
         [UsedImplicitly][Field] public Int32 OtherPagesSource { get; } = 7;
         [UsedImplicitly][Field] public Int32 RawPaperSize { get; }
+        [UsedImplicitly][Field] public Border Border { get; } = new Border();
+        [UsedImplicitly][Field] public FillBase Fill { get; } = new SolidFill(SystemColors.Window);
+        [UsedImplicitly][Field] public PageColumns Columns { get; } = new PageColumns();
+        [UsedImplicitly][Field] public Watermark Watermark { get; } = new Watermark();
         }
     }

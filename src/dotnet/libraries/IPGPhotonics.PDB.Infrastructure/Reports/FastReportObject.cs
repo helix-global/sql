@@ -12,44 +12,53 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     public class FastReportObject : SqlObject
         {
-        #region M:ReadXmlA(XmlReader)
-        protected override void ReadXmlA(XmlReader reader) {
-            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            var properties = new Dictionary<String,PropInfo>();
-            while (reader.MoveToNextAttribute()) {
-                var local = reader.LocalName;
-                var index = local.IndexOf('.');
-                if (index == -1) {
-                    properties[local] = new PropInfo(reader.Value)
-                        {
-                        LineNumber = (reader as IXmlLineInfo)?.LineNumber
+        #region M:Store(IDictionary<String,PropInfo>,IReadOnlyList<String>,String,Int32?)
+        private static void Store(IDictionary<String,PropInfo> storage,IReadOnlyList<String> key,String value,Int32? lineNumber) {
+            switch (key.Count) {
+                case 1:
+                    storage[key[0]] = new PropInfo(value) {
+                        LineNumber = lineNumber
                         };
-                    }
-                else
+                    break;
+                default:
                     {
-                    var global = local.Substring(0,index);
-                    local = local.Substring(index+1);
-                    if (!properties.TryGetValue(global,out var pi)) {
-                        properties[global] = pi = new PropInfo();
+                    if (!storage.TryGetValue(key[0],out var pi)) {
+                        storage[key[0]] = pi = new PropInfo();
                         }
-                    pi.Children[local] = new PropInfo(reader.Value)
-                        {
-                        LineNumber = (reader as IXmlLineInfo)?.LineNumber
-                        };
+                    Store(pi.Children,key.Skip(1).ToArray(),value,lineNumber);
                     }
+                    break;
                 }
-
-            ResolveFieldMappings(GetType(),out var mapping);
-            foreach (var pi in properties.Where(i => !i.Value.Children.Any())) {
+            }
+        #endregion
+        #region M:Apply(FastReportObject,IDictionary<String,PropInfo>)
+        private static void Apply(FastReportObject source,IDictionary<String,PropInfo> storage) {
+            ResolveFieldMappings(source.GetType(),out var mapping);
+            foreach (var pi in storage) {
                 if (!mapping.TryGetValue(pi.Key, out var mi)) {
                     throw new NotSupportedException(
                         (pi.Value.LineNumber != null)
-                        ? $@"[Line={pi.Value.LineNumber}] @Attribute=""{pi.Key}"" with value ""{pi.Value}"" is not supported for ""{GetType().FullName}""."
-                        : $@"@Attribute=""{pi.Key}"" with value ""{pi.Value}"" is not supported for ""{GetType().FullName}""."
+                        ? $@"[Line={pi.Value.LineNumber}] @Attribute=""{pi.Key}"" with value ""{pi.Value}"" is not supported for ""{source.GetType().FullName}""."
+                        : $@"@Attribute=""{pi.Key}"" with value ""{pi.Value}"" is not supported for ""{source.GetType().FullName}""."
                         );
                     }
-                SetValue(mi,pi.Value.Value);
+                if (pi.Value.Value != null) { source.SetValue(mi,pi.Value.Value); }
+                if (pi.Value.Children.Any()) {
+                    var target = (FastReportObject)mi.GetValue(source);
+                    Apply(target,pi.Value.Children);
+                    }
                 }
+            }
+        #endregion
+        #region M:ReadXmlA(XmlReader)
+        protected override void ReadXmlA(XmlReader reader) {
+            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
+            var storage = new Dictionary<String,PropInfo>();
+            while (reader.MoveToNextAttribute()) {
+                Store(storage,reader.LocalName.Split('.'),
+                    reader.Value,(reader as IXmlLineInfo)?.LineNumber);
+                }
+            Apply(this,storage);
             }
         #endregion
         #region M:ReadXmlE(XmlReader)

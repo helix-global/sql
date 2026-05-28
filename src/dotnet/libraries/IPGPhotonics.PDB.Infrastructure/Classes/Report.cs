@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
@@ -30,6 +31,10 @@ namespace IPGPhotonics.PDB.Infrastructure
         internal Report(DataRow source,IServiceProvider service)
             :base(source,service)
             {
+            if (m_body != null)
+                {
+                File.WriteAllBytes($"{Label}.frx",m_body);
+                }
             Body = (m_body != null)
                 ? FastReport.LoadFrom(m_body)
                 : null;

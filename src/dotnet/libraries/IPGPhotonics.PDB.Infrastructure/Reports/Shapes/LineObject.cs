@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -12,5 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class LineObject : ReportComponentBase
         {
         [UsedImplicitly][Field] public Boolean Diagonal { get; }
+        [UsedImplicitly][Field] public CapSettings StartCap { get; } = new CapSettings();
+        [UsedImplicitly][Field] public CapSettings EndCap { get; } = new CapSettings();
         }
     }

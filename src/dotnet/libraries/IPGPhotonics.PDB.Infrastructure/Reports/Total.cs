@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("Total")]
-    internal class Total : Base
+    internal sealed class Total : Base
         {
         [UsedImplicitly][Field] public String EvaluateCondition { get; }
         [UsedImplicitly][Field] public String Expression { get; }

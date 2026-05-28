@@ -178,6 +178,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
             descriptor.SetValue(this,value);
             }
         #endregion
+        #region M:SetValue(String,Object)
+        protected virtual void SetValue(String target,Object value) {
+            if (target == null) { throw new ArgumentNullException(nameof(target)); }
+            ResolveFieldMappings(GetType(),out var mapping);
+            if (mapping.TryGetValue(target,out var descriptor)) {
+                SetValue(descriptor,value);
+                return;
+                }
+            throw new MissingMemberException(GetType().FullName,target);
+            }
+        #endregion
         #region M:ISqlXmlSerializable.GetSchema:XmlSchema
         /// <summary>This method is reserved and should not be used. When implementing the <see langword="IXmlSerializable"/> interface, you should return <see langword="null"/> (<see langword="Nothing"/> in Visual Basic) from this method, and instead, if specifying a custom schema is required, apply the <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute"/> to the class.</summary>
         /// <returns>An <see cref="T:System.Xml.Schema.XmlSchema"/> that describes the XML representation of the object that is produced by the <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)"/> method and consumed by the <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)"/> method.</returns>
