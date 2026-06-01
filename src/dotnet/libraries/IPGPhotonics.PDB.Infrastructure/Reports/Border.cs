@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public sealed class Border : FastReportObject
+    internal sealed class Border : FastReportObject
         {
         [UsedImplicitly][Field] public BorderLines Lines { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color

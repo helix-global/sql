@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class TextObjectBase : BreakableComponent
+    internal abstract class TextObjectBase : BreakableComponent
         {
         [UsedImplicitly][Field] public String Text { get; }
         [UsedImplicitly][Field] public String Brackets { get; }

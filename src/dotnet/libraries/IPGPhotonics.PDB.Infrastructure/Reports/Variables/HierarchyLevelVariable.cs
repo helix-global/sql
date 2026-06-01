@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class HierarchyLevelVariable : SystemVariable
+    internal class HierarchyLevelVariable : SystemVariable
         {
         }
     }

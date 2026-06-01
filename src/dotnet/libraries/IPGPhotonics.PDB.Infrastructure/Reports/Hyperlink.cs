@@ -5,7 +5,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class Hyperlink : FastReportObject
+    internal class Hyperlink : FastReportObject
         {
         [UsedImplicitly][Field] public String DetailPageName { get; }
         [UsedImplicitly][Field] public String DetailReportName { get; }

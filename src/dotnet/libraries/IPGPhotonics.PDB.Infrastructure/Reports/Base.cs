@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class Base : FastReportObject
+    internal abstract class Base : FastReportObject
         {
         [UsedImplicitly][Field] public String Name { get; }
         [UsedImplicitly][Field] public Int32 ZOrder { get; }

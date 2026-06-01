@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using Color=System.Windows.Media.Color;
 
-    public class DialogComponentBase : ComponentBase
+    internal abstract class DialogComponentBase : ComponentBase
         {
         }
     }

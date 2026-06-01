@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("DataBand")]
-    public class DataBand : BandBase
+    internal class DataBand : BandBase
         {
         [UsedImplicitly][Field] public Boolean CollectChildRows { get; }
         [UsedImplicitly][Field] public Boolean KeepDetail { get; }

@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class AbsRowVariable : SystemVariable
+    internal class AbsRowVariable : SystemVariable
         {
         }
     }

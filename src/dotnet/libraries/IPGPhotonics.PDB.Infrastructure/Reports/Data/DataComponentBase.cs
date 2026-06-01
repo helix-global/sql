@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class DataComponentBase : Base
+    internal abstract class DataComponentBase : Base
         {
         [UsedImplicitly][Field] public Boolean Enabled { get; } = true;
         [UsedImplicitly][Field] public Boolean LoginPrompt { get; }

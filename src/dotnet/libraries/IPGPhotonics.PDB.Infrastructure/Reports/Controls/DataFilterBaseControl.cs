@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class DataFilterBaseControl : DialogControl
+    internal abstract class DataFilterBaseControl : DialogControl
         {
         [UsedImplicitly][Field] public Boolean AutoFill { get; } = true;
         [UsedImplicitly][Field] public Boolean AutoFilter { get; } = true;

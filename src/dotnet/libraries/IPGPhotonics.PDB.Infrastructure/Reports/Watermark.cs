@@ -6,7 +6,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class Watermark : FastReportObject
+    internal class Watermark : FastReportObject
         {
         [UsedImplicitly][Field] public Boolean Enabled { get; }
         [UsedImplicitly][Field] public Boolean ShowImageOnTop { get; }

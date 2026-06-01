@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class TableBase : BreakableComponent
+    internal abstract class TableBase : BreakableComponent
         {
         [UsedImplicitly][Field] public Boolean AdjustSpannedCellsWidth { get; }
         [UsedImplicitly][Field] public Boolean RepeatHeaders { get; } = true;

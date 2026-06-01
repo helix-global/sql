@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class ButtonBaseControl : DataFilterBaseControl
+    internal abstract class ButtonBaseControl : DataFilterBaseControl
         {
         [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }
         [UsedImplicitly][Field] public Boolean AutoSize { get; }

@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class ShapePolyLine : ShapePolygon
+    internal class ShapePolyLine : ShapePolygon
         {
         }
     }

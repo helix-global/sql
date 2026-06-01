@@ -12,7 +12,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class FastReport : Base
+    internal class FastReport : Base
         {
         [UsedImplicitly][Field] public FastReportLanguage ScriptLanguage { get; }
         [UsedImplicitly][Field("ReportInfo.Name")] public String Name { get; }

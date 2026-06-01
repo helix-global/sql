@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class ShapePoint : ShapeBase
+    internal class ShapePoint : ShapeBase
         {
         }
     }

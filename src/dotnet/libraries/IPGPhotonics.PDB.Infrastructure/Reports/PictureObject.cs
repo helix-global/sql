@@ -10,7 +10,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("PictureObject")]
-    public class PictureObject : ReportComponentBase
+    internal class PictureObject : ReportComponentBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }

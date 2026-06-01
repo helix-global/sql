@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class ListBoxControl : ListBoxBaseControl
+    internal class ListBoxControl : ListBoxBaseControl
         {
         }
     }

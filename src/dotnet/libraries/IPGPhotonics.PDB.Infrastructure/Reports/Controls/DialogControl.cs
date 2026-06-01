@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
-    public class DialogControl : DialogComponentBase
+    internal class DialogControl : DialogComponentBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ForeColor { get; }

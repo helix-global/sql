@@ -25,7 +25,7 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field("REMARK")]    public String Description { get; }
         [UsedImplicitly][Field("ISOCODE")]   public String ISO { get; }
         [UsedImplicitly][Field("OPTIONS")]   public String Options { get; }
-        public FastReport Body { get; }
+        internal FastReport Body { get; }
 
         #region ctor{DataRow,IServiceProvider}
         internal Report(DataRow source,IServiceProvider service)

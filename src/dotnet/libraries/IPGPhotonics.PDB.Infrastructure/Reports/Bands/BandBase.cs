@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class BandBase : BreakableComponent
+    internal abstract class BandBase : BreakableComponent
         {
         [UsedImplicitly][Field] public Boolean FirstRowStartsNewPage { get; } = true;
         [UsedImplicitly][Field] public Boolean KeepChild { get; }

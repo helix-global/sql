@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("Style")]
-    public class Style : StyleBase
+    internal class Style : StyleBase
         {
         [UsedImplicitly][Field] public String Name { get; }
         }

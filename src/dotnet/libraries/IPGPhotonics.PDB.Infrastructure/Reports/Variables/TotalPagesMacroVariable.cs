@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class TotalPagesMacroVariable : SystemVariable
+    internal class TotalPagesMacroVariable : SystemVariable
         {
         }
     }

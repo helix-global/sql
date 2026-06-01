@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class ParentControl : DialogControl
+    internal interface IFastReportVisitable
         {
+        void Accept(IFastReportVisitor visitor);
         }
     }

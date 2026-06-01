@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class ParentControl : DialogControl
+    internal class FastReportSerializer
         {
         }
     }

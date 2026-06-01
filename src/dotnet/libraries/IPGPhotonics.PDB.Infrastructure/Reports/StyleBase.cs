@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
-    public abstract class StyleBase : FastReportObject
+    internal abstract class StyleBase : FastReportObject
         {
         [UsedImplicitly][Field] public Boolean ApplyBorder { get; }
         [UsedImplicitly][Field] public Boolean ApplyFill { get; }

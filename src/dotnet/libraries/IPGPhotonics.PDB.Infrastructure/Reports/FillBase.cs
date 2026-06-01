@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(FillConverter))]
-    public class FillBase : FastReportObject
+    internal class FillBase : FastReportObject
         {
         }
     }

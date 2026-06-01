@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class TableResult : TableBase
+    internal class TableResult : TableBase
         {
         }
     }

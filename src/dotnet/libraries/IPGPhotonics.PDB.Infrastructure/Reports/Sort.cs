@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("Sort")]
-    public sealed class Sort : FastReportObject
+    internal sealed class Sort : FastReportObject
         {
         [UsedImplicitly][Field] public Boolean Descending { get; }
         [UsedImplicitly][Field] public String Expression { get; }

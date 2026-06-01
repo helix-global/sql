@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public abstract class PageBase : ComponentBase
+    internal abstract class PageBase : ComponentBase
         {
         }
     }

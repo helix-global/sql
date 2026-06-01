@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class FastReportObject : SqlObject
+    internal class FastReportObject : SqlObject,IFastReportVisitable
         {
         #region M:ResolveMappings(Object,{out}IDictionary<String,PropertyDescriptor>)
         private static void ResolveMappings(Object source,out IDictionary<String,PropertyDescriptor> mapping) {
@@ -133,6 +133,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return null;
             }
         #endregion
+        public virtual void Accept(IFastReportVisitor visitor)
+            {
+            }
 
         private class PropInfo
             {

@@ -7,7 +7,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class BreakableComponent : ReportComponentBase
+    internal abstract class BreakableComponent : ReportComponentBase
         {
         [UsedImplicitly][Field] public Boolean CanBreak { get; }
         }

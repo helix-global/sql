@@ -6,7 +6,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class ComponentBase : Base
+    internal abstract class ComponentBase : Base
         {
         [UsedImplicitly][Field] public Single Left { get; }
         [UsedImplicitly][Field] public Single Top { get; }

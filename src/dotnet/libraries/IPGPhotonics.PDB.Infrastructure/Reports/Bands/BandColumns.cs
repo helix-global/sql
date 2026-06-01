@@ -5,7 +5,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class BandColumns : FastReportObject
+    internal class BandColumns : FastReportObject
         {
         [UsedImplicitly][Field] public Int32 Count { get; }
         [UsedImplicitly][Field] public Int32 MinRowCount { get; }

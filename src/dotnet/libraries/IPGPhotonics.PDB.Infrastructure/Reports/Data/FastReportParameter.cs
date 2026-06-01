@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("Parameter")]
-    public class FastReportParameter : FastReportObject
+    internal class FastReportParameter : FastReportObject
         {
         [UsedImplicitly][Field] public String Name { get; }
         [UsedImplicitly][Field] public String DataType { get; }

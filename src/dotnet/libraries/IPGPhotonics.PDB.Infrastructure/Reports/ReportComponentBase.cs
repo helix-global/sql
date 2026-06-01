@@ -10,7 +10,7 @@ using Color = System.Drawing.Color;
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public abstract class ReportComponentBase : ComponentBase
+    internal abstract class ReportComponentBase : ComponentBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color FillColor { get; }
         [UsedImplicitly][Field] public StylePriority EvenStylePriority { get; }

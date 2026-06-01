@@ -1,6 +1,6 @@
 ﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class MaskedTextBoxControl : DataFilterBaseControl
+    internal class MaskedTextBoxControl : DataFilterBaseControl
         {
         }
     }

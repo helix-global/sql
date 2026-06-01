@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    public class CapSettings : FastReportObject
+    internal class CapSettings : FastReportObject
         {
         [UsedImplicitly][Field] public Single Height { get; } = 8f;
         [UsedImplicitly][Field] public Single Width { get; } = 8f;
