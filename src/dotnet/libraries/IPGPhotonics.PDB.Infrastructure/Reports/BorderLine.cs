@@ -11,5 +11,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color { get;set; }
         [UsedImplicitly][Field] public LineStyle Style { get;set; }
         [UsedImplicitly][Field] public Single Width { get;set; } = 1f;
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

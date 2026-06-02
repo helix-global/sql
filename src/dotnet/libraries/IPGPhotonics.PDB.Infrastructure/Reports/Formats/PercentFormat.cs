@@ -15,5 +15,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String PercentSymbol { get; }
         [UsedImplicitly][Field] public Int32 NegativePattern { get; }
         [UsedImplicitly][Field] public Int32 PositivePattern { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

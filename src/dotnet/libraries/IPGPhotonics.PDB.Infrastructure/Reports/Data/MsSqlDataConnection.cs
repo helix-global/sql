@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using System;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {

@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class MapLayer : Base
+    internal sealed class MapLayer : Base
         {
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

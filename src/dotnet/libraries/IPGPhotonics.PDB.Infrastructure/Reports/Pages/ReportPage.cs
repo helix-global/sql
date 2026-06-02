@@ -38,5 +38,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public FillBase Fill { get; } = new SolidFill(SystemColors.Window);
         [UsedImplicitly][Field] public PageColumns Columns { get; } = new PageColumns();
         [UsedImplicitly][Field] public Watermark Watermark { get; } = new Watermark();
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

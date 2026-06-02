@@ -13,5 +13,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean Totals { get; }
         [UsedImplicitly][Field] public Boolean TotalsFirst { get; }
         [UsedImplicitly][Field] public SortOrder Sort { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

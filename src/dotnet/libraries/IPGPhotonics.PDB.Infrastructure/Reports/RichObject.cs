@@ -15,5 +15,12 @@ namespace IPGPhotonics.PDB.Infrastructure
         [UsedImplicitly][Field] public Int32 ActualTextLength { get; }
         [UsedImplicitly][Field] public String DataColumn { get; }
         [UsedImplicitly][Field] public Boolean OldBreakStyle { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

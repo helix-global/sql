@@ -21,5 +21,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Single CheckWidthRatio { get; } = 1f;
         [UsedImplicitly][Field] public String DataColumn { get; }
         [UsedImplicitly][Field] public String Expression { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

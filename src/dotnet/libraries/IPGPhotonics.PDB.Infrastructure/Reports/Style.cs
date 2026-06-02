@@ -11,8 +11,16 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("Style")]
-    internal class Style : StyleBase
+    internal sealed class Style : StyleBase
         {
+        protected internal override String ClassName { get { return "Style"; }}
         [UsedImplicitly][Field] public String Name { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

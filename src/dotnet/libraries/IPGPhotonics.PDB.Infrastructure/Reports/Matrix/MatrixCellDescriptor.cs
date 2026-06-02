@@ -12,5 +12,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field] public MatrixAggregateFunction Function { get; }
         [UsedImplicitly][Field] public MatrixPercent Percent { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

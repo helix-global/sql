@@ -2,9 +2,11 @@
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Text;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
+using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -31,13 +33,18 @@ namespace IPGPhotonics.PDB.Infrastructure
         internal Report(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            if (m_body != null)
-                {
+            if (m_body != null) {
                 File.WriteAllBytes($"{Label}.frx",m_body);
+                Body = FastReport.LoadFrom(m_body);
+                var builder = new StringBuilder();
+                using (var writer = XmlWriter.Create(builder, new XmlWriterSettings {
+                    Indent = true,
+                    })) {
+                    var serializer = new FastReportSerializer(writer);
+                    serializer.Visit(Body);
+                    }
+                File.WriteAllText($"{Label}.frz",builder.ToString().Replace("\" />","\"/>"));
                 }
-            Body = (m_body != null)
-                ? FastReport.LoadFrom(m_body)
-                : null;
             }
         #endregion
 

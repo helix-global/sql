@@ -13,6 +13,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TextObject")]
     internal class TextObject : TextObjectBase
         {
+        protected internal override String ClassName { get { return "TextObject"; }}
         [UsedImplicitly][Field] public HorzAlign HorzAlign { get; }
         [UsedImplicitly][Field] public VertAlign VertAlign { get; }
         [UsedImplicitly][Field] public String Font { get; }
@@ -35,5 +36,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean WordWrap { get; } = true;
         [UsedImplicitly][Field] public Boolean Wysiwyg { get; } = true;
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
+            }
+        #endregion
         }
     }

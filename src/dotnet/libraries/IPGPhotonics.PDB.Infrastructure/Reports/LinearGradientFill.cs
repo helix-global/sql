@@ -13,5 +13,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 Angle { get; }
         [UsedImplicitly][Field] public Single Contrast { get; } = 100f;
         [UsedImplicitly][Field] public Single Focus { get; } = 100f;
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

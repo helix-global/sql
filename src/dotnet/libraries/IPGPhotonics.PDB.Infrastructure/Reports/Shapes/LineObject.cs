@@ -11,5 +11,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean Diagonal { get; }
         [UsedImplicitly][Field] public CapSettings StartCap { get; } = new CapSettings();
         [UsedImplicitly][Field] public CapSettings EndCap { get; } = new CapSettings();
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

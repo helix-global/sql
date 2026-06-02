@@ -29,5 +29,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public PieExplode PieExplode { get; }
         [UsedImplicitly][Field] public SortBy SortBy { get; }
         [UsedImplicitly][Field] public ChartSortOrder SortOrder { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

@@ -10,10 +10,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TableColumn")]
     internal sealed class TableColumn : ComponentBase
         {
+        protected internal override String ClassName { get { return "TableColumn"; }}
         [UsedImplicitly][Field] public Boolean AutoSize { get; }
         [UsedImplicitly][Field] public Boolean PageBreak { get; }
         [UsedImplicitly][Field] public Int32 KeepColumns { get; }
         [UsedImplicitly][Field] public Single MaxWidth { get; } = 500f;
         [UsedImplicitly][Field] public Single MinWidth { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

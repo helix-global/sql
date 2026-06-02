@@ -11,5 +11,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 CompleteToNRows { get; }
         [UsedImplicitly][Field] public Boolean FillUnusedSpace { get; }
         [UsedImplicitly][Field] public Boolean PrintIfDatabandEmpty { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
+            }
+        #endregion
         }
     }

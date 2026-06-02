@@ -1,6 +1,14 @@
-﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
+﻿using System;
+
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class TotalPagesMacroVariable : SystemVariable
+    internal sealed class TotalPagesMacroVariable : SystemVariable
         {
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

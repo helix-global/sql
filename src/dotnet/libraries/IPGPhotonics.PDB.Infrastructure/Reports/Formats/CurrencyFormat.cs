@@ -15,5 +15,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String CurrencySymbol { get; }
         [UsedImplicitly][Field] public String DecimalSeparator { get; }
         [UsedImplicitly][Field] public String GroupSeparator { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

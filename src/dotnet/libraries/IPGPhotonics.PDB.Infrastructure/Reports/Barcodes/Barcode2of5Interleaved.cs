@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class Barcode2of5Interleaved : LinearBarcodeBase
+    internal abstract class Barcode2of5Interleaved : LinearBarcodeBase
         {
         }
     }

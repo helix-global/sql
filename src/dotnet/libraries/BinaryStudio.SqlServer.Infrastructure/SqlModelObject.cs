@@ -527,6 +527,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        protected static ISqlObjectCollectionChanges<T> PrepareChanges<T>(IList<T> source) {
+            if (source is SqlObjectCollection<T> collection) {
+                return collection.PrepareChanges();
+                }
+            throw new NotSupportedException();
+            }
 
         protected internal static IDisposable ReadLock(ReaderWriterLockSlim o)            { return new ReadLockScope(o);            }
         protected internal static IDisposable WriteLock(ReaderWriterLockSlim o)           { return new WriteLockScope(o);           }

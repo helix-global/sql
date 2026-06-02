@@ -8,6 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("Total")]
     internal sealed class Total : Base
         {
+        protected internal override String ClassName { get { return "Total"; }}
         [UsedImplicitly][Field] public String EvaluateCondition { get; }
         [UsedImplicitly][Field] public String Expression { get; }
         [UsedImplicitly][Field] public String Evaluator { get; }
@@ -16,5 +17,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean ResetAfterPrint { get; } = true;
         [UsedImplicitly][Field] public Boolean ResetOnReprint { get; } = true;
         [UsedImplicitly][Field] public TotalType TotalType { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

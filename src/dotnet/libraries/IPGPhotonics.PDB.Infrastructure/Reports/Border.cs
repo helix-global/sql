@@ -54,5 +54,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public BorderLine LeftLine   { get; } = new BorderLine();
         [UsedImplicitly][Field] public BorderLine RightLine  { get; } = new BorderLine();
         [UsedImplicitly][Field] public BorderLine TopLine    { get; } = new BorderLine();
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

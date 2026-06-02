@@ -8,9 +8,16 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
 
     [FastReportClass("Highlight")]
     [FastReportClass("Condition")]
-    internal class HighlightCondition : StyleBase
+    internal sealed class HighlightCondition : StyleBase
         {
         [UsedImplicitly][Field] public String Expression { get; }
         [UsedImplicitly][Field] public Boolean Visible { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

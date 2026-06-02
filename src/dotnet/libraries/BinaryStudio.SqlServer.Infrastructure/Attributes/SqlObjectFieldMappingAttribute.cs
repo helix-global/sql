@@ -10,6 +10,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public Type Converter { get;set; }
         public String ConverterCulture { get;set; }
         public String ConverterParameter { get;set; }
+        public Int32 Order { get;set; }
 
         #region ctor
         public SqlObjectFieldMappingAttribute()

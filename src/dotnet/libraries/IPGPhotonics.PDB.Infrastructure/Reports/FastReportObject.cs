@@ -12,8 +12,11 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class FastReportObject : SqlObject,IFastReportVisitable
+    internal abstract class FastReportObject : SqlObject,IFastReportVisitable
         {
+        public virtual IEnumerable<FastReportObject> Children { get { return EmptyArray<FastReportObject>.List; }}
+        protected internal virtual String ClassName { get; }
+
         #region M:ResolveMappings(Object,{out}IDictionary<String,PropertyDescriptor>)
         private static void ResolveMappings(Object source,out IDictionary<String,PropertyDescriptor> mapping) {
             if (source is SqlObject) {
@@ -90,27 +93,35 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         protected override void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             ResolveFieldMappings(GetType(),out var mapping);
+            var objects = new List<FastReportObject>();
             ForEachE(reader,(_)=>{
-                    if (mapping.TryGetValue(reader.Name,out var pi)) {
-                        if (IsGenericCollection(pi.PropertyType,out var TypeG,out var TypeE)){
-                            var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(TypeE));
-                            using (var r = reader.ReadSubtree()) {
-                                r.MoveToContent();
-                                ForEachE(r,CreateE);
-                                }
-                            target = (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(TypeE),target);
-                            SetValue(pi,target);
-                            return;
+                if (mapping.TryGetValue(reader.Name,out var pi)) {
+                    if (IsGenericCollection(pi.PropertyType,out var TypeG,out var TypeE)){
+                        var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(TypeE));
+                        using (var r = reader.ReadSubtree()) {
+                            r.MoveToContent();
+                            ForEachE(r,CreateE);
                             }
+                        target = (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(TypeE),target);
+                        SetValue(pi,target);
+                        return;
                         }
-                    CreateE(reader);
+                    }
+                CreateE(reader,out var o);
+                objects.Add(o);
                 });
+            UpdateReferences(objects);
             }
         #endregion
         #region M:CreateE(XmlReader)
         protected virtual void CreateE(XmlReader reader) {
+            CreateE(reader,out _);
+            }
+        #endregion
+        #region M:CreateE(XmlReader,{out}FastReportObject)
+        protected virtual void CreateE(XmlReader reader,out FastReportObject o) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            var o = CreateObject(reader.Name);
+            o = CreateObject(reader.Name);
             if (o != null) {
                 using (var r = reader.ReadSubtree()) {
                     o.ReadXml(r);
@@ -133,9 +144,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return null;
             }
         #endregion
-        public virtual void Accept(IFastReportVisitor visitor)
+        #region M:UpdateReferences(IList<FastReportObject>)
+        protected virtual void UpdateReferences(IList<FastReportObject> source)
             {
             }
+        #endregion
+        public abstract void Accept(IFastReportVisitor visitor);
 
         private class PropInfo
             {

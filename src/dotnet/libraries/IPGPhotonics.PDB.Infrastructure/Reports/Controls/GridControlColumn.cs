@@ -15,5 +15,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean Visible { get; } = true;
         [UsedImplicitly][Field] public Int32 Width { get; } = 100;
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeColumnMode>))] public DataGridViewAutoSizeColumnMode AutoSizeMode { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

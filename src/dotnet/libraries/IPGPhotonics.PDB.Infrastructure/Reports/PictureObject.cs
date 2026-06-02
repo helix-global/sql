@@ -24,5 +24,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean Tile { get; }
         [UsedImplicitly][Field] public Single Transparency { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color TransparentColor { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

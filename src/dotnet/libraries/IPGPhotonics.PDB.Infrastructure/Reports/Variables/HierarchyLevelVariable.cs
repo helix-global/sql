@@ -1,6 +1,14 @@
-﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
+﻿using System;
+
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class HierarchyLevelVariable : SystemVariable
+    internal sealed class HierarchyLevelVariable : SystemVariable
         {
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

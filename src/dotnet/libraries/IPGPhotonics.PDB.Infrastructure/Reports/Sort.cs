@@ -13,7 +13,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("Sort")]
     internal sealed class Sort : FastReportObject
         {
+        protected internal override String ClassName { get { return "Sort"; }}
         [UsedImplicitly][Field] public Boolean Descending { get; }
         [UsedImplicitly][Field] public String Expression { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

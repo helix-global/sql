@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("DataBand")]
-    internal class DataBand : BandBase
+    internal sealed class DataBand : BandBase
         {
         [UsedImplicitly][Field] public Boolean CollectChildRows { get; }
         [UsedImplicitly][Field] public Boolean KeepDetail { get; }
@@ -23,5 +23,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 MaxRows { get; }
         [UsedImplicitly][Field] public Single Indent { get; } = 37.8f;
         [UsedImplicitly][Field] public BandColumns Columns { get; } = new BandColumns();
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
+            }
+        #endregion
         }
     }

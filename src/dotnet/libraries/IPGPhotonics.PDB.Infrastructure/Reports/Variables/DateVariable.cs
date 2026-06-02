@@ -1,6 +1,14 @@
-﻿namespace IPGPhotonics.PDB.Infrastructure.Reports
+﻿using System;
+
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class DateVariable : SystemVariable
+    internal sealed class DateVariable : SystemVariable
         {
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

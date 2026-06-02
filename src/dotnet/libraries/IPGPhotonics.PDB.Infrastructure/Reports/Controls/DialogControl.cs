@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
-    internal class DialogControl : DialogComponentBase
+    internal abstract class DialogControl : DialogComponentBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ForeColor { get; }
@@ -34,5 +34,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean Enabled { get; } = true;
         [UsedImplicitly][Field] public Boolean TabStop { get; } = true;
         [UsedImplicitly][Field] public Int32 TabIndex { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

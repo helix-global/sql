@@ -23,5 +23,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String ShowTitle { get; }
         [UsedImplicitly][Field] public String DataSource { get; }
         [UsedImplicitly][Field] public MatrixEvenStylePriority MatrixEvenStylePriority { get; }
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

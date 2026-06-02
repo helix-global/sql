@@ -6,7 +6,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class Watermark : FastReportObject
+    internal sealed class Watermark : FastReportObject
         {
         [UsedImplicitly][Field] public Boolean Enabled { get; }
         [UsedImplicitly][Field] public Boolean ShowImageOnTop { get; }
@@ -18,5 +18,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public WatermarkTextRotation TextRotation { get; } = WatermarkTextRotation.ForwardDiagonal;
         [UsedImplicitly][Field] public Single ImageTransparency { get; }
         [UsedImplicitly][Field] public FillBase TextFill { get; } = new SolidFill(Color.FromArgb(40,Color.Gray));
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

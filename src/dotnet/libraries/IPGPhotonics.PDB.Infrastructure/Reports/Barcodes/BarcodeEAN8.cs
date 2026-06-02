@@ -9,7 +9,14 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class BarcodeEAN8 : BarcodeEAN
+    internal sealed class BarcodeEAN8 : BarcodeEAN
         {
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
+            }
+        #endregion
         }
     }

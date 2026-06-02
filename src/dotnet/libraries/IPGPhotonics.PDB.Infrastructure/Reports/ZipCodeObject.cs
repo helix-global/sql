@@ -4,9 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class ZipCodeObject : ReportComponentBase
+    internal sealed class ZipCodeObject : ReportComponentBase
         {
+        protected internal override String ClassName { get { return "ZipCodeObject"; }}
+
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            throw new NotImplementedException();
+            }
+        #endregion
         }
     }

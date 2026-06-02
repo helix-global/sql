@@ -3,7 +3,7 @@
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [TypeConverter(typeof(FormatConverter))]
-    internal class FormatBase : FastReportObject
+    internal abstract class FormatBase : FastReportObject
         {
         }
     }

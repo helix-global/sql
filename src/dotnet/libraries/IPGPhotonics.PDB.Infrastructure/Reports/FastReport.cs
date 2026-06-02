@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
@@ -12,24 +10,30 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class FastReport : Base
+    internal sealed class FastReport : Base
         {
-        [UsedImplicitly][Field] public FastReportLanguage ScriptLanguage { get; }
-        [UsedImplicitly][Field("ReportInfo.Name")] public String Name { get; }
-        [UsedImplicitly][Field("ReportInfo.Created")] public DateTime?  CreatedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Modified")] public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Author")] public String CreatedBy { get; }
-        [UsedImplicitly][Field("ReportInfo.CreatorVersion")][TypeConverter(typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
-        [UsedImplicitly][Field] public Boolean DoublePass { get; }
-        [UsedImplicitly][Field] public Boolean Compressed { get; }
-        [UsedImplicitly][Field] public Boolean ConvertNulls { get; } = true;
-        [UsedImplicitly][Field] public Boolean StoreInResources { get; } = true;
-        [UsedImplicitly][Field] public Boolean AutoFillDataSet { get; } = true;
-        [UsedImplicitly][Field] public String StartReportEvent { get; }
-        [UsedImplicitly][Field] public String FinishReportEvent { get; }
-        [UsedImplicitly][Field] public TextQuality TextQuality { get; }
+        [UsedImplicitly][Field(Order=4000000)] public FastReportLanguage ScriptLanguage { get; }
+        [UsedImplicitly][Field("ReportInfo.Name",Order=5000100)] public override String Name { get; }
+        [UsedImplicitly][Field("ReportInfo.Created",Order=5000300)] public DateTime?  CreatedDate { get; }
+        [UsedImplicitly][Field("ReportInfo.Modified",Order=5000400)] public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("ReportInfo.Author",Order=5000200)] public String CreatedBy { get; }
+        [UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=5000500)][TypeConverter(typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
+        [UsedImplicitly][Field(Order=4000200)][DefaultValue(false)] public Boolean DoublePass { get; }
+        [UsedImplicitly][Field(Order=4000300)][DefaultValue(false)] public Boolean Compressed { get; }
+        [UsedImplicitly][Field(Order=4000100)][DefaultValue(true)]  public Boolean ConvertNulls { get; } = true;
+        [UsedImplicitly][Field][DefaultValue(true)]  public Boolean StoreInResources { get; } = true;
+        [UsedImplicitly][Field][DefaultValue(true)]  public Boolean AutoFillDataSet { get; } = true;
+        [UsedImplicitly][Field(Order=4000600)][DefaultValue(false)] public Boolean SmoothGraphics { get; }
+        [UsedImplicitly][Field(Order=4000400)][DefaultValue(false)] public Boolean UseFileCache { get; }
+        [UsedImplicitly][Field(Order=4001000)] public String StartReportEvent { get; }
+        [UsedImplicitly][Field(Order=4001100)] public String FinishReportEvent { get; }
+        [UsedImplicitly][Field(Order=4000700)] public String Password { get; }
+        [UsedImplicitly][Field(Order=4000500)][DefaultValue(TextQuality.Default)] public TextQuality TextQuality { get; }
         public IList<String> ReferencedAssemblies { get;private set; } = EmptyArray<String>.List;
         public String Script { get;private set; }
+        [UsedImplicitly][Field(Order=4000900)][DefaultValue(0)] public Int32 MaxPages { get; }
+        [UsedImplicitly][Field(Order=4000800)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
+        public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
 
         #region ctor
         private FastReport()
@@ -155,30 +159,36 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             }
         #endregion
         #region M:ReadDataSources(XmlReader)
+        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
         private void ReadDataSources(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             reader.MoveToContent();
-            while (reader.Read()) {
-                switch (reader.NodeType) {
-                    case XmlNodeType.Element:
-                        {
-                        switch (reader.Name) {
-                            default:
-                                if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
-                                    using (var r = reader.ReadSubtree()) {
-                                        var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
-                                        o.ReadXml(r);
-                                        reader.Skip();
+            using (var DataSources = PrepareChanges(this.DataSources)) {
+                while (reader.Read()) {
+                    switch (reader.NodeType) {
+                        case XmlNodeType.Element:
+                            {
+                            switch (reader.Name) {
+                                default:
+                                    if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
+                                        using (var r = reader.ReadSubtree()) {
+                                            var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
+                                            o.ReadXml(r);
+                                            if (o is DataConnectionBase connection) {
+                                                DataSources.Add(connection);
+                                                }
+                                            reader.Skip();
+                                            }
+                                        break;
                                         }
-                                    break;
-                                    }
-                                throw new NotSupportedException(
-                                    (reader is IXmlLineInfo LineInfo)
-                                    ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    );
+                                    throw new NotSupportedException(
+                                        (reader is IXmlLineInfo LineInfo)
+                                        ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
+                                        : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
+                                        );
+                                }
+                            break;
                             }
-                        break;
                         }
                     }
                 }
@@ -212,6 +222,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         }
                     }
                 }
+            }
+        #endregion
+        #region M:Accept(IFastReportVisitor)
+        public override void Accept(IFastReportVisitor visitor)
+            {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
             }
         #endregion
         }

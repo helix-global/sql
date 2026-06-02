@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal class Barcode39Extended : Barcode39
+    internal sealed class Barcode39Extended : Barcode39
         {
         }
     }
