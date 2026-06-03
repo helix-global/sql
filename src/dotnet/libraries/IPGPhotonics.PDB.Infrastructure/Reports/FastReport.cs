@@ -1,11 +1,13 @@
-﻿using System;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
-using JetBrains.Annotations;
-using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -34,6 +36,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=4000900)][DefaultValue(0)] public Int32 MaxPages { get; }
         [UsedImplicitly][Field(Order=4000800)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
+        public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
+        public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
+
+        public override IEnumerable<FastReportObject> Children { get {
+            foreach (var o in Pages) {
+                yield return o;
+                }
+            }}
 
         #region ctor
         private FastReport()
@@ -115,83 +125,57 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:ReadXmlE(XmlReader)
         protected override void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            while (reader.Read()) {
-                switch (reader.NodeType) {
-                    case XmlNodeType.Element:
-                        {
-                        switch (reader.Name) {
-                            case "ScriptText":
-                                Script = reader.ReadElementContentAsString();
-                                break;
-                            case "Dictionary":
-                                {
-                                using (var r = reader.ReadSubtree()) {
-                                    ReadDataSources(r);
-                                    }
-                                }
-                                break;
-                            case "Styles":
-                                {
-                                using (var r = reader.ReadSubtree()) {
-                                    ReadStyles(r);
-                                    }
-                                }
-                                break;
-                            default:
-                                if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
-                                    using (var r = reader.ReadSubtree()) {
-                                        var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
-                                        o.ReadXml(r);
-                                        reader.Skip();
-                                        }
-                                    break;
-                                    }
-                                throw new NotSupportedException(
-                                    (reader is IXmlLineInfo LineInfo)
-                                    ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    );
-                            }
-                        break;
-                        }
-                    }
-                }
-            }
-        #endregion
-        #region M:ReadDataSources(XmlReader)
-        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
-        private void ReadDataSources(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            reader.MoveToContent();
-            using (var DataSources = PrepareChanges(this.DataSources)) {
-                while (reader.Read()) {
-                    switch (reader.NodeType) {
-                        case XmlNodeType.Element:
-                            {
-                            switch (reader.Name) {
-                                default:
-                                    if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
-                                        using (var r = reader.ReadSubtree()) {
-                                            var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
-                                            o.ReadXml(r);
-                                            if (o is DataConnectionBase connection) {
-                                                DataSources.Add(connection);
-                                                }
-                                            reader.Skip();
-                                            }
-                                        break;
-                                        }
-                                    throw new NotSupportedException(
-                                        (reader is IXmlLineInfo LineInfo)
-                                        ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                        : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                        );
-                                }
-                            break;
+            ResolveFieldMappings(GetType(),out var mapping);
+            var objects = new List<FastReportObject>();
+            ForEachE(reader,(_)=>{
+                if (mapping.TryGetValue(reader.Name,out var pi)) {
+                    if (IsGenericCollection(pi.PropertyType,out var TypeG,out var TypeE)){
+                        var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(TypeE));
+                        using (var r = reader.ReadSubtree()) {
+                            r.MoveToContent();
+                            ForEachE(r,CreateE);
                             }
+                        target = (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(TypeE),target);
+                        SetValue(pi,target);
+                        return;
                         }
                     }
-                }
+                switch (reader.Name) {
+                    case "ScriptText":
+                        Script = reader.ReadElementContentAsString();
+                        break;
+                    case "Dictionary":
+                        {
+                        using (var r = reader.ReadSubtree()) {
+                            using (var Parameters = PrepareChanges(this.Parameters))
+                            using (var DataSources = PrepareChanges(this.DataSources)) {
+                                r.MoveToContent();
+                                ForEachE(r,(__)=>{
+                                    CreateE(r,out var o);
+                                         if (o is FastReportParameter parameter) { Parameters.Add(parameter);   }
+                                    else if (o is DataConnectionBase connection) { DataSources.Add(connection); }
+                                    });
+                                }
+                            }
+                        }
+                        break;
+                    case "Styles":
+                        {
+                        using (var r = reader.ReadSubtree()) {
+                            ReadStyles(r);
+                            }
+                        }
+                        break;
+                    default:
+                        {
+                        CreateE(reader,out var o);
+                        objects.Add(o);
+                        }
+                        break;
+                    }
+                });
+            UpdateReferences(objects);
             }
         #endregion
         #region M:ReadStyles(XmlReader)
@@ -229,6 +213,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             {
             if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
             visitor.Visit(this);
+            }
+        #endregion
+        #region M:UpdateReferences(IList<FastReportObject>)
+        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
+        protected override void UpdateReferences(IList<FastReportObject> source) {
+            using (var Pages = PrepareChanges(this.Pages)) {
+                foreach (var o in source) {
+                    if (o is PageBase PageBase) {
+                        Pages.Add(PageBase);
+                        }
+                    }
+                }
             }
         #endregion
         }

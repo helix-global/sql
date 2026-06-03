@@ -15,7 +15,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String DataSource { get; }
         [UsedImplicitly][Field] public String Filter { get; }
         [UsedImplicitly][Field] public SortOrder AutoSeriesSortOrder { get; } = SortOrder.None;
-        [UsedImplicitly][Field("ChartData",Converter=typeof(SqlArrayConverter))] public Byte[] Chart { get; }
+        [UsedImplicitly][Field("ChartData",Converter=typeof(SqlBase64ArrayConverter))] public Byte[] Chart { get; }
 
         #region M:Accept(IFastReportVisitor)
         public override void Accept(IFastReportVisitor visitor)

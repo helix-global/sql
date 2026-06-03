@@ -1,42 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Media;
-using JetBrains.Annotations;
+using System.Drawing;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
-using Color = System.Drawing.Color;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class ReportComponentBase : ComponentBase
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color FillColor { get; }
-        [UsedImplicitly][Field] public StylePriority EvenStylePriority { get; }
-        [UsedImplicitly][Field] public String AfterDataEvent { get; }
-        [UsedImplicitly][Field] public String AfterPrintEvent { get; }
-        [UsedImplicitly][Field] public String BeforePrintEvent { get; }
-        [UsedImplicitly][Field] public String Bookmark { get; }
-        [UsedImplicitly][Field] public String ClickEvent { get; }
-        [UsedImplicitly][Field] public String EvenStyle { get; }
-        [UsedImplicitly][Field] public String HoverStyle { get; }
-        [UsedImplicitly][Field] public String MouseDownEvent { get; }
-        [UsedImplicitly][Field] public String MouseEnterEvent { get; }
-        [UsedImplicitly][Field] public String MouseLeaveEvent { get; }
-        [UsedImplicitly][Field] public String MouseMoveEvent { get; }
-        [UsedImplicitly][Field] public String MouseUpEvent { get; }
-        [UsedImplicitly][Field] public String Style { get; }
-        [UsedImplicitly][Field] public String Cursor { get; }
-        [UsedImplicitly][Field] public Boolean CanGrow { get; }
-        [UsedImplicitly][Field] public Boolean CanShrink { get; }
-        [UsedImplicitly][Field] public Boolean Exportable { get; } = true;
-        [UsedImplicitly][Field] public Boolean GrowToBottom { get; }
-        [UsedImplicitly][Field] public Boolean Printable { get; } = true;
-        [UsedImplicitly][Field] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
-        [UsedImplicitly][Field] public ShiftMode ShiftMode { get; } = ShiftMode.Always;
-        [UsedImplicitly][Field] public Border Border { get; } = new Border();
-        [UsedImplicitly][Field] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
-        [UsedImplicitly][Field] public Hyperlink Hyperlink { get; } = new Hyperlink();
+        //[UsedImplicitly][Field(Order=1000300,Converter=typeof(SqlColorConverter))] public Color FillColor { get; }
+        [UsedImplicitly][Field(Order=1000314)] public StylePriority EvenStylePriority { get; }
+        [UsedImplicitly][Field(Order=1000319)] public String AfterDataEvent { get; }
+        [UsedImplicitly][Field(Order=1000318)] public String AfterPrintEvent { get; }
+        [UsedImplicitly][Field(Order=1000317)] public String BeforePrintEvent { get; }
+        [UsedImplicitly][Field(Order=1000307)] public String Bookmark { get; }
+        [UsedImplicitly][Field(Order=1000320)] public String ClickEvent { get; }
+        [UsedImplicitly][Field(Order=1000313)] public String EvenStyle { get; }
+        [UsedImplicitly][Field(Order=1000315)] public String HoverStyle { get; }
+        [UsedImplicitly][Field(Order=1000323)] public String MouseDownEvent { get; }
+        [UsedImplicitly][Field(Order=1000324)] public String MouseEnterEvent { get; }
+        [UsedImplicitly][Field(Order=1000325)] public String MouseLeaveEvent { get; }
+        [UsedImplicitly][Field(Order=1000321)] public String MouseMoveEvent { get; }
+        [UsedImplicitly][Field(Order=1000322)] public String MouseUpEvent { get; }
+        [UsedImplicitly][Field(Order=1000312)] public virtual String Style { get; }
+        [UsedImplicitly][Field(Order=1000305)] public String Cursor { get; }
+        [UsedImplicitly][Field(Order=1000308)] public Boolean CanGrow { get; }
+        [UsedImplicitly][Field(Order=1000309)] public Boolean CanShrink { get; }
+        [UsedImplicitly][Field(Order=1000302)][DefaultValue(true)] public Boolean Exportable { get; } = true;
+        [UsedImplicitly][Field(Order=1000310)] public Boolean GrowToBottom { get; }
+        [UsedImplicitly][Field(Order=1000301)][DefaultValue(true)] public Boolean Printable { get; } = true;
+        [UsedImplicitly][Field(Order=1000316)][DefaultValue(PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage)] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
+        [UsedImplicitly][Field(Order=1000311)][DefaultValue(ShiftMode.Always)] public ShiftMode ShiftMode { get; } = ShiftMode.Always;
+        [UsedImplicitly][Field(Order=1000303)] public Border Border { get; } = new Border();
+        [UsedImplicitly][Field(Order=1000304)][DefaultValue(KnownColor.Transparent)] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000306)] public Hyperlink Hyperlink { get; } = new Hyperlink();
         }
     }

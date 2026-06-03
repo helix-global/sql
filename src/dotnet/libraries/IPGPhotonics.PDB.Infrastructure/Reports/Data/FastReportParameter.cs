@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -19,7 +17,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:Accept(IFastReportVisitor)
         public override void Accept(IFastReportVisitor visitor)
             {
-            throw new NotImplementedException();
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
             }
         #endregion
         }

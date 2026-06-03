@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -20,7 +17,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             }
         #endregion
 
-        #region Visit(FastReport)
+        #region M:Visit(FastReport)
         public override void Visit(FastReport o) {
             if (o == null) { throw new ArgumentNullException(nameof(o)); }
             using (m_writer.ElementGroup("A2Report")) {
@@ -33,10 +30,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (o.DataSources.Any()) {
                     using (m_writer.ElementGroup("Dictionary")) {
                         Visit(o.DataSources);
+                        Visit(o.Parameters);
                         }
                     }
+                base.Visit(o);
                 }
-            base.Visit(o);
             }
         #endregion
         #region M:Visit(DataConnectionBase)
@@ -84,6 +82,27 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:Visit(FastReportParameter)
+        public override void Visit(FastReportParameter o) {
+            var type = o.GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (m_writer.ElementGroup(className)) {
+                WriteProperties(m_writer,o);
+                base.Visit(o);
+                }
+            }
+        #endregion
+        #region M:Visit(PageBase)
+        public override void Visit(PageBase o) {
+            o.Serialize(m_writer,null);
+            //var type = o.GetType();
+            //var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            //using (m_writer.ElementGroup(className)) {
+            //    WriteProperties(m_writer,o);
+            //    base.Visit(o);
+            //    }
+            }
+        #endregion
         #region M:Order(PropertyDescriptor):Int32
         private static Int32 Order(PropertyDescriptor descriptor) {
             var r = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
@@ -118,12 +137,35 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
                     if (field != null) {
                         var name = field.Source ?? descriptor.Name;
+                        if (value is FastReportObject fro) {
+                            fro.Serialize(writer,name);
+                            continue;
+                            }
                         var converter = descriptor.Converter;
                         if (field.Converter != null) {
                             converter = (TypeConverter)Activator.CreateInstance(field.Converter);
                             }
                         writer.WriteAttributeString(name,converter.ConvertToInvariantString(value));
                         }
+                    }
+                }
+            }
+        #endregion
+        #region M:WriteAttachedProperties<T>(XmlWriter,T,String)
+        private static void WriteAttachedProperties<T>(XmlWriter writer,T o,String prefix) {
+            foreach (var descriptor in TypeDescriptor.GetProperties(o).Cast<PropertyDescriptor>().Select(i=>new PropertyLink(i)).OrderBy(Order)) {
+                var value = descriptor.GetValue(o);
+                var defaultValue = descriptor.Attributes.OfType<DefaultValueAttribute>().FirstOrDefault();
+                if (defaultValue != null && Equals(value,defaultValue.Value)) { continue; }
+                if (value == null) { continue; }
+                var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
+                if (field != null) {
+                    var name = field.Source ?? descriptor.Name;
+                    var converter = descriptor.Converter;
+                    if (field.Converter != null) {
+                        converter = (TypeConverter)Activator.CreateInstance(field.Converter);
+                        }
+                    writer.WriteAttributeString($"{prefix}.{name}",converter.ConvertToInvariantString(value));
                     }
                 }
             }

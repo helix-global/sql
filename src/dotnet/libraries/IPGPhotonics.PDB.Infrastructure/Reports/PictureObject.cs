@@ -13,7 +13,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal class PictureObject : ReportComponentBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlArrayConverter))] public Byte[] Image { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlBase64ArrayConverter))] public Byte[] Image { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<PictureBoxSizeMode>))] public PictureBoxSizeMode SizeMode { get; } = PictureBoxSizeMode.Zoom;
         [UsedImplicitly][Field] public Int32 Angle { get; }
         [UsedImplicitly][Field] public String DataColumn { get; }

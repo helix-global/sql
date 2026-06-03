@@ -100,6 +100,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (value is UInt32 UI4) { return (UInt32)UI4; }
             if (value is UInt64 UI8) { return (UInt32)UI8; }
             if (value is MColor MC)  { return unchecked((UInt32)((MC.A << 24) | (MC.R << 16) | (MC.G << 8) | MC.B)); }
+            if (value is DColor DC)  { return unchecked((UInt32)((DC.A << 24) | (DC.R << 16) | (DC.G << 8) | DC.B)); }
             if (value is Enum E) {
                 return Convert.ToUInt32(E);
                 }

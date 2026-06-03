@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 using System.Windows;
 
 namespace BinaryStudio.SqlServer.Infrastructure
@@ -23,8 +25,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     return ConvertFromString(S);
                     }
                 }
+            if (destinationType == typeof(String)) {
+                if (value is Thickness thickness) {
+                    return (String)LengthConverterToString.Invoke(null,
+                        new Object[] {
+                            thickness,
+                            culture
+                            });
+                    }
+                }
             return base.ConvertTo(context,culture,value,destinationType);
             }
         #endregion
+
+        private static readonly MethodInfo LengthConverterToString = typeof(ThicknessConverter).GetMethod("ToString",BindingFlags.Static|BindingFlags.NonPublic);
         }
     }

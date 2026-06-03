@@ -134,39 +134,62 @@ namespace BinaryStudio.SqlServer.Infrastructure
             /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
             public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
                 if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-                if (destinationType != typeof(DColor)) { throw new NotSupportedException($@"Cannot convert to ""{destinationType.AssemblyQualifiedName}"""); }
-                if (value is String S) {
-                    if (Enum.TryParse<System.Drawing.KnownColor>(S,out var r)) { return DColor.FromKnownColor(r); }
-                    if (S.StartsWith("#")) {
-                        if (S.Length == 7) {
-                            var A = Byte.Parse("ff",NumberStyles.HexNumber);
-                            var R = Byte.Parse(S.Substring(1,2),NumberStyles.HexNumber);
-                            var G = Byte.Parse(S.Substring(3,2),NumberStyles.HexNumber);
-                            var B = Byte.Parse(S.Substring(5,2),NumberStyles.HexNumber);
-                            return DColor.FromArgb(A,R,G,B);
+                if (destinationType == typeof(DColor)) {
+                    if (value is String S) {
+                        if (Enum.TryParse<System.Drawing.KnownColor>(S,out var r)) { return DColor.FromKnownColor(r); }
+                        if (S.StartsWith("#")) {
+                            if (S.Length == 7) {
+                                var A = Byte.Parse("ff",NumberStyles.HexNumber);
+                                var R = Byte.Parse(S.Substring(1,2),NumberStyles.HexNumber);
+                                var G = Byte.Parse(S.Substring(3,2),NumberStyles.HexNumber);
+                                var B = Byte.Parse(S.Substring(5,2),NumberStyles.HexNumber);
+                                return DColor.FromArgb(A,R,G,B);
+                                }
+                            if (S.Length == 9) {
+                                var A = Byte.Parse(S.Substring(1,2),NumberStyles.HexNumber);
+                                var R = Byte.Parse(S.Substring(3,2),NumberStyles.HexNumber);
+                                var G = Byte.Parse(S.Substring(5,2),NumberStyles.HexNumber);
+                                var B = Byte.Parse(S.Substring(7,2),NumberStyles.HexNumber);
+                                return DColor.FromArgb(A,R,G,B);
+                                }
                             }
-                        if (S.Length == 9) {
-                            var A = Byte.Parse(S.Substring(1,2),NumberStyles.HexNumber);
-                            var R = Byte.Parse(S.Substring(3,2),NumberStyles.HexNumber);
-                            var G = Byte.Parse(S.Substring(5,2),NumberStyles.HexNumber);
-                            var B = Byte.Parse(S.Substring(7,2),NumberStyles.HexNumber);
-                            return DColor.FromArgb(A,R,G,B);
+                        var c = culture.TextInfo.ListSeparator[0];
+                        if (S.IndexOf(c) != -1) {
+                            var values = S.Split(c).Select(i=>(Int32)SqlInt32Converter.DoesNotAllowNull.ConvertFromString(i)).ToArray();
+                            switch (values.Length) {
+                                case 1: return DColor.FromArgb(values[0]);
+                                case 3: return DColor.FromArgb(values[0],values[1],values[2]);
+                                case 4: return DColor.FromArgb(values[0],values[1],values[2],values[3]);
+                                }
                             }
+                        if (String.IsNullOrWhiteSpace(S)) { return DColor.Black; }
                         }
-                    var c = culture.TextInfo.ListSeparator[0];
-                    if (S.IndexOf(c) != -1) {
-                        var values = S.Split(c).Select(i=>(Int32)SqlInt32Converter.DoesNotAllowNull.ConvertFromString(i)).ToArray();
-                        switch (values.Length) {
-                            case 1: return DColor.FromArgb(values[0]);
-                            case 3: return DColor.FromArgb(values[0],values[1],values[2]);
-                            case 4: return DColor.FromArgb(values[0],values[1],values[2],values[3]);
-                            }
-                        }
-                    if (String.IsNullOrWhiteSpace(S)) { return DColor.Black; }
                     }
+                if (destinationType == typeof(String)) {
+                    if (value is DColor color) {
+                        if (color.IsKnownColor) { return color.Name; }
+                        var UI4 = (UInt32)SqlUInt32Converter.ConvertFromObject(color);
+                        if (ColorNames.TryGetValue(UI4,out var colorname)) {
+                            return colorname;
+                            }
+                        return color.ToString();
+                        }
+                    }
+                throw new NotSupportedException($@"Cannot convert to ""{destinationType.AssemblyQualifiedName}""");
                 return base.ConvertTo(context,culture,value,destinationType);
                 }
             #endregion
+
+            private static readonly IDictionary<UInt32,String> ColorNames = new Dictionary<UInt32,String>();
+            static DColorConverter()
+                {
+                var values = Enum.GetValues(typeof(MColor).Assembly.GetType("System.Windows.Media.KnownColor"));
+                foreach (var value in values) {
+                    if ((UInt32)value != 1) {
+                        ColorNames[(UInt32)value] = value.ToString();
+                        }
+                    }
+                }
             }
 
         private class MColorConverter : TypeConverter {

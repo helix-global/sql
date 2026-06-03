@@ -45,5 +45,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         void Visit(Column o);
         void Visit(TableDataSource o);
         void Visit(CommandParameter o);
+        void Visit(FastReportParameter o);
+        void Visit(PageBase o);
         }
     }

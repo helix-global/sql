@@ -149,6 +149,66 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             {
             }
         #endregion
+        #region M:Serialize(XmlWriter,String)
+        public virtual void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            var type = GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (writer.ElementGroup(className)) {
+                SerializeAttributes(writer,this,prefix);
+                foreach (var o in Children) {
+                    o.Serialize(writer,prefix);
+                    }
+                }
+            }
+        #endregion
+        #region M:SerializeAttributes(XmlWriter,Object,String,Func<PropertyDescriptor,Boolean>)
+        protected static void SerializeAttributes(XmlWriter writer,Object source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            foreach (var descriptor in TypeDescriptor.GetProperties(source).Cast<PropertyDescriptor>().Select(i=>new PropLink(i)).OrderBy(Order)) {
+                if ((predicate == null) || predicate(descriptor)) {
+                    var value = descriptor.GetValue(source);
+                    if (IsDefaultValue(value,descriptor)) { continue; }
+                    if (value == null) { continue; }
+                    var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
+                    if (field != null) {
+                        var name = field.Source ?? descriptor.Name;
+                        if (value is FastReportObject fro) {
+                            fro.Serialize(writer,name);
+                            continue;
+                            }
+                        var converter = field.Converter != null
+                            ? (TypeConverter)Activator.CreateInstance(field.Converter)
+                            : TypeDescriptor.GetConverter(descriptor.PropertyType);
+                        if (converter != null && converter.CanConvertTo(typeof(String))) {
+                            value = converter.ConvertToInvariantString(value);
+                            writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
+                                ? $"{name}"
+                                : $"{prefix}.{name}",value);
+                            }
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:Order(PropertyDescriptor):Int32
+        private static Int32 Order(PropertyDescriptor descriptor) {
+            var r = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
+            return (r != null)
+                ? r.Order
+                : 0;
+            }
+        #endregion
+        #region M:IsDefaultValue(Object,PropertyDescriptor):Boolean
+        private static Boolean IsDefaultValue(Object value,PropertyDescriptor descriptor) {
+            var defaultValue = descriptor.Attributes.OfType<DefaultValueAttribute>().FirstOrDefault();
+            if (defaultValue != null) { return Equals(value,defaultValue.Value); }
+            if (descriptor.PropertyType.IsValueType) { return Equals(value,Activator.CreateInstance(descriptor.PropertyType)); }
+            return false;
+            }
+        #endregion
+
         public abstract void Accept(IFastReportVisitor visitor);
 
         private class PropInfo
@@ -247,6 +307,16 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             public override Type PropertyType  { get { return descr.PropertyType;  }}
 
             private readonly PropertyDescriptor descr;
+            }
+
+        private class PropLink: PropDesc
+            {
+            #region ctor{PropertyDescriptor}
+            public PropLink(PropertyDescriptor descr)
+                : base(descr)
+                {
+                }
+            #endregion
             }
 
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();

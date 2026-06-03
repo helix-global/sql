@@ -1,14 +1,17 @@
-﻿using System;
-using System.Drawing;
-using BinaryStudio.SqlServer.Infrastructure;
+﻿using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Reflection;
+using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal sealed class Border : FastReportObject
         {
-        [UsedImplicitly][Field] public BorderLines Lines { get; }
+        [UsedImplicitly][Field][DefaultValue(BorderLines.None)] public BorderLines Lines { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color
             {
             get { return LeftLine.Color; }
@@ -21,10 +24,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
 
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ShadowColor { get; }
+        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ShadowColor { get; } = Color.Black;
         [UsedImplicitly][Field] public Boolean Shadow { get; }
-        [UsedImplicitly][Field] public Boolean SimpleBorder { get; }
         [UsedImplicitly][Field] public Single ShadowWidth { get; } = 4f;
+        public Boolean SimpleBorder { get;set; }
 
         [UsedImplicitly][Field] public Single Width
             {
@@ -59,6 +62,31 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public override void Accept(IFastReportVisitor visitor)
             {
             throw new NotImplementedException();
+            }
+        #endregion
+        #region M:Serialize(XmlWriter,String)
+        public override void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            if (Shadow) { writer.WriteAttribute($"{prefix}.Shadow","true"); }
+            if (ShadowWidth != 4f) { writer.WriteAttribute($"{prefix}.ShadowWidth",ShadowWidth); }
+            if (ShadowColor != Color.Black) { writer.WriteAttribute($"{prefix}.ShadowColor",ShadowColor); }
+            if (!SimpleBorder) {
+                if (Lines > 0) {
+                    writer.WriteAttribute($"{prefix}.Lines",Lines);
+                    if (LeftLine.Equals(RightLine) && LeftLine.Equals(TopLine) && LeftLine.Equals(BottomLine)) {
+                        LeftLine.Serialize(writer,prefix);
+                        return;
+                        }
+                    LeftLine.Serialize(writer,$"{prefix}.LeftLine");
+                    TopLine.Serialize(writer,$"{prefix}.TopLine");
+                    RightLine.Serialize(writer,$"{prefix}.RightLine");
+                    BottomLine.Serialize(writer,$"{prefix}.BottomLine");
+                    }
+                }
+            else
+                {
+                LeftLine.Serialize(writer,prefix);
+                }
             }
         #endregion
         }

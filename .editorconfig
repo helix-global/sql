@@ -7,3 +7,5 @@ dotnet_diagnostic.IDE0001.severity = suggestion
 dotnet_remove_unnecessary_usings = false
 dotnet_sort_system_directives_first = false
 dotnet_separate_import_directive_groups = false
+dotnet_diagnostic.IDE0210.severity = none
+dotnet_diagnostic.IDE0211.severity = none

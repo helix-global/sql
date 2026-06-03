@@ -11,13 +11,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("Column")]
     internal class Column : DataComponentBase
         {
-        [UsedImplicitly][Field(Order=1000360)][DefaultValue(false)] public Boolean Calculated { get; }
-        [UsedImplicitly][Field(Order=1000310)] public String DataType { get; }
-        [UsedImplicitly][Field(Order=1000330)] public String BindableControl { get; }
-        [UsedImplicitly][Field(Order=1000340)] public String CustomBindableControl { get; }
-        [UsedImplicitly][Field(Order=1000370)] public String Expression { get; }
-        [UsedImplicitly][Field(Order=1000320)] public String PropName { get; }
-        [UsedImplicitly][Field(Order=1000350)][DefaultValue(ColumnFormat.Auto)] public ColumnFormat Format { get; }
+        [UsedImplicitly][Field(Order=1000306)][DefaultValue(false)] public Boolean Calculated { get; }
+        [UsedImplicitly][Field(Order=1000301)] public String DataType { get; }
+        [UsedImplicitly][Field(Order=1000303)] public String BindableControl { get; }
+        [UsedImplicitly][Field(Order=1000304)] public String CustomBindableControl { get; }
+        [UsedImplicitly][Field(Order=1000307)] public String Expression { get; }
+        [UsedImplicitly][Field(Order=1000302)] public String PropName { get; }
+        [UsedImplicitly][Field(Order=1000305)][DefaultValue(ColumnFormat.Auto)] public ColumnFormat Format { get; }
         [UsedImplicitly] public IList<Column> Columns { get; } = new SqlObjectCollection<Column>();
 
         public override IEnumerable<FastReportObject> Children { get {

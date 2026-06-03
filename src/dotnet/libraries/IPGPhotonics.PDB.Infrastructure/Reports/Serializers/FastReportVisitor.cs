@@ -211,5 +211,17 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             Visit(o.Children);
             }
         #endregion
+        #region M:Visit(FastReportParameter)
+        public virtual void Visit(FastReportParameter o)
+            {
+            Visit(o.Children);
+            }
+        #endregion
+        #region M:Visit(PageBase)
+        public virtual void Visit(PageBase o)
+            {
+            Visit(o.Children);
+            }
+        #endregion
         }
     }

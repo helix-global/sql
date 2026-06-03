@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    internal class SqlBase64ArrayConverter : TypeConverter,ISqlArrayConverter
+    public class SqlBase64ArrayConverter : TypeConverter,ISqlArrayConverter
         {
         public static readonly SqlBase64ArrayConverter Default = new SqlBase64ArrayConverter();
 
@@ -49,6 +49,12 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (destinationType == typeof(Byte[])) {
                 var r = ConvertFrom(value);
                 return r;
+                }
+            if (destinationType == typeof(String)) {
+                var r = (Byte[])ConvertFrom(value);
+                return (r != null)
+                    ? Convert.ToBase64String(r)
+                    : String.Empty;
                 }
             return base.ConvertTo(context,culture,value,destinationType);
             }
