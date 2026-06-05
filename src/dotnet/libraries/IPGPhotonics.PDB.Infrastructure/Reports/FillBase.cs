@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {

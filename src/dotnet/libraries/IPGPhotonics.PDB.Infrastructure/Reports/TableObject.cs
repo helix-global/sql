@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -9,7 +10,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class TableObject : TableBase
         {
         protected internal override String ClassName { get { return "TableObject"; }}
-        [UsedImplicitly][Field] public Boolean ManualBuildAutoSpans { get; } = true;
-        [UsedImplicitly][Field] public String ManualBuildEvent { get; }
+        [UsedImplicitly][Field(Order=1000602)][DefaultValue(true)] public Boolean ManualBuildAutoSpans { get; } = true;
+        [UsedImplicitly][Field(Order=1000601)] public String ManualBuildEvent { get; }
         }
     }

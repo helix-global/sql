@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -11,10 +13,28 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class TableRow : ComponentBase
         {
         protected internal override String ClassName { get { return "TableRow"; }}
-        [UsedImplicitly][Field] public Boolean AutoSize { get; }
-        [UsedImplicitly][Field] public Boolean KeepRows { get; }
-        [UsedImplicitly][Field] public Boolean PageBreak { get; }
-        [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(500f)] public Single MaxHeight { get; } = 500f;
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MinHeight { get; }
+        [UsedImplicitly][Field(Order=1000304)] public Boolean AutoSize { get; }
+        //[UsedImplicitly][Field(Order=1000300)] public Boolean KeepRows { get; }
+        //[UsedImplicitly][Field(Order=1000300)] public Boolean PageBreak { get; }
+        [UsedImplicitly][Field(Order=1000302,ConverterCulture="en-US")][DefaultValue(500f)] public Single MaxHeight { get; } = 500f;
+        [UsedImplicitly][Field(Order=1000301,ConverterCulture="en-US")] public Single MinHeight { get; }
+        [UsedImplicitly][Field(Order=1000303,ConverterCulture="en-US")] public override Single Height { get; }
+        public IList<TableCell> Cells { get; } = new SqlObjectCollection<TableCell>();
+        public override IEnumerable<FastReportObject> Children { get {
+            foreach (var o in Cells) {
+                yield return o;
+                }
+            }}
+
+        #region M:UpdateReferences(IList<FastReportObject>)
+        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
+        protected override void UpdateReferences(IList<FastReportObject> source) {
+            using (var Cells = PrepareChanges(this.Cells)) {
+                foreach (var o in source) {
+                    if (o is TableCell TableCell) { Cells.Add(TableCell); }
+                    }
+                }
+            }
+        #endregion
         }
     }

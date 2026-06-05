@@ -1,7 +1,13 @@
-﻿using System;
-using System.ComponentModel;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Spreadsheet;
 using JetBrains.Annotations;
-using BinaryStudio.SqlServer.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -24,5 +30,36 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000603)] public Int32 MaxRows { get; }
         [UsedImplicitly][Field(Order=1000614,ConverterCulture="en-US")][DefaultValue(37.8f)] public Single Indent { get; } = 37.8f;
         [UsedImplicitly][Field(Order=1000607)] public BandColumns Columns { get; } = new BandColumns();
+        [UsedImplicitly][Field] public IList<Sort> Sorts { get; } = EmptyArray<Sort>.List;
+
+        #region M:UpdateReferences(IList<FastReportObject>)
+        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
+        protected override void UpdateReferences(IList<FastReportObject> source) {
+            base.UpdateReferences(source);
+            //using (var Sorts = PrepareChanges(this.Sorts)) {
+            //    foreach (var o in source) {
+            //        if (o is Sort Sort) {
+            //            Sorts.Add(Sort);
+            //            }
+            //        }
+            //    }
+            }
+        #endregion
+        #region M:Serialize(XmlWriter,String)
+        public override void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            var type = GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (writer.ElementGroup(className)) {
+                SerializeAttributes(writer,this,prefix);
+                Serialize(writer,Children,prefix);
+                if (Sorts.Count > 0) {
+                    using (writer.ElementGroup("Sort")) {
+                        Serialize(writer,Sorts,prefix);
+                        }
+                    }
+                }
+            }
+        #endregion
         }
     }

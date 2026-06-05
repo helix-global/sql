@@ -37,7 +37,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                 File.WriteAllBytes($"{Label}.frx",m_body);
                 Body = FastReport.LoadFrom(m_body);
                 var builder = new StringBuilder();
-                using (var writer = XmlWriter.Create(builder, new XmlWriterSettings {
+                using (var writer = new FastReportXmlWriter(builder, new XmlWriterSettings {
                     Indent = true,
                     })) {
                     var serializer = new FastReportSerializer(writer);

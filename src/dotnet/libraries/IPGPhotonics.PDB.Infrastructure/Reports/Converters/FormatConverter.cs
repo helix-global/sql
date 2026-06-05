@@ -7,6 +7,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal class FormatConverter : TypeConverter
         {
+        public static readonly FormatConverter Instance = new FormatConverter();
+
         #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
         /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -22,6 +24,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (value is String S) {
                     if (Types.TryGetValue(S,out var type)) {
                         return Activator.CreateInstance(type);
+                        }
+                    }
+                }
+            if (destinationType == typeof(String)) {
+                if (value is FormatBase F) {
+                    foreach (var pair in Types) {
+                        if (pair.Value == F.GetType()) {
+                            return pair.Key;
+                            }
                         }
                     }
                 }

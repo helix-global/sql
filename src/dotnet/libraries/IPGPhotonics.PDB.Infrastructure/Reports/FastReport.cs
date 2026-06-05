@@ -41,6 +41,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
         public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
         public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
+        public IList<Style> Styles { get; } = new SqlObjectCollection<Style>();
+        public IList<Relation> Relations { get; } = new SqlObjectCollection<Relation>();
 
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Pages) {
@@ -151,22 +153,22 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     case "Dictionary":
                         {
                         using (var r = reader.ReadSubtree()) {
-                            using (var Parameters = PrepareChanges(this.Parameters))
-                            using (var DataSources = PrepareChanges(this.DataSources)) {
-                                r.MoveToContent();
-                                ForEachE(r,(__)=>{
-                                    CreateE(r,out var o);
-                                         if (o is FastReportParameter parameter) { Parameters.Add(parameter);   }
-                                    else if (o is DataConnectionBase connection) { DataSources.Add(connection); }
-                                    });
-                                }
+                            r.MoveToContent();
+                            ForEachE(r,(__)=>{
+                                CreateE(r,out var o);
+                                objects.Add(o);
+                                });
                             }
                         }
                         break;
                     case "Styles":
                         {
                         using (var r = reader.ReadSubtree()) {
-                            ReadStyles(r);
+                            r.MoveToContent();
+                            ForEachE(r,(__)=>{
+                                CreateE(r,out var o);
+                                objects.Add(o);
+                                });
                             }
                         }
                         break;
@@ -181,36 +183,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             UpdateReferences(objects);
             }
         #endregion
-        #region M:ReadStyles(XmlReader)
-        private void ReadStyles(XmlReader reader) {
-            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            reader.MoveToContent();
-            while (reader.Read()) {
-                switch (reader.NodeType) {
-                    case XmlNodeType.Element:
-                        {
-                        switch (reader.Name) {
-                            default:
-                                if (RegisteredTypes.TryGetValue(reader.Name, out var type)) {
-                                    using (var r = reader.ReadSubtree()) {
-                                        var o = (FastReportObject)Activator.CreateInstance(type,nonPublic: true);
-                                        o.ReadXml(r);
-                                        reader.Skip();
-                                        }
-                                    break;
-                                    }
-                                throw new NotSupportedException(
-                                    (reader is IXmlLineInfo LineInfo)
-                                    ? $@"[Line={LineInfo.LineNumber}] Element <{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    : $@"<{reader.Name}> is not supported for ""{GetType().FullName}""."
-                                    );
-                            }
-                        break;
-                        }
-                    }
-                }
-            }
-        #endregion
         #region M:Accept(IFastReportVisitor)
         public override void Accept(IFastReportVisitor visitor)
             {
@@ -221,11 +193,17 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:UpdateReferences(IList<FastReportObject>)
         [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
         protected override void UpdateReferences(IList<FastReportObject> source) {
+            using (var Parameters = PrepareChanges(this.Parameters))
+            using (var Styles = PrepareChanges(this.Styles))
+            using (var DataSources = PrepareChanges(this.DataSources))
+            using (var Relations = PrepareChanges(this.Relations))
             using (var Pages = PrepareChanges(this.Pages)) {
                 foreach (var o in source) {
-                    if (o is PageBase PageBase) {
-                        Pages.Add(PageBase);
-                        }
+                         if (o is PageBase PageBase)                       { Pages.Add(PageBase);                 }
+                    else if (o is DataConnectionBase DataConnectionBase)   { DataSources.Add(DataConnectionBase); }
+                    else if (o is FastReportParameter FastReportParameter) { Parameters.Add(FastReportParameter); }
+                    else if (o is Relation Relation)                       { Relations.Add(Relation);             }
+                    else if (o is Style Style) { Styles.Add(Style); }
                     }
                 }
             }
@@ -242,15 +220,19 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         writer.WriteRaw(EncodeString(Script));
                         }
                     }
-                if (DataSources.Any()) {
-                    using (writer.ElementGroup("Dictionary")) {
-                        Serialize(writer,DataSources);
-                        Serialize(writer,Parameters);
+                if (Styles.Any()) {
+                    using (writer.ElementGroup("Styles")) {
+                        Serialize(writer,Styles,prefix);
                         }
                     }
-                foreach (var o in Children) {
-                    o.Serialize(writer,prefix);
+                if (DataSources.Any() || Parameters.Any() || Relations.Any()) {
+                    using (writer.ElementGroup("Dictionary")) {
+                        Serialize(writer,DataSources,prefix);
+                        Serialize(writer,Relations,prefix);
+                        Serialize(writer,Parameters,prefix);
+                        }
                     }
+                Serialize(writer,Children,prefix);
                 }
             }
         #endregion

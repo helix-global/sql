@@ -10,10 +10,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class DataConnectionBase : DataComponentBase
         {
-        [UsedImplicitly][Field] public Boolean LoginPrompt { get; }
-        [UsedImplicitly][Field][DefaultValue(30)] public Int32 CommandTimeout { get; } = 30;
-        [UsedImplicitly][Field] public String ConnectionString { get; }
-        [UsedImplicitly][Field] public String ConnectionStringExpression { get; }
+        [UsedImplicitly][Field(Order=1000312)] public Boolean LoginPrompt { get; }
+        [UsedImplicitly][Field(Order=1000313)][DefaultValue(30)] public Int32 CommandTimeout { get; } = 30;
+        [UsedImplicitly][Field(Order=1000310)] public String ConnectionString { get; }
+        [UsedImplicitly][Field(Order=1000311)] public String ConnectionStringExpression { get; }
         [UsedImplicitly] public IList<TableDataSource> Tables { get; } = new SqlObjectCollection<TableDataSource>();
 
         public override IEnumerable<FastReportObject> Children { get {

@@ -8,8 +8,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("LineObject")]
     internal sealed class LineObject : ReportComponentBase
         {
-        [UsedImplicitly][Field] public Boolean Diagonal { get; }
-        [UsedImplicitly][Field] public CapSettings StartCap { get; } = new CapSettings();
-        [UsedImplicitly][Field] public CapSettings EndCap { get; } = new CapSettings();
+        [UsedImplicitly][Field(Order=1000401)] public Boolean Diagonal { get; }
+        [UsedImplicitly][Field(Order=1000402)] public CapSettings StartCap { get; } = new CapSettings();
+        [UsedImplicitly][Field(Order=1000403)] public CapSettings EndCap { get; } = new CapSettings();
         }
     }

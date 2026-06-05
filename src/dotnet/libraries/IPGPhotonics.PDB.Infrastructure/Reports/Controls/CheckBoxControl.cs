@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using BinaryStudio.SqlServer.Infrastructure;
@@ -11,11 +12,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("CheckBoxControl")]
     internal sealed class CheckBoxControl : ButtonBaseControl
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<Appearance>))] public Appearance Appearance { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment CheckAlign { get; } = ContentAlignment.MiddleLeft;
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<CheckState>))] public CheckState CheckState { get; }
-        [UsedImplicitly][Field] public Boolean Checked { get; }
-        [UsedImplicitly][Field] public Boolean ThreeState { get; }
-        [UsedImplicitly][Field] public String CheckedChangedEvent { get; }
+        [UsedImplicitly][Field(Order=1000701,Converter=typeof(SqlEnumConverter<Appearance>))] public Appearance Appearance { get; }
+        [UsedImplicitly][Field(Order=1000702,Converter=typeof(SqlEnumConverter<ContentAlignment>))][DefaultValue(ContentAlignment.MiddleLeft)] public ContentAlignment CheckAlign { get; } = ContentAlignment.MiddleLeft;
+        [UsedImplicitly][Field(Order=1000704,Converter=typeof(SqlEnumConverter<CheckState>))] public CheckState CheckState { get; }
+        [UsedImplicitly][Field(Order=1000703)] public Boolean Checked { get; }
+        [UsedImplicitly][Field(Order=1000705)] public Boolean ThreeState { get; }
+        [UsedImplicitly][Field(Order=1000706)] public String CheckedChangedEvent { get; }
         }
     }

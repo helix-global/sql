@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using BinaryStudio.SqlServer.Infrastructure;
-using IPGPhotonics.PDB.Infrastructure.Reports;
 using JetBrains.Annotations;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class BandBase : BreakableComponent

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -40,7 +41,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         #region ctor{StringBuilder,XmlWriterSettings}
         public SqlXmlWriter(StringBuilder builder,XmlWriterSettings settings) {
-            writer = new InternalXmlWriter(builder,settings);
+            writer = CreateWriter(builder,settings);
             }
         #endregion
         #region ctor{XmlWriter}
@@ -81,6 +82,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 Indent = true,
                 };
             return new XmlWellFormedWriter(new XmlUtf8RawTextWriterIndent(this,stream,settings),settings);
+            }
+        #endregion
+        #region M:CreateWriter(StringBuilder,XmlWriterSettings):XmlWriter
+        protected virtual XmlWriter CreateWriter(StringBuilder builder,XmlWriterSettings settings) {
+            return CreateWriter(new StringWriter(
+                builder,CultureInfo.InvariantCulture),settings);
+            }
+        #endregion
+        #region M:CreateWriter(TextWriter,XmlWriterSettings):XmlWriter
+        protected virtual XmlWriter CreateWriter(TextWriter writer,XmlWriterSettings settings) {
+            return new XmlWellFormedWriter(
+                new XmlEncodedRawTextWriterIndent(this,
+                    writer,settings),settings);
             }
         #endregion
 

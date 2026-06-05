@@ -16,12 +16,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             Color = color;
             }
 
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         #region M:Equals(Object):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>

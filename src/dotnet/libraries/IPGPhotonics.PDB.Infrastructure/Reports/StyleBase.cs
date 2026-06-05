@@ -1,25 +1,21 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media;
+using System.Drawing;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
-using Color = System.Drawing.Color;
+using System.ComponentModel;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-
     internal abstract class StyleBase : FastReportObject
         {
-        [UsedImplicitly][Field] public Boolean ApplyBorder { get; }
-        [UsedImplicitly][Field] public Boolean ApplyFill { get; }
-        [UsedImplicitly][Field] public Boolean ApplyFont { get; }
-        [UsedImplicitly][Field] public Boolean ApplyTextFill { get; }
-        [UsedImplicitly][Field] public String Font { get; }
-        [UsedImplicitly][Field] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
-        [UsedImplicitly][Field] public FillBase TextFill { get; } = new SolidFill(Color.Black);
-        [UsedImplicitly][Field] public Border Border { get; } = new Border();
+        [UsedImplicitly][Field(Order=1000105)] public Boolean ApplyBorder { get; }
+        [UsedImplicitly][Field(Order=1000106)][DefaultValue(true)] public Boolean ApplyFill { get; } = true;
+        [UsedImplicitly][Field(Order=1000108)] public Boolean ApplyFont { get; }
+        [UsedImplicitly][Field(Order=1000107)][DefaultValue(true)] public Boolean ApplyTextFill { get; } = true;
+        [UsedImplicitly][Field(Order=1000104)] public String Font { get; }
+        [UsedImplicitly][Field(Order=1000102)][DefaultValue(KnownColor.Transparent)] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000103)][DefaultValue(KnownColor.Black)] public FillBase TextFill { get; } = new SolidFill(Color.Black);
+        [UsedImplicitly][Field(Order=1000101)] public Border Border { get; } = new Border();
         }
     }

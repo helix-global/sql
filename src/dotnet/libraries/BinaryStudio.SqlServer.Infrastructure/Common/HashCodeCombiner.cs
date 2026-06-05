@@ -19,5 +19,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4)); }
         public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5)); }
         public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5,Object o6) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5,o6)); }
+        public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5,Object o6,Object o7) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5,o6,o7)); }
         }
     }

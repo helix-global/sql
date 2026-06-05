@@ -2538,31 +2538,5 @@ namespace BinaryStudio.SqlServer.Infrastructure
             base.StopScheduleNewLineForNextAttribute();
             }
         #endregion
-
-        private const String Xml_XmlnsPrefix = "Prefix \"xmlns\" is reserved for use by XML.";
-        private const String Xml_NoRoot = "Document does not have a root element.";
-        private const String Xml_EmptyName = "The empty string '' is not a valid name.";
-        private const String Xml_DtdNotAllowedInFragment = "DTD is not allowed in XML fragments.";
-        private const String Xml_ConformanceLevelFragment = "Make sure that the ConformanceLevel setting is set to ConformanceLevel.Fragment or ConformanceLevel.Auto if you want to write an XML fragment.";
-        private const String Xml_WrongToken = "Token {0} in state {1} would result in an invalid XML document.";
-        private const String Xml_InvalidNameCharsDetail = "Invalid name character in '{0}'. The '{1}' character, hexadecimal value {2}, cannot be included in a name.";
-        private const String Xml_ClosedOrError = "The XmlReader is closed or in error state.";
-        private const String Xml_DupAttributeName = "'{0}' is a duplicate attribute name.";
-        private const String Xml_XmlPrefix = "Prefix \"xml\" is reserved for use by XML and can be mapped only to namespace name \"http://www.w3.org/XML/1998/namespace\".";
-        private const String Xml_NamespaceDeclXmlXmlns = "Prefix '{0}' cannot be mapped to namespace name reserved for \"xml\" or \"xmlns\".";
-        private const String Xml_DtdAlreadyWritten = "The DTD has already been written out.";
-        private const String Xml_InvalidCharacter = "'{0}', hexadecimal value {1}, is an invalid character.";
-        private const String Xml_EmptyLocalName = "The empty string '' is not a valid local name.";
-        private const String Xml_PrefixForEmptyNs = "Cannot use a prefix with an empty namespace.";
-        private const String Xml_NoStartTag = "There was no XML start tag open.";
-        private const String Xml_CanNotBindToReservedNamespace = "Cannot bind to the reserved namespace.";
-        private const String Xml_InvalidXmlSpace = "'{0}' is an invalid xml:space value.";
-        private const String Xml_DupXmlDecl = "Cannot write XML declaration. WriteStartDocument method has already written it.";
-        private const String Xml_CannotWriteXmlDecl = "Cannot write XML declaration. XML declaration can be only at the beginning of the document.";
-        private const String Xml_InvalidSurrogateMissingLowChar = "The surrogate pair is invalid. Missing a low surrogate character.";
-        private const String Xml_NonWhitespace = "Only white space characters should be used.";
-        private const String Xml_UndefNamespace = "The '{0}' namespace is not defined.";
-        private const String Xml_CannotStartDocumentOnFragment = "WriteStartDocument cannot be called on writers created with ConformanceLevel.Fragment.";
-        private const String Xml_RedefinePrefix = "The prefix '{0}' cannot be redefined from '{1}' to '{2}' within the same start element tag.";
         }
     }

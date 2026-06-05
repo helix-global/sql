@@ -15,13 +15,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
     // in order to achieve better performance.
     internal class XmlUtf8RawTextWriter : XmlRawWriter
         {
-        #region P:DontThrowOnInvalidSurrogatePairs:Boolean
-        public static Boolean DontThrowOnInvalidSurrogatePairs { get {
-            var type = typeof(XmlWriter).Assembly.GetType("System.LocalAppContextSwitches");
-            return (Boolean)type.GetProperty("DontThrowOnInvalidSurrogatePairs").GetValue(null);
-            }}
-        #endregion
-
         //
         // Fields
         //

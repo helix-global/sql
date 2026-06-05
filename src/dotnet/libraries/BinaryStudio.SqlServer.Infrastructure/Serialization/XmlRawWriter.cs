@@ -470,7 +470,5 @@ namespace BinaryStudio.SqlServer.Infrastructure
             Close();
             }
         #endregion
-
-        private const String Xml_InvalidOperation = "Operation is not valid due to the current state of the object.";
         }
     }

@@ -1,14 +1,16 @@
-﻿using System;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using DocumentFormat.OpenXml.Spreadsheet;
+using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -162,13 +164,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-        #region M:Serialize(XmlWriter,IEnumerable<T>)
-        protected static void Serialize<T>(XmlWriter writer,IEnumerable<T> values)
+        #region M:Serialize(XmlWriter,IEnumerable<T>,String)
+        protected static void Serialize<T>(XmlWriter writer,IEnumerable<T> values,String prefix)
             where T:FastReportObject
             {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             foreach(var o in values) {
-                o.Serialize(writer,null);
+                o.Serialize(writer,prefix);
                 }
             }
         #endregion
@@ -188,9 +190,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                             fro.Serialize(writer,name);
                             continue;
                             }
-                        var converter = field.Converter != null
-                            ? (TypeConverter)Activator.CreateInstance(field.Converter)
-                            : descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
+                        var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
                         if (converter != null && converter.CanConvertTo(typeof(String))) {
                             value = converter.ConvertToInvariantString(value);
                             writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
@@ -331,8 +331,32 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
 
         private class PropLink: PropDesc
             {
+            public SqlStringOptionCollection ConverterParameter { get; } = SqlStringOptionCollection.Empty;
+            public CultureInfo ConverterCulture { get; } = CultureInfo.CurrentCulture;
+
             #region P:Converter:TypeConverter
             public override TypeConverter Converter { get {
+                if (m_cI != null) { return m_cI; }
+                if (m_cT != null) {
+                    var target = Activator.CreateInstance(m_cT);
+                    if (target != null) {
+                        var properties = TypeDescriptor.GetProperties(target).OfType<PropertyDescriptor>().ToDictionary(i=>i.Name,i=>i);
+                        foreach (var option in ConverterParameter) {
+                            if (properties.TryGetValue(option.Key,out var descriptor)) {
+                                try
+                                    {
+                                    var value  = descriptor.Converter.ConvertTo(null,ConverterCulture,option.Value,descriptor.PropertyType);
+                                    descriptor.SetValue(target,value);
+                                    }
+                                catch (Exception e)
+                                    {
+                                    throw (new Exception($@"Error setting converter option ""{option.Key}"" on converter ""{target.GetType().FullName}"".",e)).Add("Converter",target.GetType().FullName).Add("OptionKey",option.Key).Add("OptionValue",option.Value);
+                                    }
+                                }
+                            }
+                        return m_cI=(TypeConverter)target;
+                        }
+                    }
                 if (PropertyType == typeof(Boolean)) { return FastReportBooleanConverter.Instance; }
                 return base.Converter;
                 }}
@@ -342,8 +366,19 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             public PropLink(PropertyDescriptor descr)
                 : base(descr)
                 {
+                var attribute = (SqlObjectFieldMappingAttribute)Attributes[typeof(SqlObjectFieldMappingAttribute)];
+                if (attribute != null) {
+                    m_cT = attribute.Converter;
+                    if (attribute.ConverterCulture != null) {
+                        ConverterCulture = CultureInfo.GetCultureInfo(attribute.ConverterCulture ?? CultureInfo.CurrentCulture.Name);
+                        }
+                    ConverterParameter = new SqlStringOptionCollection(attribute.ConverterParameter);
+                    }
                 }
             #endregion
+
+            private Type m_cT;
+            private TypeConverter m_cI;
             }
 
         protected static readonly IDictionary<String,Type> RegisteredTypes = new ConcurrentDictionary<String,Type>();

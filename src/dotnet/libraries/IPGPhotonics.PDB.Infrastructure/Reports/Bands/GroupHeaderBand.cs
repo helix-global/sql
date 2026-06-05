@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -12,9 +9,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("GroupHeaderBand")]
     internal sealed class GroupHeaderBand : HeaderFooterBandBase
         {
-        [UsedImplicitly][Field] public String Condition { get; }
-        [UsedImplicitly][Field] public Boolean KeepTogether { get; }
-        [UsedImplicitly][Field] public Boolean ResetPageNumber { get; }
-        [UsedImplicitly][Field] public SortOrder SortOrder { get; } = SortOrder.Ascending;
+        [UsedImplicitly][Field(Order=1000701)] public String Condition { get; }
+        [UsedImplicitly][Field(Order=1000703)] public Boolean KeepTogether { get; }
+        [UsedImplicitly][Field(Order=1000704)] public Boolean ResetPageNumber { get; }
+        [UsedImplicitly][Field(Order=1000702)][DefaultValue(SortOrder.Ascending)] public SortOrder SortOrder { get; } = SortOrder.Ascending;
         }
     }

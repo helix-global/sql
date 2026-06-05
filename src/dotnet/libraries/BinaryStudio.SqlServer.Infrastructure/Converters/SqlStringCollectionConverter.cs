@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -23,7 +22,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-            if (destinationType == typeof(String)) { return value?.ToString(); }
+            if (destinationType == typeof(String)) {
+                var separator = StringSplitSeparator?.FirstOrDefault() ?? ";";
+                return String.Join(separator,(IEnumerable<String>)value);
+                }
             if (destinationType == typeof(IList<String>)) {
                 var r = new List<String>();
                 if (value != null) {

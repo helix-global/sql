@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -25,5 +27,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000403,Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
         [UsedImplicitly][Field(Order=1000405,Converter=typeof(SqlEnumConverter<FormBorderStyle>))] public FormBorderStyle FormBorderStyle { get; }
         [UsedImplicitly][Field(Order=1000406,Converter=typeof(SqlEnumConverter<RightToLeft>))] public RightToLeft RightToLeft { get; }
+        public IList<DialogComponentBase> Controls { get; } = new SqlObjectCollection<DialogComponentBase>();
+        public override IEnumerable<FastReportObject> Children { get {
+            foreach (var o in Controls) {
+                yield return o;
+                }
+            }}
+
+        #region M:UpdateReferences(IList<FastReportObject>)
+        [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
+        protected override void UpdateReferences(IList<FastReportObject> source) {
+            using (var Controls = PrepareChanges(this.Controls)) {
+                foreach (var o in source) {
+                    if (o is DialogComponentBase DialogComponentBase) {
+                        Controls.Add(DialogComponentBase);
+                        }
+                    }
+                }
+            }
+        #endregion
         }
     }

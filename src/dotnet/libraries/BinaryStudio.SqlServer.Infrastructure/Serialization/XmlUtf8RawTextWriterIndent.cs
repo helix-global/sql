@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Xml;
-using SharpCompress.Compressors.PPMd;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {

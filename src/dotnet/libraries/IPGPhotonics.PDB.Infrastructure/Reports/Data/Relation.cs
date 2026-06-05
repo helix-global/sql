@@ -1,29 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media;
-using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-
     [FastReportClass("Relation")]
     internal sealed class Relation : DataComponentBase
         {
-        [UsedImplicitly][Field] public String ChildDataSource { get; }
-        [UsedImplicitly][Field] public String ParentDataSource { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ParentColumns { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ChildColumns { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
+        [UsedImplicitly][Field(Order=1000302)] public String ChildDataSource { get; }
+        [UsedImplicitly][Field(Order=1000301)] public String ParentDataSource { get; }
+        [UsedImplicitly][Field(Order=1000303,Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ParentColumns { get; }
+        [UsedImplicitly][Field(Order=1000304,Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ChildColumns { get; }
+        [UsedImplicitly][Field(Order=1000305)][DefaultValue(false)] public override Boolean Enabled { get; }
         }
     }

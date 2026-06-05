@@ -6,6 +6,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
     {
     public abstract class SqlXmlCustomWriter : XmlWriter,ISqlXmlWriter,IServiceProvider
         {
+        #region P:DontThrowOnInvalidSurrogatePairs:Boolean
+        public static Boolean DontThrowOnInvalidSurrogatePairs { get {
+            var type = typeof(XmlWriter).Assembly.GetType("System.LocalAppContextSwitches");
+            return (Boolean)type.GetProperty("DontThrowOnInvalidSurrogatePairs").GetValue(null);
+            }}
+        #endregion
+
         public const String URI_CTRL  = "urn:schemas.helix.global:control";
         protected internal virtual Boolean NewLineOnAttributes { get { return false; } set { }}
 
@@ -265,6 +272,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return null;
             }
         #endregion
+        #region M:GetService<T>({out}T):Boolean
+        protected Boolean GetService<T>(out T service)
+            where T : class
+            {
+            service = GetService(typeof(T)) as T;
+            return service != null;
+            }
+        #endregion
 
         private class ElementGroupScope: IDisposable
             {
@@ -303,5 +318,35 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 writer = null;
                 }
             }
+
+        protected const String Xml_XmlnsPrefix = "Prefix \"xmlns\" is reserved for use by XML.";
+        protected const String Xml_NoRoot = "Document does not have a root element.";
+        protected const String Xml_EmptyName = "The empty string '' is not a valid name.";
+        protected const String Xml_DtdNotAllowedInFragment = "DTD is not allowed in XML fragments.";
+        protected const String Xml_ConformanceLevelFragment = "Make sure that the ConformanceLevel setting is set to ConformanceLevel.Fragment or ConformanceLevel.Auto if you want to write an XML fragment.";
+        protected const String Xml_WrongToken = "Token {0} in state {1} would result in an invalid XML document.";
+        protected const String Xml_InvalidNameCharsDetail = "Invalid name character in '{0}'. The '{1}' character, hexadecimal value {2}, cannot be included in a name.";
+        protected const String Xml_ClosedOrError = "The XmlReader is closed or in error state.";
+        protected const String Xml_DupAttributeName = "'{0}' is a duplicate attribute name.";
+        protected const String Xml_XmlPrefix = "Prefix \"xml\" is reserved for use by XML and can be mapped only to namespace name \"http://www.w3.org/XML/1998/namespace\".";
+        protected const String Xml_NamespaceDeclXmlXmlns = "Prefix '{0}' cannot be mapped to namespace name reserved for \"xml\" or \"xmlns\".";
+        protected const String Xml_DtdAlreadyWritten = "The DTD has already been written out.";
+        protected const String Xml_InvalidCharacter = "'{0}', hexadecimal value {1}, is an invalid character.";
+        protected const String Xml_EmptyLocalName = "The empty string '' is not a valid local name.";
+        protected const String Xml_PrefixForEmptyNs = "Cannot use a prefix with an empty namespace.";
+        protected const String Xml_NoStartTag = "There was no XML start tag open.";
+        protected const String Xml_CanNotBindToReservedNamespace = "Cannot bind to the reserved namespace.";
+        protected const String Xml_InvalidXmlSpace = "'{0}' is an invalid xml:space value.";
+        protected const String Xml_DupXmlDecl = "Cannot write XML declaration. WriteStartDocument method has already written it.";
+        protected const String Xml_CannotWriteXmlDecl = "Cannot write XML declaration. XML declaration can be only at the beginning of the document.";
+        protected const String Xml_InvalidSurrogateMissingLowChar = "The surrogate pair is invalid. Missing a low surrogate character.";
+        protected const String Xml_NonWhitespace = "Only white space characters should be used.";
+        protected const String Xml_UndefNamespace = "The '{0}' namespace is not defined.";
+        protected const String Xml_CannotStartDocumentOnFragment = "WriteStartDocument cannot be called on writers created with ConformanceLevel.Fragment.";
+        protected const String Xml_RedefinePrefix = "The prefix '{0}' cannot be redefined from '{1}' to '{2}' within the same start element tag.";
+        protected const String Xml_IndentCharsNotWhitespace="XmlWriterSettings.{0} can contain only valid XML white space characters when XmlWriterSettings.CheckCharacters and XmlWriterSettings.NewLineOnAttributes are true.";
+        protected const String Xml_InvalidSurrogateHighChar= "Invalid high surrogate character (0x{0}). A high surrogate character must have a value from range (0xD800 - 0xDBFF).";
+        protected const String Xml_InvalidCharsInIndent="XmlWriterSettings.{0} can contain only valid XML text content characters when XmlWriterSettings.CheckCharacters is true. {1}";
+        protected const String Xml_InvalidOperation = "Operation is not valid due to the current state of the object.";
         }
     }
