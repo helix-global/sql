@@ -16,13 +16,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean KeepTogether { get; }
         [UsedImplicitly][Field] public Boolean ResetPageNumber { get; }
         [UsedImplicitly][Field] public SortOrder SortOrder { get; } = SortOrder.Ascending;
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

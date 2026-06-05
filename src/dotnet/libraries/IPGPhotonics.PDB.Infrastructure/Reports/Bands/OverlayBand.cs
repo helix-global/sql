@@ -9,12 +9,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("OverlayBand")]
     internal sealed class OverlayBand : BandBase
         {
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

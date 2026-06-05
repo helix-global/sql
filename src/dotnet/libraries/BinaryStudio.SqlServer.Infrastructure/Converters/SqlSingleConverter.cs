@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {

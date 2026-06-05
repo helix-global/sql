@@ -1,17 +1,20 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
+    [FastReportClass("A2Report")]
     internal sealed class FastReport : Base
         {
         [UsedImplicitly][Field(Order=4000000)] public FastReportLanguage ScriptLanguage { get; }
@@ -20,20 +23,20 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field("ReportInfo.Modified",Order=5000400)] public DateTime? ModifiedDate { get; }
         [UsedImplicitly][Field("ReportInfo.Author",Order=5000200)] public String CreatedBy { get; }
         [UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=5000500)][TypeConverter(typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
-        [UsedImplicitly][Field(Order=4000200)][DefaultValue(false)] public Boolean DoublePass { get; }
-        [UsedImplicitly][Field(Order=4000300)][DefaultValue(false)] public Boolean Compressed { get; }
+        [UsedImplicitly][Field(Order=4000200)] public Boolean DoublePass { get; }
+        [UsedImplicitly][Field(Order=4000300)] public Boolean Compressed { get; }
         [UsedImplicitly][Field(Order=4000100)][DefaultValue(true)]  public Boolean ConvertNulls { get; } = true;
         [UsedImplicitly][Field][DefaultValue(true)]  public Boolean StoreInResources { get; } = true;
         [UsedImplicitly][Field][DefaultValue(true)]  public Boolean AutoFillDataSet { get; } = true;
-        [UsedImplicitly][Field(Order=4000600)][DefaultValue(false)] public Boolean SmoothGraphics { get; }
-        [UsedImplicitly][Field(Order=4000400)][DefaultValue(false)] public Boolean UseFileCache { get; }
+        [UsedImplicitly][Field(Order=4000600)] public Boolean SmoothGraphics { get; }
+        [UsedImplicitly][Field(Order=4000400)] public Boolean UseFileCache { get; }
         [UsedImplicitly][Field(Order=4001000)] public String StartReportEvent { get; }
         [UsedImplicitly][Field(Order=4001100)] public String FinishReportEvent { get; }
         [UsedImplicitly][Field(Order=4000700)] public String Password { get; }
-        [UsedImplicitly][Field(Order=4000500)][DefaultValue(TextQuality.Default)] public TextQuality TextQuality { get; }
+        [UsedImplicitly][Field(Order=4000500)] public TextQuality TextQuality { get; }
         public IList<String> ReferencedAssemblies { get;private set; } = EmptyArray<String>.List;
         public String Script { get;private set; }
-        [UsedImplicitly][Field(Order=4000900)][DefaultValue(0)] public Int32 MaxPages { get; }
+        [UsedImplicitly][Field(Order=4000900)] public Int32 MaxPages { get; }
         [UsedImplicitly][Field(Order=4000800)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
         public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
@@ -223,6 +226,30 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     if (o is PageBase PageBase) {
                         Pages.Add(PageBase);
                         }
+                    }
+                }
+            }
+        #endregion
+        #region M:Serialize(XmlWriter,String)
+        public override void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            var type = GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (writer.ElementGroup(className)) {
+                SerializeAttributes(writer,this,prefix);
+                if (!String.IsNullOrWhiteSpace(Script)) {
+                    using (writer.ElementGroup("ScriptText")) {
+                        writer.WriteRaw(EncodeString(Script));
+                        }
+                    }
+                if (DataSources.Any()) {
+                    using (writer.ElementGroup("Dictionary")) {
+                        Serialize(writer,DataSources);
+                        Serialize(writer,Parameters);
+                        }
+                    }
+                foreach (var o in Children) {
+                    o.Serialize(writer,prefix);
                     }
                 }
             }

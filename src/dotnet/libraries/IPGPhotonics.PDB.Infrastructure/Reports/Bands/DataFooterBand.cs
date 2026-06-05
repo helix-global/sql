@@ -9,12 +9,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("DataFooterBand")]
     internal sealed class DataFooterBand : HeaderFooterBandBase
         {
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

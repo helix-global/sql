@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -18,18 +17,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 Angle { get; }
         [UsedImplicitly][Field] public String DataColumn { get; }
         [UsedImplicitly][Field] public String ImageLocation { get; }
-        [UsedImplicitly][Field] public Single MaxHeight { get; }
-        [UsedImplicitly][Field] public Single MaxWidth { get; }
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MaxHeight { get; }
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MaxWidth { get; }
         [UsedImplicitly][Field] public Boolean ShowErrorImage { get; }
         [UsedImplicitly][Field] public Boolean Tile { get; }
-        [UsedImplicitly][Field] public Single Transparency { get; }
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Transparency { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color TransparentColor { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         }
     }

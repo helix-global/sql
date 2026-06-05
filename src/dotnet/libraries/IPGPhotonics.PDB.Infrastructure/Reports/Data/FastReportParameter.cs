@@ -13,13 +13,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public String Description { get; }
         [UsedImplicitly][Field] public String Expression { get; }
         [UsedImplicitly][Field] public String Value { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

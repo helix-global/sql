@@ -14,12 +14,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000205)] public Int32 NegativePattern { get; }
         [UsedImplicitly][Field(Order=1000203)] public String DecimalSeparator { get; }
         [UsedImplicitly][Field(Order=1000204)] public String GroupSeparator { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         }
     }

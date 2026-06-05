@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class GlassFill : FillBase
         {
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color StartColor { get; } = Color.White;
-        [UsedImplicitly][Field] public Single Blend { get; } = 0.2f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Blend { get; } = 0.2f;
         [UsedImplicitly][Field] public Boolean Hatch { get; } = true;
 
         #region M:Accept(IFastReportVisitor)

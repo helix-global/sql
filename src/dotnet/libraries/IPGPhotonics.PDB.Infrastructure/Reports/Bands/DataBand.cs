@@ -22,15 +22,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000604)] public String Relation { get; }
         [UsedImplicitly][Field(Order=1000602)][DefaultValue(1)] public Int32 RowCount { get; } = 1;
         [UsedImplicitly][Field(Order=1000603)] public Int32 MaxRows { get; }
-        [UsedImplicitly][Field(Order=1000614)][DefaultValue(37.8f)] public Single Indent { get; } = 37.8f;
+        [UsedImplicitly][Field(Order=1000614,ConverterCulture="en-US")][DefaultValue(37.8f)] public Single Indent { get; } = 37.8f;
         [UsedImplicitly][Field(Order=1000607)] public BandColumns Columns { get; } = new BandColumns();
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

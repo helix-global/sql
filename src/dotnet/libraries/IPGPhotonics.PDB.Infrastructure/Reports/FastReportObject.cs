@@ -162,6 +162,16 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:Serialize(XmlWriter,IEnumerable<T>)
+        protected static void Serialize<T>(XmlWriter writer,IEnumerable<T> values)
+            where T:FastReportObject
+            {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            foreach(var o in values) {
+                o.Serialize(writer,null);
+                }
+            }
+        #endregion
         #region M:SerializeAttributes(XmlWriter,Object,String,Func<PropertyDescriptor,Boolean>)
         protected static void SerializeAttributes(XmlWriter writer,Object source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
@@ -180,7 +190,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                             }
                         var converter = field.Converter != null
                             ? (TypeConverter)Activator.CreateInstance(field.Converter)
-                            : TypeDescriptor.GetConverter(descriptor.PropertyType);
+                            : descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
                         if (converter != null && converter.CanConvertTo(typeof(String))) {
                             value = converter.ConvertToInvariantString(value);
                             writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
@@ -208,8 +218,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return false;
             }
         #endregion
+        #region M:EncodeString(String):String
+        protected static String EncodeString(String value) {
+            if (String.IsNullOrEmpty(value)) { return value; }
+            return value.
+                Replace("<","&lt;").
+                Replace(">","&gt;").
+                Replace("\"","&quot;").
+                Replace("'","&apos;");
+            }
+        #endregion
 
-        public abstract void Accept(IFastReportVisitor visitor);
+        public virtual void Accept(IFastReportVisitor visitor) { }
 
         private class PropInfo
             {
@@ -311,6 +331,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
 
         private class PropLink: PropDesc
             {
+            #region P:Converter:TypeConverter
+            public override TypeConverter Converter { get {
+                if (PropertyType == typeof(Boolean)) { return FastReportBooleanConverter.Instance; }
+                return base.Converter;
+                }}
+            #endregion
+
             #region ctor{PropertyDescriptor}
             public PropLink(PropertyDescriptor descr)
                 : base(descr)

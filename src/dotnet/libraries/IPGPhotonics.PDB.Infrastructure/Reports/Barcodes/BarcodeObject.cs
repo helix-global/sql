@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -21,15 +17,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean AutoSize { get; } = true;
         [UsedImplicitly][Field] public Boolean HideIfNoData { get; } = true;
         [UsedImplicitly][Field] public Boolean ShowText { get; } = true;
-        [UsedImplicitly][Field] public Single Zoom { get; } = 1f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Zoom { get; } = 1f;
         [UsedImplicitly][Field] public BarcodeBase Barcode { get; } = new Barcode39();
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         }
     }

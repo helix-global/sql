@@ -12,14 +12,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color { get;set; }
         [UsedImplicitly][Field] public LineStyle Style { get;set; }
-        [UsedImplicitly][Field][DefaultValue(1f)] public Single Width { get;set; } = 1f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(1f)] public Single Width { get;set; } = 1f;
 
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         #region M:Equals(Object):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>

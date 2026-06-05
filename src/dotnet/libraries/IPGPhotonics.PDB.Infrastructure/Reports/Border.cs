@@ -1,10 +1,9 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Reflection;
 using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -26,10 +25,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
 
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ShadowColor { get; } = Color.Black;
         [UsedImplicitly][Field] public Boolean Shadow { get; }
-        [UsedImplicitly][Field] public Single ShadowWidth { get; } = 4f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single ShadowWidth { get; } = 4f;
         public Boolean SimpleBorder { get;set; }
 
-        [UsedImplicitly][Field] public Single Width
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Width
             {
             get { return LeftLine.Width; }
             set

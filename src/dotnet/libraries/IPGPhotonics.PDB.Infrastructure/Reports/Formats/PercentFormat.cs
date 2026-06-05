@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -8,19 +9,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("PercentFormat")]
     internal sealed class PercentFormat : FormatBase
         {
-        [UsedImplicitly][Field] public Boolean UseLocale { get; } = true;
-        [UsedImplicitly][Field] public Int32 DecimalDigits { get; } = 2;
+        [UsedImplicitly][Field][DefaultValue(true)] public Boolean UseLocale { get; } = true;
+        [UsedImplicitly][Field][DefaultValue(2)] public Int32 DecimalDigits { get; } = 2;
         [UsedImplicitly][Field] public String DecimalSeparator { get; }
         [UsedImplicitly][Field] public String GroupSeparator { get; }
         [UsedImplicitly][Field] public String PercentSymbol { get; }
         [UsedImplicitly][Field] public Int32 NegativePattern { get; }
         [UsedImplicitly][Field] public Int32 PositivePattern { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         }
     }

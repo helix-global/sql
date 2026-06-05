@@ -13,8 +13,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Collect Collect { get; }
         [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color CollectedItemColor { get; }
         [UsedImplicitly][Field] public String CollectedItemText { get; }
-        [UsedImplicitly][Field] public Single CollectValue { get; }
-        [UsedImplicitly][Field] public Single GroupInterval { get; } = 1f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single CollectValue { get; }
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single GroupInterval { get; } = 1f;
         [UsedImplicitly][Field] public String Color { get; }
         [UsedImplicitly][Field] public String Filter { get; }
         [UsedImplicitly][Field] public String Label { get; }

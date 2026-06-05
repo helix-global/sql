@@ -6,6 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [TypeConverter(typeof(SqlEnumConverter<FastReportLanguage>))]
     public enum FastReportLanguage
         {
+        None,
         CSharp,
         Vb
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -14,14 +12,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Boolean AutoSize { get; }
         [UsedImplicitly][Field] public Boolean PageBreak { get; }
         [UsedImplicitly][Field] public Int32 KeepColumns { get; }
-        [UsedImplicitly][Field] public Single MaxWidth { get; } = 500f;
-        [UsedImplicitly][Field] public Single MinWidth { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MaxWidth { get; } = 500f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MinWidth { get; }
         }
     }

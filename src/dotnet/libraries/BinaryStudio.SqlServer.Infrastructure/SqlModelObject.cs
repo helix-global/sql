@@ -391,20 +391,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return value;
             }
         #endregion
-        #region M:CoerceValue(PropertyDescriptor,Object):Object
+        #region M:CoerceValue(PropertyDescriptor,Object,CultureInfo):Object
         /// <summary>Attempts to convert the specified value to the type defined by the given property descriptor, using the associated type converter.</summary>
         /// <param name="descriptor">The property descriptor that defines the target property and provides the type converter to use. Cannot be <see langword="null"/>.</param>
         /// <param name="value">The value to be coerced to the type specified by the property descriptor.</param>
         /// <returns>An object representing the value converted to the type specified by the property descriptor. If conversion is not possible, an exception is thrown.</returns>
         /// <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="descriptor"/> is <see langword="null"/>.</exception>
-        protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value) {
+        protected virtual Object CoerceValue(PropertyDescriptor descriptor,Object value,CultureInfo culture) {
             if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
             var converter = descriptor.Converter;
             try
                 {
                 return CoerceValue(converter,
                     new SqlObjectTypeDescriptorContext(this,Context),
-                    CultureInfo.CurrentCulture,value,descriptor.PropertyType);
+                    culture??CultureInfo.CurrentCulture,value,descriptor.PropertyType);
                 }
             catch (Exception e)
                 {
@@ -626,6 +626,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (type == typeof(Guid?))    { return SqlGuidConverter.Default;             }
                 if (type == typeof(DateTime)) { return SqlDateTimeConverter.DoesNotAllowNull;}
                 if (type == typeof(DateTime?)){ return SqlDateTimeConverter.Default;         }
+                if (type == typeof(Single))   { return SqlSingleConverter.DoesNotAllowNull;  }
+                if (type == typeof(Single?))  { return SqlSingleConverter.Default;           }
                 if (type.IsGenericType) {
                     var typeG = type.GetGenericTypeDefinition();
                     if (typeG == typeof(Nullable<>)) {
@@ -756,7 +758,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (component == null) { throw new ArgumentNullException(nameof(component)); }
                 value = CoerceValue(value);
                 Source.SetValue(component,(component is SqlObject target)
-                    ? target.CoerceValue(this,value)
+                    ? target.CoerceValue(this,value,ConverterCulture)
                     : value);
                 }
             #endregion
@@ -798,7 +800,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         //Debugger.Break();
                         }
                     Source.SetValue(component,(component is SqlObject target)
-                        ? target.CoerceValue(this,value)
+                        ? target.CoerceValue(this,value,ConverterCulture)
                         : value);
                     }
                 catch (Exception e)

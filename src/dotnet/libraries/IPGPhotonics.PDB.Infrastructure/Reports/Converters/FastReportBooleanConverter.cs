@@ -7,6 +7,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal class FastReportBooleanConverter : SqlBooleanConverter
         {
+        public static readonly FastReportBooleanConverter Instance = new FastReportBooleanConverter();
+
         #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
         /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>

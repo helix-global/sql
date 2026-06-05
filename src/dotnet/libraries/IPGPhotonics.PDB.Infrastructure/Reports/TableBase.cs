@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -16,6 +14,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public Int32 FixedRows { get; }
         [UsedImplicitly][Field] public Int32 RowCount { get; }
         [UsedImplicitly][Field] public TableLayout Layout { get; }
-        [UsedImplicitly][Field] public Single WrappedGap { get; }
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single WrappedGap { get; }
         }
     }

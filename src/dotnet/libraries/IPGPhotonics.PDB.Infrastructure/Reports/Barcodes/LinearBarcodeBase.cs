@@ -8,6 +8,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal abstract class LinearBarcodeBase : BarcodeBase
         {
         [UsedImplicitly][Field] public Boolean CalcCheckSum { get; } = true;
-        [UsedImplicitly][Field] public Single WideBarRatio { get; } = 2f;
+        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single WideBarRatio { get; } = 2f;
         }
     }
