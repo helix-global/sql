@@ -1,7 +1,4 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using DocumentFormat.OpenXml.Spreadsheet;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,6 +8,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -102,7 +101,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         var target = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(TypeE));
                         using (var r = reader.ReadSubtree()) {
                             r.MoveToContent();
-                            ForEachE(r,CreateE);
+                            ForEachE(r,(__)=>{
+                                CreateE(r,out var obj);
+                                target.Add(obj);
+                                });
                             }
                         target = (IList)Activator.CreateInstance(typeof(ReadOnlyCollection<>).MakeGenericType(TypeE),target);
                         SetValue(pi,target);

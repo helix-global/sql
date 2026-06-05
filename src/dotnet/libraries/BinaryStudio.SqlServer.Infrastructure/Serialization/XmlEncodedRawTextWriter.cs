@@ -118,7 +118,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
 
         // Construct an instance of this class that outputs text to the TextWriter interface.
-        public XmlEncodedRawTextWriter(TextWriter writer, XmlWriterSettings settings) : this(settings)
+        public XmlEncodedRawTextWriter(TextWriter writer, XmlWriterSettings settings)
+            : this(settings)
             {
             Debug.Assert(writer != null && settings != null);
 

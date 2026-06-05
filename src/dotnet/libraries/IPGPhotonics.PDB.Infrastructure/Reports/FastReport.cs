@@ -17,27 +17,28 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("A2Report")]
     internal sealed class FastReport : Base
         {
-        [UsedImplicitly][Field(Order=4000000)] public FastReportLanguage ScriptLanguage { get; }
-        [UsedImplicitly][Field("ReportInfo.Name",Order=5000100)] public override String Name { get; }
-        [UsedImplicitly][Field("ReportInfo.Created",Order=5000300)] public DateTime?  CreatedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Modified",Order=5000400)] public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Author",Order=5000200)] public String CreatedBy { get; }
-        [UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=5000500)][TypeConverter(typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
-        [UsedImplicitly][Field(Order=4000200)] public Boolean DoublePass { get; }
-        [UsedImplicitly][Field(Order=4000300)] public Boolean Compressed { get; }
-        [UsedImplicitly][Field(Order=4000100)][DefaultValue(true)]  public Boolean ConvertNulls { get; } = true;
-        [UsedImplicitly][Field][DefaultValue(true)]  public Boolean StoreInResources { get; } = true;
-        [UsedImplicitly][Field][DefaultValue(true)]  public Boolean AutoFillDataSet { get; } = true;
-        [UsedImplicitly][Field(Order=4000600)] public Boolean SmoothGraphics { get; }
-        [UsedImplicitly][Field(Order=4000400)] public Boolean UseFileCache { get; }
-        [UsedImplicitly][Field(Order=4001000)] public String StartReportEvent { get; }
-        [UsedImplicitly][Field(Order=4001100)] public String FinishReportEvent { get; }
-        [UsedImplicitly][Field(Order=4000700)] public String Password { get; }
-        [UsedImplicitly][Field(Order=4000500)] public TextQuality TextQuality { get; }
-        public IList<String> ReferencedAssemblies { get;private set; } = EmptyArray<String>.List;
+        [UsedImplicitly][Field(Order=1000202)] public FastReportLanguage ScriptLanguage { get; }
+        [UsedImplicitly][Field("ReportInfo.Name",Order=1000215)] public override String Name { get; }
+        [UsedImplicitly][Field("ReportInfo.Created",Order=1000219)] public DateTime?  CreatedDate { get; }
+        [UsedImplicitly][Field("ReportInfo.Modified",Order=1000220)] public DateTime? ModifiedDate { get; }
+        [UsedImplicitly][Field("ReportInfo.Author",Order=1000216)] public String CreatedBy { get; }
+        [UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=1000221,Converter=typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
+        [UsedImplicitly][Field(Order=1000205)] public Boolean DoublePass { get; }
+        [UsedImplicitly][Field(Order=1000206)] public Boolean Compressed { get; }
+        [UsedImplicitly][Field(Order=1000204)][DefaultValue(true)] public Boolean ConvertNulls { get; } = true;
+        [UsedImplicitly][Field(Order=1000200)][DefaultValue(true)] public Boolean StoreInResources { get; } = true;
+        [UsedImplicitly][Field(Order=1000200)][DefaultValue(true)] public Boolean AutoFillDataSet { get; } = true;
+        [UsedImplicitly][Field(Order=1000209)] public Boolean SmoothGraphics { get; }
+        [UsedImplicitly][Field(Order=1000207)] public Boolean UseFileCache { get; }
+        [UsedImplicitly][Field(Order=1000213)] public String StartReportEvent { get; }
+        [UsedImplicitly][Field(Order=1000214)] public String FinishReportEvent { get; }
+        [UsedImplicitly][Field(Order=1000210)] public String Password { get; }
+        [UsedImplicitly][Field(Order=1000201)] public String BaseReport { get; }
+        [UsedImplicitly][Field(Order=1000208)] public TextQuality TextQuality { get; }
+        [UsedImplicitly][Field(Order=1000203,Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ReferencedAssemblies { get; }
+        [UsedImplicitly][Field(Order=1000212)] public Int32 MaxPages { get; }
+        [UsedImplicitly][Field(Order=1000211)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public String Script { get;private set; }
-        [UsedImplicitly][Field(Order=4000900)] public Int32 MaxPages { get; }
-        [UsedImplicitly][Field(Order=4000800)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
         public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
         public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
@@ -97,33 +98,21 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:ReadXmlA(XmlReader)
         protected override void ReadXmlA(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            ReferencedAssemblies = new List<String>();
-            try
-                {
-                while (reader.MoveToNextAttribute()) {
-                    switch (reader.LocalName) {
-                        case "ReferencedAssemblies":
-                            ReferencedAssemblies.AddRange(reader.Value.
-                                Split(new []{'\r','\n'},StringSplitOptions.RemoveEmptyEntries));
-                            break;
-                        default:
-                            ResolveFieldMappings(GetType(),out var mapping);
-                            if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
-                                continue;
-                                throw new NotSupportedException(
-                                    (reader is IXmlLineInfo LineInfo)
-                                    ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
-                                    : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
-                                    );
-                                }
-                            SetValue(mi,reader.Value);
-                            break;
-                        }
+            while (reader.MoveToNextAttribute()) {
+                switch (reader.LocalName) {
+                    default:
+                        ResolveFieldMappings(GetType(),out var mapping);
+                        if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
+                            continue;
+                            throw new NotSupportedException(
+                                (reader is IXmlLineInfo LineInfo)
+                                ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+                                );
+                            }
+                        SetValue(mi,reader.Value);
+                        break;
                     }
-                }
-            finally
-                {
-                ReferencedAssemblies = ReferencedAssemblies.AsReadOnly();
                 }
             }
         #endregion

@@ -1,13 +1,11 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Spreadsheet;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -30,7 +28,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000603)] public Int32 MaxRows { get; }
         [UsedImplicitly][Field(Order=1000614,ConverterCulture="en-US")][DefaultValue(37.8f)] public Single Indent { get; } = 37.8f;
         [UsedImplicitly][Field(Order=1000607)] public BandColumns Columns { get; } = new BandColumns();
-        [UsedImplicitly][Field] public IList<Sort> Sorts { get; } = EmptyArray<Sort>.List;
+        [UsedImplicitly][Field("Sort")] public IList<Sort> Sorts { get; } = EmptyArray<Sort>.List;
 
         #region M:UpdateReferences(IList<FastReportObject>)
         [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
@@ -51,7 +49,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix);
+                SerializeAttributes(writer,this,prefix,(descriptor)=>{
+                    return !String.Equals(descriptor.Name,"Sorts");
+                    });
                 Serialize(writer,Children,prefix);
                 if (Sorts.Count > 0) {
                     using (writer.ElementGroup("Sort")) {

@@ -39,11 +39,14 @@ namespace IPGPhotonics.PDB.Infrastructure
                 var builder = new StringBuilder();
                 using (var writer = new FastReportXmlWriter(builder, new XmlWriterSettings {
                     Indent = true,
-                    })) {
+                    Encoding = Encoding.UTF8,
+                    OmitXmlDeclaration = false,
+                    }))
+                    {
                     var serializer = new FastReportSerializer(writer);
                     serializer.Visit(Body);
                     }
-                File.WriteAllText($"{Label}.frz",builder.ToString().Replace("\" />","\"/>"));
+                File.WriteAllText($"{Label}.frz",builder.ToString().Replace("\" />","\"/>"),Encoding.UTF8);
                 }
             }
         #endregion

@@ -11,6 +11,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
     public class SqlXmlWriter : SqlXmlCustomWriter
         {
         public override WriteState WriteState { get { return writer.WriteState; }}
+        public override XmlWriterSettings Settings { get { return writer.Settings; }}
         #region P:NewLineOnAttributes:Boolean
         protected internal override Boolean NewLineOnAttributes {
             get
