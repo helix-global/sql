@@ -3,10 +3,12 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Text;
+using System.Xml;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
-using System.Xml;
+using System.Diagnostics;
+using System.Linq;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -34,19 +36,28 @@ namespace IPGPhotonics.PDB.Infrastructure
             :base(source,service)
             {
             if (m_body != null) {
-                File.WriteAllBytes($"{Label}.frx",m_body);
                 Body = FastReport.LoadFrom(m_body);
-                var builder = new StringBuilder();
-                using (var writer = new FastReportXmlWriter(builder, new XmlWriterSettings {
-                    Indent = true,
-                    Encoding = Encoding.UTF8,
-                    OmitXmlDeclaration = false,
-                    }))
-                    {
-                    var serializer = new FastReportSerializer(writer);
-                    serializer.Visit(Body);
+                Byte[] target;
+                using (var stream = new MemoryStream()) {
+                    using (var writer = new FastReportXmlWriter(stream, new XmlWriterSettings {
+                        Indent = true,
+                        Encoding = Encoding.UTF8,
+                        OmitXmlDeclaration = false,
+                        }))
+                        {
+                        writer.WriteProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
+                        var serializer = new FastReportSerializer(writer);
+                        serializer.Visit(Body);
+                        writer.WriteWhitespace(Environment.NewLine);
+                        }
+                    stream.Position = 0;
+                    target = stream.ToArray();
                     }
-                File.WriteAllText($"{Label}.frz",builder.ToString().Replace("\" />","\"/>"),Encoding.UTF8);
+                if (!m_body.SequenceEqual(target))
+                    {
+                    File.WriteAllBytes($"{Label}.frx",m_body);
+                    File.WriteAllBytes($"{Label}.frz",target);
+                    }
                 }
             }
         #endregion
@@ -84,6 +95,10 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
+        private static Boolean HasChar(String source,Char ch)
+            {
+            return source != null && source.IndexOf(ch) >= 0;
+            }
 
         [UsedImplicitly][SqlObjectFieldMapping("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] m_body;
         }

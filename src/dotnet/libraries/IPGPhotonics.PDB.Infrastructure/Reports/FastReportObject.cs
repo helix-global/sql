@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -192,6 +193,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                             fro.Serialize(writer,name);
                             continue;
                             }
+                        if (descriptor.PropertyType == typeof(Boolean))
+                            {
+                            //Debugger.Break();
+                            }
                         var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
                         if (converter != null && converter.CanConvertTo(typeof(String))) {
                             value = converter.ConvertToInvariantString(value);
@@ -224,6 +229,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         protected static String EncodeString(String value) {
             if (String.IsNullOrEmpty(value)) { return value; }
             return value.
+                Replace("&","&amp;").
                 Replace("<","&lt;").
                 Replace(">","&gt;").
                 Replace("\"","&quot;").

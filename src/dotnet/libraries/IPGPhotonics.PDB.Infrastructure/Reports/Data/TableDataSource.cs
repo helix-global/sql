@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -38,5 +39,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        private static Boolean HasChar(String source,Char ch)
+            {
+            return source != null && source.IndexOf(ch) >= 0;
+            }
         }
     }

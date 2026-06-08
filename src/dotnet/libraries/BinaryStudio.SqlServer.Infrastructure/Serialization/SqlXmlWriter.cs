@@ -30,9 +30,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
         #endregion
 
-        #region ctor{TextWriter}
-        public SqlXmlWriter(TextWriter writer) {
-            this.writer = new InternalXmlWriter(writer);
+        #region ctor{Stream,XmlWriterSettings}
+        public SqlXmlWriter(Stream stream,XmlWriterSettings settings) {
+            writer = CreateWriter(stream,settings);
             }
         #endregion
         #region ctor{StringBuilder}
@@ -79,10 +79,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
         #endregion
         #region M:CreateWriter(Stream):XmlWriter
         protected virtual XmlWriter CreateWriter(Stream stream) {
-            var settings = new XmlWriterSettings {
+            return CreateWriter(stream,new XmlWriterSettings {
                 Indent = true,
-                };
-            return new XmlWellFormedWriter(new XmlUtf8RawTextWriterIndent(this,stream,settings),settings);
+                });
+            }
+        #endregion
+        #region M:CreateWriter(Stream,XmlWriterSettings):XmlWriter
+        protected virtual XmlWriter CreateWriter(Stream stream,XmlWriterSettings settings) {
+            return new XmlWellFormedWriter(
+                settings.Indent
+                    ? new XmlUtf8RawTextWriterIndent(this,stream,settings)
+                    : new XmlUtf8RawTextWriter(this,stream,settings),settings);
             }
         #endregion
         #region M:CreateWriter(StringBuilder,XmlWriterSettings):XmlWriter

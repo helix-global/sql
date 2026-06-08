@@ -9,5 +9,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
     public interface ICarriageReturnEntityWriter
         {
         unsafe char* Write(char* target);
+        unsafe byte* Write(byte* target);
         }
     }

@@ -103,9 +103,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
         // Construct an instance of this class that serializes to a Stream interface.
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         [SuppressMessage("ReSharper", "ArrangeThisQualifier")]
-        public XmlUtf8RawTextWriter(Stream stream,XmlWriterSettings settings)
+        public XmlUtf8RawTextWriter(IServiceProvider service,Stream stream,XmlWriterSettings settings)
             :this(settings)
             {
+            this.service = service;
             Debug.Assert(stream != null && settings != null);
 
             this.stream = stream;
@@ -840,7 +841,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             else
                                 {
                                 // escape tab in attributes
-                                pDst = TabEntity(pDst);
+                                if (GetService<ITabEntityWriter>(out var service))
+                                    {
+                                    pDst = service.Write(pDst);
+                                    }
+                                else
+                                    {
+                                    pDst = TabEntity(pDst);
+                                    }
                                 }
                             break;
                         case (Char)0xD:
@@ -852,7 +860,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             else
                                 {
                                 // escape new lines in attributes
-                                pDst = CarriageReturnEntity(pDst);
+                                if (GetService<ICarriageReturnEntityWriter>(out var service))
+                                    {
+                                    pDst = service.Write(pDst);
+                                    }
+                                else
+                                    {
+                                    pDst = CarriageReturnEntity(pDst);
+                                    }
                                 }
                             break;
                         case (Char)0xA:
@@ -864,7 +879,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             else
                                 {
                                 // escape new lines in attributes
-                                pDst = LineFeedEntity(pDst);
+                                if (GetService<ILineFeedEntityWriter>(out var service))
+                                    {
+                                    pDst = service.Write(pDst);
+                                    }
+                                else
+                                    {
+                                    pDst = LineFeedEntity(pDst);
+                                    }
                                 }
                             break;
                         default:
@@ -1720,7 +1742,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:GetService(Type):Object
+        /// <summary>Returns an object that represents a service provided by the <see cref="T:System.ComponentModel.Component"/> or by its <see cref="T:System.ComponentModel.Container"/>.</summary>
+        /// <param name="service">A service provided by the <see cref="T:System.ComponentModel.Component"/>.</param>
+        /// <returns>An <see cref="T:System.Object"/> that represents a service provided by the <see cref="T:System.ComponentModel.Component"/>, or <see langword="null"/> if the <see cref="T:System.ComponentModel.Component"/> does not provide the specified service.</returns>
+        protected override Object GetService(Type service) {
+            if (service == null) { return null; }
+            if (service.IsAssignableFrom(GetType())) { return this; }
+            return this.service?.GetService(service);
+            }
+        #endregion
 
         protected readonly Stack<NameScope> elementScopeStack = new Stack<NameScope>();
+        protected readonly IServiceProvider service;
         }
     }

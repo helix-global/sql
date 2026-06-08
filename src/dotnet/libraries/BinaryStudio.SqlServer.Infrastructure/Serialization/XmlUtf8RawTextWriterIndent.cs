@@ -31,13 +31,11 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private BitStack mixedContentStack;
 
         protected ConformanceLevel conformanceLevel = ConformanceLevel.Auto;
-        private readonly IServiceProvider service;
 
         #region ctor{IServiceProvider,Stream,XmlWriterSettings}
         public XmlUtf8RawTextWriterIndent(IServiceProvider service,Stream stream,XmlWriterSettings settings)
-            : base(stream,settings)
+            : base(service,stream,settings)
             {
-            this.service = service;
             Init(settings);
             }
         #endregion

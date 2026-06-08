@@ -75,9 +75,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <exception cref="ArgumentNullException">Thrown if the source stream is <see langword="null"/>.</exception>
         public static FastReport LoadFrom(Stream source) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
-            using (var reader = XmlReader.Create(source,new XmlReaderSettings {
-                IgnoreComments = true,
-                }))
+            using (var reader = new XmlTextReader(source) {
+                Normalization = false
+                })
                 {
                 return LoadFrom(reader);
                 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
-    public interface ILineFeedEntityWriter
+    public interface ITabEntityWriter
         {
         unsafe char* Write(char* target);
         unsafe byte* Write(byte* target);

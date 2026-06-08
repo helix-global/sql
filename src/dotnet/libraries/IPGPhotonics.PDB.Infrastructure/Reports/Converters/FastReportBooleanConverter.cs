@@ -26,5 +26,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return base.ConvertTo(context,culture,value,destinationType);
             }
         #endregion
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return "FastReportBooleanConverter";
+            }
+        #endregion
         }
     }

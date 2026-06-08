@@ -118,9 +118,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
 
         // Construct an instance of this class that outputs text to the TextWriter interface.
-        public XmlEncodedRawTextWriter(TextWriter writer, XmlWriterSettings settings)
+        public XmlEncodedRawTextWriter(IServiceProvider service,TextWriter writer, XmlWriterSettings settings)
             : this(settings)
             {
+            this.service = service;
             Debug.Assert(writer != null && settings != null);
 
             this.writer = writer;
@@ -142,8 +143,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
             }
 
         // Construct an instance of this class that serializes to a Stream interface.
-        public XmlEncodedRawTextWriter(Stream stream, XmlWriterSettings settings) : this(settings)
+        public XmlEncodedRawTextWriter(IServiceProvider service,Stream stream, XmlWriterSettings settings) : this(settings)
             {
+            this.service = service;
             Debug.Assert(stream != null && settings != null);
 
             this.stream = stream;
@@ -904,25 +906,19 @@ namespace BinaryStudio.SqlServer.Infrastructure
         // Serialize text that is part of an attribute value.  The '&', '<', '>', and '"' characters
         // are entitized.
 
-        protected unsafe void WriteAttributeTextBlock(char* pSrc, char* pSrcEnd)
-            {
-
-            fixed (char* pDstBegin = bufChars)
-                {
+        protected unsafe void WriteAttributeTextBlock(char* pSrc, char* pSrcEnd) {
+            fixed (char* pDstBegin = bufChars) {
                 char* pDst = pDstBegin + this.bufPos;
 
                 int ch = 0;
-                for (; ; )
-                    {
+                for (; ; ) {
                     char* pDstEnd = pDst + (pSrcEnd - pSrc);
                     if (pDstEnd > pDstBegin + bufLen)
                         {
                         pDstEnd = pDstBegin + bufLen;
                         }
 
-                    while (pDst < pDstEnd && (((xmlCharType.charProperties[(ch = *pSrc)] & XmlCharType.fAttrValue) != 0)))
-                        {
-
+                    while (pDst < pDstEnd && (((xmlCharType.charProperties[(ch = *pSrc)] & XmlCharType.fAttrValue) != 0))) {
                         *pDst = (char)ch;
                         pDst++;
                         pSrc++;
@@ -938,17 +934,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     // end of buffer
                     if (pDst >= pDstEnd)
                         {
-
                         bufPos = (int)(pDst - pDstBegin);
                         FlushBuffer();
                         pDst = pDstBegin + 1;
                         continue;
-
                         }
 
                     // some character needs to be escaped
-                    switch (ch)
-                        {
+                    switch (ch) {
                         case '&':
                             pDst = AmpEntity(pDst);
                             break;
@@ -974,7 +967,14 @@ namespace BinaryStudio.SqlServer.Infrastructure
                             else
                                 {
                                 // escape tab in attributes
-                                pDst = TabEntity(pDst);
+                                if (GetService<ITabEntityWriter>(out var service))
+                                    {
+                                    pDst = service.Write(pDst);
+                                    }
+                                else
+                                    {
+                                    pDst = TabEntity(pDst);
+                                    }
                                 }
                             break;
                         case (char)0xD:
@@ -1016,7 +1016,9 @@ namespace BinaryStudio.SqlServer.Infrastructure
                                 }
                             break;
                         default:
-                            if (XmlCharType.IsSurrogate(ch)) { pDst = EncodeSurrogate(pSrc, pSrcEnd, pDst); pSrc += 2; } else if (ch <= 0x7F || ch >= 0xFFFE) { pDst = InvalidXmlChar(ch, pDst, true); pSrc++; } else { *pDst = (char)ch; pDst++; pSrc++; }
+                                 if (XmlCharType.IsSurrogate(ch)) { pDst = EncodeSurrogate(pSrc, pSrcEnd, pDst); pSrc += 2; }
+                            else if (ch <= 0x7F || ch >= 0xFFFE) { pDst = InvalidXmlChar(ch, pDst, true); pSrc++; }
+                            else { *pDst = (char)ch; pDst++; pSrc++; }
                             ;
                             continue;
                         }
@@ -1856,6 +1858,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
 
+        #region M:GetService(Type):Object
+        /// <summary>Returns an object that represents a service provided by the <see cref="T:System.ComponentModel.Component"/> or by its <see cref="T:System.ComponentModel.Container"/>.</summary>
+        /// <param name="service">A service provided by the <see cref="T:System.ComponentModel.Component"/>.</param>
+        /// <returns>An <see cref="T:System.Object"/> that represents a service provided by the <see cref="T:System.ComponentModel.Component"/>, or <see langword="null"/> if the <see cref="T:System.ComponentModel.Component"/> does not provide the specified service.</returns>
+        protected override Object GetService(Type service) {
+            if (service == null) { return null; }
+            if (service.IsAssignableFrom(GetType())) { return this; }
+            return this.service?.GetService(service);
+            }
+        #endregion
+
+        protected readonly IServiceProvider service;
         }
 
     // Same as base text writer class except that elements, attributes, comments, and pi's are indented.
@@ -1873,23 +1887,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private BitStack mixedContentStack;
 
         protected ConformanceLevel conformanceLevel = ConformanceLevel.Auto;
-        private readonly IServiceProvider service;
 
         //
         // Constructors
         //
 
         public XmlEncodedRawTextWriterIndent(IServiceProvider service,TextWriter writer,XmlWriterSettings settings)
-            : base(writer, settings)
+            : base(service,writer, settings)
             {
-            this.service = service;
             Init(settings);
             }
 
         public XmlEncodedRawTextWriterIndent(IServiceProvider service,Stream stream,XmlWriterSettings settings)
-            : base(stream,settings)
+            : base(service,stream,settings)
             {
-            this.service = service;
             Init(settings);
             }
 
@@ -2124,16 +2135,5 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 RawText(indentChars);
                 }
             }
-
-        #region M:GetService(Type):Object
-        /// <summary>Returns an object that represents a service provided by the <see cref="T:System.ComponentModel.Component"/> or by its <see cref="T:System.ComponentModel.Container"/>.</summary>
-        /// <param name="service">A service provided by the <see cref="T:System.ComponentModel.Component"/>.</param>
-        /// <returns>An <see cref="T:System.Object"/> that represents a service provided by the <see cref="T:System.ComponentModel.Component"/>, or <see langword="null"/> if the <see cref="T:System.ComponentModel.Component"/> does not provide the specified service.</returns>
-        protected override Object GetService(Type service) {
-            if (service == null) { return null; }
-            if (service.IsAssignableFrom(GetType())) { return this; }
-            return this.service?.GetService(service);
-            }
-        #endregion
         }
     }
