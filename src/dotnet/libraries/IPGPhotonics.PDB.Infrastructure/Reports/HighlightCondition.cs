@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class HighlightCondition : StyleBase
         {
         [UsedImplicitly][Field(Order=1000001)] public String Expression { get; }
-        [UsedImplicitly][Field(Order=1000002)] public Boolean Visible { get; }
+        [UsedImplicitly][Field(Order=1000002)][DefaultValue(true)] public Boolean Visible { get; } = true;
         [UsedImplicitly][Field(Order=1000106)][DefaultValue(false)] public override Boolean ApplyFill { get; }
         }
     }

@@ -19,11 +19,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         private String ClassName { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public FastReportLanguage ScriptLanguage { get; }
-        [UsedImplicitly][Field("ReportInfo.Name",Order=1000215)] public override String Name { get; }
-        [UsedImplicitly][Field("ReportInfo.Created",Order=1000219)] public DateTime?  CreatedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Modified",Order=1000220)] public DateTime? ModifiedDate { get; }
-        [UsedImplicitly][Field("ReportInfo.Author",Order=1000216)] public String CreatedBy { get; }
-        [UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=1000221,Converter=typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
+        [UsedImplicitly][Field(Order=1000215)] public ReportInfo ReportInfo { get; } = new ReportInfo();
+        [UsedImplicitly][Field(Order=1000216)] public PrintSettings PrintSettings { get; } = new PrintSettings();
+        //[UsedImplicitly][Field("ReportInfo.Name",Order=1000215)] public override String Name { get; }
+        //[UsedImplicitly][Field("ReportInfo.Created",Order=1000219)] public DateTime?  CreatedDate { get; }
+        //[UsedImplicitly][Field("ReportInfo.Modified",Order=1000220)] public DateTime? ModifiedDate { get; }
+        //[UsedImplicitly][Field("ReportInfo.Author",Order=1000216)] public String CreatedBy { get; }
+        //[UsedImplicitly][Field("ReportInfo.CreatorVersion",Order=1000221,Converter=typeof(SqlVersionConverter))] public Version CreatedVersion { get; }
+
         [UsedImplicitly][Field(Order=1000205)] public Boolean DoublePass { get; }
         [UsedImplicitly][Field(Order=1000206)] public Boolean Compressed { get; }
         [UsedImplicitly][Field(Order=1000204)][DefaultValue(true)] public Boolean ConvertNulls { get; } = true;
@@ -97,27 +100,27 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return r;
             }
         #endregion
-        #region M:ReadXmlA(XmlReader)
-        protected override void ReadXmlA(XmlReader reader) {
-            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
-            while (reader.MoveToNextAttribute()) {
-                switch (reader.LocalName) {
-                    default:
-                        ResolveFieldMappings(GetType(),out var mapping);
-                        if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
-                            continue;
-                            throw new NotSupportedException(
-                                (reader is IXmlLineInfo LineInfo)
-                                ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
-                                : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
-                                );
-                            }
-                        SetValue(mi,reader.Value);
-                        break;
-                    }
-                }
-            }
-        #endregion
+        //#region M:ReadXmlA(XmlReader)
+        //protected override void ReadXmlA(XmlReader reader) {
+        //    if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
+        //    while (reader.MoveToNextAttribute()) {
+        //        switch (reader.LocalName) {
+        //            default:
+        //                ResolveFieldMappings(GetType(),out var mapping);
+        //                if (!mapping.TryGetValue(reader.LocalName, out var mi)) {
+        //                    continue;
+        //                    throw new NotSupportedException(
+        //                        (reader is IXmlLineInfo LineInfo)
+        //                        ? $@"[Line={LineInfo.LineNumber}] @Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+        //                        : $@"@Attribute=""{reader.LocalName}"" is not supported for ""{GetType().FullName}""."
+        //                        );
+        //                    }
+        //                SetValue(mi,reader.Value);
+        //                break;
+        //            }
+        //        }
+        //    }
+        //#endregion
         #region M:ReadXmlE(XmlReader)
         protected override void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
@@ -185,6 +188,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:UpdateReferences(IList<FastReportObject>)
         [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
         protected override void UpdateReferences(IList<FastReportObject> source) {
+            //base.UpdateReferences(source);
             using (var Parameters = PrepareChanges(this.Parameters))
             using (var Styles = PrepareChanges(this.Styles))
             using (var DataSources = PrepareChanges(this.DataSources))
@@ -219,15 +223,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         Serialize(writer,Styles,prefix);
                         }
                     }
-                if (DataSources.Any() || Parameters.Any() || Relations.Any()|| Totals.Any()) {
+                //if ((DataSources.Count>0) || (Parameters.Count>0) || (Relations.Count > 0) || (Totals.Count > 0)) {
                     using (writer.ElementGroup("Dictionary")) {
                         Serialize(writer,DataSources,prefix);
                         Serialize(writer,Relations,prefix);
                         Serialize(writer,Parameters,prefix);
                         Serialize(writer,Totals,prefix);
                         }
-                    }
-                Serialize(writer,Children,prefix);
+                    //}
+                Serialize(writer,Children.ToArray(),prefix);
                 }
             }
         #endregion

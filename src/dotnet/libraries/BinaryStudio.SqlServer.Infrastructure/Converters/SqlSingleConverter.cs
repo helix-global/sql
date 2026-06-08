@@ -9,7 +9,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public static readonly SqlSingleConverter Default          = new SqlSingleConverter(true);
         public static readonly SqlSingleConverter DoesNotAllowNull = new SqlSingleConverter(false);
 
-        public Boolean AllowNull { get; }
+        public virtual Boolean AllowNull { get; }
 
         #region ctor{Boolean}
         public SqlSingleConverter(Boolean AllowNull) {

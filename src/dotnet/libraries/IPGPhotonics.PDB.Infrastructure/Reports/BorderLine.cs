@@ -10,9 +10,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal sealed class BorderLine : FastReportObject,IEquatable<BorderLine>
         {
-        [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color { get;set; }
-        [UsedImplicitly][Field] public LineStyle Style { get;set; }
-        [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(1f)] public Single Width { get;set; } = 1f;
+        [UsedImplicitly][Field(Order=1000201,Converter=typeof(FastReportColorConverter))] public Color Color { get;set; }
+        [UsedImplicitly][Field(Order=1000202)] public LineStyle Style { get;set; }
+        [UsedImplicitly][Field(Order=1000203,ConverterCulture="en-US")][DefaultValue(1f)] public Single Width { get;set; } = 1f;
 
         #region M:Equals(Object):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>

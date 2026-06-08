@@ -28,7 +28,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(ConverterCulture="en-US")] public Single ShadowWidth { get; } = 4f;
         public Boolean SimpleBorder { get;set; }
 
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Width
+        [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(1f)] public Single Width
             {
             get { return LeftLine.Width; }
             set

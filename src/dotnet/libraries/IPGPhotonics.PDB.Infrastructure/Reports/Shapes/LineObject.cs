@@ -11,5 +11,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000401)] public Boolean Diagonal { get; }
         [UsedImplicitly][Field(Order=1000402)] public CapSettings StartCap { get; } = new CapSettings();
         [UsedImplicitly][Field(Order=1000403)] public CapSettings EndCap { get; } = new CapSettings();
+
+        public LineObject()
+            {
+            Border.SimpleBorder = true;
+            }
         }
     }
