@@ -11,8 +11,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
 
     internal abstract class DialogControl : DialogComponentBase
         {
-        [UsedImplicitly][Field(Order=1000401,Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
-        [UsedImplicitly][Field(Order=1000405,Converter=typeof(SqlColorConverter))] public Color ForeColor { get; }
+        [UsedImplicitly][Field(Order=1000401,Converter=typeof(FastReportColorConverter))] public Color BackColor { get; }
+        [UsedImplicitly][Field(Order=1000405,Converter=typeof(FastReportColorConverter))] public Color ForeColor { get; }
         [UsedImplicitly][Field(Order=1000402)] public String Cursor { get; }
         [UsedImplicitly][Field(Order=1000409)] public String Text { get; }
         [UsedImplicitly][Field(Order=1000410)] public String ClickEvent { get; }

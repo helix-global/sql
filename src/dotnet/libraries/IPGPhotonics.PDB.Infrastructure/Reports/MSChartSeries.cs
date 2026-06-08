@@ -12,7 +12,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class MSChartSeries : Base
         {
         [UsedImplicitly][Field(Order=1000207)] public Collect Collect { get; }
-        [UsedImplicitly][Field(Order=1000210,Converter=typeof(SqlColorConverter))] public Color CollectedItemColor { get; }
+        [UsedImplicitly][Field(Order=1000210,Converter=typeof(FastReportColorConverter))] public Color CollectedItemColor { get; }
         [UsedImplicitly][Field(Order=1000209)] public String CollectedItemText { get; }
         [UsedImplicitly][Field(Order=1000208,ConverterCulture="en-US")] public Single CollectValue { get; }
         [UsedImplicitly][Field(Order=1000205,ConverterCulture="en-US")][DefaultValue(1f)] public Single GroupInterval { get; } = 1f;

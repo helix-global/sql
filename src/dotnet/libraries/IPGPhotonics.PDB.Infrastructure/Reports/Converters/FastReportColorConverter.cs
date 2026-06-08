@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
-using System.Windows;
+using BinaryStudio.SqlServer.Infrastructure;
 
-namespace BinaryStudio.SqlServer.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    public class SqlThicknessConverter : ThicknessConverter
+    using DColor = System.Drawing.Color;
+
+    internal class FastReportColorConverter : SqlColorConverter
         {
         #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
         /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
@@ -19,24 +20,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-            if (destinationType == typeof(Thickness)) {
-                if (value is String S) {
-                    return ConvertFromString(S);
-                    }
-                }
             if (destinationType == typeof(String)) {
-                if (value is Thickness thickness) {
-                    return (String)LengthConverterToString.Invoke(null,
-                        new Object[] {
-                            thickness,
-                            culture
-                            });
+                if (value is DColor DC) {
+                    if (!DC.IsKnownColor) {
+                        return (DC.A == 255)
+                            ? $"{DC.R}, {DC.G}, {DC.B}"
+                            : $"{DC.A}, {DC.R}, {DC.G}, {DC.B}";
+                        }
                     }
                 }
             return base.ConvertTo(context,culture,value,destinationType);
             }
         #endregion
-
-        private static readonly MethodInfo LengthConverterToString = typeof(ThicknessConverter).GetMethod("ToString",BindingFlags.Static|BindingFlags.NonPublic);
         }
     }

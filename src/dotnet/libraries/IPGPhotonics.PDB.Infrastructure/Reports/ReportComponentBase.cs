@@ -2,15 +2,13 @@
 using System.ComponentModel;
 using System.Drawing;
 using BinaryStudio.SqlServer.Infrastructure;
-using IPGPhotonics.PDB.Infrastructure.Reports;
 using JetBrains.Annotations;
 
-namespace IPGPhotonics.PDB.Infrastructure
+namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class ReportComponentBase : ComponentBase
         {
-        //[UsedImplicitly][Field(Order=1000300,Converter=typeof(SqlColorConverter))] public Color FillColor { get; }
         [UsedImplicitly][Field(Order=1000314)] public StylePriority EvenStylePriority { get; }
         [UsedImplicitly][Field(Order=1000319)] public String AfterDataEvent { get; }
         [UsedImplicitly][Field(Order=1000318)] public String AfterPrintEvent { get; }

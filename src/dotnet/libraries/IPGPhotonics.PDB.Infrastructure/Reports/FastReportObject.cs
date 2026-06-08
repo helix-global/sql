@@ -16,7 +16,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal abstract class FastReportObject : SqlObject,IFastReportVisitable
         {
-        public virtual IEnumerable<FastReportObject> Children { get { return EmptyArray<FastReportObject>.List; }}
+        public virtual IEnumerable<FastReportObject> Children { get {
+            foreach (var o in m_objects)
+                {
+                yield return o;
+                }
+            }}
         protected internal virtual String ClassName { get; }
 
         #region M:ResolveMappings(Object,{out}IDictionary<String,PropertyDescriptor>)
@@ -150,8 +155,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             }
         #endregion
         #region M:UpdateReferences(IList<FastReportObject>)
-        protected virtual void UpdateReferences(IList<FastReportObject> source)
-            {
+        protected virtual void UpdateReferences(IList<FastReportObject> source) {
+            using (var objects = PrepareChanges(m_objects)) {
+                foreach (var o in source) {
+                    objects.Add(o);
+                    }
+                }
             }
         #endregion
         #region M:Serialize(XmlWriter,String)
@@ -220,7 +229,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:IsDefaultValue(Object,PropertyDescriptor):Boolean
         private static Boolean IsDefaultValue(Object value,PropertyDescriptor descriptor) {
             var defaultValue = descriptor.Attributes.OfType<DefaultValueAttribute>().FirstOrDefault();
-            if (defaultValue != null) { return Equals(value,defaultValue.Value); }
+            if (defaultValue != null) {
+                if (Equals(value,defaultValue.Value)) { return true; }
+                if (defaultValue.Value is String S) {
+                    var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
+                    if (converter != null && converter.CanConvertFrom(typeof(String))) {
+                        try
+                            {
+                            var r = converter.ConvertFromInvariantString(S);
+                            if (Equals(value,r)) { return true; }
+                            }
+                        catch (Exception e)
+                            {
+                            throw (new Exception($@"Error converting default value ""{S}"" for property ""{descriptor.Name}"" of type ""{descriptor.PropertyType.FullName}"".",e)).Add("Property",descriptor.Name).Add("Type",descriptor.PropertyType.FullName).Add("DefaultValue",S);
+                            }
+                        }
+                    }
+                return false;
+                }
             if (descriptor.PropertyType.IsValueType) { return Equals(value,Activator.CreateInstance(descriptor.PropertyType)); }
             return false;
             }
@@ -232,8 +258,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 Replace("&","&amp;").
                 Replace("<","&lt;").
                 Replace(">","&gt;").
-                Replace("\"","&quot;").
-                Replace("'","&apos;");
+                Replace("\"","&quot;");
             }
         #endregion
 
@@ -401,5 +426,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     }
                 }
             }
+
+        private IList<FastReportObject> m_objects { get; } = new SqlObjectCollection<FastReportObject>();
         }
     }

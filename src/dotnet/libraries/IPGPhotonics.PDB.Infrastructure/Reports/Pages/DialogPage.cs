@@ -24,7 +24,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000412)] public String ResizeEvent { get; }
         [UsedImplicitly][Field(Order=1000411)] public String ShownEvent { get; }
         [UsedImplicitly][Field(Order=1000407)] public String Text { get; }
-        [UsedImplicitly][Field(Order=1000403,Converter=typeof(SqlColorConverter))] public Color BackColor { get; }
+        [UsedImplicitly][Field(Order=1000403,Converter=typeof(FastReportColorConverter))] public Color BackColor { get; }
         [UsedImplicitly][Field(Order=1000405,Converter=typeof(SqlEnumConverter<FormBorderStyle>))] public FormBorderStyle FormBorderStyle { get; }
         [UsedImplicitly][Field(Order=1000406,Converter=typeof(SqlEnumConverter<RightToLeft>))] public RightToLeft RightToLeft { get; }
         public IList<DialogComponentBase> Controls { get; } = new SqlObjectCollection<DialogComponentBase>();

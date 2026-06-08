@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -11,17 +12,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("PictureObject")]
     internal class PictureObject : ReportComponentBase
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlBase64ArrayConverter))] public Byte[] Image { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<PictureBoxSizeMode>))] public PictureBoxSizeMode SizeMode { get; } = PictureBoxSizeMode.Zoom;
-        [UsedImplicitly][Field] public Int32 Angle { get; }
-        [UsedImplicitly][Field] public String DataColumn { get; }
-        [UsedImplicitly][Field] public String ImageLocation { get; }
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MaxHeight { get; }
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single MaxWidth { get; }
-        [UsedImplicitly][Field] public Boolean ShowErrorImage { get; }
-        [UsedImplicitly][Field] public Boolean Tile { get; }
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Transparency { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color TransparentColor { get; }
+        [UsedImplicitly][Field(Order=1000404,Converter=typeof(FastReportThicknessConverter))] public Thickness Padding { get; }
+        [UsedImplicitly][Field(Order=1000412,Converter=typeof(SqlBase64ArrayConverter))] public Byte[] Image { get; }
+        [UsedImplicitly][Field(Order=1000401,Converter=typeof(SqlEnumConverter<PictureBoxSizeMode>))][DefaultValue(PictureBoxSizeMode.Zoom)] public PictureBoxSizeMode SizeMode { get; } = PictureBoxSizeMode.Zoom;
+        [UsedImplicitly][Field(Order=1000411)] public Int32 Angle { get; }
+        [UsedImplicitly][Field(Order=1000413)] public Int32 ImageIndex { get; }
+        [UsedImplicitly][Field(Order=1000406)] public String DataColumn { get; }
+        [UsedImplicitly][Field(Order=1000405)] public String ImageLocation { get; }
+        [UsedImplicitly][Field(Order=1000403,ConverterCulture="en-US")] public Single MaxHeight { get; }
+        [UsedImplicitly][Field(Order=1000402,ConverterCulture="en-US")] public Single MaxWidth { get; }
+        [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")] public Single Transparency { get; }
+        [UsedImplicitly][Field(Order=1000407,Converter=typeof(FastReportColorConverter))] public Color TransparentColor { get; }
+        [UsedImplicitly][Field(Order=1000409)] public Boolean ShowErrorImage { get; }
+        [UsedImplicitly][Field(Order=1000410)] public Boolean Tile { get; }
         }
     }

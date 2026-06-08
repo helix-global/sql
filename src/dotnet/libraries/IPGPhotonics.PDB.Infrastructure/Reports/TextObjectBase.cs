@@ -14,7 +14,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000504)] public String Brackets { get; }
         [UsedImplicitly][Field(Order=1000506)] public String HideValue { get; }
         [UsedImplicitly][Field(Order=1000507)] public String NullValue { get; }
-        [UsedImplicitly][Field(Order=1000502,Converter=typeof(SqlThicknessConverter))] public Thickness Padding { get; }
+        [UsedImplicitly][Field(Order=1000502,Converter=typeof(FastReportThicknessConverter))][DefaultValue("2,0,2,0")] public virtual Thickness Padding { get; } = new Thickness(2,0,2,0);
         [UsedImplicitly][Field(Order=1000503)][DefaultValue(true)] public Boolean AllowExpressions { get; } = true;
         [UsedImplicitly][Field(Order=1000505)] public Boolean HideZeros { get; }
         [UsedImplicitly][Field(Order=1000509)] public Duplicates Duplicates { get; }

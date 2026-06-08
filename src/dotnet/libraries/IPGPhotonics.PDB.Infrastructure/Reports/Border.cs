@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal sealed class Border : FastReportObject
         {
         [UsedImplicitly][Field][DefaultValue(BorderLines.None)] public BorderLines Lines { get; }
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color
+        [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color
             {
             get { return LeftLine.Color; }
             set
@@ -23,7 +23,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
 
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color ShadowColor { get; } = Color.Black;
+        [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color ShadowColor { get; } = Color.Black;
         [UsedImplicitly][Field] public Boolean Shadow { get; }
         [UsedImplicitly][Field(ConverterCulture="en-US")] public Single ShadowWidth { get; } = 4f;
         public Boolean SimpleBorder { get;set; }
@@ -57,12 +57,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public BorderLine RightLine  { get; } = new BorderLine();
         [UsedImplicitly][Field] public BorderLine TopLine    { get; } = new BorderLine();
 
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         #region M:Serialize(XmlWriter,String)
         public override void Serialize(XmlWriter writer,String prefix) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }

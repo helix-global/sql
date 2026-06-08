@@ -10,7 +10,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal sealed class BorderLine : FastReportObject,IEquatable<BorderLine>
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlColorConverter))] public Color Color { get;set; }
+        [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color { get;set; }
         [UsedImplicitly][Field] public LineStyle Style { get;set; }
         [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(1f)] public Single Width { get;set; } = 1f;
 
