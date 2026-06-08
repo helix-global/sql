@@ -22,7 +22,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 yield return o;
                 }
             }}
-        protected internal virtual String ClassName { get; }
 
         #region M:ResolveMappings(Object,{out}IDictionary<String,PropertyDescriptor>)
         private static void ResolveMappings(Object source,out IDictionary<String,PropertyDescriptor> mapping) {

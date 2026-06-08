@@ -750,7 +750,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #region M:GetValue(Object):Object
             public override Object GetValue(Object component)
                 {
-                throw new NotImplementedException();
+                return Source.GetValue(component);
                 }
             #endregion
             #region M:SetValue(Object,Object)

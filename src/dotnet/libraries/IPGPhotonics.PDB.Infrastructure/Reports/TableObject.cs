@@ -9,7 +9,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TableObject")]
     internal sealed class TableObject : TableBase
         {
-        protected internal override String ClassName { get { return "TableObject"; }}
         [UsedImplicitly][Field(Order=1000602)][DefaultValue(true)] public Boolean ManualBuildAutoSpans { get; } = true;
         [UsedImplicitly][Field(Order=1000601)] public String ManualBuildEvent { get; }
         }

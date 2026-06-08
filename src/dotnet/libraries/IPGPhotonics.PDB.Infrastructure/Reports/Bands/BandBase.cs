@@ -10,7 +10,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class BandBase : BreakableComponent
         {
-        [UsedImplicitly][Field(Order=1000502)][DefaultValue(true)] public Boolean FirstRowStartsNewPage { get; } = true;
+        [UsedImplicitly][Field(Order=1000502)] public Boolean FirstRowStartsNewPage { get; }
         [UsedImplicitly][Field(Order=1000504)] public Boolean KeepChild { get; }
         [UsedImplicitly][Field(Order=1000503)] public Boolean PrintOnBottom { get; }
         [UsedImplicitly][Field(Order=1000501)] public Boolean StartNewPage { get; }
@@ -18,6 +18,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000505)] public String OutlineExpression { get; }
         [UsedImplicitly][Field(Order=1000508)] public String AfterLayoutEvent { get; }
         [UsedImplicitly][Field(Order=1000507)] public String BeforeLayoutEvent { get; }
+        [UsedImplicitly][Field(Order=1000400)][DefaultValue(false)] public override Boolean CanBreak { get; }
         public IList<ReportComponentBase> Objects { get; } = new SqlObjectCollection<ReportComponentBase>();
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Objects) {

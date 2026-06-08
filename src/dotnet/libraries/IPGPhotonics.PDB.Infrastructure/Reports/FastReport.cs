@@ -17,6 +17,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("A2Report")]
     internal sealed class FastReport : Base
         {
+        private String ClassName { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public FastReportLanguage ScriptLanguage { get; }
         [UsedImplicitly][Field("ReportInfo.Name",Order=1000215)] public override String Name { get; }
         [UsedImplicitly][Field("ReportInfo.Created",Order=1000219)] public DateTime?  CreatedDate { get; }
@@ -120,6 +121,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         protected override void ReadXmlE(XmlReader reader) {
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
             if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
+            ClassName = reader.LocalName;
             ResolveFieldMappings(GetType(),out var mapping);
             var objects = new List<FastReportObject>();
             ForEachE(reader,(_)=>{
@@ -201,7 +203,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public override void Serialize(XmlWriter writer,String prefix) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            var className = ClassName;
             using (writer.ElementGroup(className)) {
                 SerializeAttributes(writer,this,prefix);
                 if (!String.IsNullOrWhiteSpace(Script)) {

@@ -9,7 +9,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TextBoxControl")]
     internal sealed class TextBoxControl : DataFilterBaseControl
         {
-        protected internal override String ClassName { get { return "TextBoxControl"; }}
         [UsedImplicitly][Field] public Boolean AcceptsReturn { get; }
         [UsedImplicitly][Field] public Boolean AcceptsTab { get; }
         [UsedImplicitly][Field] public Boolean Multiline { get; }

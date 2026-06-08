@@ -8,7 +8,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal sealed class SolidFill : FillBase,IEquatable<SolidFill>,IEquatable<Color>,IEquatable<KnownColor>
         {
-        protected internal override String ClassName { get { return "SolidFill"; }}
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color { get; }
 
         public SolidFill(Color color)

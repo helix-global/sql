@@ -9,7 +9,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("Style")]
     internal sealed class Style : StyleBase
         {
-        protected internal override String ClassName { get { return "Style"; }}
         [UsedImplicitly][Field(Order=1000001)] public String Name { get; }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
@@ -13,6 +12,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             writer.WriteAttributeString(prefix,FormatConverter.Instance.ConvertToInvariantString(this));
             SerializeAttributes(writer,this,prefix);
+            }
+        #endregion
+        #region M:Serialize(XmlWriter,String)
+        public void SerializeFull(XmlWriter writer,String prefix) {
+            base.Serialize(writer,prefix);
             }
         #endregion
         #region M:Equals(Object):Boolean

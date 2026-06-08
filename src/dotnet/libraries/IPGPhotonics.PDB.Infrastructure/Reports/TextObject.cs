@@ -15,7 +15,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TextObject")]
     internal class TextObject : TextObjectBase
         {
-        protected internal override String ClassName { get { return "TextObject"; }}
         [UsedImplicitly][Field(Order=1000604)] public HorzAlign HorzAlign { get; }
         [UsedImplicitly][Field(Order=1000605)] public VertAlign VertAlign { get; }
         [UsedImplicitly][Field(Order=1000610)] public String Font { get; }
@@ -46,9 +45,23 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            var formats = Formats;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix,(descriptor)=>
-                    (descriptor.Name != nameof(Highlights)));
+                SerializeAttributes(writer,this,prefix,(descriptor)=> {
+                    if (descriptor.Name == nameof(Highlights)) { return false; }
+                    if (descriptor.Name == nameof(Formats))    { return false; }
+                    if (descriptor.Name == nameof(Format)) {
+                        return (formats != null) && (formats.Count == 1);
+                        }
+                    return true;
+                    });
+                if ((formats != null) && (formats.Count > 1)) {
+                    using (writer.ElementGroup("Formats")) {
+                        foreach(var o in formats) {
+                            o.SerializeFull(writer,prefix);
+                            }
+                        }
+                    }
                 if ((Highlights != null) && Highlights.Any()) {
                     using (writer.ElementGroup("Highlight")) {
                         foreach (var o in Highlights) {

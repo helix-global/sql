@@ -9,7 +9,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TableColumn")]
     internal sealed class TableColumn : ComponentBase
         {
-        protected internal override String ClassName { get { return "TableColumn"; }}
         [UsedImplicitly][Field(Order=1000304)] public Boolean AutoSize { get; }
         //[UsedImplicitly][Field(Order=1000300)] public Boolean PageBreak { get; }
         //[UsedImplicitly][Field(Order=1000300)] public Int32 KeepColumns { get; }

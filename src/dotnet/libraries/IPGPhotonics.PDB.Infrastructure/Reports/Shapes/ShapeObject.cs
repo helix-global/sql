@@ -8,7 +8,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("ShapeObject")]
     internal sealed class ShapeObject : ReportComponentBase
         {
-        protected internal override String ClassName { get { return "ShapeObject"; }}
         [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Curve { get; }
         [UsedImplicitly][Field] public ShapeKind Shape { get; }
         }

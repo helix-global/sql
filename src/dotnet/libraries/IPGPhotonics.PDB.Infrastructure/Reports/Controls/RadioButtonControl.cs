@@ -9,8 +9,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("RadioButtonControl")]
     internal sealed class RadioButtonControl : ButtonBaseControl
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment CheckAlign { get; }
-        [UsedImplicitly][Field] public Boolean Checked { get; }
-        [UsedImplicitly][Field] public String CheckedChangedEvent { get; }
+        [UsedImplicitly][Field(Order=1000701,Converter=typeof(SqlEnumConverter<ContentAlignment>))] public ContentAlignment CheckAlign { get; }
+        [UsedImplicitly][Field(Order=1000702)] public Boolean Checked { get; }
+        [UsedImplicitly][Field(Order=1000703)] public String CheckedChangedEvent { get; }
         }
     }

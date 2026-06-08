@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -19,7 +20,22 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000505)] public Boolean HideZeros { get; }
         [UsedImplicitly][Field(Order=1000509)] public Duplicates Duplicates { get; }
         [UsedImplicitly][Field(Order=1000508)] public ProcessAt ProcessAt { get; }
-        [UsedImplicitly][Field(Order=1000510,EmptyIfNull = true)] public IList<FormatBase> Formats { get; }
-        [UsedImplicitly][Field(Order=1000511)][DefaultValue("General")] public FormatBase Format { get; } = new GeneralFormat();
+        [UsedImplicitly][Field(Order=1000510,EmptyIfNull = true)] public IList<FormatBase> Formats { get; } = new List<FormatBase>{ new GeneralFormat() };
+        [UsedImplicitly][Field(Order = 1000511)][DefaultValue("General")] public FormatBase Format
+            {
+            get { return Formats.FirstOrDefault(); }
+            internal set
+                {
+                if (value == null) { value = new GeneralFormat(); }
+                if (Formats.Count == 0)
+                    {
+                    Formats.Add(value);
+                    }
+                else
+                    {
+                    Formats[0] = value;
+                    }
+                }
+            }
         }
     }
