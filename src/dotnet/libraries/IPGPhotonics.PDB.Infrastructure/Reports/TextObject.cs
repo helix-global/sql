@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using JetBrains.Annotations;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -36,6 +39,28 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000617)][DefaultValue(true)] public Boolean Wysiwyg { get; } = true;
         [UsedImplicitly][Field(Order=1000622)] public override String Style { get; }
         [UsedImplicitly][Field(Order=1000612,Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
-        [UsedImplicitly][Field("Highlight")] public IList<HighlightCondition> Highlights { get; }
+        [UsedImplicitly][Field("Highlight",EmptyIfNull=true)] public IList<HighlightCondition> Highlights { get; }
+
+        #region M:Serialize(XmlWriter,String)
+        public override void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            var type = GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (writer.ElementGroup(className)) {
+                SerializeAttributes(writer,this,prefix,(descriptor)=>
+                    (descriptor.Name != nameof(Highlights)));
+                if ((Highlights != null) && Highlights.Any()) {
+                    using (writer.ElementGroup("Highlight")) {
+                        foreach (var o in Highlights) {
+                            o.Serialize(writer,prefix);
+                            }
+                        }
+                    }
+                foreach (var o in Children) {
+                    o.Serialize(writer,prefix);
+                    }
+                }
+            }
+        #endregion
         }
     }

@@ -6,12 +6,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("Parameter")]
-    internal class FastReportParameter : FastReportObject
+    internal class FastReportParameter : Base
         {
-        [UsedImplicitly][Field] public String Name { get; }
-        [UsedImplicitly][Field] public String DataType { get; }
-        [UsedImplicitly][Field] public String Description { get; }
-        [UsedImplicitly][Field] public String Expression { get; }
-        [UsedImplicitly][Field] public String Value { get; }
+        [UsedImplicitly][Field(Order=1000201)] public String DataType { get; }
+        [UsedImplicitly][Field(Order=1000203)] public String Description { get; }
+        [UsedImplicitly][Field(Order=1000202)] public String Expression { get; }
         }
     }
