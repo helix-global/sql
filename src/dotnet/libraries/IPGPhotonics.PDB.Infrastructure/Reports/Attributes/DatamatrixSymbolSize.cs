@@ -6,6 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [TypeConverter(typeof(SqlEnumConverter<DatamatrixSymbolSize>))]
     public enum DatamatrixSymbolSize
         {
+        None,
         Auto,
         Size10x10,
         Size12x12,

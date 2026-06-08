@@ -35,7 +35,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000607)] public Boolean RightToLeft { get; }
         [UsedImplicitly][Field(Order=1000609)] public Boolean Underlines { get; }
         [UsedImplicitly][Field(Order=1000608)][DefaultValue(true)] public Boolean WordWrap { get; } = true;
-        [UsedImplicitly][Field(Order=1000617)][DefaultValue(true)] public Boolean Wysiwyg { get; } = true;
+        [UsedImplicitly][Field(Order=1000617)][DefaultValue(false)] public Boolean Wysiwyg { get; } = false;
         [UsedImplicitly][Field(Order=1000622)] public override String Style { get; }
         [UsedImplicitly][Field(Order=1000612,Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
         [UsedImplicitly][Field("Highlight",EmptyIfNull=true)] public IList<HighlightCondition> Highlights { get; }

@@ -7,6 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal class BarcodeConverter : TypeConverter
         {
+        public static readonly BarcodeConverter Instance = new BarcodeConverter();
         #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
         /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
         /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -22,6 +23,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (value is String S) {
                     if (Types.TryGetValue(S,out var type)) {
                         return Activator.CreateInstance(type);
+                        }
+                    }
+                }
+            if (destinationType == typeof(String)) {
+                if (value is BarcodeBase B) {
+                    foreach (var pair in Types) {
+                        if (pair.Value == B.GetType()) {
+                            return pair.Key;
+                            }
                         }
                     }
                 }

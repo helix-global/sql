@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -10,14 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("Cell")]
     internal sealed class MatrixCellDescriptor : MatrixDescriptor
         {
-        [UsedImplicitly][Field] public MatrixAggregateFunction Function { get; }
-        [UsedImplicitly][Field] public MatrixPercent Percent { get; }
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
+        [UsedImplicitly][Field(Order=1000301)][DefaultValue(MatrixAggregateFunction.Sum)] public MatrixAggregateFunction Function { get; } = MatrixAggregateFunction.Sum;
+        [UsedImplicitly][Field(Order=1000302)] public MatrixPercent Percent { get; }
         }
     }

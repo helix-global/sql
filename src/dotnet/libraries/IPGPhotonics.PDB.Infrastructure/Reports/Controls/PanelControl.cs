@@ -8,6 +8,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("PanelControl")]
     internal sealed class PanelControl : ParentControl
         {
-        [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<BorderStyle>))] public BorderStyle BorderStyle { get; }
+        [UsedImplicitly][Field(Order=1000601,Converter=typeof(SqlEnumConverter<BorderStyle>))] public BorderStyle BorderStyle { get; }
         }
     }

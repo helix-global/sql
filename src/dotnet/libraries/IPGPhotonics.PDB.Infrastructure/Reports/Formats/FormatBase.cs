@@ -14,8 +14,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             SerializeAttributes(writer,this,prefix);
             }
         #endregion
-        #region M:Serialize(XmlWriter,String)
-        public void SerializeFull(XmlWriter writer,String prefix) {
+        #region M:SerializeFull(XmlWriter,String)
+        public virtual void SerializeFull(XmlWriter writer,String prefix) {
             base.Serialize(writer,prefix);
             }
         #endregion

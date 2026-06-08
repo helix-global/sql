@@ -23,12 +23,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000421)] public Boolean ResetPageNumber { get; }
         [UsedImplicitly][Field(Order=1000423)] public Boolean StartOnOddPage { get; }
         [UsedImplicitly][Field(Order=1000418)][DefaultValue(true)] public Boolean TitleBeforeHeader { get; } = true;
-        [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")] public Single BottomMargin { get; }
-        [UsedImplicitly][Field(Order=1000405,ConverterCulture="en-US")] public Single LeftMargin { get; }
+        [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")][DefaultValue(10f)] public Single BottomMargin { get; } = 10f;
+        [UsedImplicitly][Field(Order=1000405,ConverterCulture="en-US")][DefaultValue(10f)] public Single LeftMargin { get; } = 10f;
         [UsedImplicitly][Field(Order=1000403,ConverterCulture="en-US")] public Single PaperHeight { get; }
         [UsedImplicitly][Field(Order=1000402,ConverterCulture="en-US")] public Single PaperWidth { get; }
-        [UsedImplicitly][Field(Order=1000407,ConverterCulture="en-US")] public Single RightMargin { get; }
-        [UsedImplicitly][Field(Order=1000406,ConverterCulture="en-US")] public Single TopMargin { get; }
+        [UsedImplicitly][Field(Order=1000407,ConverterCulture="en-US")][DefaultValue(10f)] public Single RightMargin { get; } = 10f;
+        [UsedImplicitly][Field(Order=1000406,ConverterCulture="en-US")][DefaultValue(10f)] public Single TopMargin { get; } = 10f;
         [UsedImplicitly][Field(Order=1000426)] public String FinishPageEvent { get; }
         [UsedImplicitly][Field(Order=1000427)] public String ManualBuildEvent { get; }
         [UsedImplicitly][Field(Order=1000419)] public String OutlineExpression { get; }

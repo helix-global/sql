@@ -9,9 +9,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     internal abstract class StyleBase : FastReportObject
         {
-        [UsedImplicitly][Field(Order=1000105)] public Boolean ApplyBorder { get; }
+        [UsedImplicitly][Field(Order=1000105)] public virtual Boolean ApplyBorder { get; }
         [UsedImplicitly][Field(Order=1000106)][DefaultValue(true)] public virtual Boolean ApplyFill { get; } = true;
-        [UsedImplicitly][Field(Order=1000108)] public Boolean ApplyFont { get; }
+        [UsedImplicitly][Field(Order=1000108)] public virtual Boolean ApplyFont { get; }
         [UsedImplicitly][Field(Order=1000107)][DefaultValue(true)] public Boolean ApplyTextFill { get; } = true;
         [UsedImplicitly][Field(Order=1000104)] public String Font { get; }
         [UsedImplicitly][Field(Order=1000102)][DefaultValue(KnownColor.Transparent)] public FillBase Fill { get; } = new SolidFill(Color.Transparent);

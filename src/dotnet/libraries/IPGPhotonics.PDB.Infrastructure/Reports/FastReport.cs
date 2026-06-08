@@ -45,6 +45,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
         public IList<Style> Styles { get; } = new SqlObjectCollection<Style>();
         public IList<Relation> Relations { get; } = new SqlObjectCollection<Relation>();
+        public IList<Total> Totals { get; } = new SqlObjectCollection<Total>();
 
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Pages) {
@@ -188,12 +189,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             using (var Styles = PrepareChanges(this.Styles))
             using (var DataSources = PrepareChanges(this.DataSources))
             using (var Relations = PrepareChanges(this.Relations))
+            using (var Totals = PrepareChanges(this.Totals))
             using (var Pages = PrepareChanges(this.Pages)) {
                 foreach (var o in source) {
                          if (o is PageBase PageBase)                       { Pages.Add(PageBase);                 }
                     else if (o is DataConnectionBase DataConnectionBase)   { DataSources.Add(DataConnectionBase); }
                     else if (o is FastReportParameter FastReportParameter) { Parameters.Add(FastReportParameter); }
                     else if (o is Relation Relation)                       { Relations.Add(Relation);             }
+                    else if (o is Total Total)                             { Totals.Add(Total);                   }
                     else if (o is Style Style) { Styles.Add(Style); }
                     }
                 }
@@ -216,11 +219,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         Serialize(writer,Styles,prefix);
                         }
                     }
-                if (DataSources.Any() || Parameters.Any() || Relations.Any()) {
+                if (DataSources.Any() || Parameters.Any() || Relations.Any()|| Totals.Any()) {
                     using (writer.ElementGroup("Dictionary")) {
                         Serialize(writer,DataSources,prefix);
                         Serialize(writer,Relations,prefix);
                         Serialize(writer,Parameters,prefix);
+                        Serialize(writer,Totals,prefix);
                         }
                     }
                 Serialize(writer,Children,prefix);

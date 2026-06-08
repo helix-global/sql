@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("SubreportObject")]
     internal sealed class SubreportObject : ReportComponentBase
         {
-        [UsedImplicitly][Field] public Boolean PrintOnParent { get; }
-        [UsedImplicitly][Field] public String ReportPage { get; }
+        [UsedImplicitly][Field(Order=1000402)] public Boolean PrintOnParent { get; }
+        [UsedImplicitly][Field(Order=1000401)] public String ReportPage { get; }
         }
     }

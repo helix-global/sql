@@ -6,6 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [TypeConverter(typeof(SqlEnumConverter<DatamatrixEncoding>))]
     public enum DatamatrixEncoding
         {
+        None,
         Auto,
         Ascii,
         C40,

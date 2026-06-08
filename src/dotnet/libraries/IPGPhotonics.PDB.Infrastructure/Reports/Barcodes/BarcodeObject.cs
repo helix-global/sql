@@ -19,7 +19,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000409)][DefaultValue(true)] public Boolean HideIfNoData { get; } = true;
         [UsedImplicitly][Field(Order=1000406)][DefaultValue(true)] public Boolean ShowText { get; } = true;
         [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")][DefaultValue(1f)] public Single Zoom { get; } = 1f;
-        [UsedImplicitly][Field(Order=1000411)] public BarcodeBase Barcode { get; } = new Barcode39();
+        [UsedImplicitly][Field(Order=1000411)][DefaultValue("Code39")] public BarcodeBase Barcode { get; } = new Barcode39();
         [UsedImplicitly][Field(Order=1000407,Converter=typeof(FastReportThicknessConverter))] public Thickness Padding { get; }
         }
     }

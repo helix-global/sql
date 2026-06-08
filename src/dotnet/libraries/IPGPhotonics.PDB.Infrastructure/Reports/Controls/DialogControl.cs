@@ -33,7 +33,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000423)] public String TextChangedEvent { get; }
         [UsedImplicitly][Field(Order=1000406)] public RightToLeft RightToLeft { get; }
         [UsedImplicitly][Field(Order=1000403)][DefaultValue(true)] public Boolean Enabled { get; } = true;
-        [UsedImplicitly][Field(Order=1000408)][DefaultValue(true)] public Boolean TabStop { get; } = true;
+        [UsedImplicitly][Field(Order=1000408)][DefaultValue(true)] public virtual Boolean TabStop { get; } = true;
         [UsedImplicitly][Field(Order=1000407)][DefaultValue(-1)] public Int32 TabIndex { get; } = -1;
         }
     }

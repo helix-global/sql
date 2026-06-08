@@ -8,8 +8,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("ChildBand")]
     internal sealed class ChildBand : BandBase
         {
-        [UsedImplicitly][Field] public Int32 CompleteToNRows { get; }
-        [UsedImplicitly][Field] public Boolean FillUnusedSpace { get; }
-        [UsedImplicitly][Field] public Boolean PrintIfDatabandEmpty { get; }
+        [UsedImplicitly][Field(Order=1000602)] public Int32 CompleteToNRows { get; }
+        [UsedImplicitly][Field(Order=1000601)] public Boolean FillUnusedSpace { get; }
+        [UsedImplicitly][Field(Order=1000603)] public Boolean PrintIfDatabandEmpty { get; }
         }
     }

@@ -62,7 +62,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             if (Shadow) { writer.WriteAttribute($"{prefix}.Shadow","true"); }
             if (ShadowWidth != 4f) { writer.WriteAttribute($"{prefix}.ShadowWidth",ShadowWidth); }
-            if (ShadowColor != Color.Black) { writer.WriteAttribute($"{prefix}.ShadowColor",ShadowColor); }
+            if (ShadowColor != Color.Black) { writer.WriteAttribute($"{prefix}.ShadowColor",FastReportColorConverter.Instance.ConvertToInvariantString(ShadowColor)); }
             if (!SimpleBorder) {
                 if (Lines > 0) {
                     writer.WriteAttribute($"{prefix}.Lines",Lines);

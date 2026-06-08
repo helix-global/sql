@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("CheckedListBoxControl")]
     internal sealed class CheckedListBoxControl : ListBoxBaseControl
         {
-        [UsedImplicitly][Field] public Boolean CheckOnClick { get; }
-        [UsedImplicitly][Field] public String ItemCheckEvent { get; }
+        [UsedImplicitly][Field(Order=1000701)] public Boolean CheckOnClick { get; }
+        [UsedImplicitly][Field(Order=1000702)] public String ItemCheckEvent { get; }
         }
     }
