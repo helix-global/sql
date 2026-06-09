@@ -1,7 +1,4 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using DocumentFormat.OpenXml.Bibliography;
-using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,10 +9,12 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal abstract class FastReportObject : SqlObject,ICustomTypeDescriptor
+    internal abstract class FastReportObject : SqlObject,ICustomTypeDescriptor,IFastReportClassObject
         {
         public virtual IEnumerable<FastReportObject> Children { get {
             foreach (var o in m_objects)
@@ -166,8 +165,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:Serialize(XmlWriter,String)
         public virtual void Serialize(XmlWriter writer,String prefix) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            var className = ((IFastReportClassObject)this).ClassName;
             using (writer.ElementGroup(className)) {
                 SerializeAttributes(writer,prefix);
                 foreach (var o in Children) {
@@ -181,8 +179,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             where T:FastReportObject
             {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            foreach(var o in values) {
-                o.Serialize(writer,prefix);
+            if (values != null) {
+                foreach(var o in values) {
+                    o.Serialize(writer,prefix);
+                    }
                 }
             }
         #endregion
@@ -205,14 +205,16 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (value == null) { return; }
             var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
             if (field != null) {
+                var serializerAttribute = descriptor.Attributes.OfType<FastReportSerializerAttribute>().FirstOrDefault();
+                if (serializerAttribute != null) {
+                    var serializer = (IFastReportSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
+                    serializer.Serialize(writer,this,descriptor);
+                    return;
+                    }
                 var name = field.Source ?? descriptor.Name;
                 if (value is FastReportObject fro) {
                     fro.Serialize(writer,name);
                     return;
-                    }
-                if (descriptor.PropertyType == typeof(Boolean))
-                    {
-                    //Debugger.Break();
                     }
                 var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
                 if (converter != null && converter.CanConvertTo(typeof(String))) {
@@ -375,6 +377,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 yield return descriptor;
                 }
             }
+        #endregion
+        #region P:IFastReportClassObject.ClassName:String
+        String IFastReportClassObject.ClassName { get {
+            var type = GetType();
+            return type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            }}
         #endregion
 
         private class PropInfo

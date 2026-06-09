@@ -9,11 +9,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TableColumn")]
     internal sealed class TableColumn : ComponentBase
         {
+        public const Single DefaultWidth = 66.15f;
         [UsedImplicitly][Field(Order=1000304)] public Boolean AutoSize { get; }
-        //[UsedImplicitly][Field(Order=1000300)] public Boolean PageBreak { get; }
-        //[UsedImplicitly][Field(Order=1000300)] public Int32 KeepColumns { get; }
         [UsedImplicitly][Field(Order=1000302,ConverterCulture="en-US")][DefaultValue(500f)] public Single MaxWidth { get; } = 500f;
         [UsedImplicitly][Field(Order=1000301,ConverterCulture="en-US")] public Single MinWidth { get; }
-        [UsedImplicitly][Field(Order=1000303,ConverterCulture="en-US")] public override Single Width { get; }
+        [UsedImplicitly][Field(Order=1000303,ConverterCulture="en-US")][DefaultValue(DefaultWidth)] public override Single Width { get; } = DefaultWidth;
         }
     }

@@ -24,12 +24,22 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
+            if (destinationType == typeof(Single)) {
+                if (value is String S) {
+                    if (Decimal.TryParse(S,NumberStyles.Float|NumberStyles.AllowDecimalPoint,culture.NumberFormat,out var d)) {
+                        return (Single)d;
+                        }
+                    }
+                var r = ConvertFromObject(culture,value);
+                return r;
+                }
             if (destinationType == typeof(String)) {
                 var r = ConvertFromObject(culture,value);
                 if ((r == null) && (AllowNull == false)) {
                     throw new InvalidCastException();
                     }
-                var o = r.Value.ToString("g9");
+                var d = (decimal)r.Value;
+                var o = r.Value.ToString("g17");
                 return o;
                 }
             if (destinationType == typeof(Single?)) { return ConvertFromObject(culture,value); }

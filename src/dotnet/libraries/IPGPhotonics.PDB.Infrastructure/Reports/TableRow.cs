@@ -12,12 +12,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("TableRow")]
     internal sealed class TableRow : ComponentBase
         {
+        public const Single DefaultHeight = 18.9f;
         [UsedImplicitly][Field(Order=1000304)] public Boolean AutoSize { get; }
         //[UsedImplicitly][Field(Order=1000300)] public Boolean KeepRows { get; }
         //[UsedImplicitly][Field(Order=1000300)] public Boolean PageBreak { get; }
         [UsedImplicitly][Field(Order=1000302,ConverterCulture="en-US")][DefaultValue(500f)] public Single MaxHeight { get; } = 500f;
         [UsedImplicitly][Field(Order=1000301,ConverterCulture="en-US")] public Single MinHeight { get; }
-        [UsedImplicitly][Field(Order=1000303,ConverterCulture="en-US")] public override Single Height { get; }
+        [UsedImplicitly][Field(Order=1000303,ConverterCulture="en-US")][DefaultValue(DefaultHeight)] public override Single Height { get; } = DefaultHeight;
         public IList<TableCell> Cells { get; } = new SqlObjectCollection<TableCell>();
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Cells) {

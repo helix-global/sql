@@ -628,6 +628,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 if (type == typeof(DateTime?)){ return SqlDateTimeConverter.Default;         }
                 if (type == typeof(Single))   { return SqlSingleConverter.DoesNotAllowNull;  }
                 if (type == typeof(Single?))  { return SqlSingleConverter.Default;           }
+                if (type == typeof(Double))   { return SqlDoubleConverter.DoesNotAllowNull;  }
+                if (type == typeof(Double?))  { return SqlDoubleConverter.Default;           }
+                if (type == typeof(Decimal))  { return SqlDecimalConverter.DoesNotAllowNull; }
+                if (type == typeof(Decimal?)) { return SqlDecimalConverter.Default;          }
                 if (type.IsGenericType) {
                     var typeG = type.GetGenericTypeDefinition();
                     if (typeG == typeof(Nullable<>)) {

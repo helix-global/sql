@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
+    using SerializerAttribute=FastReportSerializerAttribute;
+
     [FastReportClass("GridControl")]
     internal sealed class GridControl : DialogControl
         {
@@ -19,11 +23,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000517)][DefaultValue(true)] public Boolean MultiSelect { get; } = true;
         [UsedImplicitly][Field(Order=1000521)][DefaultValue(true)] public Boolean RowHeadersVisible { get; } = true;
         [UsedImplicitly][Field(Order=1000518)][DefaultValue(true)] public Boolean ReadOnly { get; } = true;
-        [UsedImplicitly][Field(Order=1000504)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)] public DataGridViewCellStyle AlternatingRowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
-        [UsedImplicitly][Field(Order=1000511)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)] public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
-        [UsedImplicitly][Field(Order=1000515)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)] public DataGridViewCellStyle DefaultCellStyle { get; } = new DataGridViewCellStyle();
-        [UsedImplicitly][Field(Order=1000520)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)] public DataGridViewCellStyle RowHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
-        [UsedImplicitly][Field(Order=1000524)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)] public DataGridViewCellStyle RowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field(Order=1000504)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)][Serializer(typeof(DataGridViewCellStyleSerializer))] public DataGridViewCellStyle AlternatingRowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field(Order=1000511)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)][Serializer(typeof(DataGridViewCellStyleSerializer))] public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field(Order=1000515)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)][Serializer(typeof(DataGridViewCellStyleSerializer))] public DataGridViewCellStyle DefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field(Order=1000520)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)][Serializer(typeof(DataGridViewCellStyleSerializer))] public DataGridViewCellStyle RowHeadersDefaultCellStyle { get; } = new DataGridViewCellStyle();
+        [UsedImplicitly][Field(Order=1000524)][DefaultValue(FastReportDefaultValueSource.DefaultConstructor)][Serializer(typeof(DataGridViewCellStyleSerializer))] public DataGridViewCellStyle RowsDefaultCellStyle { get; } = new DataGridViewCellStyle();
         [UsedImplicitly][Field(Order=1000505,Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeColumnsMode>))][DefaultValue(DataGridViewAutoSizeColumnsMode.None)] public DataGridViewAutoSizeColumnsMode AutoSizeColumnsMode { get; } = DataGridViewAutoSizeColumnsMode.None;
         [UsedImplicitly][Field(Order=1000506,Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeRowsMode>))][DefaultValue(DataGridViewAutoSizeRowsMode.None)] public DataGridViewAutoSizeRowsMode AutoSizeRowsMode { get; } = DataGridViewAutoSizeRowsMode.None;
         [UsedImplicitly][Field(Order=1000507,Converter=typeof(SqlColorConverter))] public Color BackgroundColor { get; }
@@ -46,6 +50,30 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 case "Column" : return new GridControlColumn();
                 }
             return base.CreateObject(typeName);
+            }
+        #endregion
+        #region M:Serialize(XmlWriter,String)
+        public override void Serialize(XmlWriter writer,String prefix) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            var type = GetType();
+            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            using (writer.ElementGroup(className)) {
+                SerializeAttributes(writer,prefix);
+                if ((Columns != null) && (Columns.Count > 0)) {
+                    using (writer.ElementGroup("Columns")) {
+                        Serialize(writer,Columns,prefix);
+                        }
+                    }
+                foreach (var o in Children) {
+                    o.Serialize(writer,prefix);
+                    }
+                }
+            }
+        #endregion
+        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
+        protected override void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
+            if (descriptor.Name == nameof(Columns)) { return; }
+            base.SerializeAttribute(writer, prefix, descriptor);
             }
         #endregion
         }

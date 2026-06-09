@@ -1,25 +1,23 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class FastReportSerializer
+    internal interface IFastReportSerializer
         {
-        #region ctor{XmlWriter}
-        public FastReportSerializer(XmlWriter writer)
+        void Serialize(XmlWriter writer,Object source,PropertyDescriptor descriptor);
+        }
+
+    internal abstract class FastReportSerializer : IFastReportSerializer
+        {
+        protected abstract void Serialize(XmlWriter writer,Object source,PropertyDescriptor descriptor);
+
+        #region M:IFastReportSerializer.Serialize(XmlWriter,Object,PropertyDescriptor)
+        void IFastReportSerializer.Serialize(XmlWriter writer,Object source,PropertyDescriptor descriptor)
             {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            m_writer = writer;
+            Serialize(writer,source,descriptor);
             }
         #endregion
-
-        #region M:Visit(FastReport)
-        public void Visit(FastReport o) {
-            if (o == null) { throw new ArgumentNullException(nameof(o)); }
-            o.Serialize(m_writer,null);
-            }
-        #endregion
-
-        private readonly XmlWriter m_writer;
         }
     }

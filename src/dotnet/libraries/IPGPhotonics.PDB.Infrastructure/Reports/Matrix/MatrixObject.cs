@@ -46,11 +46,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                             }
                         }
                     }
-                if (Rows.Any()) {
-                    using (writer.ElementGroup("MatrixRows")) {
-                        foreach (var o in Rows) {
-                            o.Serialize(writer,prefix);
-                            }
+                using (writer.ElementGroup("MatrixRows")) {
+                    foreach (var o in Rows) {
+                        o.Serialize(writer,prefix);
                         }
                     }
                 if (Cells.Any()) {

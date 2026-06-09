@@ -8,6 +8,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("CheckedTreeViewControl")]
     internal sealed class CheckedTreeViewControl : BindableDialogControl
         {
-        [UsedImplicitly][Field] public Boolean AllowRecursiveNodeChecking { get; }
+        [UsedImplicitly][Field(Order=1000601)] public Boolean AllowRecursiveNodeChecking { get; }
         }
     }

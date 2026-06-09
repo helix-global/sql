@@ -8,7 +8,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [FastReportClass("ShapeObject")]
     internal sealed class ShapeObject : ReportComponentBase
         {
-        [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Curve { get; }
-        [UsedImplicitly][Field] public ShapeKind Shape { get; }
+        [UsedImplicitly][Field(Order=1000402,ConverterCulture="en-US")] public Single Curve { get; }
+        [UsedImplicitly][Field(Order=1000401)] public ShapeKind Shape { get; }
+
+        public ShapeObject()
+            {
+            Border.SimpleBorder = true;
+            }
         }
     }
