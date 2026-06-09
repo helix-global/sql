@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BinaryStudio.SqlServer.Infrastructure;
+using DocumentFormat.OpenXml.Bibliography;
+using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,12 +12,10 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal abstract class FastReportObject : SqlObject,IFastReportVisitable,ICustomTypeDescriptor
+    internal abstract class FastReportObject : SqlObject,ICustomTypeDescriptor
         {
         public virtual IEnumerable<FastReportObject> Children { get {
             foreach (var o in m_objects)
@@ -168,7 +169,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix);
+                SerializeAttributes(writer,prefix);
                 foreach (var o in Children) {
                     o.Serialize(writer,prefix);
                     }
@@ -185,34 +186,40 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-        #region M:SerializeAttributes(XmlWriter,Object,String,Func<PropertyDescriptor,Boolean>)
-        protected static void SerializeAttributes(XmlWriter writer,Object source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
+        #region M:SerializeAttributes(XmlWriter,String,Func<PropertyDescriptor,Boolean>)
+        protected virtual void SerializeAttributes(XmlWriter writer,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (source == null) { throw new ArgumentNullException(nameof(source)); }
-            foreach (var descriptor in TypeDescriptor.GetProperties(source).Cast<PropertyDescriptor>().Select(i=>new PropLink(i)).OrderBy(Order)) {
+            foreach (var descriptor in TypeDescriptor.GetProperties(this).Cast<PropertyDescriptor>().Select(i=>new PropLink(i)).OrderBy(Order)) {
                 if ((predicate == null) || predicate(descriptor)) {
-                    var value = descriptor.GetValue(source);
-                    if (IsDefaultValue(value,descriptor)) { continue; }
-                    if (value == null) { continue; }
-                    var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
-                    if (field != null) {
-                        var name = field.Source ?? descriptor.Name;
-                        if (value is FastReportObject fro) {
-                            fro.Serialize(writer,name);
-                            continue;
-                            }
-                        if (descriptor.PropertyType == typeof(Boolean))
-                            {
-                            //Debugger.Break();
-                            }
-                        var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
-                        if (converter != null && converter.CanConvertTo(typeof(String))) {
-                            value = converter.ConvertToInvariantString(value);
-                            writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
-                                ? $"{name}"
-                                : $"{prefix}.{name}",value);
-                            }
-                        }
+                    SerializeAttribute(writer,prefix,descriptor);
+                    }
+                }
+            }
+        #endregion
+        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
+        protected virtual void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
+            var value = descriptor.GetValue(this);
+            if (IsDefaultValue(value,descriptor)) { return; }
+            if (value == null) { return; }
+            var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
+            if (field != null) {
+                var name = field.Source ?? descriptor.Name;
+                if (value is FastReportObject fro) {
+                    fro.Serialize(writer,name);
+                    return;
+                    }
+                if (descriptor.PropertyType == typeof(Boolean))
+                    {
+                    //Debugger.Break();
+                    }
+                var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
+                if (converter != null && converter.CanConvertTo(typeof(String))) {
+                    value = converter.ConvertToInvariantString(value);
+                    writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
+                        ? $"{name}"
+                        : $"{prefix}.{name}",value);
                     }
                 }
             }
@@ -241,6 +248,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         catch (Exception e)
                             {
                             throw (new Exception($@"Error converting default value ""{S}"" for property ""{descriptor.Name}"" of type ""{descriptor.PropertyType.FullName}"".",e)).Add("Property",descriptor.Name).Add("Type",descriptor.PropertyType.FullName).Add("DefaultValue",S);
+                            }
+                        }
+                    }
+                if (defaultValue.Value is FastReportDefaultValueSource DefaultValueSource) {
+                    switch (DefaultValueSource) {
+                        case FastReportDefaultValueSource.DefaultConstructor:
+                            {
+                            return Equals(value,Activator.CreateInstance(descriptor.PropertyType));
                             }
                         }
                     }
@@ -361,8 +376,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-
-        public virtual void Accept(IFastReportVisitor visitor) { }
 
         private class PropInfo
             {

@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public override void Serialize(XmlWriter writer,String prefix) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             writer.WriteAttributeString(prefix,FormatConverter.Instance.ConvertToInvariantString(this));
-            SerializeAttributes(writer,this,prefix);
+            SerializeAttributes(writer,prefix);
             }
         #endregion
         #region M:SerializeFull(XmlWriter,String)

@@ -178,13 +178,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             UpdateReferences(objects);
             }
         #endregion
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
-            }
-        #endregion
         #region M:UpdateReferences(IList<FastReportObject>)
         [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
         protected override void UpdateReferences(IList<FastReportObject> source) {
@@ -212,7 +205,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var type = GetType();
             var className = ClassName;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix);
+                SerializeAttributes(writer,prefix);
                 if (!String.IsNullOrWhiteSpace(Script)) {
                     using (writer.ElementGroup("ScriptText")) {
                         writer.WriteRaw(EncodeString(Script));

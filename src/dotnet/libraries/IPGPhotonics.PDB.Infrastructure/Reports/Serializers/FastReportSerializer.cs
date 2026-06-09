@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class FastReportSerializer : FastReportVisitor
+    internal class FastReportSerializer
         {
         #region ctor{XmlWriter}
         public FastReportSerializer(XmlWriter writer)
@@ -14,7 +14,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #endregion
 
         #region M:Visit(FastReport)
-        public override void Visit(FastReport o) {
+        public void Visit(FastReport o) {
             if (o == null) { throw new ArgumentNullException(nameof(o)); }
             o.Serialize(m_writer,null);
             }

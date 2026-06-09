@@ -35,7 +35,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix,(descriptor)=>
+                SerializeAttributes(writer,prefix,(descriptor)=>
                     (descriptor.Name != "Columns") &&
                     (descriptor.Name != "Rows")    &&
                     (descriptor.Name != "Cells"));

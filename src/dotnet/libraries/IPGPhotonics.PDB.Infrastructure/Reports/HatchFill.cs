@@ -1,8 +1,7 @@
-﻿using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
-using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+using BinaryStudio.SqlServer.Infrastructure;
+using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
@@ -12,12 +11,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color BackColor { get; } = Color.White;
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color ForeColor { get; } = Color.Black;
         [UsedImplicitly][Field(Converter=typeof(SqlEnumConverter<HatchStyle>))] public HatchStyle Style { get; } = HatchStyle.BackwardDiagonal;
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         }
     }

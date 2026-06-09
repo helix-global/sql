@@ -14,16 +14,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000103,Converter=typeof(SqlSingleCollectionConverter))] public IList<Single> Positions { get; }
         [UsedImplicitly][Field(Order=1000102,ConverterCulture="en-US")][DefaultValue(0f)] public Single Width { get; }
 
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         #region M:Serialize(XmlWriter,String)
         public override void Serialize(XmlWriter writer,String prefix) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            SerializeAttributes(writer,this,prefix);
+            SerializeAttributes(writer,prefix);
             }
         #endregion
         }

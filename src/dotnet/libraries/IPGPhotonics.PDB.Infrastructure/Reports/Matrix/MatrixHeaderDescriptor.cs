@@ -14,12 +14,5 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000302)][DefaultValue(true)] public Boolean Totals { get; } = true;
         [UsedImplicitly][Field(Order=1000303)] public Boolean TotalsFirst { get; }
         [UsedImplicitly][Field(Order=1000301)][DefaultValue(SortOrder.Ascending)] public SortOrder Sort { get; } = SortOrder.Ascending;
-
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor)
-            {
-            throw new NotImplementedException();
-            }
-        #endregion
         }
     }

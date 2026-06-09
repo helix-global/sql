@@ -22,7 +22,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
             var formats = Formats;
             using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,this,prefix,(descriptor)=> {
+                SerializeAttributes(writer,prefix,(descriptor)=> {
                     if (descriptor.Name == nameof(Formats))    { return false; }
                     if (descriptor.Name == nameof(Format)) {
                         return (formats != null) && (formats.Count == 1);

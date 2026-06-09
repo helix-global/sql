@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal interface IFastReportVisitor
+    internal enum FastReportDefaultValueSource
         {
-        void Visit(FastReport o);
+        None,
+        DefaultConstructor
         }
     }
