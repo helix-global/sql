@@ -57,8 +57,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public BorderLine RightLine  { get; } = new BorderLine();
         [UsedImplicitly][Field] public BorderLine TopLine    { get; } = new BorderLine();
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             if (Shadow) { writer.WriteAttribute($"{prefix}.Shadow","true"); }
             if (ShadowWidth != 4f) { writer.WriteAttribute($"{prefix}.ShadowWidth",ShadowWidth); }
@@ -67,18 +67,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (Lines > 0) {
                     writer.WriteAttribute($"{prefix}.Lines",Lines);
                     if (LeftLine.Equals(RightLine) && LeftLine.Equals(TopLine) && LeftLine.Equals(BottomLine)) {
-                        LeftLine.Serialize(writer,prefix);
+                        LeftLine.Serialize(writer,prefix,null);
                         return;
                         }
-                    LeftLine.Serialize(writer,$"{prefix}.LeftLine");
-                    TopLine.Serialize(writer,$"{prefix}.TopLine");
-                    RightLine.Serialize(writer,$"{prefix}.RightLine");
-                    BottomLine.Serialize(writer,$"{prefix}.BottomLine");
+                    LeftLine.Serialize(writer,$"{prefix}.LeftLine",null);
+                    TopLine.Serialize(writer,$"{prefix}.TopLine",null);
+                    RightLine.Serialize(writer,$"{prefix}.RightLine",null);
+                    BottomLine.Serialize(writer,$"{prefix}.BottomLine",null);
                     }
                 }
             else
                 {
-                LeftLine.Serialize(writer,prefix);
+                LeftLine.Serialize(writer,prefix,null);
                 }
             }
         #endregion

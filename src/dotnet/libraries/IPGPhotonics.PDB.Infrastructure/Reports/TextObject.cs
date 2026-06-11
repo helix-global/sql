@@ -40,8 +40,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000612,Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
         [UsedImplicitly][Field("Highlight",EmptyIfNull=true)] public IList<HighlightCondition> Highlights { get; }
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
@@ -65,12 +65,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if ((Highlights != null) && Highlights.Any()) {
                     using (writer.ElementGroup("Highlight")) {
                         foreach (var o in Highlights) {
-                            o.Serialize(writer,prefix);
+                            o.Serialize(writer,prefix,null);
                             }
                         }
                     }
                 foreach (var o in Children) {
-                    o.Serialize(writer,prefix);
+                    o.Serialize(writer,prefix,null);
                     }
                 }
             }

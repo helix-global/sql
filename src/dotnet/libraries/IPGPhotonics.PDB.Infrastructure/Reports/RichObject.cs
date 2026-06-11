@@ -15,8 +15,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000603)] public String DataColumn { get; }
         [UsedImplicitly][Field(Order=1000604)] public Boolean OldBreakStyle { get; }
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
@@ -37,7 +37,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         }
                     }
                 foreach (var o in Children) {
-                    o.Serialize(writer,prefix);
+                    o.Serialize(writer,prefix,null);
                     }
                 }
             }

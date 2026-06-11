@@ -7,8 +7,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [TypeConverter(typeof(FormatConverter))]
     internal abstract class FormatBase : FastReportObject,IEquatable<FormatBase>,IEquatable<String>
         {
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             writer.WriteAttributeString(prefix,FormatConverter.Instance.ConvertToInvariantString(this));
             SerializeAttributes(writer,prefix);
@@ -16,7 +16,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #endregion
         #region M:SerializeFull(XmlWriter,String)
         public virtual void SerializeFull(XmlWriter writer,String prefix) {
-            base.Serialize(writer,prefix);
+            base.Serialize(writer,prefix,null);
             }
         #endregion
         #region M:Equals(Object):Boolean

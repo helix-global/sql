@@ -43,8 +43,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             //    }
             }
         #endregion
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;

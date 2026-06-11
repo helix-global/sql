@@ -18,8 +18,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000203)] public String DecimalSeparator { get; }
         [UsedImplicitly][Field(Order=1000204)] public String GroupSeparator { get; }
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             writer.WriteAttributeString(prefix,FormatConverter.Instance.ConvertToInvariantString(this));
             if (UseLocale) {

@@ -9,8 +9,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     [TypeConverter(typeof(FillConverter))]
     internal abstract class FillBase : FastReportObject
         {
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             SerializeAttributes(writer,prefix);
             }

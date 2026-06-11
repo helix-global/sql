@@ -21,8 +21,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000104,ConverterCulture="en-US")] public Single ImageTransparency { get; }
         [UsedImplicitly][Field(Order=1000107)] public FillBase TextFill { get; } = new SolidFill(Color.FromArgb(40,Color.Gray));
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             SerializeAttributes(writer,prefix,(descriptor)=>{
                 switch (descriptor.Name) {

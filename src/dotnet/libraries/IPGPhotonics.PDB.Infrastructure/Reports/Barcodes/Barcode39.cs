@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BinaryStudio.SqlServer.Infrastructure;
-using JetBrains.Annotations;
+﻿using System.ComponentModel;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    using FieldAttribute=SqlObjectFieldMappingAttribute;
+    [TypeConverter(typeof(BarcodeConverter<Barcode39>))]
     internal class Barcode39 : LinearBarcodeBase
         {
+        public Barcode39()
+            {
+            return;
+            }
         }
     }

@@ -159,7 +159,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private static String ReadNextString(TextReader reader) {
             var r = new StringBuilder();
             var c = reader.Peek();
-            while (!IsDelimiter(c) && !IsWhiteSpace(c))
+            while (!IsDelimiter(c) && !IsWhiteSpace(c) && (c != -1))
                 {
                 reader.Read();
                 r.Append((char)c);

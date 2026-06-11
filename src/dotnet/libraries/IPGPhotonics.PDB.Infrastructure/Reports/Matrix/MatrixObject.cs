@@ -29,8 +29,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000607)] public override String Style { get; }
         [UsedImplicitly][Field(Order=1000608)] public MatrixEvenStylePriority MatrixEvenStylePriority { get; }
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix) {
+        #region M:Serialize(XmlWriter,String,Object)
+        public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             var type = GetType();
             var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
@@ -42,24 +42,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (Columns.Any()) {
                     using (writer.ElementGroup("MatrixColumns")) {
                         foreach (var o in Columns) {
-                            o.Serialize(writer,prefix);
+                            o.Serialize(writer,prefix,null);
                             }
                         }
                     }
                 using (writer.ElementGroup("MatrixRows")) {
                     foreach (var o in Rows) {
-                        o.Serialize(writer,prefix);
+                        o.Serialize(writer,prefix,null);
                         }
                     }
                 if (Cells.Any()) {
                     using (writer.ElementGroup("MatrixCells")) {
                         foreach (var o in Cells) {
-                            o.Serialize(writer,prefix);
+                            o.Serialize(writer,prefix,null);
                             }
                         }
                     }
                 foreach (var o in Children) {
-                    o.Serialize(writer,prefix);
+                    o.Serialize(writer,prefix,null);
                     }
                 }
             }

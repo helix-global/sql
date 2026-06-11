@@ -46,7 +46,7 @@ namespace IPGPhotonics.PDB.Infrastructure
                         }))
                         {
                         writer.WriteProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
-                        Body.Serialize(writer,null);
+                        Body.Serialize(writer,null,null);
                         writer.WriteWhitespace(Environment.NewLine);
                         }
                     stream.Position = 0;
