@@ -213,7 +213,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     }
                 var name = field.Source ?? descriptor.Name;
                 if (value is FastReportObject fro) {
-                    fro.Serialize(writer,name,defaultValue);
+                    fro.Serialize(writer,String.IsNullOrWhiteSpace(prefix)
+                        ? $"{name}"
+                        : $"{prefix}.{name}",defaultValue);
                     return;
                     }
                 var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
@@ -374,6 +376,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             public override Boolean ShouldSerializeValue(Object component)
                 {
                 return descr.ShouldSerializeValue(component);
+                }
+            #endregion
+            #region M:ToString:String
+            public override String ToString()
+                {
+                return $"{Name}";
                 }
             #endregion
 
