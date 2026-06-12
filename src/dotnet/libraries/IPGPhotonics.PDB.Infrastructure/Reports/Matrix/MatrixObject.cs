@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("MatrixObject")]
-    internal sealed class MatrixObject : TableBase
+    internal sealed class MatrixObject : FastReportTableBase
         {
         [UsedImplicitly][Field(Order=1000001,EmptyIfNull = true,Source="MatrixColumns")] public IList<MatrixHeaderDescriptor> Columns { get; }
         [UsedImplicitly][Field(Order=1000002,EmptyIfNull = true,Source="MatrixRows")]    public IList<MatrixHeaderDescriptor> Rows { get; }

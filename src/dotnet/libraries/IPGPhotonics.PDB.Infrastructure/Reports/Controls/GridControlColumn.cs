@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     using SerializerAttribute=FastReportSerializerAttribute;
 
-    internal sealed class GridControlColumn : Base,IFastReportClassObject
+    internal sealed class GridControlColumn : FastReportBase,IFastReportClassObject
         {
         [UsedImplicitly][Field(Order=1000202)] public String DataColumn { get; }
         [UsedImplicitly][Field(Order=1000203)] public String HeaderText { get; }

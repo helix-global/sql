@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("Condition")]
-    internal sealed class HighlightCondition : StyleBase
+    internal sealed class HighlightCondition : FastReportStyleBase
         {
         [UsedImplicitly][Field(Order=1000001)] public String Expression { get; }
         [UsedImplicitly][Field(Order=1000002)][DefaultValue(true)] public Boolean Visible { get; } = true;

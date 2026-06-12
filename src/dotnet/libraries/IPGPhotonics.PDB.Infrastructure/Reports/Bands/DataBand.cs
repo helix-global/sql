@@ -11,7 +11,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("DataBand")]
-    internal sealed class DataBand : BandBase
+    internal sealed class DataBand : FastReportBandBase
         {
         [UsedImplicitly][Field(Order=1000615)] public Boolean CollectChildRows { get; }
         [UsedImplicitly][Field(Order=1000611)] public Boolean KeepDetail { get; }
@@ -28,7 +28,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000603)] public Int32 MaxRows { get; }
         [UsedImplicitly][Field(Order=1000614,ConverterCulture="en-US")][DefaultValue(37.8f)] public Single Indent { get; } = 37.8f;
         [UsedImplicitly][Field(Order=1000607)] public BandColumns Columns { get; } = new BandColumns();
-        [UsedImplicitly][Field("Sort")] public IList<Sort> Sorts { get; } = EmptyArray<Sort>.List;
+        [UsedImplicitly][Field("Sort")] public IList<FastReportSort> Sorts { get; } = EmptyArray<FastReportSort>.List;
 
         #region M:UpdateReferences(IList<FastReportObject>)
         [SuppressMessage("ReSharper", "LocalVariableHidesMember")]

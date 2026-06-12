@@ -41,9 +41,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #endregion
 
         private static readonly IDictionary<String,Type> Types = new Dictionary<String,Type> {
-            {"Solid",          typeof(SolidFill)          },
+            {"Solid",          typeof(FastReportSolidFill)          },
             {"LinearGradient", typeof(LinearGradientFill) },
-            {"PathGradient",   typeof(PathGradientFill)   },
+            {"PathGradient",   typeof(FastReportPathGradientFill)   },
             {"Hatch",          typeof(HatchFill)          },
             {"Glass",          typeof(GlassFill)          }
             };

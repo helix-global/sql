@@ -6,7 +6,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("CommandParameter")]
-    internal sealed class CommandParameter : Base
+    internal sealed class CommandParameter : FastReportBase
         {
         [UsedImplicitly][Field(Order=1000210)] public Int32 DataType { get; }
         [UsedImplicitly][Field(Order=1000220)] public Int32 Size { get; }

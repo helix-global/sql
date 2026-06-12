@@ -15,12 +15,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("A2Report")]
-    internal sealed class FastReport : Base
+    internal sealed class FastReport : FastReportBase
         {
         private String ClassName { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public FastReportLanguage ScriptLanguage { get; }
-        [UsedImplicitly][Field(Order=1000215)] public ReportInfo ReportInfo { get; } = new ReportInfo();
-        [UsedImplicitly][Field(Order=1000216)] public PrintSettings PrintSettings { get; } = new PrintSettings();
+        [UsedImplicitly][Field(Order=1000215)] public FastReportInfo ReportInfo { get; } = new FastReportInfo();
+        [UsedImplicitly][Field(Order=1000216)] public FastReportPrintSettings PrintSettings { get; } = new FastReportPrintSettings();
         [UsedImplicitly][Field(Order=1000205)] public Boolean DoublePass { get; }
         [UsedImplicitly][Field(Order=1000206)] public Boolean Compressed { get; }
         [UsedImplicitly][Field(Order=1000204)][DefaultValue(true)] public Boolean ConvertNulls { get; } = true;
@@ -40,9 +40,9 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
         public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
         public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
-        public IList<Style> Styles { get; } = new SqlObjectCollection<Style>();
+        public IList<FastReportStyle> Styles { get; } = new SqlObjectCollection<FastReportStyle>();
         public IList<Relation> Relations { get; } = new SqlObjectCollection<Relation>();
-        public IList<Total> Totals { get; } = new SqlObjectCollection<Total>();
+        public IList<FastReportTotal> Totals { get; } = new SqlObjectCollection<FastReportTotal>();
 
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Pages) {
@@ -166,8 +166,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     else if (o is DataConnectionBase DataConnectionBase)   { DataSources.Add(DataConnectionBase); }
                     else if (o is FastReportParameter FastReportParameter) { Parameters.Add(FastReportParameter); }
                     else if (o is Relation Relation)                       { Relations.Add(Relation);             }
-                    else if (o is Total Total)                             { Totals.Add(Total);                   }
-                    else if (o is Style Style) { Styles.Add(Style); }
+                    else if (o is FastReportTotal Total)                             { Totals.Add(Total);                   }
+                    else if (o is FastReportStyle Style) { Styles.Add(Style); }
                     }
                 }
             }

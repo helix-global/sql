@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal abstract class DataComponentBase : Base
+    internal abstract class DataComponentBase : FastReportBase
         {
         [UsedImplicitly][Field(Order=1000202)][DefaultValue(true)] public virtual Boolean Enabled { get; } = true;
         [UsedImplicitly][Field(Order=1000201)] public String Alias { get; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal abstract class ShapeBase : Base
+    internal abstract class ShapeBase : FastReportBase
         {
         }
     }

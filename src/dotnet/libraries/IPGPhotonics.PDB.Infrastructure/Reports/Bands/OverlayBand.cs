@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [FastReportClass("OverlayBand")]
-    internal sealed class OverlayBand : BandBase
+    internal sealed class OverlayBand : FastReportBandBase
         {
         }
     }

@@ -20,7 +20,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
         public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
             if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
-            if (destinationType == typeof(BarcodeBase)) {
+            if (destinationType == typeof(FastReportBarcodeBase)) {
                 if (value is String S) {
                     if (Types.TryGetValue(S,out var type)) {
                         return Activator.CreateInstance(type);
@@ -28,7 +28,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     }
                 }
             if (destinationType == typeof(String)) {
-                if (value is BarcodeBase B) {
+                if (value is FastReportBarcodeBase B) {
                     foreach (var pair in Types) {
                         if (pair.Value == B.GetType()) {
                             return pair.Key;
@@ -41,32 +41,32 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #endregion
 
         private static readonly IDictionary<String,Type> Types = new Dictionary<String,Type> {
-                {"2/5 Interleaved", typeof(Barcode2of5Interleaved)},
-                {"2/5 Industrial",  typeof(Barcode2of5Industrial) },
-                {"2/5 Matrix",      typeof(Barcode2of5Matrix)     },
-                {"Codabar",         typeof(BarcodeCodabar)        },
-                {"Code128",         typeof(Barcode128)            },
-                {"Code39",          typeof(Barcode39)             },
-                {"Code39 Extended", typeof(Barcode39Extended)     },
-                {"Code93",          typeof(Barcode93)             },
-                {"Code93 Extended", typeof(Barcode93Extended)     },
-                {"EAN8",            typeof(BarcodeEAN8)           },
-                {"EAN13",           typeof(BarcodeEAN13)          },
-                {"MSI",             typeof(BarcodeMSI)            },
-                {"PostNet",         typeof(BarcodePostNet)        },
-                {"UPC-A",           typeof(BarcodeUPC_A)          },
-                {"UPC-E0",          typeof(BarcodeUPC_E0)         },
-                {"UPC-E1",          typeof(BarcodeUPC_E1)         },
-                {"Supplement 2",    typeof(BarcodeSupplement2)    },
-                {"Supplement 5",    typeof(BarcodeSupplement5)    },
-                {"PDF417",          typeof(BarcodePDF417)         },
-                {"Datamatrix",      typeof(BarcodeDatamatrix)     },
-                {"QR Code",         typeof(BarcodeQR)             }
+                {"2/5 Interleaved", typeof(FastReportBarcode2of5Interleaved)},
+                {"2/5 Industrial",  typeof(FastReportBarcode2of5Industrial) },
+                {"2/5 Matrix",      typeof(FastReportBarcode2of5Matrix)     },
+                {"Codabar",         typeof(FastReportBarcodeCodabar)        },
+                {"Code128",         typeof(FastReportBarcode128)            },
+                {"Code39",          typeof(FastReportBarcode39)             },
+                {"Code39 Extended", typeof(FastReportBarcode39Extended)     },
+                {"Code93",          typeof(FastReportBarcode93)             },
+                {"Code93 Extended", typeof(FastReportBarcode93Extended)     },
+                {"EAN8",            typeof(FastReportBarcodeEAN8)           },
+                {"EAN13",           typeof(FastReportBarcodeEAN13)          },
+                {"MSI",             typeof(FastReportBarcodeMSI)            },
+                {"PostNet",         typeof(FastReportBarcodePostNet)        },
+                {"UPC-A",           typeof(FastReportBarcodeUPC_A)          },
+                {"UPC-E0",          typeof(FastReportBarcodeUPC_E0)         },
+                {"UPC-E1",          typeof(FastReportBarcodeUPC_E1)         },
+                {"Supplement 2",    typeof(FastReportBarcodeSupplement2)    },
+                {"Supplement 5",    typeof(FastReportBarcodeSupplement5)    },
+                {"PDF417",          typeof(FastReportBarcodePDF417)         },
+                {"Datamatrix",      typeof(FastReportBarcodeDatamatrix)     },
+                {"QR Code",         typeof(FastReportBarcodeQR)             }
                 };
         }
 
     internal class BarcodeConverter<T> : TypeConverter
-        where T : BarcodeBase
+        where T : FastReportBarcodeBase
         {
         #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
         /// <summary>Converts the given object to the converter's native type.</summary>

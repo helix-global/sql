@@ -37,10 +37,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000411)][DefaultValue(7)] public Int32 OtherPagesSource { get; } = 7;
         [UsedImplicitly][Field(Order=1000404)] public Int32 RawPaperSize { get; }
         [UsedImplicitly][Field(Order=1000415)] public Border Border { get; } = new Border();
-        [UsedImplicitly][Field(Order=1000416)][DefaultValue(typeof(SolidFill),"Color=Window")] public FillBase Fill { get; } = new SolidFill(SystemColors.Window);
+        [UsedImplicitly][Field(Order=1000416)][DefaultValue(typeof(FastReportSolidFill),"Color=Window")] public FillBase Fill { get; } = new FastReportSolidFill(SystemColors.Window);
         [UsedImplicitly][Field(Order=1000413)] public PageColumns Columns { get; } = new PageColumns();
-        [UsedImplicitly][Field(Order=1000417)] public Watermark Watermark { get; } = new Watermark();
-        public IList<BandBase> Bands { get; } = new SqlObjectCollection<BandBase>();
+        [UsedImplicitly][Field(Order=1000417)] public FastReportWatermark Watermark { get; } = new FastReportWatermark();
+        public IList<FastReportBandBase> Bands { get; } = new SqlObjectCollection<FastReportBandBase>();
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Bands) {
                 yield return o;
@@ -52,7 +52,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         protected override void UpdateReferences(IList<FastReportObject> source) {
             using (var Bands = PrepareChanges(this.Bands)) {
                 foreach (var o in source) {
-                    if (o is BandBase BandBase) {
+                    if (o is FastReportBandBase BandBase) {
                         Bands.Add(BandBase);
                         }
                     }

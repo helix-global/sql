@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
 
     [FastReportClass("MSChartSeries")]
-    internal sealed class MSChartSeries : Base
+    internal sealed class MSChartSeries : FastReportBase
         {
         [UsedImplicitly][Field(Order=1000207)] public Collect Collect { get; }
         [UsedImplicitly][Field(Order=1000210,Converter=typeof(FastReportColorConverter))] public Color CollectedItemColor { get; }

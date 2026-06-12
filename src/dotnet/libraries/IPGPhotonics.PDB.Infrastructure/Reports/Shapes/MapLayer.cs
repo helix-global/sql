@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal sealed class MapLayer : Base
+    internal sealed class MapLayer : FastReportBase
         {
         }
     }

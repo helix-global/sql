@@ -6,7 +6,7 @@ using BinaryStudio.SqlServer.Infrastructure;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal abstract class BreakableComponent : ReportComponentBase
+    internal abstract class FastReportBreakableComponent : ReportComponentBase
         {
         [UsedImplicitly][Field(Order=1000400)][DefaultValue(true)] public virtual Boolean CanBreak { get; } = true;
         }

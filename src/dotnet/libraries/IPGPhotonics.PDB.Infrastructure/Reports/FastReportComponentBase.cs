@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal abstract class ComponentBase : Base
+    internal abstract class ComponentBase : FastReportBase
         {
         [UsedImplicitly][Field(Order=1000201,ConverterCulture="en-US")] public Single Left { get; }
         [UsedImplicitly][Field(Order=1000202,ConverterCulture="en-US")] public Single Top { get; }
