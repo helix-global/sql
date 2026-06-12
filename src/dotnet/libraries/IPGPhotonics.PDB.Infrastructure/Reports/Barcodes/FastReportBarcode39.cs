@@ -2,7 +2,7 @@
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    [TypeConverter(typeof(BarcodeConverter<FastReportBarcode39>))]
+    [TypeConverter(typeof(FastReportBarcodeConverter<FastReportBarcode39>))]
     internal class FastReportBarcode39 : FastReportLinearBarcodeBase
         {
         }

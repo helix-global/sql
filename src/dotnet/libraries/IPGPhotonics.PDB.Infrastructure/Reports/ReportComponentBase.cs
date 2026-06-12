@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal abstract class ReportComponentBase : ComponentBase
+    internal abstract class ReportComponentBase : FastReportComponentBase
         {
         [UsedImplicitly][Field(Order=1000314)] public StylePriority EvenStylePriority { get; }
         [UsedImplicitly][Field(Order=1000319)] public String AfterDataEvent { get; }
@@ -31,8 +31,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000301)][DefaultValue(true)] public Boolean Printable { get; } = true;
         [UsedImplicitly][Field(Order=1000316)][DefaultValue(PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage)] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
         [UsedImplicitly][Field(Order=1000311)][DefaultValue(ShiftMode.Always)] public ShiftMode ShiftMode { get; } = ShiftMode.Always;
-        [UsedImplicitly][Field(Order=1000303)] public Border Border { get; } = new Border();
-        [UsedImplicitly][Field(Order=1000304)][DefaultValue(typeof(FastReportSolidFill),"Color=Transparent")] public FillBase Fill { get; } = new FastReportSolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000303)] public FastReportBorder Border { get; } = new FastReportBorder();
+        [UsedImplicitly][Field(Order=1000304)][DefaultValue(typeof(FastReportSolidFill),"Color=Transparent")] public FastReportFillBase Fill { get; } = new FastReportSolidFill(Color.Transparent);
         [UsedImplicitly][Field(Order=1000306)] public FastReportHyperlink Hyperlink { get; } = new FastReportHyperlink();
         }
     }

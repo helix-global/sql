@@ -14,8 +14,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000108)] public virtual Boolean ApplyFont { get; }
         [UsedImplicitly][Field(Order=1000107)][DefaultValue(true)] public Boolean ApplyTextFill { get; } = true;
         [UsedImplicitly][Field(Order=1000104)] public String Font { get; }
-        [UsedImplicitly][Field(Order=1000102)][DefaultValue(typeof(FastReportSolidFill),"Color=Transparent")] public FillBase Fill { get; } = new FastReportSolidFill(Color.Transparent);
-        [UsedImplicitly][Field(Order=1000103)][DefaultValue(typeof(FastReportSolidFill),"Color=Black")] public FillBase TextFill { get; } = new FastReportSolidFill(Color.Black);
-        [UsedImplicitly][Field(Order=1000101)] public Border Border { get; } = new Border();
+        [UsedImplicitly][Field(Order=1000102)][DefaultValue(typeof(FastReportSolidFill),"Color=Transparent")] public FastReportFillBase Fill { get; } = new FastReportSolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000103)][DefaultValue(typeof(FastReportSolidFill),"Color=Black")] public FastReportFillBase TextFill { get; } = new FastReportSolidFill(Color.Black);
+        [UsedImplicitly][Field(Order=1000101)] public FastReportBorder Border { get; } = new FastReportBorder();
         }
     }

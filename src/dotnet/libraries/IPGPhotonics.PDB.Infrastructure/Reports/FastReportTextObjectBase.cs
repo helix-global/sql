@@ -20,13 +20,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000505)] public Boolean HideZeros { get; }
         [UsedImplicitly][Field(Order=1000509)] public Duplicates Duplicates { get; }
         [UsedImplicitly][Field(Order=1000508)] public ProcessAt ProcessAt { get; }
-        [UsedImplicitly][Field(Order=1000510,EmptyIfNull = true)] public IList<FormatBase> Formats { get; } = new List<FormatBase>{ new GeneralFormat() };
-        [UsedImplicitly][Field(Order = 1000511)][DefaultValue("General")] public FormatBase Format
+        [UsedImplicitly][Field(Order=1000510,EmptyIfNull = true)] public IList<FastReportFormatBase> Formats { get; } = new List<FastReportFormatBase>{ new FastReportGeneralFormat() };
+        [UsedImplicitly][Field(Order = 1000511)][DefaultValue("General")] public FastReportFormatBase Format
             {
             get { return Formats.FirstOrDefault(); }
             internal set
                 {
-                if (value == null) { value = new GeneralFormat(); }
+                if (value == null) { value = new FastReportGeneralFormat(); }
                 if (Formats.Count == 0)
                     {
                     Formats.Add(value);

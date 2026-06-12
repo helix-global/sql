@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class HatchFill : FillBase,IEquatable<HatchFill>
+    internal sealed class FastReportHatchFill : FastReportFillBase,IEquatable<FastReportHatchFill>
         {
         [UsedImplicitly][Field(Order=1000102,Converter=typeof(FastReportColorConverter))][DefaultValue(KnownColor.White)] public Color BackColor { get; } = Color.White;
         [UsedImplicitly][Field(Order=1000101,Converter=typeof(FastReportColorConverter))][DefaultValue(KnownColor.Black)] public Color ForeColor { get; } = Color.Black;
@@ -18,7 +18,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public Boolean Equals(HatchFill other) {
+        public Boolean Equals(FastReportHatchFill other) {
             return (other != null)
                 && (BackColor == other.BackColor)
                 && (ForeColor == other.ForeColor)
@@ -29,10 +29,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public override Boolean Equals(FillBase other) {
+        public override Boolean Equals(FastReportFillBase other) {
             if (other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
-            return Equals(other as HatchFill);
+            return Equals(other as FastReportHatchFill);
             }
         #endregion
         }

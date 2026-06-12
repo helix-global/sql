@@ -10,7 +10,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(SqlObjectConverter<FastReportSolidFill>))]
-    internal sealed class FastReportSolidFill : FillBase,IEquatable<FastReportSolidFill>,IEquatable<Color>,IEquatable<KnownColor>
+    internal sealed class FastReportSolidFill : FastReportFillBase,IEquatable<FastReportSolidFill>,IEquatable<Color>,IEquatable<KnownColor>
         {
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color { get; }
 
@@ -66,7 +66,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public override Boolean Equals(FillBase other) {
+        public override Boolean Equals(FastReportFillBase other) {
             if (other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return Equals(other as FastReportSolidFill);
@@ -83,7 +83,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:ToString:String
         public override String ToString()
             {
-            return $"{FillConverter.Instance.ConvertToInvariantString(this)}:Color={Color}";
+            return $"{FastReportFillConverter.Instance.ConvertToInvariantString(this)}:Color={Color}";
             }
         #endregion
         #region M:CoerceValue(PropertyDescriptor,Object,CultureInfo):Object

@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    [TypeConverter(typeof(BarcodeConverter))]
+    [TypeConverter(typeof(FastReportBarcodeConverter))]
     internal abstract class FastReportBarcodeBase : FastReportObject,IEquatable<FastReportBarcodeBase>
         {
         #region M:Serialize(XmlWriter,String,Object)
@@ -12,12 +12,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             if (other != null) {
                 if (other.GetType() != GetType()) {
-                    writer.WriteAttributeString(prefix,BarcodeConverter.Instance.ConvertToInvariantString(this));
+                    writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(this));
                     }
                 }
             else
                 {
-                writer.WriteAttributeString(prefix,BarcodeConverter.Instance.ConvertToInvariantString(this));
+                writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(this));
                 }
             SerializeAttributes(writer,prefix);
             }

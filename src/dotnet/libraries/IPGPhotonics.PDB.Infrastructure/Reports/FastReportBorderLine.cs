@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class BorderLine : FastReportObject,IEquatable<BorderLine>
+    internal sealed class FastReportBorderLine : FastReportObject,IEquatable<FastReportBorderLine>
         {
         [UsedImplicitly][Field(Order=1000201,Converter=typeof(FastReportColorConverter))] public Color Color { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public LineStyle Style { get;set; }
@@ -20,14 +20,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
         public override Boolean Equals(Object other)
             {
-            return Equals(other as BorderLine);
+            return Equals(other as FastReportBorderLine);
             }
         #endregion
         #region M:Equals(BorderLine):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
-        public Boolean Equals(BorderLine other) {
+        public Boolean Equals(FastReportBorderLine other) {
             return (other != null)
                 && (Width == other.Width)
                 && (Color == other.Color)

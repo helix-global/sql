@@ -35,7 +35,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:ToString:String
         public override String ToString()
             {
-            return $"{BarcodeConverter.Instance.ConvertToInvariantString(this)}:CalcCheckSum={CalcCheckSum};WideBarRatio={WideBarRatio}";
+            return $"{FastReportBarcodeConverter.Instance.ConvertToInvariantString(this)}:CalcCheckSum={CalcCheckSum};WideBarRatio={WideBarRatio}";
             }
         #endregion
         }

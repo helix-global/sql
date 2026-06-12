@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("TableColumn")]
-    internal sealed class FastReportTableColumn : ComponentBase
+    internal sealed class FastReportTableColumn : FastReportComponentBase
         {
         public const Single DefaultWidth = 66.15f;
         [UsedImplicitly][Field(Order=1000304)] public Boolean AutoSize { get; }

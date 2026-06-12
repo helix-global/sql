@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class CellularTextObject : FastReportTextObject
+    internal class FastReportCellularTextObject : FastReportTextObject
         {
         }
     }

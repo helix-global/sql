@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class Border : FastReportObject
+    internal sealed class FastReportBorder : FastReportObject
         {
         [UsedImplicitly][Field][DefaultValue(BorderLines.None)] public BorderLines Lines { get; }
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color Color
@@ -52,10 +52,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
 
-        [UsedImplicitly][Field] public BorderLine BottomLine { get; } = new BorderLine();
-        [UsedImplicitly][Field] public BorderLine LeftLine   { get; } = new BorderLine();
-        [UsedImplicitly][Field] public BorderLine RightLine  { get; } = new BorderLine();
-        [UsedImplicitly][Field] public BorderLine TopLine    { get; } = new BorderLine();
+        [UsedImplicitly][Field] public FastReportBorderLine BottomLine { get; } = new FastReportBorderLine();
+        [UsedImplicitly][Field] public FastReportBorderLine LeftLine   { get; } = new FastReportBorderLine();
+        [UsedImplicitly][Field] public FastReportBorderLine RightLine  { get; } = new FastReportBorderLine();
+        [UsedImplicitly][Field] public FastReportBorderLine TopLine    { get; } = new FastReportBorderLine();
 
         #region M:Serialize(XmlWriter,String,Object)
         public override void Serialize(XmlWriter writer,String prefix,Object other) {

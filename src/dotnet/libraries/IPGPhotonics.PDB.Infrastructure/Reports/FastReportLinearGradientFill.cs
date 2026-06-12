@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class LinearGradientFill : FillBase
+    internal sealed class FastReportLinearGradientFill : FastReportFillBase
         {
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color StartColor { get; } = Color.Black;
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))] public Color EndColor { get; } = Color.White;

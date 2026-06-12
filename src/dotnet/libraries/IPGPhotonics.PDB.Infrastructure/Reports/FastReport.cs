@@ -37,11 +37,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000212)] public Int32 MaxPages { get; }
         [UsedImplicitly][Field(Order=1000211)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public String Script { get;private set; }
-        public IList<DataConnectionBase> DataSources { get; } = new SqlObjectCollection<DataConnectionBase>();
+        public IList<FastReportDataConnectionBase> DataSources { get; } = new SqlObjectCollection<FastReportDataConnectionBase>();
         public IList<FastReportParameter> Parameters { get; } = new SqlObjectCollection<FastReportParameter>();
-        public IList<PageBase> Pages { get; } = new SqlObjectCollection<PageBase>();
+        public IList<FastReportPageBase> Pages { get; } = new SqlObjectCollection<FastReportPageBase>();
         public IList<FastReportStyle> Styles { get; } = new SqlObjectCollection<FastReportStyle>();
-        public IList<Relation> Relations { get; } = new SqlObjectCollection<Relation>();
+        public IList<FastReportRelation> Relations { get; } = new SqlObjectCollection<FastReportRelation>();
         public IList<FastReportTotal> Totals { get; } = new SqlObjectCollection<FastReportTotal>();
 
         public override IEnumerable<FastReportObject> Children { get {
@@ -162,10 +162,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             using (var Totals = PrepareChanges(this.Totals))
             using (var Pages = PrepareChanges(this.Pages)) {
                 foreach (var o in source) {
-                         if (o is PageBase PageBase)                       { Pages.Add(PageBase);                 }
-                    else if (o is DataConnectionBase DataConnectionBase)   { DataSources.Add(DataConnectionBase); }
+                         if (o is FastReportPageBase PageBase)                       { Pages.Add(PageBase);                 }
+                    else if (o is FastReportDataConnectionBase DataConnectionBase)   { DataSources.Add(DataConnectionBase); }
                     else if (o is FastReportParameter FastReportParameter) { Parameters.Add(FastReportParameter); }
-                    else if (o is Relation Relation)                       { Relations.Add(Relation);             }
+                    else if (o is FastReportRelation Relation)                       { Relations.Add(Relation);             }
                     else if (o is FastReportTotal Total)                             { Totals.Add(Total);                   }
                     else if (o is FastReportStyle Style) { Styles.Add(Style); }
                     }

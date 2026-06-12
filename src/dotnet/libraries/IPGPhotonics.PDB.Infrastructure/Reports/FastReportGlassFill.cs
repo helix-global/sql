@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class GlassFill : FillBase
+    internal sealed class FastReportGlassFill : FastReportFillBase
         {
         [UsedImplicitly][Field(Converter=typeof(FastReportColorConverter))][DefaultValue(KnownColor.White)] public Color StartColor { get; } = Color.White;
         [UsedImplicitly][Field(ConverterCulture="en-US")][DefaultValue(0.2f)] public Single Blend { get; } = 0.2f;

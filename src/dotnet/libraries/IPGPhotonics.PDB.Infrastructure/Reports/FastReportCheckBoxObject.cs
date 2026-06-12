@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("CheckBoxObject")]
-    internal sealed class CheckBoxObject : ReportComponentBase
+    internal sealed class FastReportCheckBoxObject : ReportComponentBase
         {
         [UsedImplicitly][Field(Order=1000404,Converter=typeof(FastReportColorConverter))] public Color CheckColor { get; }
         [UsedImplicitly][Field(Order=1000401)][DefaultValue(true)] public Boolean Checked { get; } = true;

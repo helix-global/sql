@@ -19,7 +19,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000103)][DefaultValue(WatermarkImageSize.Zoom)] public WatermarkImageSize ImageSize { get; } = WatermarkImageSize.Zoom;
         [UsedImplicitly][Field(Order=1000108)][DefaultValue(WatermarkTextRotation.ForwardDiagonal)] public WatermarkTextRotation TextRotation { get; } = WatermarkTextRotation.ForwardDiagonal;
         [UsedImplicitly][Field(Order=1000104,ConverterCulture="en-US")] public Single ImageTransparency { get; }
-        [UsedImplicitly][Field(Order=1000107)][DefaultValue(typeof(FastReportSolidFill),"Color=#28808080")] public FillBase TextFill { get; } = new FastReportSolidFill(Color.FromArgb(40,Color.Gray));
+        [UsedImplicitly][Field(Order=1000107)][DefaultValue(typeof(FastReportSolidFill),"Color=#28808080")] public FastReportFillBase TextFill { get; } = new FastReportSolidFill(Color.FromArgb(40,Color.Gray));
 
         #region M:Serialize(XmlWriter,String,Object)
         public override void Serialize(XmlWriter writer,String prefix,Object other) {

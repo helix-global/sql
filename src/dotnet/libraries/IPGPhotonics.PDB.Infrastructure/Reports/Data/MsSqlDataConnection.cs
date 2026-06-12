@@ -5,7 +5,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [UsedImplicitly]
     [FastReportClass("MsSqlDataConnection")]
-    internal sealed class MsSqlDataConnection : DataConnectionBase
+    internal sealed class MsSqlDataConnection : FastReportDataConnectionBase
         {
         }
     }
