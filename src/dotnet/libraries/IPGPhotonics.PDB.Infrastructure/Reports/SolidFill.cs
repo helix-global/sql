@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
+using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -84,5 +86,26 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return $"{FillConverter.Instance.ConvertToInvariantString(this)}:Color={Color}";
             }
         #endregion
+        #region M:CoerceValue(PropertyDescriptor,Object,CultureInfo):Object
+        protected override Object CoerceValue(PropertyDescriptor descriptor,Object value,CultureInfo culture) {
+            if (descriptor.Name == nameof(Color)) {
+                color = value;
+                }
+            return base.CoerceValue(descriptor, value, culture);
+            }
+        #endregion
+        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
+        protected override void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
+            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
+            if (descriptor.Name == nameof(Color)) {
+                writer.WriteAttributeString($"{prefix}.{descriptor.Name}",color?.ToString());
+                return;
+                }
+            base.SerializeAttribute(writer,prefix,descriptor);
+            }
+        #endregion
+
+        private Object color;
         }
     }

@@ -32,7 +32,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000316)][DefaultValue(PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage)] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
         [UsedImplicitly][Field(Order=1000311)][DefaultValue(ShiftMode.Always)] public ShiftMode ShiftMode { get; } = ShiftMode.Always;
         [UsedImplicitly][Field(Order=1000303)] public Border Border { get; } = new Border();
-        [UsedImplicitly][Field(Order=1000304)][DefaultValue(KnownColor.Transparent)] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000304)][DefaultValue(typeof(SolidFill),"Color=Transparent")] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
         [UsedImplicitly][Field(Order=1000306)] public Hyperlink Hyperlink { get; } = new Hyperlink();
         }
     }

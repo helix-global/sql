@@ -1,17 +1,24 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Xml;
-using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    using FieldAttribute=SqlObjectFieldMappingAttribute;
     [TypeConverter(typeof(FillConverter))]
     internal abstract class FillBase : FastReportObject,IEquatable<FillBase>
         {
         #region M:Serialize(XmlWriter,String,Object)
         public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+            if (other != null) {
+                if (other.GetType() != GetType()) {
+                    writer.WriteAttributeString(prefix,FillConverter.Instance.ConvertToInvariantString(this));
+                    }
+                }
+            else
+                {
+                writer.WriteAttributeString(prefix,FillConverter.Instance.ConvertToInvariantString(this));
+                }
             SerializeAttributes(writer,prefix);
             }
         #endregion
@@ -31,6 +38,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (other == null) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
             return false;
+            }
+        #endregion
+        #region M:GetHashCode:Int32
+        public override Int32 GetHashCode()
+            {
+            return 0;
             }
         #endregion
         }

@@ -18,7 +18,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000604)] public HorzAlign HorzAlign { get; }
         [UsedImplicitly][Field(Order=1000605)] public VertAlign VertAlign { get; }
         [UsedImplicitly][Field(Order=1000610)] public String Font { get; }
-        [UsedImplicitly][Field(Order=1000611)][DefaultValue(KnownColor.Black)] public FillBase TextFill { get; } = new SolidFill(Color.Black);
+        [UsedImplicitly][Field(Order=1000611)][DefaultValue(typeof(SolidFill),"Color=Black")] public FillBase TextFill { get; } = new SolidFill(Color.Black);
         [UsedImplicitly][Field(Order=1000600,Converter=typeof(FastReportColorConverter))] public Color TextColor { get; }
         [UsedImplicitly][Field(Order=1000606)] public Int32 Angle { get; }
         [UsedImplicitly][Field(Order=1000602)] public AutoShrinkMode AutoShrink { get; }

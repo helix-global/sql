@@ -10,11 +10,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         {
         [UsedImplicitly][Field(Order=1000401)][DefaultValue(false)] public Boolean AutoEncode { get; }
 
-        public Barcode128()
-            {
-            return;
-            }
-
         #region M:ToString:String
         public override String ToString()
             {

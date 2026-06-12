@@ -33,7 +33,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000210)] public String Password { get; }
         [UsedImplicitly][Field(Order=1000201)] public String BaseReport { get; }
         [UsedImplicitly][Field(Order=1000208)] public TextQuality TextQuality { get; }
-        [UsedImplicitly][Field(Order=1000203,Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=RemoveEmptyEntries;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ReferencedAssemblies { get; }
+        [UsedImplicitly][Field(Order=1000203,Converter=typeof(SqlStringCollectionConverter),ConverterParameter="StringSplitOptions=None;StringSplitSeparator={\r\n;\r;\n}")] public IList<String> ReferencedAssemblies { get; }
         [UsedImplicitly][Field(Order=1000212)] public Int32 MaxPages { get; }
         [UsedImplicitly][Field(Order=1000211)][DefaultValue(1)] public Int32 InitialPageNumber { get; } = 1;
         public String Script { get;private set; }

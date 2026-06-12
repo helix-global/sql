@@ -14,8 +14,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000108)] public virtual Boolean ApplyFont { get; }
         [UsedImplicitly][Field(Order=1000107)][DefaultValue(true)] public Boolean ApplyTextFill { get; } = true;
         [UsedImplicitly][Field(Order=1000104)] public String Font { get; }
-        [UsedImplicitly][Field(Order=1000102)][DefaultValue(KnownColor.Transparent)] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
-        [UsedImplicitly][Field(Order=1000103)][DefaultValue(KnownColor.Black)] public FillBase TextFill { get; } = new SolidFill(Color.Black);
+        [UsedImplicitly][Field(Order=1000102)][DefaultValue(typeof(SolidFill),"Color=Transparent")] public FillBase Fill { get; } = new SolidFill(Color.Transparent);
+        [UsedImplicitly][Field(Order=1000103)][DefaultValue(typeof(SolidFill),"Color=Black")] public FillBase TextFill { get; } = new SolidFill(Color.Black);
         [UsedImplicitly][Field(Order=1000101)] public Border Border { get; } = new Border();
         }
     }

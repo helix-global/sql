@@ -37,7 +37,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000411)][DefaultValue(7)] public Int32 OtherPagesSource { get; } = 7;
         [UsedImplicitly][Field(Order=1000404)] public Int32 RawPaperSize { get; }
         [UsedImplicitly][Field(Order=1000415)] public Border Border { get; } = new Border();
-        [UsedImplicitly][Field(Order=1000416)][DefaultValue(KnownColor.Window)] public FillBase Fill { get; } = new SolidFill(SystemColors.Window);
+        [UsedImplicitly][Field(Order=1000416)][DefaultValue(typeof(SolidFill),"Color=Window")] public FillBase Fill { get; } = new SolidFill(SystemColors.Window);
         [UsedImplicitly][Field(Order=1000413)] public PageColumns Columns { get; } = new PageColumns();
         [UsedImplicitly][Field(Order=1000417)] public Watermark Watermark { get; } = new Watermark();
         public IList<BandBase> Bands { get; } = new SqlObjectCollection<BandBase>();
