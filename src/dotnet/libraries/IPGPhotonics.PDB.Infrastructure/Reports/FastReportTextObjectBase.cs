@@ -37,5 +37,29 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     }
                 }
             }
+
+        #region M:WriteXmlE(ISqlXmlWriter,PropertyDescriptor)
+        protected override void WriteXmlA(ISqlXmlWriter writer,PropertyDescriptor descriptor) {
+            switch (descriptor.Name) {
+                case nameof(Text):
+                    {
+                    break;
+                    }
+                default:
+                    base.WriteXmlA(writer,descriptor);
+                    break;
+                }
+            }
+        #endregion
+        #region M:WriteXmlE(ISqlXmlWriter,IList<PropertyDescriptor>)
+        protected override void WriteXmlE(ISqlXmlWriter writer,IList<PropertyDescriptor> descriptors) {
+            if (!String.IsNullOrEmpty(Text)) {
+                using (writer.ElementGroup(URI_FR_PREFIX,$"{((IFastReportClassObject)(this)).ClassName}.Text",URI_FR_NS)) {
+                    writer.WriteCData(Text);
+                    }
+                }
+            base.WriteXmlE(writer,descriptors);
+            }
+        #endregion
         }
     }

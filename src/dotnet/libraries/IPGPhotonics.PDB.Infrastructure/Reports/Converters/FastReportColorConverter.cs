@@ -31,7 +31,27 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         }
                     }
                 }
+            if (destinationType == typeof(DColor)) {
+                if (value is String s) {
+                    return new DColorConverter().ConvertTo(null,culture,value,destinationType);
+                    }
+                }
             return base.ConvertTo(context,culture,value,destinationType);
+            }
+        #endregion
+        #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
+        /// <summary>Converts the given object to the converter's native type.</summary>
+        /// <param name="context">A <see cref="T:System.ComponentModel.TypeDescriptor"/> that provides a format context. You can use this object to get additional information about the environment from which this converter is being invoked.</param>
+        /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/> that specifies the culture to represent the color.</param>
+        /// <param name="value">The object to convert.</param>
+        /// <returns>An <see cref="T:System.Object"/> representing the converted value.</returns>
+        /// <exception cref="T:System.ArgumentException">The conversion cannot be performed.</exception>
+        public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value)
+            {
+            if (value is String s) {
+                return new DColorConverter().ConvertFrom(value);
+                }
+            return base.ConvertFrom(context,culture,value);
             }
         #endregion
         }

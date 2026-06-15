@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
@@ -8,7 +9,7 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class FastReportInfo : FastReportObject
+    internal sealed class FastReportInfo : FastReportObject,IFastReportClassObject
         {
         [UsedImplicitly][Field(Order=1000102)] public String Author { get; }
         [UsedImplicitly][Field(Order=1000106)] public DateTime Created { get; }
@@ -20,6 +21,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000105)] public Byte[] Picture { get; }
         [UsedImplicitly][Field(Order=1000109)][DefaultValue(0.1f)] public Single PreviewPictureRatio { get; } = 0.1f;
         [UsedImplicitly][Field(Order=1000108)] public Boolean SavePreviewPicture { get; }
+        String IFastReportClassObject.ClassName { get { return "ReportInfo"; }}
 
         public override IEnumerable<FastReportObject> Children { get {
             return EmptyArray<FastReportObject>.List;

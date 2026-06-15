@@ -8,8 +8,10 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class FastReportWatermark : FastReportObject
+    [TypeConverter(typeof(SqlObjectConverter<FastReportWatermark>))]
+    internal sealed class FastReportWatermark : FastReportObject,IFastReportClassObject,IEquatable<FastReportWatermark>
         {
+        String IFastReportClassObject.ClassName { get { return "Watermark"; } }
         [UsedImplicitly][Field(Order=1000101)] public Boolean Enabled { get; }
         [UsedImplicitly][Field(Order=1000110)] public Boolean ShowImageOnTop { get; }
         [UsedImplicitly][Field(Order=1000109)][DefaultValue(true)] public Boolean ShowTextOnTop { get; } = true;
@@ -25,6 +27,45 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public override void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             SerializeAttributes(writer,prefix);
+            }
+        #endregion
+        #region M:Equals(Object):Boolean
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
+        public override Boolean Equals(Object other) {
+            if (ReferenceEquals(other,null)) { return false; }
+            if (ReferenceEquals(this,other)) { return true;  }
+            return Equals(other as FastReportWatermark);
+            }
+        #endregion
+        #region M:Equals(FastReportWatermark):Boolean
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
+        public Boolean Equals(FastReportWatermark other) {
+            if (ReferenceEquals(other,null)) { return false; }
+            if (ReferenceEquals(this,other)) { return true;  }
+            return (Enabled==other.Enabled)
+                && (ShowImageOnTop==other.ShowImageOnTop)
+                && (ShowTextOnTop==other.ShowTextOnTop)
+                && (ImageTransparency==other.ImageTransparency)
+                && (ImageSize==other.ImageSize)
+                && (TextRotation==other.TextRotation)
+                && String.Equals(Font,other.Font)
+                && String.Equals(Text,other.Text)
+                && SqlArrayConverter.Equals(Image,other.Image)
+                && FastReportFillBase.Equals(TextFill,other.TextFill);
+            }
+        #endregion
+        #region M:GetHashCode:Int32
+        /// <summary>Calculates a hash code for the current object.</summary>
+        /// <returns>Returns a hash code for the current object.</returns>
+        public override Int32 GetHashCode() {
+            return HashCodeCombiner.GetHashCode(
+                Enabled,ShowImageOnTop,ShowTextOnTop,
+                Font,Text,ImageTransparency,
+                ImageSize,TextRotation,Image,TextFill);
             }
         #endregion
         }

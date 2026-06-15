@@ -31,8 +31,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000301)][DefaultValue(true)] public Boolean Printable { get; } = true;
         [UsedImplicitly][Field(Order=1000316)][DefaultValue(PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage)] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
         [UsedImplicitly][Field(Order=1000311)][DefaultValue(ShiftMode.Always)] public ShiftMode ShiftMode { get; } = ShiftMode.Always;
-        [UsedImplicitly][Field(Order=1000303)] public FastReportBorder Border { get; } = new FastReportBorder();
+        [UsedImplicitly][Field(Order=1000303)][DefaultValue(typeof(FastReportBorder),null)] public FastReportBorder Border { get; } = new FastReportBorder();
         [UsedImplicitly][Field(Order=1000304)][DefaultValue(typeof(FastReportSolidFill),"Color=Transparent")] public FastReportFillBase Fill { get; } = new FastReportSolidFill(Color.Transparent);
-        [UsedImplicitly][Field(Order=1000306)] public FastReportHyperlink Hyperlink { get; } = new FastReportHyperlink();
+        [UsedImplicitly][Field(Order=1000306)][DefaultValue(typeof(FastReportHyperlink),null)] public FastReportHyperlink Hyperlink { get; } = new FastReportHyperlink();
         }
     }

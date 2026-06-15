@@ -22,4 +22,5 @@
 /.intermediate/pdb
 /src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.SqlServer.Infrastructure/bin
 /src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.SqlServer.Infrastructure/obj
-/src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.IPGPhotonics.PDB.Infrastructure/bin/Debug/net48
+/src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.IPGPhotonics.PDB.Infrastructure/bin
+/src/dotnet/tests/BinaryStudio.TestTools.UnitTesting.IPGPhotonics.PDB.Infrastructure/obj

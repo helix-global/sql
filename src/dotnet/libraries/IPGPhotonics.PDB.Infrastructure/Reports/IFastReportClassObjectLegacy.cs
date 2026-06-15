@@ -2,7 +2,7 @@
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal interface IFastReportClassObject
+    internal interface IFastReportClassObjectLegacy
         {
         String ClassName { get; }
         }

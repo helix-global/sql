@@ -110,7 +110,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #endregion
             }
 
-        private class DColorConverter : TypeConverter {
+        protected class DColorConverter : TypeConverter {
             #region M:CanConvertTo(ITypeDescriptorContext,Type):Boolean
             /// <summary>Returns whether this converter can convert the object to the specified type, using the specified context.</summary>
             /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -176,6 +176,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                     }
                 throw new NotSupportedException($@"Cannot convert to ""{destinationType.AssemblyQualifiedName}""");
                 return base.ConvertTo(context,culture,value,destinationType);
+                }
+            #endregion
+            #region M:ConvertFrom(ITypeDescriptorContext,CultureInfo,Object):Object
+            /// <summary>Converts the given object to the converter's native type.</summary>
+            /// <param name="context">A <see cref="T:System.ComponentModel.TypeDescriptor"/> that provides a format context. You can use this object to get additional information about the environment from which this converter is being invoked.</param>
+            /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/> that specifies the culture to represent the color.</param>
+            /// <param name="value">The object to convert.</param>
+            /// <returns>An <see cref="T:System.Object"/> representing the converted value.</returns>
+            /// <exception cref="T:System.ArgumentException">The conversion cannot be performed.</exception>
+            public override Object ConvertFrom(ITypeDescriptorContext context,CultureInfo culture,Object value) {
+                if (value is String S) { return ConvertTo(S,typeof(DColor)); }
+                return base.ConvertFrom(context,culture,value);
                 }
             #endregion
 

@@ -1,14 +1,15 @@
-﻿using System;
+﻿//#define FEATURE_FASTREPORT_CHECK
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using BinaryStudio.SqlServer.Infrastructure;
 using IPGPhotonics.PDB.Infrastructure.Reports;
 using System.Diagnostics;
-using System.Linq;
 
 namespace IPGPhotonics.PDB.Infrastructure
     {
@@ -35,8 +36,9 @@ namespace IPGPhotonics.PDB.Infrastructure
         internal Report(DataRow source,IServiceProvider service)
             :base(source,service)
             {
-            if (m_body != null) {
-                Body = FastReport.LoadFrom(m_body);
+            if (body != null) {
+                Body = FastReport.LoadFrom(body);
+                #if FEATURE_FASTREPORT_CHECK
                 Byte[] target;
                 using (var stream = new MemoryStream()) {
                     using (var writer = new FastReportXmlWriter(stream, new XmlWriterSettings {
@@ -54,9 +56,10 @@ namespace IPGPhotonics.PDB.Infrastructure
                     }
                 if (!m_body.SequenceEqual(target))
                     {
-                    File.WriteAllBytes($"{Label}.frx",m_body);
+                    File.WriteAllBytes($"{Label}.frx",body);
                     File.WriteAllBytes($"{Label}.frz",target);
                     }
+                #endif
                 }
             }
         #endregion
@@ -83,6 +86,11 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteCData(nameof(Name),URI_META,Name);
                 writer.WriteCData(nameof(Description),URI_META,Description);
                 writer.WriteCData(nameof(Options),URI_META,Options);
+                if (Body != null) {
+                    using (writer.ElementGroup("Body",URI_META)) {
+                        Body.WriteXml(writer);
+                        }
+                    }
                 }
             }
         #endregion
@@ -94,11 +102,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             return $"{Label}";
             }
         #endregion
-        private static Boolean HasChar(String source,Char ch)
-            {
-            return source != null && source.IndexOf(ch) >= 0;
-            }
 
-        [UsedImplicitly][SqlObjectFieldMapping("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] m_body;
+        [UsedImplicitly][SqlObjectFieldMapping("REPORT")][TypeConverter(typeof(SqlArrayConverter))] private Byte[] body;
         }
     }

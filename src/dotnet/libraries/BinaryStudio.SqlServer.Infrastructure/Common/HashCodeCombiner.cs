@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -16,9 +15,23 @@ namespace BinaryStudio.SqlServer.Infrastructure
         public static Int32 GetHashCode(Object o) { return (o != null) ? o.GetHashCode() : 0; }
         public static Int32 GetHashCode(Object o1,Object o2) { return GetHashCode(GetHashCode(o1),GetHashCode(o2)); }
         public static Int32 GetHashCode(Object o1,Object o2,Object o3) { return GetHashCode(GetHashCode(o1,o2),o3); }
-        public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4)); }
-        public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5)); }
-        public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5,Object o6) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5,o6)); }
-        public static Int32 GetHashCode(Object o1,Object o2,Object o3,Object o4,Object o5,Object o6,Object o7) { return GetHashCode(GetHashCode(o1,o2),GetHashCode(o3,o4),GetHashCode(o5,o6,o7)); }
+        public static Int32 GetHashCode(Object o1,Object o2,Object o3,params Object[] args) {
+            var r = GetHashCode(o1,o2,o3);
+            foreach (var o in args) {
+                r = GetHashCode(r,GetHashCode(o));
+                }
+            return r;
+            }
+        #region M:GetHashCode<T>(IList<T>):Int32
+        public static Int32 GetHashCode<T>(IList<T> o) {
+            if (o == null) { return 0; }
+            if (o.Count == 0) { return 0; }
+            var r = GetHashCode(o[0]);
+            for (var i = 1; i < o.Count; i++) {
+                r = GetHashCode(r,GetHashCode(o[i]));
+                }
+            return r;
+            }
+        #endregion
         }
     }

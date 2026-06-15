@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BinaryStudio.SqlServer.Infrastructure
     {
@@ -50,6 +46,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
             if (SqlBase64ArrayConverter.Default.TryConvertFrom(value, out result)) { return true; }
             if (SqlBase32ArrayConverter.Default.TryConvertFrom(value, out result)) { return true; }
             return false;
+            }
+        #endregion
+        #region M:Equals(Byte[],Byte[]):Boolean
+        public static Boolean Equals(Byte[] x,Byte[] y) {
+            if (ReferenceEquals(x,y)) { return true; }
+            if ((x == null) || (y == null) || (x.Length != y.Length)) { return false; }
+            for (var i = 0; i < x.Length; i++) {
+                if (x[i] != y[i]) { return false; }
+                }
+            return true;
             }
         #endregion
         }

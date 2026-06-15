@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -14,14 +13,31 @@ using JetBrains.Annotations;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal abstract class FastReportObject : SqlObject,IFastReportClassObject
+    internal abstract class FastReportObject : SqlObject,IFastReportClassObjectLegacy,IFastReportClassObject
         {
+        public const String URI_FR_NS = "urn:schemas.ipg.corp:pdb:fast-report";
+        public const String URI_FR_PREFIX = "";
+
+        #region P:Children:IEnumerable<FastReportObject>
         public virtual IEnumerable<FastReportObject> Children { get {
             foreach (var o in m_objects)
                 {
                 yield return o;
                 }
             }}
+        #endregion
+        #region P:IFastReportClassObjectLegacy.ClassName:String
+        String IFastReportClassObjectLegacy.ClassName { get {
+            var type = GetType();
+            return type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            }}
+        #endregion
+        #region P:IFastReportClassObject.ClassName:String
+        String IFastReportClassObject.ClassName { get {
+            var type = GetType();
+            return type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
+            }}
+        #endregion
 
         #region M:ResolveMappings(Object,{out}IDictionary<String,PropertyDescriptor>)
         private static void ResolveMappings(Object source,out IDictionary<String,PropertyDescriptor> mapping) {
@@ -165,12 +181,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:Serialize(XmlWriter,String,Object)
         public virtual void Serialize(XmlWriter writer,String prefix,Object other) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var className = ((IFastReportClassObject)this).ClassName;
+            var className = ((IFastReportClassObjectLegacy)this).ClassName;
             using (writer.ElementGroup(className)) {
                 SerializeAttributes(writer,prefix);
-                foreach (var o in Children) {
-                    o.Serialize(writer,prefix,null);
-                    }
+                Serialize(writer,Children,prefix);
                 }
             }
         #endregion
@@ -281,11 +295,75 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 Replace("\"","&quot;");
             }
         #endregion
-        #region P:IFastReportClassObject.ClassName:String
-        String IFastReportClassObject.ClassName { get {
-            var type = GetType();
-            return type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
-            }}
+        #region M:WriteXml(ISqlXmlWriter)
+        public override void WriteXml(ISqlXmlWriter writer) {
+            using (writer.ElementGroup(URI_FR_PREFIX,((IFastReportClassObject)(this)).ClassName,URI_FR_NS)) {
+                var properties = TypeDescriptor.GetProperties(this).Cast<PropertyDescriptor>().OrderBy(Order);
+                var propA = new List<PropertyDescriptor>();
+                var propE = new List<PropertyDescriptor>();
+                foreach (var pi in properties) {
+                    if (pi.PropertyType.IsSubclassOf(typeof(FastReportObject))) {
+                        propE.Add(pi);
+                        }
+                    else
+                        {
+                        propA.Add(pi);
+                        }
+                    }
+                WriteXmlA(writer,propA);
+                WriteXmlE(writer,propE);
+                var objects = Children?.ToArray();
+                if ((objects != null) && (objects.Length > 0)) {
+                    foreach (var o in objects) {
+                        o.WriteXml(writer);
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:WriteXmlA(ISqlXmlWriter,IList<PropertyDescriptor>)
+        protected virtual void WriteXmlA(ISqlXmlWriter writer,IList<PropertyDescriptor> descriptors) {
+            foreach (var descriptor in descriptors) {
+                WriteXmlA(writer,descriptor);
+                }
+            }
+        #endregion
+        #region M:WriteXmlE(ISqlXmlWriter,IList<PropertyDescriptor>)
+        protected virtual void WriteXmlE(ISqlXmlWriter writer,IList<PropertyDescriptor> descriptors) {
+            foreach (var descriptor in descriptors) {
+                WriteXmlE(writer,descriptor);
+                }
+            }
+        #endregion
+        #region M:WriteXmlE(ISqlXmlWriter,PropertyDescriptor)
+        protected virtual void WriteXmlA(ISqlXmlWriter writer,PropertyDescriptor descriptor) {
+            var value = descriptor.GetValue(this);
+            if (IsDefaultValue(value,descriptor,out var defaultValue)) { return; }
+            if (value == null) { return; }
+            var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
+            if (converter != null && converter.CanConvertTo(typeof(String))) {
+                value = converter.ConvertToInvariantString(value);
+                writer.WriteAttribute($"{descriptor.Name}",value);
+                }
+            }
+        #endregion
+        #region M:WriteXmlE(ISqlXmlWriter,PropertyDescriptor)
+        protected virtual void WriteXmlE(ISqlXmlWriter writer,PropertyDescriptor descriptor) {
+            var value = descriptor.GetValue(this);
+            if (IsDefaultValue(value,descriptor,out var defaultValue)) { return; }
+            if (value == null) { return; }
+            using (writer.ElementGroup(URI_FR_PREFIX,$"{((IFastReportClassObject)(this)).ClassName}.{descriptor.Name}",URI_FR_NS)) {
+                if (value is SqlObject o) {
+                    o.WriteXml(writer);
+                    return;
+                    }
+                var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
+                if (converter != null && converter.CanConvertTo(typeof(String))) {
+                    value = converter.ConvertToInvariantString(value);
+                    writer.WriteString(value?.ToString());
+                    }
+                }
+            }
         #endregion
 
         private class PropInfo

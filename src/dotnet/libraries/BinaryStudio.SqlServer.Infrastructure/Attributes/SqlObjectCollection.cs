@@ -18,7 +18,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator()
             {
-            e.Wait();
+            //e.Wait();
             return values.GetEnumerator();
             }
         #endregion
@@ -53,7 +53,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns><see langword="true"/> if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, <see langword="false"/>.</returns>
         Boolean ICollection<T>.Contains(T item)
             {
-            e.Wait();
+            //e.Wait();
             return values.Contains(item);
             }
         #endregion
@@ -66,7 +66,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.ArgumentException">The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.</exception>
         void ICollection<T>.CopyTo(T[] array, Int32 arrayIndex)
             {
-            e.Wait();
+            //e.Wait();
             values.CopyTo(array,arrayIndex);
             }
         #endregion
@@ -84,7 +84,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <summary>Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</summary>
         /// <returns>The number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</returns>
         public Int32 Count { get {
-            e.Wait();
+            //e.Wait();
             return values.Count;
             }}
         #endregion
@@ -102,7 +102,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <returns>The index of <paramref name="item"/> if found in the list; otherwise, -1.</returns>
         Int32 IList<T>.IndexOf(T item)
             {
-            e.Wait();
+            //e.Wait();
             return values.IndexOf(item);
             }
         #endregion
@@ -137,7 +137,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
             {
             get
                 {
-                e.Wait();
+                //e.Wait();
                 return values[index];
                 }
             set
@@ -159,15 +159,15 @@ namespace BinaryStudio.SqlServer.Infrastructure
             public Changes(SqlObjectCollection<T> source)
                 {
                 this.source = source;
-                source.e.Reset();
+                //source.e.Reset();
                 }
             public void Dispose() {
                 source.values.AddRange(this);
-                source.e.Set();
+                //source.e.Set();
                 }
             }
 
         private readonly IList<T> values = new List<T>();
-        private readonly ManualResetEventSlim e = new ManualResetEventSlim(false);
+        //private readonly ManualResetEventSlim e = new ManualResetEventSlim(false);
         }
     }

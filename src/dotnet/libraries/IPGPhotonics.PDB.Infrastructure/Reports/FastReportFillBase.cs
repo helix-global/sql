@@ -40,6 +40,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return false;
             }
         #endregion
+        #region M:Equals(FastReportFillBase,FastReportFillBase):Boolean
+        public static Boolean Equals(FastReportFillBase x,FastReportFillBase y) {
+            if (ReferenceEquals(x,y)) { return true; }
+            if ((x == null) || (y == null)) { return false; }
+            return x.Equals(y);
+            }
+        #endregion
         #region M:GetHashCode:Int32
         public override Int32 GetHashCode()
             {

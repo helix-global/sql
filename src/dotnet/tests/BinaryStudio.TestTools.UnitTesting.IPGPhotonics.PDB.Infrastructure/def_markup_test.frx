@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<A2Report ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll" ReportInfo.Name="def_markup_test" ReportInfo.Author="Dmitrii Maistrenko" ReportInfo.Created="06/15/2026 10:42:00" ReportInfo.Modified="06/15/2026 11:22:14" ReportInfo.CreatorVersion="2013.2.2.1000">
+  <Dictionary>
+    <Parameter Name="Context" DataType="A2.A2Context, A2Core, Version=2026.6.10.1645, Culture=neutral, PublicKeyToken=null"/>
+    <Parameter Name="Main" DataType="A2.Main, A2Core, Version=2026.6.10.1645, Culture=neutral, PublicKeyToken=null"/>
+    <Parameter Name="UserID" DataType="System.Int32"/>
+    <Parameter Name="UserName" DataType="System.String"/>
+    <Parameter Name="UserLanguage" DataType="System.String"/>
+    <Parameter Name="UserLanguageID" DataType="System.Int32"/>
+    <Parameter Name="ContextID" DataType="System.Int32"/>
+    <Parameter Name="ContextIDList" DataType="System.String"/>
+    <Parameter Name="ContextClass" DataType="System.Int32"/>
+    <Parameter Name="UserDepID" DataType="System.Int32"/>
+    <Parameter Name="UserDepName" DataType="System.String"/>
+    <Parameter Name="CompanyName" DataType="System.String"/>
+    <Parameter Name="CompanyAddress" DataType="System.String"/>
+    <Parameter Name="CompanySite" DataType="System.String"/>
+    <Parameter Name="CompanyTel" DataType="System.String"/>
+    <Parameter Name="CompanyFax" DataType="System.String"/>
+    <Parameter Name="CompanyCommercialRegister" DataType="System.String"/>
+    <Parameter Name="CompanyCommercialTaxNo" DataType="System.String"/>
+    <Parameter Name="CompanyCommercialVatNo" DataType="System.String"/>
+    <Parameter Name="ReportOID" DataType="System.Int32"/>
+    <Parameter Name="ReportLabel" DataType="System.String"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="132.3">
+      <TableObject Name="Table1" Top="37.8" Width="746.55" Height="94.5">
+        <TableColumn Name="Column1" Width="151.2"/>
+        <TableColumn Name="Column2" Width="132.3"/>
+        <TableColumn Name="Column3" Width="198.45"/>
+        <TableColumn Name="Column4" Width="198.45"/>
+        <TableColumn Name="Column5"/>
+        <TableRow Name="Row1">
+          <TableCell Name="Cell1"/>
+          <TableCell Name="Cell2"/>
+          <TableCell Name="Cell3"/>
+          <TableCell Name="Cell4"/>
+          <TableCell Name="Cell5"/>
+        </TableRow>
+        <TableRow Name="Row2">
+          <TableCell Name="Cell6" Text="AutoShrink:FontSize" AutoShrink="FontSize"/>
+          <TableCell Name="Cell7" Text="AutoShrink:None"/>
+          <TableCell Name="Cell8" Text="AutoShrink:FontWidth" AutoShrink="FontWidth"/>
+          <TableCell Name="Cell9"/>
+          <TableCell Name="Cell10"/>
+        </TableRow>
+        <TableRow Name="Row3">
+          <TableCell Name="Cell11" Text="Border:Default"/>
+          <TableCell Name="Cell12" Text="Border:&quot;Color=Red&quot;"/>
+          <TableCell Name="Cell13" Border.Lines="Right" Border.RightLine.Color="Red" Border.RightLine.Style="Dash" Text="Border:&quot;RightLine.Color=Red&quot;"/>
+          <TableCell Name="Cell14" Border.ShadowColor="Red" Text="Border:&quot;ShadowColor=Red&quot;"/>
+          <TableCell Name="Cell15"/>
+        </TableRow>
+        <TableRow Name="Row4">
+          <TableCell Name="Cell16"/>
+          <TableCell Name="Cell17"/>
+          <TableCell Name="Cell18"/>
+          <TableCell Name="Cell19"/>
+          <TableCell Name="Cell20"/>
+        </TableRow>
+        <TableRow Name="Row5">
+          <TableCell Name="Cell21"/>
+          <TableCell Name="Cell22"/>
+          <TableCell Name="Cell23"/>
+          <TableCell Name="Cell24"/>
+          <TableCell Name="Cell25"/>
+        </TableRow>
+      </TableObject>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="136.3" Width="1047.06" Height="28.35"/>
+    <DataBand Name="Data1" Top="168.65" Width="1047.06" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="248.25" Width="1047.06" Height="18.9"/>
+  </ReportPage>
+</A2Report>

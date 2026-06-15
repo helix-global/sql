@@ -9,7 +9,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     using SerializerAttribute=FastReportSerializerAttribute;
 
-    internal sealed class FastReportGridControlColumn : FastReportBase,IFastReportClassObject
+    internal sealed class FastReportGridControlColumn : FastReportBase,IFastReportClassObjectLegacy
         {
         [UsedImplicitly][Field(Order=1000202)] public String DataColumn { get; }
         [UsedImplicitly][Field(Order=1000203)] public String HeaderText { get; }
@@ -18,6 +18,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000207)][DefaultValue(true)] public Boolean Visible { get; } = true;
         [UsedImplicitly][Field(Order=1000206)][DefaultValue(100)] public Int32 Width { get; } = 100;
         [UsedImplicitly][Field(Order=1000201,Converter=typeof(SqlEnumConverter<DataGridViewAutoSizeColumnMode>))] public DataGridViewAutoSizeColumnMode AutoSizeMode { get; }
-        String IFastReportClassObject.ClassName { get { return "Column"; }}
+        String IFastReportClassObjectLegacy.ClassName { get { return "Column"; }}
         }
     }

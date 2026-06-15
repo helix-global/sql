@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\libraries\IPGPhotonics.PDB.Infrastructure\IPGPhotonics.PDB.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="def_markup_test.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

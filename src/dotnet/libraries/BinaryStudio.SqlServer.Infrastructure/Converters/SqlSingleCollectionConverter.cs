@@ -63,6 +63,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
             return false;
             }
         #endregion
+        #region M:Equals(IList<Single>,IList<Single>):Boolean
+        public static Boolean Equals(IList<Single> x,IList<Single> y) {
+            if (ReferenceEquals(x,y)) { return true; }
+            if (ReferenceEquals(x,null) || ReferenceEquals(y,null)) { return false; }
+            if (x.Count != y.Count) { return false; }
+            for (var i = 0; i < x.Count; i++) {
+                if (x[i] != y[i]) { return false; }
+                }
+            return true;
+            }
+        #endregion
 
         private class OptSplitConverter : SqlStringCollectionConverter
             {

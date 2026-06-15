@@ -38,8 +38,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000404)] public Int32 RawPaperSize { get; }
         [UsedImplicitly][Field(Order=1000415)] public FastReportBorder Border { get; } = new FastReportBorder();
         [UsedImplicitly][Field(Order=1000416)][DefaultValue(typeof(FastReportSolidFill),"Color=Window")] public FastReportFillBase Fill { get; } = new FastReportSolidFill(SystemColors.Window);
-        [UsedImplicitly][Field(Order=1000413)] public FastReportPageColumns Columns { get; } = new FastReportPageColumns();
-        [UsedImplicitly][Field(Order=1000417)] public FastReportWatermark Watermark { get; } = new FastReportWatermark();
+        [UsedImplicitly][Field(Order=1000413)][DefaultValue(typeof(FastReportPageColumns),null)] public FastReportPageColumns Columns { get; } = new FastReportPageColumns();
+        [UsedImplicitly][Field(Order=1000417)][DefaultValue(typeof(FastReportWatermark),null)] public FastReportWatermark Watermark { get; } = new FastReportWatermark();
         public IList<FastReportBandBase> Bands { get; } = new SqlObjectCollection<FastReportBandBase>();
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Bands) {

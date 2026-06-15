@@ -8,8 +8,10 @@ using JetBrains.Annotations;
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
-    internal sealed class FastReportBorderLine : FastReportObject,IEquatable<FastReportBorderLine>
+    [TypeConverter(typeof(SqlObjectConverter<FastReportBorderLine>))]
+    internal sealed class FastReportBorderLine : FastReportObject,IEquatable<FastReportBorderLine>,IFastReportClassObject
         {
+        String IFastReportClassObject.ClassName { get { return "BorderLine"; }}
         [UsedImplicitly][Field(Order=1000201,Converter=typeof(FastReportColorConverter))] public Color Color { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public LineStyle Style { get;set; }
         [UsedImplicitly][Field(Order=1000203,ConverterCulture="en-US")][DefaultValue(1f)] public Single Width { get;set; } = 1f;
@@ -23,7 +25,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return Equals(other as FastReportBorderLine);
             }
         #endregion
-        #region M:Equals(BorderLine):Boolean
+        #region M:Equals(FastReportBorderLine):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the other parameter; otherwise, false.</returns>
@@ -34,7 +36,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 && (Style == other.Style);
             }
         #endregion
-        #region M:GetHashCode():Int32
+        #region M:Equals(FastReportBorderLine,FastReportBorderLine):Boolean
+        public static Boolean Equals(FastReportBorderLine x,FastReportBorderLine y) {
+            if (ReferenceEquals(x,y)) { return true; }
+            if ((x == null) || (y == null)) { return false; }
+            return x.Equals(y);
+            }
+        #endregion
+        #region M:GetHashCode:Int32
         /// <summary>Calculates a hash code for the current object.</summary>
         /// <returns>A hash code for the current object.</returns>
         public override Int32 GetHashCode()

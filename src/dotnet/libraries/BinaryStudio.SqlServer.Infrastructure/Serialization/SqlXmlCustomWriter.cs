@@ -160,6 +160,17 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:ISqlXmlWriter.WriteCData(String)
+        /// <summary>Writes out a <![CDATA[...]]> block containing the specified text.</summary>
+        /// <param name="text">The text to place inside the CDATA block.</param>
+        /// <exception cref="T:System.ArgumentException">The <paramref name="localName"/> value is <see langword="null"/> or an empty string.-or-The parameter values are not valid.</exception>
+        /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void ISqlXmlWriter.WriteCData(String text) {
+            if (String.IsNullOrWhiteSpace(text)) { return; }
+            WriteCData(text);
+            }
+        #endregion
         #region M:ISqlXmlWriter.WriteBase64(String,String,String,Byte[])
         /// <summary>Writes an element with the specified prefix, local name, namespace URI, and BASE64 block.</summary>
         /// <param name="prefix">The prefix of the element.</param>
