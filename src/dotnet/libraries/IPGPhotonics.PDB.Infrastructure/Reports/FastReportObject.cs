@@ -365,6 +365,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:Accept(IFastReportVisitor)
+        public virtual void Accept(IFastReportVisitor visitor) {
+            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
+            visitor.Visit(this);
+            }
+        #endregion
 
         private class PropInfo
             {
