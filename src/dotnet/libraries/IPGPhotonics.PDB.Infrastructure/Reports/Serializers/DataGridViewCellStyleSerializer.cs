@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    internal class DataGridViewCellStyleSerializer : FastReportSerializer
+    internal class DataGridViewCellStyleSerializer : FastReportCustomSerializer
         {
         private static void SerializeIfDifferent<T>(XmlWriter writer,String prefix,String name,T value,T other) {
             if (!Equals(value,other)) {

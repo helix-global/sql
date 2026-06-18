@@ -33,5 +33,11 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             SerializeAttributes(writer,prefix);
             }
         #endregion
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,(FastReportInfo)other);
+            }
+        #endregion
         }
     }

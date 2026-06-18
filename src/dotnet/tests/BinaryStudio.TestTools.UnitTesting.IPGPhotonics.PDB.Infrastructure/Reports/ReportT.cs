@@ -22,16 +22,18 @@ namespace BinaryStudio.TestTools.UnitTesting.IPGPhotonics.PDB.Infrastructure.Rep
             var report = FastReport.LoadFrom(source);
             Byte[] target;
             using (var stream = new MemoryStream()) {
-                using (var writer = new FastReportXmlWriter(stream, new XmlWriterSettings {
-                    Indent = true,
-                    Encoding = Encoding.UTF8,
-                    OmitXmlDeclaration = false,
-                    }))
-                    {
-                    writer.WriteProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
-                    report.Serialize(writer,null,null);
-                    writer.WriteWhitespace(Environment.NewLine);
-                    }
+                var serializer = new FastReportSerializerSTD(stream);
+                serializer.Serialize(report);
+                //using (var writer = new FastReportXmlWriter(stream,new XmlWriterSettings {
+                //    Indent = true,
+                //    Encoding = Encoding.UTF8,
+                //    OmitXmlDeclaration = false,
+                //    }))
+                //    {
+                //    writer.WriteProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
+                //    report.Serialize(writer,null,null);
+                //    writer.WriteWhitespace(Environment.NewLine);
+                //    }
                 stream.Position = 0;
                 target = stream.ToArray();
                 }

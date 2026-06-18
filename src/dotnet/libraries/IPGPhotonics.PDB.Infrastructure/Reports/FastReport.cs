@@ -199,6 +199,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,(FastReport)other);
+            }
+        #endregion
         #region M:WriteXmlA(ISqlXmlWriter,IList<PropertyDescriptor>)
         protected override void WriteXmlA(ISqlXmlWriter writer,IList<PropertyDescriptor> descriptors) {
             foreach (var descriptor in descriptors) {

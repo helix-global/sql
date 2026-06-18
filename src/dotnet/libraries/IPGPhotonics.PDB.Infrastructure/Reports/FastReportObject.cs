@@ -221,7 +221,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             if (field != null) {
                 var serializerAttribute = descriptor.Attributes.OfType<FastReportSerializerAttribute>().FirstOrDefault();
                 if (serializerAttribute != null) {
-                    var serializer = (IFastReportSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
+                    var serializer = (IFastReportCustomSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
                     serializer.Serialize(writer,this,descriptor);
                     return;
                     }
@@ -365,10 +365,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-        #region M:Accept(IFastReportVisitor)
-        public virtual void Accept(IFastReportVisitor visitor) {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public virtual void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
 

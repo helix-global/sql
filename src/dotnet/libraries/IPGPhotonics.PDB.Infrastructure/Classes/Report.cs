@@ -1,4 +1,4 @@
-﻿//#define FEATURE_FASTREPORT_CHECK
+﻿#define FEATURE_FASTREPORT_CHECK
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -39,25 +39,26 @@ namespace IPGPhotonics.PDB.Infrastructure
             if (body != null) {
                 Body = FastReport.LoadFrom(body);
                 #if FEATURE_FASTREPORT_CHECK
-                Byte[] target;
-                using (var stream = new MemoryStream()) {
-                    using (var writer = new FastReportXmlWriter(stream, new XmlWriterSettings {
-                        Indent = true,
-                        Encoding = Encoding.UTF8,
-                        OmitXmlDeclaration = false,
-                        }))
-                        {
-                        writer.WriteProcessingInstruction("xml","version=\"1.0\" encoding=\"utf-8\"");
-                        Body.Serialize(writer,null,null);
-                        writer.WriteWhitespace(Environment.NewLine);
+                try
+                    {
+                    Byte[] target;
+                    using (var stream = new MemoryStream()) {
+                        using (var serializer = new FastReportSerializerSTD(stream)) {
+                            serializer.Serialize(Body);
+                            }
+                        stream.Position = 0;
+                        target = stream.ToArray();
                         }
-                    stream.Position = 0;
-                    target = stream.ToArray();
+                    if (!body.SequenceEqual(target))
+                        {
+                        File.WriteAllBytes($"{Label}.frx",body);
+                        File.WriteAllBytes($"{Label}.frz",target);
+                        }
                     }
-                if (!m_body.SequenceEqual(target))
+                catch
                     {
                     File.WriteAllBytes($"{Label}.frx",body);
-                    File.WriteAllBytes($"{Label}.frz",target);
+                    throw;
                     }
                 #endif
                 }

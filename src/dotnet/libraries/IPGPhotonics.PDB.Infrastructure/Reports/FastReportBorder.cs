@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -60,31 +58,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field][DefaultValue(typeof(FastReportBorderLine),null)] public FastReportBorderLine RightLine  { get; } = new FastReportBorderLine();
         [UsedImplicitly][Field][DefaultValue(typeof(FastReportBorderLine),null)] public FastReportBorderLine TopLine    { get; } = new FastReportBorderLine();
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (Shadow) { writer.WriteAttribute($"{prefix}.Shadow","true"); }
-            if (ShadowWidth != 4f) { writer.WriteAttribute($"{prefix}.ShadowWidth",ShadowWidth); }
-            if (ShadowColor != Color.Black) { writer.WriteAttribute($"{prefix}.ShadowColor",FastReportColorConverter.Instance.ConvertToInvariantString(ShadowColor)); }
-            if (!SimpleBorder) {
-                if (Lines > 0) {
-                    writer.WriteAttribute($"{prefix}.Lines",Lines);
-                    if (LeftLine.Equals(RightLine) && LeftLine.Equals(TopLine) && LeftLine.Equals(BottomLine)) {
-                        LeftLine.Serialize(writer,prefix,null);
-                        return;
-                        }
-                    LeftLine.Serialize(writer,$"{prefix}.LeftLine",null);
-                    TopLine.Serialize(writer,$"{prefix}.TopLine",null);
-                    RightLine.Serialize(writer,$"{prefix}.RightLine",null);
-                    BottomLine.Serialize(writer,$"{prefix}.BottomLine",null);
-                    }
-                }
-            else
-                {
-                LeftLine.Serialize(writer,prefix,null);
-                }
-            }
-        #endregion
         #region M:Equals(Object):Boolean
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
@@ -127,6 +100,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 Lines,ShadowColor,Shadow,
                 ShadowWidth,SimpleBorder,LeftLine,
                 TopLine,RightLine,BottomLine);
+            }
+        #endregion
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         }

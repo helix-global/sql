@@ -11,10 +11,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000102)] public Int32 ZOrder { get; }
         [UsedImplicitly][Field(Order=1000103)] public Restrictions Restrictions { get; }
 
-        #region M:Accept(IFastReportVisitor)
-        public override void Accept(IFastReportVisitor visitor) {
-            if (visitor == null) { throw new ArgumentNullException(nameof(visitor)); }
-            visitor.Visit(this);
+        #region M:ToString:String
+        public override String ToString()
+            {
+            return $"{((IFastReportClassObjectLegacy)this).ClassName}:Name={Name}";
             }
         #endregion
         }

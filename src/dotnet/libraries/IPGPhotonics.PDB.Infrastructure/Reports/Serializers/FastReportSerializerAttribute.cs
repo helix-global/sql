@@ -8,7 +8,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public Type SerializerType { get; }
         public FastReportSerializerAttribute(Type serializerType) {
             if (serializerType == null) throw new ArgumentNullException(nameof(serializerType));
-            if (!typeof(IFastReportSerializer).IsAssignableFrom(serializerType)) throw new ArgumentException($"Type {serializerType.FullName} does not implement {typeof(IFastReportSerializer).FullName}",nameof(serializerType));
+            if (!typeof(IFastReportCustomSerializer).IsAssignableFrom(serializerType)) throw new ArgumentException($"Type {serializerType.FullName} does not implement {typeof(IFastReportCustomSerializer).FullName}",nameof(serializerType));
             SerializerType = serializerType;
             }
         }

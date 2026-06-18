@@ -147,8 +147,24 @@ namespace BinaryStudio.SqlServer.Infrastructure
         /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
         void WriteBase64(String localName,Byte[] buffer);
         #endregion
+        #region M:WriteProcessingInstruction(String,String)
+        /// <summary>Writes out a processing instruction with a space between the name and text as follows: &lt;?name text?&gt;.</summary>
+        /// <param name="name">The name of the processing instruction.</param>
+        /// <param name="text">The text to include in the processing instruction.</param>
+        /// <exception cref="T:System.ArgumentException">The text would result in a non-well formed XML document.<paramref name="name"/> is either <see langword="null"/> or <see langword="String.Empty"/>.This method is being used to create an XML declaration after <see cref="M:System.Xml.XmlWriter.WriteStartDocument"/> has already been called.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void WriteProcessingInstruction(String name,String text);
+        #endregion
+        #region M:WriteWhitespace(String)
+        /// <summary>Writes out the given white space.</summary>
+        /// <param name="ws">The string of white space characters.</param>
+        /// <exception cref="T:System.ArgumentException">The string contains non-white space characters.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void WriteWhitespace(String ws);
+        #endregion
         ISqlXmlWriter ScheduleNewLineForNextAttribute();
         ISqlXmlWriter StopScheduleNewLineForNextAttribute();
         void WriteString(String text);
+        void WriteRaw(String data);
         }
     }

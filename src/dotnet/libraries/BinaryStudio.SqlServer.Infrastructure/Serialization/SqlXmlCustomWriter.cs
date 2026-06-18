@@ -219,6 +219,18 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:ISqlXmlWriter.WriteProcessingInstruction(String,String)
+        /// <summary>Writes out a processing instruction with a space between the name and text as follows: &lt;?name text?&gt;.</summary>
+        /// <param name="name">The name of the processing instruction.</param>
+        /// <param name="text">The text to include in the processing instruction.</param>
+        /// <exception cref="T:System.ArgumentException">The text would result in a non-well formed XML document.<paramref name="name"/> is either <see langword="null"/> or <see langword="String.Empty"/>.This method is being used to create an XML declaration after <see cref="M:System.Xml.XmlWriter.WriteStartDocument"/> has already been called.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:System.Xml.XmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void ISqlXmlWriter.WriteProcessingInstruction(String name,String text)
+            {
+            WriteProcessingInstruction(name,text);
+            }
+        #endregion
+
         #region M:ISqlXmlWriter.ScheduleNewLineForNextAttribute:ISqlXmlWriter
         ISqlXmlWriter ISqlXmlWriter.ScheduleNewLineForNextAttribute()
             {
