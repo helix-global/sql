@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -40,39 +37,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000612,Converter=typeof(SqlEnumConverter<StringTrimming>))] public StringTrimming Trimming { get; }
         [UsedImplicitly][Field("Highlight",EmptyIfNull=true)] public IList<FastReportHighlightCondition> Highlights { get; }
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
-            var formats = Formats;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix,(descriptor)=> {
-                    if (descriptor.Name == nameof(Highlights)) { return false; }
-                    if (descriptor.Name == nameof(Formats))    { return false; }
-                    if (descriptor.Name == nameof(Format)) {
-                        return (formats != null) && (formats.Count == 1);
-                        }
-                    return true;
-                    });
-                if ((formats != null) && (formats.Count > 1)) {
-                    using (writer.ElementGroup("Formats")) {
-                        foreach(var o in formats) {
-                            o.SerializeFull(writer,prefix);
-                            }
-                        }
-                    }
-                if ((Highlights != null) && Highlights.Any()) {
-                    using (writer.ElementGroup("Highlight")) {
-                        foreach (var o in Highlights) {
-                            o.Serialize(writer,prefix,null);
-                            }
-                        }
-                    }
-                foreach (var o in Children) {
-                    o.Serialize(writer,prefix,null);
-                    }
-                }
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         }

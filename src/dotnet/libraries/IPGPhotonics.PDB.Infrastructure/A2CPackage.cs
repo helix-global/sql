@@ -346,7 +346,7 @@ namespace IPGPhotonics.PDB.Infrastructure
             await Task.Run(() => {
                 foreach (var o in source.Rows
                     .OfType<DataRow>()
-                    .Where( i=> i["LABEL"].ToString() == "pr_fpy_spy_report_by_mt")
+                    //.Where( i=> i["LABEL"].ToString() == "com_employee_list")
                     .Select(i => new Report(i,this)))
                     {
                     m_repoI[o.OID] = o;

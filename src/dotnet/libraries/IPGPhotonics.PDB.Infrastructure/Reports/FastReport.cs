@@ -14,7 +14,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("A2Report")]
-    internal sealed class FastReport : FastReportBase,IFastReportClassObject
+    internal sealed class FastReport : FastReportBase,IFastReportClassObject,IFastReportClassObjectLegacy
         {
         private String ClassName { get;set; }
         [UsedImplicitly][Field(Order=1000202)] public FastReportLanguage ScriptLanguage { get; }
@@ -43,6 +43,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         public IList<FastReportRelation> Relations { get; } = new SqlObjectCollection<FastReportRelation>();
         public IList<FastReportTotal> Totals { get; } = new SqlObjectCollection<FastReportTotal>();
         String IFastReportClassObject.ClassName { get { return "Report"; }}
+        String IFastReportClassObjectLegacy.ClassName { get { return ClassName; }}
 
         public override IEnumerable<FastReportObject> Children { get {
             foreach (var o in Pages) {
@@ -169,33 +170,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     else if (o is FastReportTotal Total)                             { Totals.Add(Total);                   }
                     else if (o is FastReportStyle Style) { Styles.Add(Style); }
                     }
-                }
-            }
-        #endregion
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = ClassName;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix);
-                if (!String.IsNullOrWhiteSpace(Script)) {
-                    using (writer.ElementGroup("ScriptText")) {
-                        writer.WriteRaw(EncodeString(Script));
-                        }
-                    }
-                if (Styles.Any()) {
-                    using (writer.ElementGroup("Styles")) {
-                        Serialize(writer,Styles,prefix);
-                        }
-                    }
-                using (writer.ElementGroup("Dictionary")) {
-                    Serialize(writer,DataSources,prefix);
-                    Serialize(writer,Relations,prefix);
-                    Serialize(writer,Parameters,prefix);
-                    Serialize(writer,Totals,prefix);
-                    }
-                Serialize(writer,Children.ToArray(),prefix);
                 }
             }
         #endregion

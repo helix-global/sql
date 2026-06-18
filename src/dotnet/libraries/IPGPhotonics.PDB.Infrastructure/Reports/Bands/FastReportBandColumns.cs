@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -13,10 +12,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field] public ColumnLayout Layout { get; }
         [UsedImplicitly][Field(ConverterCulture="en-US")] public Single Width { get; }
 
-        #region M:Serialize(XmlWriter,String)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            SerializeAttributes(writer,prefix);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         }

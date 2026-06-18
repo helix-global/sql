@@ -59,6 +59,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         protected virtual void Serialize<T>(T source,String prefix,Object other)
             where T: FastReportObject,IFastReportClassObjectLegacy
             {
+            SerializeElement(source,prefix,other);
+            }
+        #endregion
+        #region M:SerializeElement<T>(T,String,Object)
+        protected virtual void SerializeElement<T>(T source,String prefix,Object other)
+            where T: FastReportObject,IFastReportClassObjectLegacy
+            {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
             using (writer.ElementGroup(ClassName)) {
                 SerializeAttributes(source,prefix);
@@ -80,19 +87,19 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     using (writer.ElementGroup("ScriptText")) {
                         writer.WriteRaw(EncodeString(source.Script));
                         }
-                    if (source.Styles.Any()) {
-                        using (writer.ElementGroup("Styles")) {
-                            Serialize(source.Styles,prefix);
-                            }
-                        }
-                    using (writer.ElementGroup("Dictionary")) {
-                        Serialize(source.DataSources,prefix);
-                        Serialize(source.Relations,prefix);
-                        Serialize(source.Parameters,prefix);
-                        Serialize(source.Totals,prefix);
-                        }
-                    Serialize(source.Children.ToArray(),prefix);
                     }
+                if (source.Styles.Any()) {
+                    using (writer.ElementGroup("Styles")) {
+                        Serialize(source.Styles,prefix);
+                        }
+                    }
+                using (writer.ElementGroup("Dictionary")) {
+                    Serialize(source.DataSources,prefix);
+                    Serialize(source.Relations,prefix);
+                    Serialize(source.Parameters,prefix);
+                    Serialize(source.Totals,prefix);
+                    }
+                Serialize(source.Children,prefix);
                 }
             }
         #endregion
@@ -143,6 +150,224 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:IFastReportSerializer.Serialize(FastReportBorderLine,String,Object)
         void IFastReportSerializer.Serialize(FastReportBorderLine source,String prefix,Object other) {
             SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportBandColumns,String,Object)
+        void IFastReportSerializer.Serialize(FastReportBandColumns source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportDataBand,String,Object)
+        void IFastReportSerializer.Serialize(FastReportDataBand source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=> !String.Equals(descriptor.Name,"Sorts"));
+                Serialize(source.Children,prefix);
+                if (source.Sorts.Count > 0) {
+                    using (writer.ElementGroup("Sort")) {
+                        Serialize(source.Sorts,prefix);
+                        }
+                    }
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportDataBand,String,Object)
+        void IFastReportSerializer.Serialize(FastReportPickControl source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportTextObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportTextObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                var formats = source.Formats;
+                SerializeAttributes(source,prefix,(descriptor)=> {
+                    if (descriptor.Name == nameof(source.Highlights)) { return false; }
+                    if (descriptor.Name == nameof(source.Formats))    { return false; }
+                    if (descriptor.Name == nameof(source.Format)) {
+                        return (formats != null) && (formats.Count == 1);
+                        }
+                    return true;
+                    });
+                if ((formats != null) && (formats.Count > 1)) {
+                    using (writer.ElementGroup("Formats")) {
+                        foreach(var o in formats) {
+                            SerializeElement(o,prefix,null);
+                            }
+                        }
+                    }
+                if ((source.Highlights != null) && source.Highlights.Any()) {
+                    using (writer.ElementGroup("Highlight")) {
+                        Serialize(source.Highlights,prefix);
+                        }
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportRichObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportRichObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                var formats = source.Formats;
+                SerializeAttributes(source,prefix,(descriptor)=> {
+                    if (descriptor.Name == nameof(source.Formats)) { return false; }
+                    if (descriptor.Name == nameof(source.Format)) {
+                        return (formats != null) && (formats.Count == 1);
+                        }
+                    return true;
+                    });
+                if ((formats != null) && (formats.Count > 1)) {
+                    using (writer.ElementGroup("Formats")) {
+                        foreach(var o in formats) {
+                            SerializeElement(o,prefix,null);
+                            }
+                        }
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportHyperlink,String,Object)
+        void IFastReportSerializer.Serialize(FastReportHyperlink source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportBarcodeBase,String,Object)
+        void IFastReportSerializer.Serialize(FastReportBarcodeBase source,String prefix,Object other) {
+            if (other != null) {
+                if (other.GetType() != source.GetType()) {
+                    writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(source));
+                    }
+                }
+            else
+                {
+                writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(source));
+                }
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportMatrixObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportMatrixObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=>
+                    (descriptor.Name != "Columns") &&
+                    (descriptor.Name != "Rows")    &&
+                    (descriptor.Name != "Cells"));
+                if (source.Columns.Any()) {
+                    using (writer.ElementGroup("MatrixColumns")) {
+                        Serialize(source.Columns,prefix);
+                        }
+                    }
+                using (writer.ElementGroup("MatrixRows")) {
+                    Serialize(source.Rows,prefix);
+                    }
+                if (source.Cells.Any()) {
+                    using (writer.ElementGroup("MatrixCells")) {
+                        Serialize(source.Cells,prefix);
+                        }
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportPageColumns,String,Object)
+        void IFastReportSerializer.Serialize(FastReportPageColumns source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportWatermark,String,Object)
+        void IFastReportSerializer.Serialize(FastReportWatermark source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportPrintSettings,String,Object)
+        void IFastReportSerializer.Serialize(FastReportPrintSettings source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportCapSettings,String,Object)
+        void IFastReportSerializer.Serialize(FastReportCapSettings source,String prefix,Object other) {
+            SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportGridControl,String,Object)
+        void IFastReportSerializer.Serialize(FastReportGridControl source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=> descriptor.Name != "Columns");
+                if ((source.Columns != null) && (source.Columns.Count > 0)) {
+                    using (writer.ElementGroup("Columns")) {
+                        Serialize(source.Columns,prefix);
+                        }
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportCurrencyFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportCurrencyFormat source,String prefix,Object other) {
+            writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+            if (source.UseLocale) {
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            writer.WriteAttributeString($"{prefix}.UseLocale","false");
+            writer.WriteAttributeString($"{prefix}.DecimalDigits",source.DecimalDigits.ToString());
+            writer.WriteAttributeString($"{prefix}.DecimalSeparator",source.DecimalSeparator);
+            writer.WriteAttributeString($"{prefix}.GroupSeparator",source.GroupSeparator);
+            writer.WriteAttributeString($"{prefix}.CurrencySymbol",source.CurrencySymbol);
+            writer.WriteAttributeString($"{prefix}.PositivePattern",source.PositivePattern.ToString());
+            writer.WriteAttributeString($"{prefix}.NegativePattern",source.NegativePattern.ToString());
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportNumberFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportNumberFormat source,String prefix,Object other) {
+            writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+            if (source.UseLocale) {
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            writer.WriteAttributeString($"{prefix}.UseLocale","false");
+            writer.WriteAttributeString($"{prefix}.DecimalDigits",source.DecimalDigits.ToString());
+            writer.WriteAttributeString($"{prefix}.DecimalSeparator",source.DecimalSeparator);
+            writer.WriteAttributeString($"{prefix}.GroupSeparator",source.GroupSeparator);
+            writer.WriteAttributeString($"{prefix}.NegativePattern",source.NegativePattern.ToString());
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportPercentFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportPercentFormat source,String prefix,Object other) {
+            writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+            if (source.UseLocale) {
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            writer.WriteAttributeString($"{prefix}.UseLocale","false");
+            writer.WriteAttributeString($"{prefix}.DecimalDigits",source.DecimalDigits.ToString());
+            writer.WriteAttributeString($"{prefix}.DecimalSeparator",source.DecimalSeparator);
+            writer.WriteAttributeString($"{prefix}.GroupSeparator",source.GroupSeparator);
+            writer.WriteAttributeString($"{prefix}.PercentSymbol",source.PercentSymbol);
+            writer.WriteAttributeString($"{prefix}.PositivePattern",source.PositivePattern.ToString());
+            writer.WriteAttributeString($"{prefix}.NegativePattern",source.NegativePattern.ToString());
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportSolidFill,String,Object)
+        void IFastReportSerializer.Serialize(FastReportSolidFill source,String prefix,Object other) {
+            if (other != null) {
+                if (other.GetType() != source.GetType()) {
+                    writer.WriteAttribute(prefix,FastReportFillConverter.Instance.ConvertToInvariantString(source));
+                    }
+                }
+            else
+                {
+                writer.WriteAttribute(prefix,FastReportFillConverter.Instance.ConvertToInvariantString(source));
+                }
+            writer.WriteAttributeString($"{prefix}.Color",source.color?.ToString());
             }
         #endregion
 
@@ -294,7 +519,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 var serializerAttribute = descriptor.Attributes.OfType<FastReportSerializerAttribute>().FirstOrDefault();
                 if (serializerAttribute != null) {
                     var serializer = (IFastReportCustomSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
-                    //serializer.Serialize(writer,this,descriptor);
+                    serializer.Serialize(writer,source,descriptor);
                     return;
                     }
                 var name = field.Source ?? descriptor.Name;
@@ -307,22 +532,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
                 if (converter != null && converter.CanConvertTo(typeof(String))) {
                     value = converter.ConvertToInvariantString(value);
-                    writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
+                    writer.WriteAttributeString(String.IsNullOrWhiteSpace(prefix)
                         ? $"{name}"
-                        : $"{prefix}.{name}",value);
+                        : $"{prefix}.{name}",(String)value);
                     }
                 }
             }
         #endregion
-        #region M:SerializeAttributes<T>(T,String)
-        protected void SerializeAttributes<T>(T source,String prefix) {
+        #region M:SerializeAttributes<T>(T,String,Func<PropertyDescriptor,Boolean>)
+        protected void SerializeAttributes<T>(T source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             foreach (var descriptor in TypeDescriptor.GetProperties(source)
                 .Cast<PropertyDescriptor>()
                 .Select(i=>new PropLink(i))
                 .OrderBy(Order))
                 {
-                SerializeAttribute(source,prefix,descriptor);
+                if ((predicate == null) || predicate(descriptor)) {
+                    SerializeAttribute(source,prefix,descriptor);
+                    }
                 }
             }
         #endregion

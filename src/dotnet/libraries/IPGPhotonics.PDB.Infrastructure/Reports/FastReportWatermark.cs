@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -23,10 +22,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000104,ConverterCulture="en-US")] public Single ImageTransparency { get; }
         [UsedImplicitly][Field(Order=1000107)][DefaultValue(typeof(FastReportSolidFill),"Color=#28808080")] public FastReportFillBase TextFill { get; } = new FastReportSolidFill(Color.FromArgb(40,Color.Gray));
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            SerializeAttributes(writer,prefix);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         #region M:Equals(Object):Boolean

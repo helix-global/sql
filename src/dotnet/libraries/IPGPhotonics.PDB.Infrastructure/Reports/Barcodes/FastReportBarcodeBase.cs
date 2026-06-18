@@ -1,25 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Xml;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     [TypeConverter(typeof(FastReportBarcodeConverter))]
     internal abstract class FastReportBarcodeBase : FastReportObject,IEquatable<FastReportBarcodeBase>
         {
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (other != null) {
-                if (other.GetType() != GetType()) {
-                    writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(this));
-                    }
-                }
-            else
-                {
-                writer.WriteAttributeString(prefix,FastReportBarcodeConverter.Instance.ConvertToInvariantString(this));
-                }
-            SerializeAttributes(writer,prefix);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         #region M:Equals(Object):Boolean

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -16,22 +15,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000203)] public String DecimalSeparator { get; }
         [UsedImplicitly][Field(Order=1000204)] public String GroupSeparator { get; }
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(this));
-            if (UseLocale) {
-                writer.WriteAttributeString($"{prefix}.UseLocale","true");
-                return;
-                }
-            else
-                {
-                writer.WriteAttributeString($"{prefix}.UseLocale","false");
-                writer.WriteAttributeString($"{prefix}.DecimalDigits",DecimalDigits.ToString());
-                writer.WriteAttributeString($"{prefix}.DecimalSeparator",DecimalSeparator);
-                writer.WriteAttributeString($"{prefix}.GroupSeparator",GroupSeparator);
-                writer.WriteAttributeString($"{prefix}.NegativePattern",NegativePattern.ToString());
-                }
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         #region M:GetHashCode:Int32

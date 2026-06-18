@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -43,22 +41,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             //    }
             }
         #endregion
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix,(descriptor)=>{
-                    return !String.Equals(descriptor.Name,"Sorts");
-                    });
-                Serialize(writer,Children,prefix);
-                if (Sorts.Count > 0) {
-                    using (writer.ElementGroup("Sort")) {
-                        Serialize(writer,Sorts,prefix);
-                        }
-                    }
-                }
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         }

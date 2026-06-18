@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -44,36 +42,18 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000522)][DefaultValue(41)] public Int32 RowHeadersWidth { get; } = 41;
         [UsedImplicitly][Field(Order=1000501)] public String DataSource { get; }
 
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
+            }
+        #endregion
         #region M:CreateObject(String):FastReportObject
         protected override FastReportObject CreateObject(String typeName) {
             switch (typeName) {
                 case "Column" : return new FastReportGridControlColumn();
                 }
             return base.CreateObject(typeName);
-            }
-        #endregion
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix);
-                if ((Columns != null) && (Columns.Count > 0)) {
-                    using (writer.ElementGroup("Columns")) {
-                        Serialize(writer,Columns,prefix);
-                        }
-                    }
-                foreach (var o in Children) {
-                    o.Serialize(writer,prefix,null);
-                    }
-                }
-            }
-        #endregion
-        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
-        protected override void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
-            if (descriptor.Name == nameof(Columns)) { return; }
-            base.SerializeAttribute(writer, prefix, descriptor);
             }
         #endregion
         }

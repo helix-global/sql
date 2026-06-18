@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Printing;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -24,22 +23,22 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000109)] public PrintPages PrintPages { get; }
         [UsedImplicitly][Field(Order=1000110)] public Boolean Reverse { get; }
         [UsedImplicitly][Field(Order=1000111)] public Duplex Duplex { get; }
-        [UsedImplicitly][Field(Order=1000112)] public Int32 PaperSource { get; } = 7;
+        [UsedImplicitly][Field(Order=1000112)][DefaultValue(7)] public Int32 PaperSource { get; } = 7;
         [UsedImplicitly][Field(Order=1000113)] public PrintMode PrintMode { get; }
         [UsedImplicitly][Field(Order=1000114)] public Single PrintOnSheetWidth { get; }
         [UsedImplicitly][Field(Order=1000115)] public Single PrintOnSheetHeight { get; }
         [UsedImplicitly][Field(Order=1000116)] public Int32 PrintOnSheetRawPaperSize { get; }
         [UsedImplicitly][Field(Order=1000117)] public PagesOnSheet PagesOnSheet { get; }
         [UsedImplicitly][Field(Order=1000118)] public Object CopyNames { get; }
-        [UsedImplicitly][Field(Order=1000119)] public Boolean ShowDialog { get; }
+        [UsedImplicitly][Field(Order=1000119)][DefaultValue(true)] public Boolean ShowDialog { get; } = true;
         public override IEnumerable<FastReportObject> Children { get {
             return EmptyArray<FastReportObject>.List;
             }}
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            SerializeAttributes(writer,prefix);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         #region M:Equals(Object):Boolean

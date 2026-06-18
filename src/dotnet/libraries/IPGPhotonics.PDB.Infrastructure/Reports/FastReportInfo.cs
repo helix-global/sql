@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -27,12 +25,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return EmptyArray<FastReportObject>.List;
             }}
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            SerializeAttributes(writer,prefix);
-            }
-        #endregion
         #region M:Serialize(IFastReportSerializer,String,Object)
         public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
             if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }

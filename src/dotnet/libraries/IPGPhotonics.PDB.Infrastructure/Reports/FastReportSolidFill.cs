@@ -94,18 +94,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             return base.CoerceValue(descriptor, value, culture);
             }
         #endregion
-        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
-        protected override void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
-            if (descriptor.Name == nameof(Color)) {
-                writer.WriteAttributeString($"{prefix}.{descriptor.Name}",color?.ToString());
-                return;
-                }
-            base.SerializeAttribute(writer,prefix,descriptor);
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
+        //#region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
+        //protected override void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
+        //    if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
+        //    if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
+        //    if (descriptor.Name == nameof(Color)) {
+        //        writer.WriteAttributeString($"{prefix}.{descriptor.Name}",color?.ToString());
+        //        return;
+        //        }
+        //    base.SerializeAttribute(writer,prefix,descriptor);
+        //    }
+        //#endregion
 
-        private Object color;
+        internal Object color;
         }
     }

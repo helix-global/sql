@@ -166,5 +166,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
         ISqlXmlWriter StopScheduleNewLineForNextAttribute();
         void WriteString(String text);
         void WriteRaw(String data);
+        void WriteAttributeString(String localName,String value);
         }
     }

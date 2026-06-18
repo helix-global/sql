@@ -18,5 +18,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000610)] public String SelectedIdentifiersChangedEvent { get; }
         [UsedImplicitly][Field(Order=1000607)] public String ViewOIDLabel { get; }
         [UsedImplicitly][Field(Order=1000602,Converter=typeof(SqlBooleanConverter))] public Boolean MultiSelect { get; }
+
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
+            }
+        #endregion
         }
     }

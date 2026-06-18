@@ -1,20 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
+using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     internal class DataGridViewCellStyleSerializer : FastReportCustomSerializer
         {
-        private static void SerializeIfDifferent<T>(XmlWriter writer,String prefix,String name,T value,T other) {
+        private static void SerializeIfDifferent<T>(ISqlXmlWriter writer,String prefix,String name,T value,T other) {
             if (!Equals(value,other)) {
                 writer.WriteAttributeString($"{prefix}.{name}",
                     TypeDescriptor.GetConverter(value).ConvertToInvariantString(value));
                 }
             }
-        #region M:Serialize(XmlWriter,Object,PropertyDescriptor)
-        protected override void Serialize(XmlWriter writer,Object source,PropertyDescriptor descriptor) {
+        #region M:Serialize(ISqlXmlWriter,Object,PropertyDescriptor)
+        protected override void Serialize(ISqlXmlWriter writer,Object source,PropertyDescriptor descriptor) {
             if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
             if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
             if (source != null) {

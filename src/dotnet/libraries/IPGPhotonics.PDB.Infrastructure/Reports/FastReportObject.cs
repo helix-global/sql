@@ -178,70 +178,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-        #region M:Serialize(XmlWriter,String,Object)
-        public virtual void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var className = ((IFastReportClassObjectLegacy)this).ClassName;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix);
-                Serialize(writer,Children,prefix);
-                }
-            }
-        #endregion
-        #region M:Serialize(XmlWriter,IEnumerable<T>,String)
-        protected static void Serialize<T>(XmlWriter writer,IEnumerable<T> values,String prefix)
-            where T:FastReportObject
-            {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (values != null) {
-                foreach(var o in values) {
-                    o.Serialize(writer,prefix,null);
-                    }
-                }
-            }
-        #endregion
-        #region M:SerializeAttributes(XmlWriter,String,Func<PropertyDescriptor,Boolean>)
-        protected virtual void SerializeAttributes(XmlWriter writer,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            foreach (var descriptor in TypeDescriptor.GetProperties(this).Cast<PropertyDescriptor>().Select(i=>new PropLink(i)).OrderBy(Order)) {
-                if ((predicate == null) || predicate(descriptor)) {
-                    SerializeAttribute(writer,prefix,descriptor);
-                    }
-                }
-            }
-        #endregion
-        #region M:SerializeAttribute(XmlWriter,String,PropertyDescriptor)
-        protected virtual void SerializeAttribute(XmlWriter writer,String prefix,PropertyDescriptor descriptor) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
-            var value = descriptor.GetValue(this);
-            if (IsDefaultValue(value,descriptor,out var defaultValue)) { return; }
-            if (value == null) { return; }
-            var field = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
-            if (field != null) {
-                var serializerAttribute = descriptor.Attributes.OfType<FastReportSerializerAttribute>().FirstOrDefault();
-                if (serializerAttribute != null) {
-                    var serializer = (IFastReportCustomSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
-                    serializer.Serialize(writer,this,descriptor);
-                    return;
-                    }
-                var name = field.Source ?? descriptor.Name;
-                if (value is FastReportObject fro) {
-                    fro.Serialize(writer,String.IsNullOrWhiteSpace(prefix)
-                        ? $"{name}"
-                        : $"{prefix}.{name}",defaultValue);
-                    return;
-                    }
-                var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
-                if (converter != null && converter.CanConvertTo(typeof(String))) {
-                    value = converter.ConvertToInvariantString(value);
-                    writer.WriteAttribute(String.IsNullOrWhiteSpace(prefix)
-                        ? $"{name}"
-                        : $"{prefix}.{name}",value);
-                    }
-                }
-            }
-        #endregion
         #region M:Order(PropertyDescriptor):Int32
         private static Int32 Order(PropertyDescriptor descriptor) {
             var r = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
@@ -283,16 +219,6 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             if (descriptor.PropertyType.IsValueType) { return Equals(value,o = Activator.CreateInstance(descriptor.PropertyType)); }
             return false;
-            }
-        #endregion
-        #region M:EncodeString(String):String
-        protected static String EncodeString(String value) {
-            if (String.IsNullOrEmpty(value)) { return value; }
-            return value.
-                Replace("&","&amp;").
-                Replace("<","&lt;").
-                Replace(">","&gt;").
-                Replace("\"","&quot;");
             }
         #endregion
         #region M:WriteXml(ISqlXmlWriter)

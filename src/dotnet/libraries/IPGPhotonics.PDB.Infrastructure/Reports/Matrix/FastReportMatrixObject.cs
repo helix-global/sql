@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using BinaryStudio.SqlServer.Infrastructure;
 using JetBrains.Annotations;
 
@@ -29,39 +26,10 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000607)] public override String Style { get; }
         [UsedImplicitly][Field(Order=1000608)] public MatrixEvenStylePriority MatrixEvenStylePriority { get; }
 
-        #region M:Serialize(XmlWriter,String,Object)
-        public override void Serialize(XmlWriter writer,String prefix,Object other) {
-            if (writer == null) { throw new ArgumentNullException(nameof(writer)); }
-            var type = GetType();
-            var className = type.GetCustomAttribute<FastReportClassAttribute>(false)?.Name ?? type.Name;
-            using (writer.ElementGroup(className)) {
-                SerializeAttributes(writer,prefix,(descriptor)=>
-                    (descriptor.Name != "Columns") &&
-                    (descriptor.Name != "Rows")    &&
-                    (descriptor.Name != "Cells"));
-                if (Columns.Any()) {
-                    using (writer.ElementGroup("MatrixColumns")) {
-                        foreach (var o in Columns) {
-                            o.Serialize(writer,prefix,null);
-                            }
-                        }
-                    }
-                using (writer.ElementGroup("MatrixRows")) {
-                    foreach (var o in Rows) {
-                        o.Serialize(writer,prefix,null);
-                        }
-                    }
-                if (Cells.Any()) {
-                    using (writer.ElementGroup("MatrixCells")) {
-                        foreach (var o in Cells) {
-                            o.Serialize(writer,prefix,null);
-                            }
-                        }
-                    }
-                foreach (var o in Children) {
-                    o.Serialize(writer,prefix,null);
-                    }
-                }
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
             }
         #endregion
         }
