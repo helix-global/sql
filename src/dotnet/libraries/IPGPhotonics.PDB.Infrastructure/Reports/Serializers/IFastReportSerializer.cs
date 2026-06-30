@@ -14,6 +14,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         void Serialize(FastReportDataBand source,String prefix,Object other);
         void Serialize(FastReportBandColumns source,String prefix,Object other);
         void Serialize(FastReportPickControl source,String prefix,Object other);
+        void Serialize(FastReportPictureObject source,String prefix,Object other);
+        void Serialize(FastReportTableDataSource source,String prefix,Object other);
         void Serialize(FastReportTextObject source,String prefix,Object other);
         void Serialize(FastReportRichObject source,String prefix,Object other);
         void Serialize(FastReportHyperlink source,String prefix,Object other);

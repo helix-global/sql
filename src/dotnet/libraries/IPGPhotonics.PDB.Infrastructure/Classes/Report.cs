@@ -89,7 +89,9 @@ namespace IPGPhotonics.PDB.Infrastructure
                 writer.WriteCData(nameof(Options),URI_META,Options);
                 if (Body != null) {
                     using (writer.ElementGroup("Body",URI_META)) {
-                        Body.WriteXml(writer);
+                        using (var serializer = new FastReportSerializerEXT(writer)) {
+                            serializer.Serialize(Body);
+                            }
                         }
                     }
                 }

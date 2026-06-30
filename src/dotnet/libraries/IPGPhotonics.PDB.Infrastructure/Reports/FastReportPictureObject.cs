@@ -25,5 +25,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000407,Converter=typeof(FastReportColorConverter))] public Color TransparentColor { get; }
         [UsedImplicitly][Field(Order=1000409)] public Boolean ShowErrorImage { get; }
         [UsedImplicitly][Field(Order=1000410)] public Boolean Tile { get; }
+
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
+            }
+        #endregion
         }
     }
