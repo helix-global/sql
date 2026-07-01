@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Xml;
+using System.Xml.Linq;
 using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
@@ -26,7 +28,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         void IFastReportSerializer.Serialize(FastReport source,String prefix,Object other) {
             var ClassName = "Report";
             using (writer.ElementGroup(ClassName)) {
-                SerializeAttributes(source,prefix);
+                SerializeAttributes(source, prefix, (descriptor) => {
+                    return descriptor.Name != "ReferencedAssemblies";
+                    });
+                if (!IsNullOrEmpty(source.ReferencedAssemblies)) {
+                    writer.WriteCData($"{ClassName}.ReferencedAssemblies",source.ReferencedAssemblies);
+                    }
                 if (!String.IsNullOrWhiteSpace(source.Script)) {
                     writer.WriteCData($"{ClassName}.Script",source.Script);
                     }
@@ -40,6 +47,24 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     Serialize(source.Relations,prefix);
                     Serialize(source.Parameters,prefix);
                     Serialize(source.Totals,prefix);
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportChartObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportChartObject source,String prefix,Object other)
+            {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=>
+                    !String.Equals(descriptor.Name,"Chart"));
+                if (source.Chart != null) {
+                    var content = XDocument.Load(new MemoryStream(source.Chart));
+                    writer.WriteNode(content.CreateReader(), (ns) => {
+                        if (!String.IsNullOrEmpty(ns)) { return ns; }
+                        return "urn:schemas.microsoft.com:charting";
+                        });
                     }
                 Serialize(source.Children,prefix);
                 }

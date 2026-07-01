@@ -13,6 +13,9 @@
     <PackageReference Include="SharpCompress" Version="0.46.4" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\BinaryStudio.SqlServer.Infrastructure\BinaryStudio.SqlServer.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>

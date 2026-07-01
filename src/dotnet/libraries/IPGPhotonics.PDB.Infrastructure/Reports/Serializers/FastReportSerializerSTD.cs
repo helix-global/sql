@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -136,6 +137,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:IFastReportSerializer.Serialize(FastReportCapSettings,String,Object)
         void IFastReportSerializer.Serialize(FastReportCapSettings source,String prefix,Object other) {
             SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportChartObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportChartObject source,String prefix,Object other)
+            {
+            Serialize(source,prefix,other);
             }
         #endregion
         #region M:IFastReportSerializer.Serialize(FastReportCurrencyFormat,String,Object)
@@ -630,6 +637,33 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     }
                 }
             base.Dispose(disposing);
+            }
+        #endregion
+        #region M:IsNullOrEmpty(String):Boolean
+        protected static Boolean IsNullOrEmpty(String value) {
+            return String.IsNullOrEmpty(value);
+            }
+        #endregion
+        #region M:IsNullOrEmpty(ICollection):Boolean
+        /// <summary>Determines whether the specified collection is <see langword="null"/> or empty.</summary>
+        /// <param name="value">The <see cref="ICollection"/> instance to test.</param>
+        /// <returns>
+        /// <see langword="true"/> if <paramref name="value"/> is <see langword="null"/> or contains
+        /// no elements (i.e. <see cref="ICollection.Count"/> equals zero); otherwise, <see langword="false"/>.
+        /// </returns>
+        protected static Boolean IsNullOrEmpty(ICollection value) {
+            return (value == null) || (value.Count == 0);
+            }
+        #endregion
+        #region M:IsNullOrEmpty<T>(ICollection):Boolean
+        /// <summary>Determines whether the specified collection is <see langword="null"/> or empty.</summary>
+        /// <param name="value">The <see cref="ICollection{T}"/> instance to test.</param>
+        /// <returns>
+        /// <see langword="true"/> if <paramref name="value"/> is <see langword="null"/> or contains
+        /// no elements (i.e. <see cref="ICollection{T}.Count"/> equals zero); otherwise, <see langword="false"/>.
+        /// </returns>
+        protected static Boolean IsNullOrEmpty<T>(ICollection<T> value) {
+            return (value == null) || (value.Count == 0);
             }
         #endregion
 

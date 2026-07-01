@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml;
 
@@ -160,6 +161,20 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 }
             }
         #endregion
+        #region M:ISqlXmlWriter.WriteCData(String,String)
+        /// <summary>Writes an element with the specified local name and CDATA block.</summary>
+        /// <param name="localName">The local name of the element.</param>
+        /// <param name="text">The text to place inside the CDATA block.</param>
+        /// <exception cref="T:System.ArgumentException">The <paramref name="localName"/> value is <see langword="null"/> or an empty string.-or-The parameter values are not valid.</exception>
+        /// <exception cref="T:System.Text.EncoderFallbackException">There is a character in the buffer that is a valid XML character but is not valid for the output encoding. For example, if the output encoding is ASCII, you should only use characters from the range of 0 to 127 for element and attribute names. The invalid character might be in the argument of this method or in an argument of previous methods that were writing to the buffer. Such characters are escaped by character entity references when possible (for example, in text nodes or attribute values). However, the character entity reference is not allowed in element and attribute names, comments, processing instructions, or CDATA sections.</exception>
+        /// <exception cref="T:System.InvalidOperationException">An <see cref="T:BinaryStudio.SqlServer.Infrastructure.ISqlXmlWriter"/> method was called before a previous asynchronous operation finished. In this case, <see cref="T:System.InvalidOperationException"/> is thrown with the message “An asynchronous operation is already in progress.”</exception>
+        void ISqlXmlWriter.WriteCData<T>(String localName,IList<T> text) {
+            if ((text == null) || (text.Count == 0)) { return; }
+            using (ElementGroup(localName)) {
+                WriteCData(String.Join(Settings.NewLineChars,text));
+                }
+            }
+        #endregion
         #region M:ISqlXmlWriter.WriteCData(String)
         /// <summary>Writes out a <![CDATA[...]]> block containing the specified text.</summary>
         /// <param name="text">The text to place inside the CDATA block.</param>
@@ -228,6 +243,59 @@ namespace BinaryStudio.SqlServer.Infrastructure
         void ISqlXmlWriter.WriteProcessingInstruction(String name,String text)
             {
             WriteProcessingInstruction(name,text);
+            }
+        #endregion
+        #region M:ISqlXmlWriter.WriteNode(XmlReader,IXmlNamespaceSubstitute)
+        void ISqlXmlWriter.WriteNode(XmlReader reader,IXmlNamespaceSubstitute ns) {
+            if (ns != null) {
+                WriteNode(reader,ns.SubstituteNamespace);
+                }
+            else
+                {
+                WriteNode(reader,false);
+                }
+            }
+        #endregion
+        #region M:ISqlXmlWriter.WriteNode(XmlReader,Func<String,String>)
+        public void WriteNode(XmlReader reader,Func<String,String> substitute) {
+            if (reader == null) { throw new ArgumentNullException(nameof(reader)); }
+            if (substitute != null) {
+                while (reader.Read()) {
+                    switch (reader.NodeType) {
+                        case XmlNodeType.Element:
+                            {
+                            WriteStartElement(reader.Prefix,reader.LocalName,substitute(reader.NamespaceURI));
+                            if (reader.HasAttributes) {
+                                while (reader.MoveToNextAttribute()) {
+                                    WriteAttributeString(reader.Prefix,reader.LocalName,reader.NamespaceURI,reader.Value);
+                                    }
+                                reader.MoveToElement();
+                                }
+                            if (reader.IsEmptyElement) {
+                                WriteEndElement();
+                                }
+                            }
+                            break;
+                        case XmlNodeType.Text:
+                            WriteString(reader.Value);
+                            break;
+                        case XmlNodeType.EndElement:
+                            WriteEndElement();
+                            break;
+                        case XmlNodeType.CDATA:
+                            WriteCData(reader.Value);
+                            break;
+                        case XmlNodeType.Comment:
+                            WriteComment(reader.Value);
+                            break;
+                        case XmlNodeType.ProcessingInstruction:
+                            WriteProcessingInstruction(reader.Name,reader.Value);
+                            break;
+                        }
+                    }
+                return;
+                }
+            WriteNode(reader,false);
             }
         #endregion
 
