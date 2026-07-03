@@ -14,6 +14,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         void Serialize(FastReportCapSettings source,String prefix,Object other);
         void Serialize(FastReportChartObject source,String prefix,Object other);
         void Serialize(FastReportCurrencyFormat source,String prefix,Object other);
+        void Serialize(FastReportDataConnection source,String prefix,Object other);
         void Serialize(FastReportDataBand source,String prefix,Object other);
         void Serialize(FastReportFillBase source,String prefix,Object other);
         void Serialize(FastReportFormatBase source,String prefix,Object other);
@@ -22,10 +23,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         void Serialize(FastReportMatrixObject source,String prefix,Object other);
         void Serialize(FastReportNumberFormat source,String prefix,Object other);
         void Serialize(FastReportPageColumns source,String prefix,Object other);
+        void Serialize(FastReportParameter source,String prefix,Object other);
         void Serialize(FastReportPercentFormat source,String prefix,Object other);
         void Serialize(FastReportPickControl source,String prefix,Object other);
         void Serialize(FastReportPictureObject source,String prefix,Object other);
         void Serialize(FastReportPrintSettings source,String prefix,Object other);
+        void Serialize(FastReportRelation source,String prefix,Object other);
         void Serialize(FastReportRichObject source,String prefix,Object other);
         void Serialize(FastReportSolidFill source,String prefix,Object other);
         void Serialize(FastReportTableDataSource source,String prefix,Object other);

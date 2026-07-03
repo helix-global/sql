@@ -1,17 +1,12 @@
 ﻿using System;
 using JetBrains.Annotations;
-using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
-    using FieldAttribute=SqlObjectFieldMappingAttribute;
-    [FastReportClass("Parameter")]
-    internal class FastReportParameter : FastReportBase
+    [UsedImplicitly]
+    [FastReportClass("MsSqlDataConnection")]
+    internal sealed class FastReportDataConnection : FastReportDataConnectionBase
         {
-        [UsedImplicitly][Field(Order=1000201)] public String DataType { get; }
-        [UsedImplicitly][Field(Order=1000203)] public String Description { get; }
-        [UsedImplicitly][Field(Order=1000202)] public String Expression { get; }
-
         #region M:Serialize(IFastReportSerializer,String,Object)
         public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
             if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }

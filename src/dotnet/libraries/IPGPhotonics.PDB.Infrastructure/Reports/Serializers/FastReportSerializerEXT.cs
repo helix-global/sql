@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Xml;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using BinaryStudio.SqlServer.Infrastructure;
 
@@ -29,25 +31,23 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             var ClassName = "Report";
             using (writer.ElementGroup(ClassName)) {
                 SerializeAttributes(source, prefix, (descriptor) => {
-                    return descriptor.Name != "ReferencedAssemblies";
+                    return (descriptor.Name != "ReferencedAssemblies") &&
+                           (descriptor.Name != "ReportInfo");
                     });
+                using (writer.ElementGroup($"Info")) {
+                    source.ReportInfo.Serialize(this,null,null);
+                    }
                 if (!IsNullOrEmpty(source.ReferencedAssemblies)) {
-                    writer.WriteCData($"{ClassName}.ReferencedAssemblies",source.ReferencedAssemblies);
+                    writer.WriteCData($"ReferencedAssemblies",source.ReferencedAssemblies);
                     }
                 if (!String.IsNullOrWhiteSpace(source.Script)) {
-                    writer.WriteCData($"{ClassName}.Script",source.Script);
+                    writer.WriteCData($"Script",source.Script);
                     }
-                if (source.Styles.Any()) {
-                    using (writer.ElementGroup("Styles")) {
-                        Serialize(source.Styles,prefix);
-                        }
-                    }
-                using (writer.ElementGroup("Dictionary")) {
-                    Serialize(source.DataSources,prefix);
-                    Serialize(source.Relations,prefix);
-                    Serialize(source.Parameters,prefix);
-                    Serialize(source.Totals,prefix);
-                    }
+                WriteElementGroup("Styles",prefix,source.Styles);
+                WriteElementGroup("DataSources",prefix,source.DataSources);
+                WriteElementGroup("Relations",prefix,source.Relations);
+                WriteElementGroup("Parameters",prefix,source.Parameters);
+                WriteElementGroup("Totals",prefix,source.Totals);
                 Serialize(source.Children,prefix);
                 }
             }
@@ -70,6 +70,64 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportDataConnection,String,Object)
+        void IFastReportSerializer.Serialize(FastReportDataConnection source,String prefix,Object other) {
+            var ClassName = "DataConnection";
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportInfo,String,Object)
+        void IFastReportSerializer.Serialize(FastReportInfo source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                var i = 1;
+                SerializeAttributes(source, prefix,
+                    (descriptor) => {
+                        return descriptor.Name != "Name";
+                        },
+                    (descriptor) => {
+                        i++;
+                        if (i%3 == 0)
+                            {
+                            writer.ScheduleNewLineForNextAttribute();
+                            }
+                        else
+                            {
+                            writer.StopScheduleNewLineForNextAttribute();
+                            }
+                        });
+                writer.WriteCData(source.Name);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportParameter,String,Object)
+        void IFastReportSerializer.Serialize(FastReportParameter source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                foreach (var descriptor in TypeDescriptor.GetProperties(source)
+                    .Cast<PropertyDescriptor>()
+                    .Select(CreateDescriptor)
+                    .OrderBy(Order))
+                    {
+                    switch (descriptor.Name) {
+                        case "DataType":
+                            if (!String.IsNullOrWhiteSpace(source.DataType)) {
+                                var r = Regex.Replace(source.DataType,@"A2Core, Version=\d+[.]\d+[.]\d+[.]\d+, Culture=neutral, PublicKeyToken=null",$"CoreFR, Culture=neutral");
+                                writer.WriteAttributeString(nameof(source.DataType),r);
+                                }
+                            break;
+                        default:
+                            SerializeAttribute(source,prefix,descriptor);
+                            break;
+                        }
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportPictureObject,String,Object)
         void IFastReportSerializer.Serialize(FastReportPictureObject source,String prefix,Object other) {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
@@ -83,18 +141,160 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportRelation,String,Object)
+        void IFastReportSerializer.Serialize(FastReportRelation source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                if (source.ParentColumns.Count > 0) {
+                    //Debugger.Break();
+                    }
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportTableDataSource,String,Object)
         void IFastReportSerializer.Serialize(FastReportTableDataSource source,String prefix,Object other) {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
             using (writer.ElementGroup(ClassName)) {
                 SerializeAttributes(source,prefix,(descriptor)=>
                     !String.Equals(descriptor.Name,"SelectCommand"));
-                if (!String.IsNullOrWhiteSpace(source.SelectCommand)) {
-                    writer.WriteCData($"{ClassName}.SelectCommand",source.SelectCommand);
+                if (!IsNullOrEmpty(source.Columns)) {
+                    using (writer.ElementGroup("Columns")) {
+                        Serialize(source.Columns,prefix);
+                        }
                     }
-                Serialize(source.Children,prefix);
+                if (!IsNullOrEmpty(source.Parameters)) {
+                    using (writer.ElementGroup("Parameters")) {
+                        Serialize(source.Parameters,prefix);
+                        }
+                    }
+                if (!String.IsNullOrWhiteSpace(source.SelectCommand)) {
+                    writer.WriteCData(source.SelectCommand);
+                    }
                 }
             }
         #endregion
+        #region M:CreateDescriptor(PropertyDescriptor):PropertyDescriptor
+        protected override PropertyDescriptor CreateDescriptor(PropertyDescriptor descriptor)
+            {
+            return new PropDesc(base.CreateDescriptor(descriptor));
+            }
+        #endregion
+        #region M:WriteElementGroup<T>(String,String,IList<T>)
+        private void WriteElementGroup<T>(String name,String prefix,IList<T> values)
+            where T:FastReportObject
+            {
+            if (IsNullOrEmpty(values)) { return; }
+            using (writer.ElementGroup(name)) {
+                Serialize(values,prefix);
+                }
+            }
+        #endregion
+
+        private class PropDesc : PropertyDescriptor
+            {
+            #region ctor{String,Attribute[]}
+            public PropDesc(String name,Attribute[] attrs)
+                : base(name,attrs)
+                {
+                }
+            #endregion
+            #region ctor{PropertyDescriptor}
+            public PropDesc(PropertyDescriptor descr)
+                : base(descr)
+                {
+                this.descr = descr;
+                }
+            #endregion
+            #region ctor{MemberDescriptor,Attribute[]}
+            public PropDesc(MemberDescriptor descr,Attribute[] attrs)
+                : base(descr,attrs)
+                {
+                }
+            #endregion
+
+            #region M:CanResetValue(Object):Boolean
+            public override Boolean CanResetValue(Object component)
+                {
+                return descr.CanResetValue(component);
+                }
+            #endregion
+            #region M:GetValue(Object):Object
+            public override Object GetValue(Object component)
+                {
+                return descr.GetValue(component);
+                }
+            #endregion
+            #region M:ResetValue(Object)
+            public override void ResetValue(Object component)
+                {
+                descr.ResetValue(component);
+                }
+            #endregion
+            #region M:SetValue(Object,Object)
+            /// <summary>Sets the value of the component to a different value.</summary>
+            /// <param name="component">The component with the property value that is to be set.</param>
+            /// <param name="value">The new value.</param>
+            public override void SetValue(Object component,Object value) {
+                if (value != null) {
+                    var converter = Converter;
+                    if (converter != null) {
+                        if (converter.CanConvertFrom(value.GetType())) {
+                            value = converter.ConvertFrom(value);
+                            }
+                        }
+                    }
+                descr.SetValue(component,value);
+                }
+            #endregion
+            #region M:ShouldSerializeValue(Object):Boolean
+            public override Boolean ShouldSerializeValue(Object component)
+                {
+                return descr.ShouldSerializeValue(component);
+                }
+            #endregion
+            #region M:ToString:String
+            public override String ToString()
+                {
+                return $"{Name}";
+                }
+            #endregion
+
+            public override Type ComponentType { get { return descr.ComponentType; }}
+            public override Boolean IsReadOnly { get { return descr.IsReadOnly;    }}
+            public override Type PropertyType  { get { return descr.PropertyType;  }}
+            #region P:Converter:TypeConverter
+            public override TypeConverter Converter { get {
+                var type = PropertyType;
+                if (type == typeof(DateTime)) { return new DateTimeConverter(); }
+                return base.Converter;
+                }}
+            #endregion
+
+            private readonly PropertyDescriptor descr;
+            }
+
+        private class DateTimeConverter : SqlDateTimeConverter
+            {
+            #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
+            /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
+            /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
+            /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/>. If <see langword="null"/> is passed, the current culture is assumed.</param>
+            /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
+            /// <param name="destinationType">The <see cref="T:System.Type"/> to convert the <paramref name="value"/> parameter to.</param>
+            /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
+            /// <exception cref="T:System.ArgumentNullException">The <paramref name="destinationType"/> parameter is <see langword="null"/>.</exception>
+            /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+            public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
+                if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
+                if (destinationType == typeof(String)) {
+                    var r = ConvertFromObject(value);
+                    return r?.ToString("s");
+                    }
+                return base.ConvertTo(context,culture,value,destinationType);
+                }
+            #endregion
+            }
         }
     }

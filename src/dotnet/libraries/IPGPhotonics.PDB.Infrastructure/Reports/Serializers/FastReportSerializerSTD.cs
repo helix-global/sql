@@ -161,6 +161,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             writer.WriteAttributeString($"{prefix}.NegativePattern",source.NegativePattern.ToString());
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportDataConnection,String,Object)
+        void IFastReportSerializer.Serialize(FastReportDataConnection source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportDataBand,String,Object)
         void IFastReportSerializer.Serialize(FastReportDataBand source,String prefix,Object other) {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
@@ -258,6 +267,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             SerializeAttributes(source,prefix);
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportParameter,String,Object)
+        void IFastReportSerializer.Serialize(FastReportParameter source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportPercentFormat,String,Object)
         void IFastReportSerializer.Serialize(FastReportPercentFormat source,String prefix,Object other) {
             writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
@@ -292,6 +310,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:IFastReportSerializer.Serialize(FastReportPrintSettings,String,Object)
         void IFastReportSerializer.Serialize(FastReportPrintSettings source,String prefix,Object other) {
             SerializeAttributes(source,prefix);
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportRelation,String,Object)
+        void IFastReportSerializer.Serialize(FastReportRelation source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
             }
         #endregion
         #region M:IFastReportSerializer.Serialize(FastReportRichObject,String,Object)
@@ -500,8 +527,8 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             private TypeConverter m_cI;
             }
 
-        #region M:SerializeAttribute<T>(T,String,PropertyDescriptor)
-        protected void SerializeAttribute<T>(T source,String prefix,PropertyDescriptor descriptor) {
+        #region M:SerializeAttribute<T>(T,String,PropertyDescriptor,Action<PropertyDescriptor>)
+        protected void SerializeAttribute<T>(T source,String prefix,PropertyDescriptor descriptor,Action<PropertyDescriptor> afterWrite = null) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             if (descriptor == null) { throw new ArgumentNullException(nameof(descriptor)); }
             var value = descriptor.GetValue(source);
@@ -513,6 +540,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (serializerAttribute != null) {
                     var serializer = (IFastReportCustomSerializer)Activator.CreateInstance(serializerAttribute.SerializerType);
                     serializer.Serialize(writer,source,descriptor);
+                    if (afterWrite != null) { afterWrite(descriptor); }
                     return;
                     }
                 var name = field.Source ?? descriptor.Name;
@@ -520,6 +548,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     fro.Serialize(this,String.IsNullOrWhiteSpace(prefix)
                         ? $"{name}"
                         : $"{prefix}.{name}",defaultValue);
+                    if (afterWrite != null) { afterWrite(descriptor); }
                     return;
                     }
                 var converter = descriptor.Converter??TypeDescriptor.GetConverter(descriptor.PropertyType);
@@ -528,12 +557,13 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                     writer.WriteAttributeString(String.IsNullOrWhiteSpace(prefix)
                         ? $"{name}"
                         : $"{prefix}.{name}",(String)value);
+                    if (afterWrite != null) { afterWrite(descriptor); }
                     }
                 }
             }
         #endregion
-        #region M:SerializeAttributes<T>(T,String,Func<PropertyDescriptor,Boolean>)
-        protected void SerializeAttributes<T>(T source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null) {
+        #region M:SerializeAttributes<T>(T,String,Func<PropertyDescriptor,Boolean>,Action<PropertyDescriptor>)
+        protected void SerializeAttributes<T>(T source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null,Action<PropertyDescriptor> afterWrite = null) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
             foreach (var descriptor in TypeDescriptor.GetProperties(source)
                 .Cast<PropertyDescriptor>()
@@ -541,7 +571,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 .OrderBy(Order))
                 {
                 if ((predicate == null) || predicate(descriptor)) {
-                    SerializeAttribute(source,prefix,descriptor);
+                    SerializeAttribute(source,prefix,descriptor,afterWrite);
                     }
                 }
             }
@@ -576,7 +606,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             }
         #endregion
         #region M:Order(PropertyDescriptor):Int32
-        private static Int32 Order(PropertyDescriptor descriptor) {
+        protected static Int32 Order(PropertyDescriptor descriptor) {
             var r = descriptor.Attributes.OfType<SqlObjectFieldMappingAttribute>().FirstOrDefault();
             return (r != null)
                 ? r.Order
