@@ -110,7 +110,8 @@ namespace BinaryStudio.SqlServer.Infrastructure
             #endregion
             }
 
-        protected class DColorConverter : TypeConverter {
+        protected class DColorConverter : TypeConverter
+            {
             #region M:CanConvertTo(ITypeDescriptorContext,Type):Boolean
             /// <summary>Returns whether this converter can convert the object to the specified type, using the specified context.</summary>
             /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -171,7 +172,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
                         if (ColorNames.TryGetValue(UI4,out var colorname)) {
                             return colorname;
                             }
-                        return color.ToString();
+                        return $"#{UI4:x8}";
                         }
                     }
                 throw new NotSupportedException($@"Cannot convert to ""{destinationType.AssemblyQualifiedName}""");
@@ -190,20 +191,10 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return base.ConvertFrom(context,culture,value);
                 }
             #endregion
-
-            private static readonly IDictionary<UInt32,String> ColorNames = new Dictionary<UInt32,String>();
-            static DColorConverter()
-                {
-                var values = Enum.GetValues(typeof(MColor).Assembly.GetType("System.Windows.Media.KnownColor"));
-                foreach (var value in values) {
-                    if ((UInt32)value != 1) {
-                        ColorNames[(UInt32)value] = value.ToString();
-                        }
-                    }
-                }
             }
 
-        private class MColorConverter : TypeConverter {
+        private class MColorConverter : TypeConverter
+            {
             #region M:CanConvertTo(ITypeDescriptorContext,Type):Boolean
             /// <summary>Returns whether this converter can convert the object to the specified type, using the specified context.</summary>
             /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
@@ -258,17 +249,6 @@ namespace BinaryStudio.SqlServer.Infrastructure
                 return MColor.FromArgb(a,r,g,b);
                 }
             #endregion
-
-            private static readonly IDictionary<UInt32,String> ColorNames = new Dictionary<UInt32,String>();
-            static MColorConverter()
-                {
-                var values = Enum.GetValues(typeof(MColor).Assembly.GetType("System.Windows.Media.KnownColor"));
-                foreach (var value in values) {
-                    if ((UInt32)value != 1) {
-                        ColorNames[(UInt32)value] = value.ToString();
-                        }
-                    }
-                }
             }
 
         private const Int16 ColorStateNameValid       = 8;
@@ -278,9 +258,16 @@ namespace BinaryStudio.SqlServer.Infrastructure
         private static readonly DColorConverter converterD = new DColorConverter();
         private static readonly SColorConverter converterS = new SColorConverter();
         private static readonly IDictionary<Type,TypeConverter> converters = new Dictionary<Type,TypeConverter>();
+        protected static readonly IDictionary<UInt32,String> ColorNames = new Dictionary<UInt32,String>();
 
         static SqlColorConverter()
             {
+            var values = Enum.GetValues(typeof(MColor).Assembly.GetType("System.Windows.Media.KnownColor"));
+            foreach (var value in values) {
+                if ((UInt32)value != 1) {
+                    ColorNames[(UInt32)value] = value.ToString();
+                    }
+                }
             converters[typeof(String)] = converterS;
             converters[typeof(DColor)] = converterD;
             converters[typeof(MColor)] = converterM;

@@ -105,6 +105,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             SerializeAttributes(source,prefix);
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportBarcodeObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportBarcodeObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportBorder,String,Object)
         void IFastReportSerializer.Serialize(FastReportBorder source,String prefix,Object other) {
             if (source.Shadow) { writer.WriteAttribute($"{prefix}.Shadow","true"); }

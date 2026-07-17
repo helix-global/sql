@@ -21,5 +21,12 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")][DefaultValue(1f)] public Single Zoom { get; } = 1f;
         [UsedImplicitly][Field(Order=1000411)][DefaultValue(typeof(FastReportBarcode39),"CalcCheckSum=true")] public FastReportBarcodeBase Barcode { get; } = new FastReportBarcode39();
         [UsedImplicitly][Field(Order=1000407,Converter=typeof(FastReportThicknessConverter))] public Thickness Padding { get; }
+
+        #region M:Serialize(IFastReportSerializer,String,Object)
+        public override void Serialize(IFastReportSerializer serializer,String prefix,Object other) {
+            if (serializer == null) { throw new ArgumentNullException(nameof(serializer)); }
+            serializer.Serialize(this,prefix,other);
+            }
+        #endregion
         }
     }

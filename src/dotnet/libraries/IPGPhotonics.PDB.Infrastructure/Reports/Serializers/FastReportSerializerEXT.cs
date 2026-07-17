@@ -6,11 +6,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Xml.Linq;
 using BinaryStudio.SqlServer.Infrastructure;
 
 namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
+    using DColor=System.Drawing.Color;
     internal class FastReportSerializerEXT : FastReportSerializerSTD,IFastReportSerializer
         {
         #region ctor{ISqlXmlWriter}
@@ -48,6 +50,29 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 WriteElementGroup("Relations",prefix,source.Relations);
                 WriteElementGroup("Parameters",prefix,source.Parameters);
                 WriteElementGroup("Totals",prefix,source.Totals);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportBarcodeBase,String,Object)
+        void IFastReportSerializer.Serialize(FastReportBarcodeBase source,String prefix,Object other) {
+            var ClassName = source.GetType().Name.Substring(10);
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportBarcodeObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportBarcodeObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=>
+                    !String.Equals(descriptor.Name,"Barcode"));
+                if (source.Barcode != null) {
+                    using (writer.ElementGroup("Barcode")) {
+                        source.Barcode.Serialize(this,prefix,null);
+                        }
+                    }
                 Serialize(source.Children,prefix);
                 }
             }
@@ -267,12 +292,47 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             #region P:Converter:TypeConverter
             public override TypeConverter Converter { get {
                 var type = PropertyType;
-                if (type == typeof(DateTime)) { return new DateTimeConverter(); }
+                if (type == typeof(DateTime))  { return new DateTimeConverter();  }
+                if (type == typeof(Thickness)) { return new ThicknessConverter(); }
+                if (type == typeof(DColor))    { return new ColorConverter();     }
                 return base.Converter;
                 }}
             #endregion
 
             private readonly PropertyDescriptor descr;
+            }
+
+        private class ThicknessConverter : FastReportThicknessConverter
+            {
+            #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
+            /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
+            /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
+            /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/>. If <see langword="null"/> is passed, the current culture is assumed.</param>
+            /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
+            /// <param name="destinationType">The <see cref="T:System.Type"/> to convert the <paramref name="value"/> parameter to.</param>
+            /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
+            /// <exception cref="T:System.ArgumentNullException">The <paramref name="destinationType"/> parameter is <see langword="null"/>.</exception>
+            /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+            public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
+                if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
+                if (destinationType == typeof(String)) {
+                    if (value is Thickness thickness) {
+                        if ((thickness.Left == thickness.Right) &&
+                            (thickness.Left == thickness.Top)   &&
+                            (thickness.Left == thickness.Bottom))
+                            {
+                            return $"{thickness.Left}";
+                            }
+                        if ((thickness.Left == thickness.Right) &&
+                            (thickness.Top  == thickness.Bottom))
+                            {
+                            return $"{thickness.Left}, {thickness.Top}";
+                            }
+                        }
+                    }
+                return base.ConvertTo(context,culture,value,destinationType);
+                }
+            #endregion
             }
 
         private class DateTimeConverter : SqlDateTimeConverter
@@ -291,6 +351,34 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (destinationType == typeof(String)) {
                     var r = ConvertFromObject(value);
                     return r?.ToString("s");
+                    }
+                return base.ConvertTo(context,culture,value,destinationType);
+                }
+            #endregion
+            }
+
+        private class ColorConverter : FastReportColorConverter
+            {
+            #region M:ConvertTo(ITypeDescriptorContext,CultureInfo,Object,Type):Object
+            /// <summary>Converts the given value object to the specified type, using the specified context and culture information.</summary>
+            /// <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
+            /// <param name="culture">A <see cref="T:System.Globalization.CultureInfo"/>. If <see langword="null"/> is passed, the current culture is assumed.</param>
+            /// <param name="value">The <see cref="T:System.Object"/> to convert.</param>
+            /// <param name="destinationType">The <see cref="T:System.Type"/> to convert the <paramref name="value"/> parameter to.</param>
+            /// <returns>An <see cref="T:System.Object"/> that represents the converted value.</returns>
+            /// <exception cref="T:System.ArgumentNullException">The <paramref name="destinationType"/> parameter is <see langword="null"/>.</exception>
+            /// <exception cref="T:System.NotSupportedException">The conversion cannot be performed.</exception>
+            public override Object ConvertTo(ITypeDescriptorContext context,CultureInfo culture,Object value,Type destinationType) {
+                if (destinationType == null) { throw new ArgumentNullException(nameof(destinationType)); }
+                if (destinationType == typeof(String)) {
+                    if (value is DColor color) {
+                        if (color.IsKnownColor) { return color.Name; }
+                        var UI4 = (UInt32)SqlUInt32Converter.ConvertFromObject(color);
+                        if (ColorNames.TryGetValue(UI4,out var colorname)) {
+                            return colorname;
+                            }
+                        return $"#{UI4:x8}";
+                        }
                     }
                 return base.ConvertTo(context,culture,value,destinationType);
                 }
