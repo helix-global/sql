@@ -7,7 +7,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     {
     using FieldAttribute=SqlObjectFieldMappingAttribute;
     [FastReportClass("CurrencyFormat")]
-    internal sealed class FastReportCurrencyFormat : FastReportFormatBase,IEquatable<FastReportCurrencyFormat>
+    internal sealed class FastReportCurrencyFormat : FastReportFormatBase,IEquatable<FastReportCurrencyFormat>,IFastReportLocaleFormat
         {
         [UsedImplicitly][Field(Order=1000201)][DefaultValue(true)] public Boolean UseLocale { get; } = true;
         [UsedImplicitly][Field(Order=1000202)][DefaultValue(2)] public Int32 DecimalDigits { get; } = 2;

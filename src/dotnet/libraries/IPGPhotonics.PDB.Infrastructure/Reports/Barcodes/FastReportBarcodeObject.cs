@@ -42,51 +42,51 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
     internal class FastReportBarcodeObject : ReportComponentBase
         {
         /// <summary>
-        /// Gets or sets a data column name bound to this control.
+        /// Gets a data column name bound to this control.
         /// </summary>
         /// <remarks>
         /// Value must be in the form "Datasource.Column".
         /// </remarks>
         [UsedImplicitly][Field(Order=1000403)] public String DataColumn { get; }
         /// <summary>
-        /// Gets or sets the barcode data.
+        /// Gets the barcode data.
         /// </summary>
         [UsedImplicitly][Field(Order=1000405)] public String Text { get; }
         /// <summary>
-        /// Gets or sets an expression that contains the barcode data.
+        /// Gets an expression that contains the barcode data.
         /// </summary>
         [UsedImplicitly][Field(Order=1000404)] public String Expression { get; }
         /// <summary>
-        /// Gets or sets the text that will be displayed if the barcode data is empty.
+        /// Gets the text that will be displayed if the barcode data is empty.
         /// </summary>
         [UsedImplicitly][Field(Order=1000410)] public String NoDataText { get; }
         /// <summary>
-        /// Gets or sets the angle of barcode, in degrees.
+        /// Gets the angle of barcode, in degrees.
         /// </summary>
         [UsedImplicitly][Field(Order=1000401)] public Int32 Angle { get; }
         /// <summary>
-        /// Gets or sets a value that determines whether the barcode should handle its width automatically.
+        /// Gets a value that determines whether the barcode should handle its width automatically.
         /// </summary>
         [UsedImplicitly][Field(Order=1000402)][DefaultValue(true)] public Boolean AutoSize { get; } = true;
         /// <summary>
-        /// Gets or sets a value that determines whether it is necessary to hide the object if the
+        /// Gets a value that determines whether it is necessary to hide the object if the
         /// barcode data is empty.
         /// </summary>
         [UsedImplicitly][Field(Order=1000409)][DefaultValue(true)] public Boolean HideIfNoData { get; } = true;
         /// <summary>
-        /// Gets or sets a value that indicates if the barcode should display a human-readable text.
+        /// Gets a value that indicates if the barcode should display a human-readable text.
         /// </summary>
         [UsedImplicitly][Field(Order=1000406)][DefaultValue(true)] public Boolean ShowText { get; } = true;
         /// <summary>
-        /// Gets or sets a zoom of the barcode.
+        /// Gets a zoom of the barcode.
         /// </summary>
         [UsedImplicitly][Field(Order=1000408,ConverterCulture="en-US")][DefaultValue(1f)] public Single Zoom { get; } = 1f;
         /// <summary>
-        /// Gets or sets the barcode type.
+        /// Gets the barcode type.
         /// </summary>
         [UsedImplicitly][Field(Order=1000411)][DefaultValue(typeof(FastReportBarcode39),"CalcCheckSum=true")] public FastReportBarcodeBase Barcode { get; } = new FastReportBarcode39();
         /// <summary>
-        /// Gets or sets padding within the <see cref="FastReportBarcodeObject"/>.
+        /// Gets padding within the <see cref="FastReportBarcodeObject"/>.
         /// </summary>
         [UsedImplicitly][Field(Order=1000407,Converter=typeof(FastReportThicknessConverter))] public Thickness Padding { get; }
 

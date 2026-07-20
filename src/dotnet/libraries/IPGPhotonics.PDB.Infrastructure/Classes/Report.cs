@@ -1,4 +1,4 @@
-﻿#define FEATURE_FASTREPORT_CHECK
+﻿//#define FEATURE_FASTREPORT_CHECK
 using System;
 using System.ComponentModel;
 using System.Data;

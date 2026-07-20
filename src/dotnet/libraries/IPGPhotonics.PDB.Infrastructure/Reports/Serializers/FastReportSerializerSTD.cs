@@ -143,6 +143,15 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             SerializeAttributes(source,prefix);
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportButtonBaseControl,String,Object)
+        void IFastReportSerializer.Serialize(FastReportButtonBaseControl source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix);
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportCapSettings,String,Object)
         void IFastReportSerializer.Serialize(FastReportCapSettings source,String prefix,Object other) {
             SerializeAttributes(source,prefix);
@@ -574,8 +583,14 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         #region M:SerializeAttributes<T>(T,String,Func<PropertyDescriptor,Boolean>,Action<PropertyDescriptor>)
         protected void SerializeAttributes<T>(T source,String prefix,Func<PropertyDescriptor,Boolean> predicate = null,Action<PropertyDescriptor> afterWrite = null) {
             if (source == null) { throw new ArgumentNullException(nameof(source)); }
-            foreach (var descriptor in TypeDescriptor.GetProperties(source)
-                .Cast<PropertyDescriptor>()
+            SerializeAttributes(source,prefix,TypeDescriptor.GetProperties(source)
+                .Cast<PropertyDescriptor>(),predicate,afterWrite);
+            }
+        #endregion
+        #region M:SerializeAttributes<T>(T,String,IEnumerable<PropertyDescriptor>,Func<PropertyDescriptor,Boolean>,Action<PropertyDescriptor>)
+        protected void SerializeAttributes<T>(T source,String prefix,IEnumerable<PropertyDescriptor> descriptors,Func<PropertyDescriptor,Boolean> predicate = null,Action<PropertyDescriptor> afterWrite = null) {
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+            foreach (var descriptor in descriptors
                 .Select(CreateDescriptor)
                 .OrderBy(Order))
                 {
@@ -623,7 +638,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
             }
         #endregion
         #region M:IsDefaultValue(Object,PropertyDescriptor,{out}Object):Boolean
-        private static Boolean IsDefaultValue(Object value,PropertyDescriptor descriptor,out Object o) {
+        protected static Boolean IsDefaultValue(Object value,PropertyDescriptor descriptor,out Object o) {
             o = default;
             var defaultValue = descriptor.Attributes.OfType<DefaultValueAttribute>().FirstOrDefault();
             if (defaultValue != null) {

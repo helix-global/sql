@@ -177,7 +177,7 @@ namespace BinaryStudio.SqlServer.Infrastructure
         ISqlXmlWriter StopScheduleNewLineForNextAttribute();
         void WriteString(String text);
         void WriteRaw(String data);
-        void WriteAttributeString(String localName,String value);
+        ISqlXmlWriter WriteAttributeString(String localName,String value);
         void WriteNode(XmlReader reader,IXmlNamespaceSubstitute ns);
         void WriteNode(XmlReader reader,Func<String,String> substitute);
         }

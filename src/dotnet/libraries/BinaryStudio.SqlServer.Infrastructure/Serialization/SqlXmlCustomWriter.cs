@@ -298,7 +298,13 @@ namespace BinaryStudio.SqlServer.Infrastructure
             WriteNode(reader,false);
             }
         #endregion
-
+        #region M:ISqlXmlWriter.WriteAttributeString(String,String):ISqlXmlWriter
+        ISqlXmlWriter ISqlXmlWriter.WriteAttributeString(String localName,String value)
+            {
+            WriteAttributeString(localName,value);
+            return this;
+            }
+        #endregion
         #region M:ISqlXmlWriter.ScheduleNewLineForNextAttribute:ISqlXmlWriter
         ISqlXmlWriter ISqlXmlWriter.ScheduleNewLineForNextAttribute()
             {

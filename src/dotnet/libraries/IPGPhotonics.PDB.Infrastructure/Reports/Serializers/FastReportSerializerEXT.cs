@@ -77,21 +77,54 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
-        #region M:IFastReportSerializer.Serialize(FastReportChartObject,String,Object)
-        void IFastReportSerializer.Serialize(FastReportChartObject source,String prefix,Object other)
-            {
+        #region M:IFastReportSerializer.Serialize(FastReportButtonBaseControl,String,Object)
+        void IFastReportSerializer.Serialize(FastReportButtonBaseControl source,String prefix,Object other) {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                SerializeAttributes(source,prefix,(descriptor)=>
+                    !String.Equals(descriptor.Name,nameof(FastReportButtonBaseControl.Image)));
+                if (source.Image != null) {
+                    writer.WriteBase64($"{ClassName}.Image",source.Image);
+                    }
+                Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportChartObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportChartObject source,String prefix,Object other) {
+            var ClassName = "ChartObject";
             using (writer.ElementGroup(ClassName)) {
                 SerializeAttributes(source,prefix,(descriptor)=>
                     !String.Equals(descriptor.Name,"Chart"));
                 if (source.Chart != null) {
-                    var content = XDocument.Load(new MemoryStream(source.Chart));
-                    writer.WriteNode(content.CreateReader(), (ns) => {
-                        if (!String.IsNullOrEmpty(ns)) { return ns; }
-                        return "urn:schemas.microsoft.com:charting";
-                        });
+                    using (writer.ElementGroup($"{ClassName}.Chart")) {
+                        var content = XDocument.Load(new MemoryStream(source.Chart));
+                        writer.WriteNode(content.CreateReader(), (ns) => {
+                            if (!String.IsNullOrEmpty(ns)) { return ns; }
+                            return "urn:schemas.microsoft.com:charting";
+                            });
+                        }
                     }
                 Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportCurrencyFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportCurrencyFormat source,String prefix,Object other) {
+            if (source.UseLocale) {
+                writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            var ClassName = "CurrencyFormat";
+            using (writer.ElementGroup(ClassName)) {
+                writer.WriteAttributeString($"UseLocale","false");
+                writer.WriteAttributeString($"DecimalDigits",source.DecimalDigits.ToString());
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"DecimalSeparator",source.DecimalSeparator);
+                writer.WriteAttributeString($"GroupSeparator",source.GroupSeparator);
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"CurrencySymbol",source.CurrencySymbol);
+                writer.WriteAttributeString($"PositivePattern",source.PositivePattern.ToString());
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"NegativePattern",source.NegativePattern.ToString());
                 }
             }
         #endregion
@@ -128,6 +161,23 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 }
             }
         #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportNumberFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportNumberFormat source,String prefix,Object other) {
+            if (source.UseLocale) {
+                writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            var ClassName = "NumberFormat";
+            using (writer.ElementGroup(ClassName)) {
+                writer.WriteAttributeString($"UseLocale","false");
+                writer.WriteAttributeString($"DecimalDigits",source.DecimalDigits.ToString());
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"DecimalSeparator",source.DecimalSeparator);
+                writer.WriteAttributeString($"GroupSeparator",source.GroupSeparator);
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"NegativePattern",source.NegativePattern.ToString());
+                }
+            }
+        #endregion
         #region M:IFastReportSerializer.Serialize(FastReportParameter,String,Object)
         void IFastReportSerializer.Serialize(FastReportParameter source,String prefix,Object other) {
             var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
@@ -150,6 +200,25 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                         }
                     }
                 Serialize(source.Children,prefix);
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportPercentFormat,String,Object)
+        void IFastReportSerializer.Serialize(FastReportPercentFormat source,String prefix,Object other) {
+            if (source.UseLocale) {
+                writer.WriteAttributeString(prefix,FastReportFormatConverter.Instance.ConvertToInvariantString(source));
+                writer.WriteAttributeString($"{prefix}.UseLocale","true");
+                return;
+                }
+            var ClassName = "PercentFormat";
+            using (writer.ElementGroup(ClassName)) {
+                writer.WriteAttributeString($"UseLocale","false");
+                writer.WriteAttributeString($"DecimalDigits",source.DecimalDigits.ToString());
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"DecimalSeparator",source.DecimalSeparator);
+                writer.WriteAttributeString($"GroupSeparator",source.GroupSeparator);
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"PercentSymbol",source.PercentSymbol);
+                writer.WriteAttributeString($"PositivePattern",source.PositivePattern.ToString());
+                writer.ScheduleNewLineForNextAttribute().WriteAttributeString($"NegativePattern",source.NegativePattern.ToString());
                 }
             }
         #endregion
@@ -197,6 +266,64 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
                 if (!String.IsNullOrWhiteSpace(source.SelectCommand)) {
                     writer.WriteCData(source.SelectCommand);
                     }
+                }
+            }
+        #endregion
+        #region M:IFastReportSerializer.Serialize(FastReportTextObject,String,Object)
+        void IFastReportSerializer.Serialize(FastReportTextObject source,String prefix,Object other) {
+            var ClassName = ((IFastReportClassObjectLegacy)source).ClassName;
+            using (writer.ElementGroup(ClassName)) {
+                var descriptors = TypeDescriptor.GetProperties(source)
+                    .Cast<PropertyDescriptor>()
+                    .ToDictionary(i => i.Name,i=>i);
+                var formats = source.Formats;
+                SerializeAttributes(source,prefix,descriptors.Select(i=>i.Value),(descriptor)=> {
+                    if (descriptor.Name == nameof(source.Highlights)) { return false; }
+                    if (descriptor.Name == nameof(source.Formats))    { return false; }
+                    if (descriptor.Name == nameof(source.Format)) {
+                        if ((formats != null) && (formats.Count == 1)) {
+                            var format = formats[0];
+                            if ((format != null) && format is IFastReportLocaleFormat locale) {
+                                if (!locale.UseLocale) { return false; }
+                                return true;
+                                }
+                            return true;
+                            }
+                        return false;
+                        }
+                    if (descriptor.Name == nameof(source.Text)) {
+                        return String.IsNullOrWhiteSpace(source.Text) || !(source.Text.Contains('\n'));
+                        }
+                    return true;
+                    });
+                if (!String.IsNullOrWhiteSpace(source.Text) && source.Text.Contains('\n')) {
+                    writer.WriteCData($"{ClassName}.Text",source.Text);
+                    }
+                if ((formats != null) && (formats.Count == 1)) {
+                    var format = formats[0];
+                    if ((format != null) && !IsDefaultValue(format,descriptors[nameof(source.Format)],out var _)) {
+                        if (format is IFastReportLocaleFormat locale) {
+                            if (!locale.UseLocale) {
+                                using (writer.ElementGroup($"{ClassName}.Format")) {
+                                    formats[0].Serialize(this,prefix,null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                if ((formats != null) && (formats.Count > 1)) {
+                    using (writer.ElementGroup("Formats")) {
+                        foreach(var o in formats) {
+                            SerializeElement(o,prefix,null);
+                            }
+                        }
+                    }
+                if ((source.Highlights != null) && source.Highlights.Any()) {
+                    using (writer.ElementGroup("Highlight")) {
+                        Serialize(source.Highlights,prefix);
+                        }
+                    }
+                Serialize(source.Children,prefix);
                 }
             }
         #endregion

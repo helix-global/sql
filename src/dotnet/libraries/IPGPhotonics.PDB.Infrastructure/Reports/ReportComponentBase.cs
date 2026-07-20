@@ -143,7 +143,7 @@ namespace IPGPhotonics.PDB.Infrastructure.Reports
         /// </remarks>
         [UsedImplicitly][Field(Order=1000316)][DefaultValue(PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage)] public PrintOn PrintOn { get; } = PrintOn.FirstPage|PrintOn.LastPage|PrintOn.OddPages|PrintOn.EvenPages|PrintOn.RepeatedBand|PrintOn.SinglePage;
         /// <summary>
-        /// Gets or sets a shift mode of the object.
+        /// Gets a shift mode of the object.
         /// </summary>
         /// <remarks>
         /// See <see cref="Reports.ShiftMode"/> enumeration for details.
